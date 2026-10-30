@@ -1,0 +1,18 @@
+---
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: CC-BY-NC-SA-4.0
+ */
+
+import operatingSystems from "@data/operating-systems.js";
+---
+
+<div class="codes os legend">
+  {operatingSystems.map(({ className, heading, title }) => (
+    <div class={`os ${className}`}>
+      <span class="heading">{heading}</span>
+      <span class="title">{title}</span>
+    </div>
+  ))}
+</div>

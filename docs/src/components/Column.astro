@@ -1,0 +1,28 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+interface Props {
+  className?: string;
+  style?: HTMLAttributes<"div">["style"];
+}
+
+const { className, style } = Astro.props;
+---
+
+<div class:list={["column", className]} style={style}>
+  <slot />
+</div>
+
+<style>
+  .column {
+    min-width: 0;
+  }
+
+  .column > :global(:first-child) {
+    margin-top: 0;
+  }
+
+  .column > :global(:last-child) {
+    margin-bottom: 0;
+  }
+</style>

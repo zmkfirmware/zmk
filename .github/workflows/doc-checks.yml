@@ -15,22 +15,38 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: bahmutov/npm-install@v1
+      - uses: pnpm/action-setup@v4
         with:
-          working-directory: docs
+          version: 12.16.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: docs/.nvmrc
+          cache: pnpm
+          cache-dependency-path: docs/pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        working-directory: docs
       - name: ESLint
-        run: npm run lint
+        run: pnpm lint
         working-directory: docs
   typecheck:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: bahmutov/npm-install@v1
+      - uses: pnpm/action-setup@v4
         with:
-          working-directory: docs
-      - name: Build
-        run: npm run build
+          version: 12.16.1
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: docs/.nvmrc
+          cache: pnpm
+          cache-dependency-path: docs/pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
         working-directory: docs
-      - name: TypeScript check
-        run: npm run typecheck
+      - name: Build
+        run: pnpm build
+        working-directory: docs
+      - name: Astro check
+        run: pnpm check
         working-directory: docs

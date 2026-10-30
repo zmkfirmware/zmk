@@ -1,0 +1,43 @@
+---
+import { Aside } from "@astrojs/starlight/components";
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import KeymapUpgrader from "@components/KeymapUpgrader/index.jsx";
+
+const keycodesUrl =
+  "https://github.com/zmkfirmware/zmk/blob/main/docs/src/keymap-upgrade/keycodes.ts";
+---
+
+<StarlightPage
+  frontmatter={{
+    title: "Keymap Upgrader",
+    description:
+      "Upgrade deprecated ZMK keymap behaviors, key codes, and properties to their replacements.",
+    template: "splash",
+    hero: {
+      title: "Keymap Upgrader",
+      tagline:
+        "Upgrade deprecated key codes, behaviors, and other features to their replacements.",
+    },
+  }}
+>
+  <p>
+    Some behaviors, key codes, and other features have been renamed to be more
+    consistent with each other. This tool will upgrade most deprecated features
+    to their replacements.
+  </p>
+  <p>
+    Paste the contents of a <code>.keymap</code> file below. Lines that have
+    been modified in the upgraded keymap will be highlighted.
+  </p>
+
+  <Aside type="caution" title="Warning">
+    <p>
+      The upgrader does not handle key codes inside a <code>#define</code> or a
+      behavior creation macro such as <code>ZMK_MACRO()</code>, so you will need
+      to update those manually using
+      <a href={keycodesUrl}>this list</a> of deprecated codes and replacements.
+    </p>
+  </Aside>
+
+  <KeymapUpgrader client:only="react" />
+</StarlightPage>

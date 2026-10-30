@@ -1,0 +1,56 @@
+---
+import type { ImageMetadata } from "astro";
+
+type ThemedImageSource = string | ImageMetadata;
+
+interface Props {
+  sources: {
+    light: ThemedImageSource;
+    dark: ThemedImageSource;
+  };
+  alt: string;
+  className?: string;
+}
+
+const { sources, alt, className } = Astro.props;
+
+function resolveSource(source: ThemedImageSource): string {
+  return typeof source === "string" ? source : source.src;
+}
+
+const light = resolveSource(sources.light);
+const dark = resolveSource(sources.dark);
+---
+
+<span class:list={["themed-image", className]}>
+  <img class="themed-image-light" src={light} alt={alt} />
+  <img class="themed-image-dark" src={dark} alt={alt} />
+</span>
+
+<style>
+  .themed-image {
+    display: inline-block;
+    max-width: 100%;
+  }
+
+  .themed-image img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .themed-image-light {
+    display: block;
+  }
+
+  .themed-image-dark {
+    display: none;
+  }
+
+  :global(html[data-theme="dark"]) .themed-image-light {
+    display: none;
+  }
+
+  :global(html[data-theme="dark"]) .themed-image-dark {
+    display: block;
+  }
+</style>

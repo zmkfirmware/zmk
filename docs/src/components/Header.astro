@@ -1,0 +1,298 @@
+---
+import config from "virtual:starlight/user-config";
+
+import LanguageSelect from "virtual:starlight/components/LanguageSelect";
+import Search from "virtual:starlight/components/Search";
+import SiteTitle from "virtual:starlight/components/SiteTitle";
+import SocialIcons from "virtual:starlight/components/SocialIcons";
+import ThemeSelect from "virtual:starlight/components/ThemeSelect";
+
+import {
+  isDevelopmentVersion,
+  versionDropdownLabel,
+  versionNavbarItems,
+} from "../lib/versions.mjs";
+
+const shouldRenderSearch =
+  config.pagefind ||
+  config.components.Search !== "@astrojs/starlight/components/Search.astro";
+
+const blogHref = isDevelopmentVersion ? "/blog" : "https://zmk.dev/blog";
+---
+
+<div class="header">
+  <div class="title-wrapper sl-flex">
+    <SiteTitle />
+    <nav class="nav-main" aria-label="Main navigation">
+      <a href="/docs">Docs</a>
+      <a href={blogHref}>Blog</a>
+      <details class="nav-dropdown">
+        <summary>Tools</summary>
+        <div class="nav-dropdown-menu">
+          <a href="/power-profiler">Power Profiler</a>
+          <a href="/keymap-upgrader">Keymap Upgrader</a>
+        </div>
+      </details>
+    </nav>
+  </div>
+  <div class="sl-flex print:hidden search-and-mobile">
+    {shouldRenderSearch && <Search />}
+    <details class="mobile-nav">
+      <summary aria-label="Open navigation menu">Menu</summary>
+      <div class="mobile-nav-menu">
+        <a href="/docs">Docs</a>
+        <a href={blogHref}>Blog</a>
+        <a href="/power-profiler">Power Profiler</a>
+        <a href="/keymap-upgrader">Keymap Upgrader</a>
+        <span class="mobile-nav-heading">Version</span>
+        {versionNavbarItems.map((item) => (
+          <a href={item.href} target="_blank" rel="noreferrer">
+            {item.label}
+          </a>
+        ))}
+        <a href="https://zmk.studio/" target="_blank" rel="noreferrer">
+          ZMK Studio
+        </a>
+        <a
+          href="https://github.com/zmkfirmware/zmk"
+          target="_blank"
+          rel="noreferrer"
+        >
+          GitHub
+        </a>
+      </div>
+    </details>
+  </div>
+  <div class="sl-hidden md:sl-flex print:hidden right-group">
+    <details class="nav-dropdown version-dropdown">
+      <summary>{versionDropdownLabel}</summary>
+      <div class="nav-dropdown-menu">
+        {versionNavbarItems.map((item) => (
+          <a href={item.href} target="_blank" rel="noreferrer">
+            <span>{item.label}</span>
+            <small>{item.description}</small>
+          </a>
+        ))}
+      </div>
+    </details>
+    <a
+      href="https://zmk.studio/"
+      target="_blank"
+      rel="noreferrer"
+      class="nav-external"
+    >
+      ZMK Studio
+    </a>
+    <div class="sl-flex social-icons">
+      <SocialIcons />
+    </div>
+    <ThemeSelect />
+    <LanguageSelect />
+  </div>
+</div>
+
+<style>
+  @layer starlight.core {
+    .header {
+      display: flex;
+      gap: var(--sl-nav-gap);
+      justify-content: space-between;
+      align-items: center;
+      height: 100%;
+    }
+
+    .title-wrapper {
+      /* Prevent long titles overflowing and covering the search and menu buttons on narrow viewports. */
+      overflow: clip;
+      /* Avoid clipping focus ring around link inside title wrapper. */
+      padding: 0.25rem;
+      margin: -0.25rem;
+      min-width: 0;
+      gap: 1.25rem;
+    }
+
+    .right-group,
+    .social-icons {
+      gap: 1rem;
+      align-items: center;
+    }
+    .social-icons::after {
+      content: "";
+      height: 2rem;
+      border-inline-end: 1px solid var(--sl-color-gray-5);
+    }
+
+    .nav-main {
+      display: none;
+      align-items: center;
+      gap: 1rem;
+      font-size: var(--sl-text-sm);
+      white-space: nowrap;
+    }
+    .nav-main a,
+    .nav-main summary,
+    .right-group > .nav-external {
+      color: var(--sl-color-gray-2);
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .nav-main a:hover,
+    .nav-main summary:hover,
+    .right-group > .nav-external:hover {
+      color: var(--sl-color-white);
+    }
+
+    .nav-dropdown {
+      position: relative;
+    }
+    .nav-dropdown > summary {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    .nav-dropdown > summary::-webkit-details-marker {
+      display: none;
+    }
+    .nav-dropdown > summary::after {
+      content: "";
+      width: 0.45em;
+      height: 0.45em;
+      border-right: 1.5px solid currentColor;
+      border-bottom: 1.5px solid currentColor;
+      transform: rotate(45deg) translateY(-0.1em);
+    }
+    .nav-dropdown-menu {
+      position: absolute;
+      z-index: var(--sl-z-index-navbar);
+      top: calc(100% + 0.75rem);
+      left: 0;
+      min-width: 15rem;
+      padding: 0.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.125rem;
+      background-color: var(--sl-color-bg-nav);
+      border: 1px solid var(--sl-color-gray-5);
+      border-radius: 0.5rem;
+      box-shadow: var(--sl-shadow-md);
+    }
+    .version-dropdown .nav-dropdown-menu {
+      left: auto;
+      right: 0;
+    }
+    .nav-dropdown-menu a {
+      display: flex;
+      flex-direction: column;
+      gap: 0.1rem;
+      padding: 0.35rem 0.5rem;
+      border-radius: 0.3rem;
+      color: var(--sl-color-gray-2);
+      text-decoration: none;
+    }
+    .nav-dropdown-menu a:hover {
+      color: var(--sl-color-white);
+      background-color: var(--sl-color-gray-6);
+    }
+    .nav-dropdown-menu small {
+      color: var(--sl-color-gray-3);
+      font-size: var(--sl-text-xs);
+    }
+
+    .search-and-mobile {
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .mobile-nav {
+      position: relative;
+    }
+    .mobile-nav > summary {
+      list-style: none;
+      cursor: pointer;
+      color: var(--sl-color-gray-2);
+      font-size: var(--sl-text-sm);
+      padding: 0.35rem 0.5rem;
+      border: 1px solid var(--sl-color-gray-5);
+      border-radius: 0.4rem;
+    }
+    .mobile-nav > summary::-webkit-details-marker {
+      display: none;
+    }
+    .mobile-nav-menu {
+      position: absolute;
+      right: 0;
+      top: calc(100% + 0.75rem);
+      z-index: var(--sl-z-index-navbar);
+      display: flex;
+      flex-direction: column;
+      gap: 0.1rem;
+      min-width: 14rem;
+      padding: 0.5rem;
+      background-color: var(--sl-color-bg-nav);
+      border: 1px solid var(--sl-color-gray-5);
+      border-radius: 0.5rem;
+      box-shadow: var(--sl-shadow-md);
+    }
+    .mobile-nav-menu a {
+      padding: 0.35rem 0.5rem;
+      color: var(--sl-color-gray-2);
+      text-decoration: none;
+    }
+    .mobile-nav-menu a:hover {
+      color: var(--sl-color-white);
+      background-color: var(--sl-color-gray-6);
+    }
+    .mobile-nav-heading {
+      padding: 0.5rem 0.5rem 0.1rem;
+      color: var(--sl-color-gray-3);
+      font-size: var(--sl-text-xs);
+      text-transform: uppercase;
+    }
+
+    @media (min-width: 72rem) {
+      .nav-main {
+        display: flex;
+      }
+      .mobile-nav {
+        display: none;
+      }
+    }
+
+    @media (min-width: 50rem) {
+      :global(:root[data-has-sidebar]) {
+        --__sidebar-pad: calc(2 * var(--sl-nav-pad-x));
+      }
+      :global(:root:not([data-has-toc])) {
+        --__toc-width: 0rem;
+      }
+      .header {
+        --__sidebar-width: max(
+          0rem,
+          var(--sl-content-inline-start, 0rem) - var(--sl-nav-pad-x)
+        );
+        --__main-column-fr: calc(
+          (
+              100% + var(--__sidebar-pad, 0rem) -
+                var(--__toc-width, var(--sl-sidebar-width)) -
+                (2 * var(--__toc-width, var(--sl-nav-pad-x))) -
+                var(--sl-content-inline-start, 0rem) - var(--sl-content-width)
+            ) /
+            2
+        );
+        display: grid;
+        grid-template-columns:
+          minmax(
+            calc(
+              var(--__sidebar-width) +
+                max(0rem, var(--__main-column-fr) - var(--sl-nav-gap))
+            ),
+            auto
+          )
+          1fr
+          auto;
+        align-content: center;
+      }
+    }
+  }
+</style>

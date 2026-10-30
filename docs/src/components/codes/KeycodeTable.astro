@@ -1,0 +1,266 @@
+---
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: CC-BY-NC-SA-4.0
+ */
+
+import codesData from "@data/hid.js";
+import groups from "@data/groups.js";
+import operatingSystems from "@data/operating-systems.js";
+import { getFootnote } from "@data/footnotes.js";
+
+import Context from "./Context.astro";
+import Description from "./Description.astro";
+import Footnotes from "./Footnotes.astro";
+import LinkIcon from "./LinkIcon.astro";
+import Name from "./Name.astro";
+import OsSupport from "./OsSupport.astro";
+
+interface Props {
+  group: string;
+}
+
+interface CodeEntry {
+  names: string[];
+  description: string;
+  context?: string;
+  clarify?: boolean;
+  documentation: string;
+  os: Record<string, boolean | null>;
+  footnotes?: Record<string, string | string[] | undefined>;
+}
+
+const { group } = Astro.props;
+
+// The old site kept these lookups in src/hid.js and src/groups.js. The data
+// modules are plain exports here, so inline the same helpers to keep the
+// components self-contained.
+const codeMap = new Map<string, CodeEntry>();
+for (const code of codesData as unknown as CodeEntry[]) {
+  for (const name of code.names) {
+    codeMap.set(name, code);
+  }
+}
+
+const groupMap = groups as unknown as Record<string, string[] | undefined>;
+
+const getGroup = (id: string) => groupMap[id] ?? null;
+const getCodes = (ids: string[] | null) =>
+  (ids ?? [])
+    .map((id) => codeMap.get(id))
+    .filter((code): code is CodeEntry => code !== undefined);
+
+const codes = getCodes(getGroup(group));
+const footnotesAnchor = `${group}-footnotes`;
+
+// Collect every footnote referenced by at least one code in this group, in
+// first-seen order, and number them for this table.
+const footnoteIds = Array.from(
+  new Set(
+    codes
+      .flatMap(({ footnotes }) => Object.values(footnotes ?? {}))
+      .flatMap((refs) => (Array.isArray(refs) ? refs.flat() : refs))
+      .filter((id): id is string => typeof id === "string")
+  )
+);
+
+const tableFootnotes = footnoteIds.map((id, index) => ({
+  id,
+  anchor: footnotesAnchor,
+  symbol: index + 1,
+  value: getFootnote(id),
+}));
+
+const rows = codes.map((code) => {
+  const footnotesByOs = Object.fromEntries(
+    operatingSystems.map(({ key }) => [
+      key,
+      tableFootnotes.filter(({ id }) => {
+        const refs = code.footnotes?.[key];
+        return (Array.isArray(refs) && refs.includes(id)) || refs === id;
+      }),
+    ])
+  );
+
+  return {
+    names: code.names,
+    description: code.description,
+    context: code.context ?? "",
+    clarify: code.clarify ?? false,
+    documentation: code.documentation,
+    os: code.os,
+    footnotesByOs,
+  };
+});
+---
+
+<div class="codes">
+  <table>
+    <thead>
+      <tr>
+        <th scope="col" class="names">
+          Names
+        </th>
+        <th scope="col" class="description">
+          Description
+        </th>
+        <th scope="col" class="documentation" title="Documentation">
+          <LinkIcon />
+        </th>
+        {operatingSystems.map(({ className, heading, title }) => (
+          <th scope="col" class={`os ${className}`} title={title}>
+            {heading}
+          </th>
+        ))}
+      </tr>
+    </thead>
+    <tbody>
+      {rows.map((row) => (
+        <tr>
+          <td class="names">
+            {row.names.map((name) => (
+              <Name name={name} />
+            ))}
+          </td>
+          <td class="description">
+            <Description description={row.description} />
+            {row.clarify && row.context ? (
+              <Context>{row.context}</Context>
+            ) : null}
+          </td>
+          <td class="documentation" title="Documentation">
+            <a
+              href={row.documentation}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Documentation"
+            >
+              <LinkIcon />
+            </a>
+          </td>
+          {operatingSystems.map(({ key, className, title }) => (
+            <td class={`os ${className}`} title={title}>
+              <OsSupport
+                value={row.os[key]}
+                footnotes={row.footnotesByOs[key] ?? []}
+              />
+            </td>
+          ))}
+        </tr>
+      ))}
+    </tbody>
+  </table>
+  {tableFootnotes.length > 0 && (
+    <Footnotes id={footnotesAnchor} footnotes={tableFootnotes} />
+  )}
+</div>
+
+<script>
+  // A single delegated handler is installed for the page, even when several
+  // KeycodeTable instances are rendered.
+  const win = window as Window & { __zmkKeycodeCopyHandler?: boolean };
+
+  if (!win.__zmkKeycodeCopyHandler) {
+    win.__zmkKeycodeCopyHandler = true;
+
+    const TOAST_DURATION = 2000;
+    let toastTimer: number | undefined;
+
+    function showToast(text: string) {
+      let toast = document.querySelector<HTMLDivElement>(".codes-toast");
+
+      if (!toast) {
+        toast = document.createElement("div");
+        toast.className = "codes-toast";
+        toast.setAttribute("role", "status");
+        toast.setAttribute("aria-live", "polite");
+        toast.setAttribute("data-pagefind-ignore", "");
+
+        const label = document.createElement("span");
+        label.textContent = "📋 Copied ";
+
+        const code = document.createElement("code");
+        toast.append(label, code);
+        document.body.appendChild(toast);
+      }
+
+      const code = toast?.querySelector("code");
+      if (code) code.textContent = text;
+
+      toast?.classList.add("visible");
+      window.clearTimeout(toastTimer);
+      toastTimer = window.setTimeout(() => {
+        toast?.classList.remove("visible");
+      }, TOAST_DURATION);
+    }
+
+    function legacyCopy(text: string) {
+      const area = document.createElement("textarea");
+      area.value = text;
+      area.setAttribute("readonly", "");
+      area.style.position = "fixed";
+      area.style.top = "-1000px";
+      area.style.opacity = "0";
+      document.body.appendChild(area);
+      area.select();
+
+      try {
+        document.execCommand("copy");
+      } finally {
+        area.remove();
+      }
+    }
+
+    function copyText(text: string) {
+      if (navigator.clipboard?.writeText) {
+        return navigator.clipboard
+          .writeText(text)
+          .catch(() => legacyCopy(text));
+      }
+
+      legacyCopy(text);
+      return Promise.resolve();
+    }
+
+    function copyFrom(element: Element) {
+      const text = element.getAttribute("data-copy");
+      if (!text) return;
+
+      copyText(text).then(
+        () => showToast(text),
+        () => showToast(text)
+      );
+    }
+
+    document.addEventListener("click", (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+
+      const copyable = target.closest("[data-copy]");
+      if (!copyable) return;
+
+      copyFrom(copyable);
+    });
+
+    // <code class="name"> is a role="button", so handle Enter/Space as well.
+    document.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+
+      const copyable = target.closest("[data-copy]");
+      if (
+        !copyable ||
+        copyable.tagName === "BUTTON" ||
+        copyable.tagName === "A"
+      ) {
+        return;
+      }
+
+      event.preventDefault();
+      copyFrom(copyable);
+    });
+  }
+</script>

@@ -11,8 +11,7 @@ import {
   initParser,
   upgradeKeymap,
   rangesToLineNumbers,
-} from "@site/src/keymap-upgrade";
-import CodeBlock from "@theme/CodeBlock";
+} from "../../keymap-upgrade";
 
 import styles from "./styles.module.css";
 
@@ -35,12 +34,15 @@ function Editor() {
 
   const { text: upgraded, changedRanges } = upgradeKeymap(keymap);
   const highlights = rangesToLineNumbers(upgraded, changedRanges);
+  const highlightedLines = parseHighlightedLines(highlights);
 
   let title = "Upgraded Keymap";
 
   if (keymap && upgraded === keymap) {
     title += " (No Changes)";
   }
+
+  const lines = upgraded.split("\n");
 
   return (
     <div>
@@ -52,10 +54,60 @@ function Editor() {
         onChange={(e) => setKeymap(e.target.value)}
       ></textarea>
       <div className={styles.result}>
-        <CodeBlock language="dts" metastring={`${highlights} title="${title}"`}>
-          {upgraded}
-        </CodeBlock>
+        <div className={styles.resultTitle}>{title}</div>
+        <div className="keymap-upgrader-result">
+          <pre>
+            <code>
+              {lines.map((line, index) => (
+                <React.Fragment key={index}>
+                  <span
+                    className={
+                      highlightedLines.has(index + 1)
+                        ? `${styles.highlighted} highlighted`
+                        : undefined
+                    }
+                  >
+                    {line}
+                  </span>
+                  {index < lines.length - 1 ? "\n" : null}
+                </React.Fragment>
+              ))}
+            </code>
+          </pre>
+        </div>
       </div>
     </div>
   );
+}
+
+/**
+ * Parses the line number list returned by rangesToLineNumbers(), which has the
+ * format "{1,2-3}", into a set of line numbers.
+ */
+function parseHighlightedLines(highlights) {
+  const lines = new Set();
+  const body = highlights.replace(/[{}]/g, "").trim();
+
+  if (!body) {
+    return lines;
+  }
+
+  for (const part of body.split(",")) {
+    const [startText, endText] = part.split("-");
+    const start = Number.parseInt(startText, 10);
+    const end = endText === undefined ? start : Number.parseInt(endText, 10);
+
+    if (!Number.isFinite(start) || !Number.isFinite(end)) {
+      continue;
+    }
+
+    const first = Math.min(start, end);
+    const last = Math.max(start, end);
+
+    for (let line = first; line <= last; line++) {
+      lines.add(line);
+    }
+  }
+
+  return lines;
 }

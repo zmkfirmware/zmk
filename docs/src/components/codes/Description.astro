@@ -1,0 +1,73 @@
+---
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: CC-BY-NC-SA-4.0
+ */
+
+interface Props {
+  description?: string;
+}
+
+const { description = "" } = Astro.props;
+
+// Matches the old Description.jsx pattern: an HTML entity, an underscore, or
+// any punctuation character, optionally followed by " [meaning]".
+const specialCharactersRegex =
+  /(?:^|\s)((?:&(?:(?:\w+)|(?:#\d+));)|[_]|[^\w\s])(?:\s*\[([^[\]]+?)\])/g;
+
+const htmlEntities: Record<string, string> = {
+  "&": "&amp;",
+  "<": "&lt;",
+  ">": "&gt;",
+  '"': "&quot;",
+  "'": "&#39;",
+};
+
+function escapeHtml(value: string): string {
+  return value.replace(/[&<>"']/g, (character) => htmlEntities[character]);
+}
+
+function renderSpecialCharacters(value: string): string {
+  const matches = Array.from(value.matchAll(specialCharactersRegex));
+  if (matches.length === 0) return escapeHtml(value);
+
+  let lastIndex = 0;
+  const parts: string[] = [];
+
+  for (const match of matches) {
+    const index = match.index ?? 0;
+    const str = match[0];
+    const chars = match[1];
+    const meaning = match[2] ?? "";
+
+    if (index !== lastIndex) {
+      parts.push(escapeHtml(value.substring(lastIndex, index)));
+    }
+
+    const pos = str.indexOf(chars);
+    if (pos > 0) {
+      parts.push(escapeHtml(value.substring(index, index + pos)));
+    }
+
+    const symbol = value.substring(index + pos, index + pos + chars.length);
+    parts.push(
+      `<span class="symbol" title="${escapeHtml(meaning)}"><code>${escapeHtml(
+        symbol
+      )}</code>${
+        meaning ? `<span class="meaning">${escapeHtml(meaning)}</span>` : ""
+      }</span>`
+    );
+
+    lastIndex = index + str.length;
+  }
+
+  if (lastIndex < value.length) {
+    parts.push(escapeHtml(value.substring(lastIndex)));
+  }
+
+  return parts.join("");
+}
+---
+
+<span class="description" set:html={renderSpecialCharacters(description)} />

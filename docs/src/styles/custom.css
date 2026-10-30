@@ -1,0 +1,40 @@
+/*
+ * ZMK documentation site styles for Starlight.
+ */
+
+/* Docusaurus used Tabs with className="secrettabs" to hide the tab selector
+ * while keeping the selected panel visible. Starlight renders the tab list in
+ * .tablist-wrapper, so hide only that part. */
+.secrettabs .tablist-wrapper {
+  display: none;
+}
+
+.video-container {
+  height: 0;
+  margin: 0 0 30px;
+  overflow: hidden;
+  padding-bottom: 56.25%;
+  padding-top: 30px;
+  position: relative;
+}
+
+.video-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.full-width-table table {
+  width: 100%;
+  display: table;
+}
+
+.feature-image {
+  display: block;
+  width: 10rem;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto 1rem;
+}

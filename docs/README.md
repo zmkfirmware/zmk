@@ -1,29 +1,29 @@
-# Website
+# ZMK Documentation
 
-This website is built using [Docusaurus 2](https://v2.docusaurus.io/), a modern static website generator.
+This website is built with [Astro](https://astro.build) and
+[Starlight](https://starlight.astro.build).
 
 ## License
 
-The ZMK Documentation is licensed [CC-BY-NC-SA](http://creativecommons.org/licenses/by-nc-sa/4.0/).
+The ZMK Documentation is licensed
+[CC-BY-NC-SA](http://creativecommons.org/licenses/by-nc-sa/4.0/).
 
-### Installation
-
-```sh
-$ npm ci
-```
-
-### Local Development
+## Installation
 
 ```sh
-$ npm start
+pnpm install
 ```
 
-This command starts a local development server and open up a browser window. Most changes are reflected live without having to restart the server.
-
-### Build
+## Local Development
 
 ```sh
-$ npm build
+pnpm dev
 ```
 
-This command generates static content into the `build` directory and can be served using any static contents hosting service.
+## Build
+
+```sh
+pnpm build
+```
+
+The build output is written to `dist/`.

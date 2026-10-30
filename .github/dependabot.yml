@@ -9,18 +9,22 @@ updates:
     schedule:
       interval: "daily"
     groups:
-      docusaurus-major:
+      astro-major:
         applies-to: "version-updates"
         dependency-type: "production"
         patterns:
-          - "@docusaurus/*"
+          - "astro"
+          - "@astrojs/*"
+          - "starlight-blog"
         update-types:
           - "major"
-      docusaurus-minor-patch:
+      astro-minor-patch:
         applies-to: "version-updates"
         dependency-type: "production"
         patterns:
-          - "@docusaurus/*"
+          - "astro"
+          - "@astrojs/*"
+          - "starlight-blog"
         update-types:
           - "minor"
           - "patch"
@@ -34,7 +38,9 @@ updates:
         applies-to: "version-updates"
         dependency-type: "production"
         exclude-patterns:
-          - "@docusaurus/*"
+          - "astro"
+          - "@astrojs/*"
+          - "starlight-blog"
           - "tree-sitter-devicetree"
           - "web-tree-sitter"
         update-types:
@@ -43,7 +49,9 @@ updates:
         applies-to: "version-updates"
         dependency-type: "production"
         exclude-patterns:
-          - "@docusaurus/*"
+          - "astro"
+          - "@astrojs/*"
+          - "starlight-blog"
           - "tree-sitter-devicetree"
           - "web-tree-sitter"
         update-types:

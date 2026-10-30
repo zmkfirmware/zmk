@@ -4,17 +4,17 @@
  * SPDX-License-Identifier: CC-BY-NC-SA-4.0
  */
 
-import macosLanguage from "@site/docs/keymaps/_footnotes/macos-language.mdx";
-import macosInternational from "@site/docs/keymaps/_footnotes/macos-international.mdx";
-import example from "@site/docs/keymaps/_footnotes/example.mdx";
-import iosApplication from "@site/docs/keymaps/_footnotes/ios-application.mdx";
-import iosPower from "@site/docs/keymaps/_footnotes/ios-power.mdx";
-import macosEditing from "@site/docs/keymaps/_footnotes/macos-editing.mdx";
-import macosPower from "@site/docs/keymaps/_footnotes/macos-power.mdx";
-import macosUndoRedo from "@site/docs/keymaps/_footnotes/macos-undo-redo.mdx";
-import globe from "@site/docs/keymaps/_footnotes/globe.mdx";
+import macosLanguage from "../components/footnotes/macos-language.mdx";
+import macosInternational from "../components/footnotes/macos-international.mdx";
+import example from "../components/footnotes/example.mdx";
+import iosApplication from "../components/footnotes/ios-application.mdx";
+import iosPower from "../components/footnotes/ios-power.mdx";
+import macosEditing from "../components/footnotes/macos-editing.mdx";
+import macosPower from "../components/footnotes/macos-power.mdx";
+import macosUndoRedo from "../components/footnotes/macos-undo-redo.mdx";
+import globe from "../components/footnotes/globe.mdx";
 
-export default {
+const footnotes = {
   macosLanguage,
   macosInternational,
   example,
@@ -25,3 +25,9 @@ export default {
   macosUndoRedo,
   globe,
 };
+
+export function getFootnote(id) {
+  return footnotes[id];
+}
+
+export default footnotes;

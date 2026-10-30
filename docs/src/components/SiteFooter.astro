@@ -1,0 +1,119 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer print:hidden" data-pagefind-ignore>
+  <div class="site-footer-inner">
+    <div class="site-footer-columns">
+      <div>
+        <h2>Docs</h2>
+        <ul>
+          <li>
+            <a href="/docs">Getting Started</a>
+          </li>
+          <li>
+            <a href="/docs/development/contributing/clean-room">Development</a>
+          </li>
+        </ul>
+      </div>
+      <div>
+        <h2>Community</h2>
+        <ul>
+          <li>
+            <a href="/community/discord/invite">Discord</a>
+          </li>
+          <li>
+            <a href="https://fosstodon.org/@zmk">Mastodon</a>
+          </li>
+        </ul>
+      </div>
+      <div>
+        <h2>More</h2>
+        <ul>
+          <li>
+            <a href="/blog">Blog</a>
+          </li>
+          <li>
+            <a href="https://github.com/zmkfirmware/zmk">GitHub</a>
+          </li>
+          <li>
+            <a
+              href="https://www.netlify.com"
+              target="_blank"
+              rel="noreferrer noopener"
+              aria-label="Deploys by Netlify"
+            >
+              <img
+                src="https://www.netlify.com/img/global/badges/netlify-color-accent.svg"
+                alt="Deploys by Netlify"
+                height="32"
+              />
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="site-footer-legal">
+      <span>Copyright © {year} ZMK Project Contributors.</span>
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">
+        <img
+          alt="Creative Commons License"
+          src="https://i.creativecommons.org/l/by-nc-sa/4.0/80x15.png"
+        />
+      </a>
+    </div>
+  </div>
+</footer>
+
+<style>
+  @layer starlight.core {
+    .site-footer {
+      padding-inline-start: var(--sl-content-inline-start, 0px);
+      border-top: 1px solid var(--sl-color-hairline);
+      background-color: var(--sl-color-bg-nav);
+      color: var(--sl-color-gray-2);
+      font-size: var(--sl-text-sm);
+    }
+    .site-footer-inner {
+      max-width: 72rem;
+      margin-inline: auto;
+      padding: 2rem var(--sl-content-pad-x);
+    }
+    .site-footer-columns {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+      gap: 1.5rem 3rem;
+    }
+    h2 {
+      margin: 0 0 0.5rem;
+      font-size: var(--sl-text-base);
+      color: var(--sl-color-white);
+    }
+    ul {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    a {
+      color: var(--sl-color-gray-2);
+      text-decoration: none;
+    }
+    a:hover {
+      color: var(--sl-color-white);
+    }
+    .site-footer-legal {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.75rem;
+      margin-top: 2rem;
+      color: var(--sl-color-gray-3);
+    }
+    .site-footer-legal img {
+      display: block;
+    }
+  }
+</style>
