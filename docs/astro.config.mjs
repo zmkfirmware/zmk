@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 import react from "@astrojs/react";
@@ -12,6 +13,11 @@ import {
   generateHardwareMetadata,
 } from "./scripts/generate-hardware-metadata.mjs";
 import { sidebar } from "./src/lib/sidebar.mjs";
+
+const readGrammar = (name) =>
+  JSON.parse(
+    readFileSync(new URL(`./src/grammars/${name}`, import.meta.url), "utf8")
+  );
 
 // Generate the hardware metadata before Astro loads content collections.
 await generateHardwareMetadata();
@@ -67,6 +73,12 @@ export default defineConfig({
       expressiveCode: {
         themes: ["github-light", "github-dark-dimmed"],
         useStarlightUiThemeColors: true,
+        shiki: {
+          langs: [
+            readGrammar("dts.tmLanguage.json"),
+            readGrammar("kconfig.tmLanguage.json"),
+          ],
+        },
       },
       components: {
         Header: "./src/components/Header.astro",

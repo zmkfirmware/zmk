@@ -166,7 +166,7 @@ ZMK keeps all of its devicetree bindings under the [`app/dts/bindings` directory
 
 The bindings file for `compatible = "zmk,behavior-mod-morph";` is [`app/dts/bindings/behaviors/zmk,behavior-mod-morph.yaml`](https://github.com/zmkfirmware/zmk/blob/main/app/dts/bindings/behaviors/zmk%2Cbehavior-mod-morph.yaml).
 
-```dts title="zmk,behavior-mod-morph.yaml"
+```yaml title="zmk,behavior-mod-morph.yaml"
 # Copyright (c) 2020 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 

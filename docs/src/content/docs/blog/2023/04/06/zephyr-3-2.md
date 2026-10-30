@@ -107,7 +107,7 @@ A few testers have reported inconsistent issues with bluetooth connections on Wi
 
 Zephyr 3.2 introduced [a new Kconfig setting](https://github.com/zephyrproject-rtos/zephyr/pull/48929) that can be used to work around a bug in Windows related to battery reporting. Check out our [bluetooth config](/docs/config/bluetooth) for the full details. The key new configuration that can be set if using Windows is:
 
-```ini
+```kconfig
 CONFIG_BT_GATT_ENFORCE_SUBSCRIPTION=n
 ```
 

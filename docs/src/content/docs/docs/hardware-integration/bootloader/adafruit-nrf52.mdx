@@ -14,7 +14,7 @@ The [Adafruit nRF52 Bootloader](https://github.com/adafruit/Adafruit_nRF52_Bootl
 
 In addition to the core Kconfig symbols already set up, one additional Kconfig choice needs to be set, e.g. in `Kconfig.defaults` for the board:
 
-```
+```kconfig
 choice ZMK_BOOTMODE_MAGIC_VALUE_BOOTLOADER_TYPE
     default ZMK_BOOTMODE_MAGIC_VALUE_BOOTLOADER_TYPE_ADAFRUIT_NRF52
 

@@ -10,7 +10,7 @@ EC11 encoder support can be added to your board or shield by adding the appropri
 
 In your configuration file you will need to add the following lines so that the encoders can be enabled/disabled:
 
-```ini
+```kconfig
 # Uncomment to enable encoder
 # CONFIG_EC11=y
 # CONFIG_EC11_TRIGGER_GLOBAL_THREAD=y

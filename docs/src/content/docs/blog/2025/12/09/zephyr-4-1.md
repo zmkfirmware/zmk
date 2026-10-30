@@ -213,7 +213,7 @@ If, as a side effect of adding revisions, you renamed the board (e.g. `ferris_re
 
 Previously, your board folder will have had a file named `Kconfig.board`. This should be renamed to `Kconfig.<board>`, where `<board>` is the board name given in `board.yml`. The contents of this file will previously look something like this:
 
-```title="Kconfig.board"
+```kconfig title="Kconfig.board"
 config BOARD_FERRIS
     bool "Ferris rev 0.2"
     depends on SOC_STM32F072XB
@@ -221,14 +221,14 @@ config BOARD_FERRIS
 
 Remove the `bool` and change the `depends on` to a `select`:
 
-```title="Kconfig.ferris"
+```kconfig title="Kconfig.ferris"
 config BOARD_FERRIS
     select SOC_STM32F072XB
 ```
 
 If you had multiple boards specified for different SoCs, you should consolidate them to one:
 
-```title="Kconfig.nrfmicro"
+```kconfig title="Kconfig.nrfmicro"
 config BOARD_NRFMICRO
     select SOC_NRF52840_QIAA if BOARD_NRFMICRO_NRF52840
     select SOC_NRF52840_QIAA if BOARD_NRFMICRO_NRF52840_FLIPPED
@@ -239,7 +239,7 @@ config BOARD_NRFMICRO
 
 Previously, this file was used to select the board and SOC with Kconfig flags. All such selections should be removed from this file. For example, all of the below flags should be removed:
 
-```
+```kconfig
 CONFIG_SOC_SERIES_NRF52X=y
 CONFIG_SOC_NRF52833_QIAA=y
 CONFIG_SOC_NRF52840_QIAA=y
@@ -286,7 +286,7 @@ For boards with the necessary additional hardware to enable DC/DC modes for the 
 
 Usually, the DC/DC modes were enabled in the board's `Kconfig.defconfig` file, looking like:
 
-```Kconfig
+```kconfig
 config BOARD_ENABLE_DCDC
     bool "Enable DCDC mode"
     select SOC_DCDC_NRF52X
@@ -332,7 +332,7 @@ RP2040 boards now require clock control enabled to use several peripherals, incl
 
 The following should be added to the board's `<board>_defconfig` file:
 
-```dts
+```kconfig
 CONFIG_CLOCK_CONTROL=y
 ```
 
@@ -394,7 +394,7 @@ Lastly, an additional property must be added to the `chosen` node to supplement 
 
 If your board or shield uses RGB underglow, the following Kconfig flag which was previously enabled should now be removed:
 
-```
+```kconfig
 CONFIG_WS2812_STRIP=y
 ```
 

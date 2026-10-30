@@ -36,7 +36,7 @@ If one of these options is set, it overrides the matching per-driver option desc
 
 For example, this would shorten the debounce time for both press and release:
 
-```ini
+```kconfig
 CONFIG_ZMK_KSCAN_DEBOUNCE_PRESS_MS=3
 CONFIG_ZMK_KSCAN_DEBOUNCE_RELEASE_MS=3
 ```
@@ -88,7 +88,7 @@ very close by setting the time to detect a key press to zero and the time to det
 a key release to a larger number. This will detect a key press immediately, then
 debounce the key release.
 
-```ini
+```kconfig
 CONFIG_ZMK_KSCAN_DEBOUNCE_PRESS_MS=0
 CONFIG_ZMK_KSCAN_DEBOUNCE_RELEASE_MS=5
 ```

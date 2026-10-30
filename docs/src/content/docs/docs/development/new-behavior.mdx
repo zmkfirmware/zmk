@@ -358,7 +358,7 @@ Kconfig files are used to configure the system firmware at compile time.
 Behaviors specifically will generally use the `DT_HAS_ZMK_BEHAVIOR_<NAME_OF_BEHAVIOR>_ENABLED` macro, which checks if the behavior is defined in the devicetree.
 This ensures that behavior-specific properties may be accessed without explicitly enabling the behavior in a keyboard's `.conf` or `defconfig` files.
 
-```Kconfig title="Kconfig"
+```kconfig title="Kconfig"
 config ZMK_BEHAVIOR_<NAME_OF_BEHAVIOR>
     bool
     default y
