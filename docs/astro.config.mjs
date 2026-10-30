@@ -31,6 +31,31 @@ const hardwareMetadata = {
   },
 };
 
+const blogPrefix = "blog";
+
+// starlight-blog adds an RSS link to Starlight's header social icons when the
+// blog feed is enabled. Keep the feed itself and its <link rel="alternate"> in
+// the page head, but drop the social icon the plugin injects. This runs after
+// `starlightBlog` below, so it sees the social link added by that plugin.
+const removeBlogRssSocial = {
+  name: "zmk-remove-blog-rss-social",
+  hooks: {
+    "config:setup"({ astroConfig, config, updateConfig }) {
+      if (!astroConfig.site) return;
+
+      const rssHref = new URL(`/${blogPrefix}/rss.xml`, astroConfig.site).href;
+      const social = config.social ?? [];
+      const withoutBlogRss = social.filter(
+        (link) => !(link.icon === "rss" && link.href === rssHref)
+      );
+
+      if (withoutBlogRss.length !== social.length) {
+        updateConfig({ social: withoutBlogRss });
+      }
+    },
+  },
+};
+
 export default defineConfig({
   site: "https://zmk.dev",
   trailingSlash: "never",
@@ -101,7 +126,7 @@ export default defineConfig({
       plugins: [
         starlightBlog({
           title: "Blog",
-          prefix: "blog",
+          prefix: blogPrefix,
           postCount: 10,
           recentPostCount: 100,
           navigation: "none",
@@ -111,6 +136,7 @@ export default defineConfig({
           },
           rss: true,
         }),
+        removeBlogRssSocial,
       ],
     }),
     sitemap(),
