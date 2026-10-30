@@ -1,5 +1,5 @@
 [build]
-  command = "pnpm build"
+  command = "rm -rf node_modules && pnpm install --frozen-lockfile && pnpm build"
   publish = "dist"
   ignore = "bash ./netlify-ignore-command.sh"
 
