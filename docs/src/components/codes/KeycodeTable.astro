@@ -10,6 +10,8 @@ import groups from "@data/groups.js";
 import operatingSystems from "@data/operating-systems.js";
 import { getFootnote } from "@data/footnotes.js";
 
+import "../../styles/codes.css";
+
 import Context from "./Context.astro";
 import Description from "./Description.astro";
 import Footnotes from "./Footnotes.astro";
@@ -96,61 +98,63 @@ const rows = codes.map((code) => {
 ---
 
 <div class="codes">
-  <table>
-    <thead>
-      <tr>
-        <th scope="col" class="names">
-          Names
-        </th>
-        <th scope="col" class="description">
-          Description
-        </th>
-        <th scope="col" class="documentation" title="Documentation">
-          <LinkIcon />
-        </th>
-        {operatingSystems.map(({ className, heading, title }) => (
-          <th scope="col" class={`os ${className}`} title={title}>
-            {heading}
-          </th>
-        ))}
-      </tr>
-    </thead>
-    <tbody>
-      {rows.map((row) => (
+  <div class="not-content">
+    <table>
+      <thead>
         <tr>
-          <td class="names">
-            {row.names.map((name) => (
-              <Name name={name} />
-            ))}
-          </td>
-          <td class="description">
-            <Description description={row.description} />
-            {row.clarify && row.context ? (
-              <Context>{row.context}</Context>
-            ) : null}
-          </td>
-          <td class="documentation" title="Documentation">
-            <a
-              href={row.documentation}
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Documentation"
-            >
-              <LinkIcon />
-            </a>
-          </td>
-          {operatingSystems.map(({ key, className, title }) => (
-            <td class={`os ${className}`} title={title}>
-              <OsSupport
-                value={row.os[key]}
-                footnotes={row.footnotesByOs[key] ?? []}
-              />
-            </td>
+          <th scope="col" class="names">
+            Names
+          </th>
+          <th scope="col" class="description">
+            Description
+          </th>
+          <th scope="col" class="documentation" title="Documentation">
+            <LinkIcon />
+          </th>
+          {operatingSystems.map(({ className, heading, title }) => (
+            <th scope="col" class={`os ${className}`} title={title}>
+              {heading}
+            </th>
           ))}
         </tr>
-      ))}
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        {rows.map((row) => (
+          <tr>
+            <td class="names">
+              {row.names.map((name) => (
+                <Name name={name} />
+              ))}
+            </td>
+            <td class="description">
+              <Description description={row.description} />
+              {row.clarify && row.context ? (
+                <Context>{row.context}</Context>
+              ) : null}
+            </td>
+            <td class="documentation" title="Documentation">
+              <a
+                href={row.documentation}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Documentation"
+              >
+                <LinkIcon />
+              </a>
+            </td>
+            {operatingSystems.map(({ key, className, title }) => (
+              <td class={`os ${className}`} title={title}>
+                <OsSupport
+                  value={row.os[key]}
+                  footnotes={row.footnotesByOs[key] ?? []}
+                />
+              </td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
   {tableFootnotes.length > 0 && (
     <Footnotes id={footnotesAnchor} footnotes={tableFootnotes} />
   )}

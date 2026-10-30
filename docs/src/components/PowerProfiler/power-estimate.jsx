@@ -11,7 +11,6 @@ import {
   backlightPower,
   zmkBase,
 } from "../../data/power";
-import "../../styles/power-estimate.css";
 
 // Average monthly discharge percent
 const lithiumIonMonthlyDischargePercent = 5;

@@ -9,7 +9,6 @@ import PowerEstimate from "./power-estimate";
 import CustomBoardForm from "./custom-board-form";
 import { useInput } from "../../utils/hooks";
 import { zmkBoards, backlightLEDs } from "../../data/power";
-import "../../styles/power-profiler.css";
 
 const Disclaimer = `This profiler makes many assumptions about typing
               activity, battery characteristics, hardware behavior, and
@@ -78,7 +77,7 @@ function PowerProfiler() {
 
   return (
     <>
-      <section className="power-profiler">
+      <section className="power-profiler not-content">
         <div className="profilerSection">
           <h3>Keyboard Specifications</h3>
           <div className="row">

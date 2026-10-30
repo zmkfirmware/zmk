@@ -6,9 +6,11 @@
  */
 
 import operatingSystems from "@data/operating-systems.js";
+
+import "../../styles/codes.css";
 ---
 
-<div class="codes os legend">
+<div class="codes os legend not-content">
   {operatingSystems.map(({ className, heading, title }) => (
     <div class={`os ${className}`}>
       <span class="heading">{heading}</span>

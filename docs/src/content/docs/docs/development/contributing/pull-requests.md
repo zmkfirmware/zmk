@@ -56,7 +56,7 @@ To help make sure you don't need to wait for GitHub Actions to check your commit
 
 The following commit types are used by ZMK:
 
-- `blog:` -- changes to our documentation found in the `docs/blog` directory
+- `blog:` -- changes to our documentation found in the `docs/src/content/docs/blog` directory
 - `docs:` -- changes to our documentation found in the `docs/` directory, except blogs
 - `feat:` -- changes that add a new feature
 - `fix:` -- changes that fix existing functionality

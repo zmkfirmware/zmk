@@ -4,6 +4,7 @@ title: New Keyboard Shield
 
 import { Tabs, TabItem } from "@astrojs/starlight/components";
 import InterconnectTabs from "@components/InterconnectTabs.astro";
+import SyncedTabs from "@components/SyncedTabs.astro";
 import Metadata from "@data/hardware-metadata.json";
 
 export const SplitTabs = (props) => (
@@ -13,18 +14,6 @@ export const SplitTabs = (props) => (
     {/* eslint-disable-next-line */}
     {props.children}
   </Tabs>
-
-);
-
-export const SplitInvisTabs = (props) => (
-    <div className="secrettabs">
-    <Tabs
-      syncKey="keyboard-type"
-    >
-    {/* eslint-disable-next-line */}
-    {props.children}
-  </Tabs>
-    </div>
 
 );
 
@@ -103,13 +92,16 @@ There are two required [Kconfig](https://docs.zephyrproject.org/4.1.0/build/kcon
 
 All file names are case sensitive.
 
-<SplitTabs></SplitTabs>
+<SplitTabs>
+  <TabItem label="Unibody Keyboard"></TabItem>
+  <TabItem label="Split Keyboard"></TabItem>
+</SplitTabs>
 
 ### Kconfig.shield
 
 The `Kconfig.shield` file defines the shield name used to build your keyboard.
 
-<SplitInvisTabs>
+<SyncedTabs syncKey="keyboard-type">
 <TabItem label="Unibody Keyboard">
 
 ```kconfig title="boards/shields/<keyboard_name>/Kconfig.shield"
@@ -165,7 +157,7 @@ config SHIELD_MY_KEYBOARD_NUMPAD
 </details>
 
 </TabItem>
-</SplitInvisTabs>
+</SyncedTabs>
 
 ### Kconfig.defconfig
 
@@ -174,7 +166,7 @@ One main item that usually has a new default value set here is the `ZMK_KEYBOARD
 
 The updated new default values should always be wrapped inside a conditional on the shield config name defined in the `Kconfig.shield` file.
 
-<SplitInvisTabs>
+<SyncedTabs syncKey="keyboard-type">
 <TabItem label="Unibody Keyboard">
 
 ```kconfig title="boards/shields/<keyboard_name>/Kconfig.defconfig"
@@ -257,7 +249,7 @@ endif
 </details>
 
 </TabItem>
-</SplitInvisTabs>
+</SyncedTabs>
 
 ### User Configuration Files
 
@@ -272,7 +264,7 @@ Though sometimes necessary, this method of setting configuration options is disc
 The case for which this is necessary is due to be eliminated in the future, making this method redundant.
 :::
 
-<SplitInvisTabs>
+<SyncedTabs syncKey="keyboard-type">
 <TabItem label="Unibody Keyboard"></TabItem>
 <TabItem label="Split Keyboard">
 
@@ -289,11 +281,14 @@ The shared configuration in `my_keyboard.conf` is only applied when you are buil
 :::
 
 </TabItem>
-</SplitInvisTabs>
+</SyncedTabs>
 
 ## Shield Overlays
 
-<SplitTabs></SplitTabs>
+<SplitTabs>
+  <TabItem label="Unibody Keyboard"></TabItem>
+  <TabItem label="Split Keyboard"></TabItem>
+</SplitTabs>
 
 Shield overlay files contain a devicetree description that is merged with the primary board devicetree description during the firmware building process.
 There are three main things that need to be defined in this file:
@@ -302,7 +297,7 @@ There are three main things that need to be defined in this file:
 - Your matrix transform, which acts as a "bridge" between the kscan and the keymap
 - Your physical layout, which aggregates the above and (optionally) defines physical key positions so that the keyboard can be used with [ZMK Studio](/docs/features/studio).
 
-<SplitInvisTabs>
+<SyncedTabs syncKey="keyboard-type">
 <TabItem label="Unibody Keyboard">
 
 A unibody keyboard will have a single overlay file named `my_keyboard.overlay`, where `my_keyboard` is the shield name defined in the [Kconfig.shield file](#kconfigshield).
@@ -322,7 +317,7 @@ Split keyboards often share some of their devicetree description.
 The standard approach is to have a core `my_keyboard.dtsi` (devicetree include) file, which is included into each of the shield overlays.
 
 </TabItem>
-</SplitInvisTabs>
+</SyncedTabs>
 
 ### Kscan
 

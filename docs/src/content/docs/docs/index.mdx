@@ -4,71 +4,58 @@ sidebar:
   label: Introduction
 ---
 
-import Columns from "@components/Columns.astro";
-import Column from "@components/Column.astro";
-
 ZMK Firmware is an open source (MIT) keyboard firmware built on the [Zephyr™ Project](https://zephyrproject.org/) Real Time Operating System (RTOS).
 ZMK's goal is to provide a modern and powerful firmware that is designed for power-efficiency, flexibility, and broad hardware support.
 ZMK is capable of being used for both wired and wireless input devices.
 
 ## Features
 
-Below table lists major features/capabilities currently supported in ZMK, as well as ones that are currently under development and not planned.
+The tables below list major features and capabilities currently supported in ZMK, as well as ones that are currently under development and not planned.
 
-<Columns>
-  <Column className="full-width-table">
+**Legend:** ✅ Supported · 🚧 Under Development · ❌ Not Planned
 
-| Legend: | ✅ Supported | 🚧 Under Development | ❌ Not Planned |
-| :------ | :----------- | :------------------- | -------------- |
+### Hardware
 
-  </Column>
-</Columns>
-
-<Columns>
-  <Column className="full-width-table">
-
-| Hardware                                                                                                      | Support |
+| Feature                                                                                                       | Support |
 | ------------------------------------------------------------------------------------------------------------- | :-----: |
-| [Wireless Split Keyboards](/docs/features/split-keyboards)                                                       |   ✅    |
+| [Wireless Split Keyboards](/docs/features/split-keyboards)                                                    |   ✅    |
 | Wired Split Keyboards                                                                                         |   🚧    |
 | [Low Active Power Usage](/power-profiler)                                                                     |   ✅    |
-| [Encoders](/docs/features/encoders)                                                                              |   ✅    |
-| [LED-based Lighting](/docs/features/lighting)                                                                    |   ✅    |
-| [Displays](/docs/features/displays)                                                                              |   🚧    |
-| [Pointing Devices](/docs/features/pointing)                                                                      |   ✅    |
+| [Encoders](/docs/features/encoders)                                                                           |   ✅    |
+| [LED-based Lighting](/docs/features/lighting)                                                                 |   ✅    |
+| [Displays](/docs/features/displays)                                                                           |   🚧    |
+| [Pointing Devices](/docs/features/pointing)                                                                   |   ✅    |
 | Multitouch Touchpads (PTP)                                                                                    |   🚧    |
-| [Low Power Sleep States](/docs/features/low-power-states)                                                        |   ✅    |
-| [Low Power Mode (VCC Shutoff) for Peripherals](/docs/keymaps/behaviors/power)                                    |   ✅    |
+| [Low Power Sleep States](/docs/features/low-power-states)                                                     |   ✅    |
+| [Low Power Mode (VCC Shutoff) for Peripherals](/docs/keymaps/behaviors/power)                                 |   ✅    |
 | Improved Power Handling for Multiple Peripherals                                                              |   🚧    |
-| [Battery Level Reporting](/docs/features/battery)                                                                |   ✅    |
+| [Battery Level Reporting](/docs/features/battery)                                                             |   ✅    |
 | [Support for a Wide Range of 32-bit Microcontrollers](https://docs.zephyrproject.org/4.1.0/boards/index.html) |   ✅    |
 | Support for AVR/8-bit Chips                                                                                   |   ❌    |
 
-  </Column>
-  <Column className="full-width-table">
+### Connectivity
 
-| Connectivity                                                    | Support |
-| --------------------------------------------------------------- | :-----: |
-| Low-Latency BLE Support                                         |   ✅    |
+| Feature                                                            | Support |
+| ------------------------------------------------------------------ | :-----: |
+| Low-Latency BLE Support                                            |   ✅    |
 | [Multi-Device BLE Connectivity](/docs/features/bluetooth#profiles) |   ✅    |
 | [USB Connectivity](/docs/keymaps/behaviors/outputs)                |   ✅    |
 
-| Keymap Features                                                                                                                                                     | Support |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-----: |
-| [User Configuration Repositories](/docs/user-setup)                                                                                                                   |   ✅    |
-| [Keymaps and Layers](/docs/keymaps)                                                                                                                             |   ✅    |
-| [Wide Range of Keycodes](/docs/keymaps/list-of-keycodes)                                                                                                              |   ✅    |
-| [Flexible Behavior System](/docs/keymaps/behaviors)                                                                                                             |   ✅    |
-| [Hold-Taps](/docs/keymaps/behaviors/hold-tap) (including [Mod-Tap](/docs/keymaps/behaviors/hold-tap#mod-tap) and [Layer-Tap](/docs/keymaps/behaviors/hold-tap#layer-tap)) |   ✅    |
-| [Tap-Dances](/docs/keymaps/behaviors/tap-dance)                                                                                                                       |   ✅    |
-| [Sticky (One Shot) Keys](/docs/keymaps/behaviors/sticky-key)                                                                                                           |   ✅    |
-| [Combos](/docs/keymaps/combos)                                                                                                                                         |   ✅    |
-| [Macros](/docs/keymaps/behaviors/macros)                                                                                                                               |   ✅    |
-| [Mouse Keys](/docs/keymaps/behaviors/mouse-emulation)                                                                                                                  |   ✅    |
-| [Realtime Keymap Updating](/docs/features/studio)                                                                                                                      |   🚧    |
+### Keymap Features
 
-  </Column>
-</Columns>
+| Feature                                                                                                                                                                   | Support |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-----: |
+| [User Configuration Repositories](/docs/user-setup)                                                                                                                       |   ✅    |
+| [Keymaps and Layers](/docs/keymaps)                                                                                                                                       |   ✅    |
+| [Wide Range of Keycodes](/docs/keymaps/list-of-keycodes)                                                                                                                  |   ✅    |
+| [Flexible Behavior System](/docs/keymaps/behaviors)                                                                                                                       |   ✅    |
+| [Hold-Taps](/docs/keymaps/behaviors/hold-tap) (including [Mod-Tap](/docs/keymaps/behaviors/hold-tap#mod-tap) and [Layer-Tap](/docs/keymaps/behaviors/hold-tap#layer-tap)) |   ✅    |
+| [Tap-Dances](/docs/keymaps/behaviors/tap-dance)                                                                                                                           |   ✅    |
+| [Sticky (One Shot) Keys](/docs/keymaps/behaviors/sticky-key)                                                                                                              |   ✅    |
+| [Combos](/docs/keymaps/combos)                                                                                                                                            |   ✅    |
+| [Macros](/docs/keymaps/behaviors/macros)                                                                                                                                  |   ✅    |
+| [Mouse Keys](/docs/keymaps/behaviors/mouse-emulation)                                                                                                                     |   ✅    |
+| [Realtime Keymap Updating](/docs/features/studio)                                                                                                                         |   🚧    |
 
 ## Code of Conduct
 

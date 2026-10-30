@@ -60,15 +60,9 @@ export default defineConfig({
         },
       ],
       editLink: {
-        baseUrl: "https://github.com/zmkfirmware/zmk/blob/main/",
+        baseUrl: "https://github.com/zmkfirmware/zmk/blob/main/docs/",
       },
-      customCss: [
-        "./src/styles/custom.css",
-        "./src/styles/codes.css",
-        "./src/styles/power-profiler.css",
-        "./src/styles/power-estimate.css",
-        "./src/styles/keymap-upgrader.css",
-      ],
+      routeMiddleware: "./src/routeData.ts",
       sidebar,
       expressiveCode: {
         themes: ["github-light", "github-dark-dimmed"],
@@ -76,9 +70,7 @@ export default defineConfig({
       },
       components: {
         Header: "./src/components/Header.astro",
-        PageFrame: "./src/components/PageFrame.astro",
-        Banner: "./src/components/Banner.astro",
-        EditLink: "./src/components/EditLink.astro",
+        Footer: "./src/components/Footer.astro",
       },
       head: [
         {

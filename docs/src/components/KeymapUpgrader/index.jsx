@@ -19,11 +19,11 @@ export default function KeymapUpgrader() {
   const { error, isPending } = useAsync(initParser);
 
   if (isPending) {
-    return <p>Loading...</p>;
+    return <p className="not-content">Loading...</p>;
   }
 
   if (error) {
-    return <p className="error">Error: {error.message}</p>;
+    return <p className="error not-content">Error: {error.message}</p>;
   }
 
   return <Editor />;
@@ -45,7 +45,7 @@ function Editor() {
   const lines = upgraded.split("\n");
 
   return (
-    <div>
+    <div className="not-content">
       <textarea
         className={styles.editor}
         placeholder="Paste keymap here"

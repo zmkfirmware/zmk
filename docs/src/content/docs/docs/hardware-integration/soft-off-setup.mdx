@@ -7,6 +7,7 @@ tableOfContents:
 ---
 
 import { Tabs, TabItem } from "@astrojs/starlight/components";
+import SyncedTabs from "@components/SyncedTabs.astro";
 
 import SoftOffBehavior from "./includes/_soft-off-behavior.mdx";
 import SoftOffWaker from "./includes/_soft-off-waker.mdx";
@@ -35,8 +36,7 @@ Advanced methods of adding [soft off](/docs/features/low-power-states#soft-off) 
 
 ## Hardware Changes
 
-<div className="secrettabs">
-<Tabs syncKey="advanced-methods">
+<SyncedTabs syncKey="advanced-methods">
   <TabItem label="Direct Pin">
 
     Add a direct push button between a GPIO pin and ground. This button will act as an on/off switch.
@@ -53,15 +53,13 @@ Advanced methods of adding [soft off](/docs/features/low-power-states#soft-off) 
   <TabItem label="Wakeup-only Key Switch">
     No hardware changes are necessary for this approach.
   </TabItem>
-</Tabs>
-</div>
+</SyncedTabs>
 
 ## Firmware Changes
 
 Several items work together to make both triggering soft off properly, and setting up the device to _wake_ from soft off work as expected.
 
-<div className="secrettabs">
-<Tabs syncKey="advanced-methods">
+<SyncedTabs syncKey="advanced-methods">
   <TabItem label="Direct Pin">
     <SoftOffBehavior />
   </TabItem>
@@ -75,18 +73,14 @@ Several items work together to make both triggering soft off properly, and setti
 For this approach, you will need to make sure that the [soft off behavior](/docs/keymaps/behaviors/soft-off) is present in your keymap, to trigger soft off.
 
   </TabItem>
-</Tabs>
-</div>
+</SyncedTabs>
 
 ### GPIO key
 
 Zephyr's basic [GPIO Key](https://docs.zephyrproject.org/4.1.0/build/dts/api/bindings/input/gpio-keys.html) concept is used to configure the soft off GPIO pin.
-{/* secrettabs hides this tab selector. GPIO key changes its "orientation" between simple pin and matrix integrated. */}
+{/* SyncedTabs hides this tab selector. GPIO key changes its "orientation" between simple pin and matrix integrated. */}
 
-<div className="secrettabs">
-<Tabs
-  syncKey="advanced-methods"
->
+<SyncedTabs syncKey="advanced-methods">
   <TabItem label="Direct Pin">
     <GpioKeyDirect />
   </TabItem>
@@ -96,17 +90,13 @@ Zephyr's basic [GPIO Key](https://docs.zephyrproject.org/4.1.0/build/dts/api/bin
   <TabItem label="Wakeup-only Key Switch">
     <GpioKeyWakeup />
   </TabItem>
-</Tabs>
-</div>
+</SyncedTabs>
 
 GPIO keys are defined using child nodes under the `gpio-keys` compatible node. Each child needs just one property defined:
 
 - The `gpios` property should be a [phandle-array](https://docs.zephyrproject.org/4.1.0/build/dts/phandles.html#zero-or-more-nodes-with-metadata-phandle-array-type) with a fully defined GPIO pin and with the correct pull up/down and active high/low flags set.
 
-<div className="secrettabs">
-<Tabs
-  syncKey="advanced-methods"
->
+<SyncedTabs syncKey="advanced-methods">
   <TabItem label="Direct Pin">
     <SidebandDirect />
   </TabItem>
@@ -114,22 +104,16 @@ GPIO keys are defined using child nodes under the `gpio-keys` compatible node. E
     <SidebandMatrix />
   </TabItem>
   <TabItem label="Wakeup-only Key Switch">
-    <div className="secrettabs">
-    <Tabs
-      syncKey="kscan-type"
-    >
+    <SyncedTabs syncKey="kscan-type">
       <TabItem label="Direct GPIO kscan">
         <SidebandWakeupDirect />
       </TabItem>
       <TabItem label="Matrix kscan"></TabItem>
-    </Tabs>
-    </div>
+    </SyncedTabs>
   </TabItem>
-</Tabs>
-</div>
+</SyncedTabs>
 
-<div className="secrettabs">
-<Tabs syncKey="advanced-methods">
+<SyncedTabs syncKey="advanced-methods">
   <TabItem label="Direct Pin"></TabItem>
   <TabItem label="Matrix Integrated Pin">
     You also need to update the `zmk,kscan` chosen value to point to the new kscan instance:
@@ -148,15 +132,12 @@ GPIO keys are defined using child nodes under the `gpio-keys` compatible node. E
 
   </TabItem>
   <TabItem label="Wakeup-only Key Switch">
-    <div className="secrettabs">
-    <Tabs syncKey="kscan-type">
+    <SyncedTabs syncKey="kscan-type">
         <TabItem label="Direct GPIO kscan"></TabItem>
         <TabItem label="Matrix kscan"><SoftOffWaker /></TabItem>
-    </Tabs>
-    </div>
+    </SyncedTabs>
   </TabItem>
-</Tabs>
-</div>
+</SyncedTabs>
 
 Finally, we will list the `wakeup_scan` device in an additional configuration section so that the ZMK soft off process knows it needs to enable this device as part of the soft off processing so it can wake the keyboard from soft off when pressed:
 

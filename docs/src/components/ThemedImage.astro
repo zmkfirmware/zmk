@@ -22,7 +22,7 @@ const light = resolveSource(sources.light);
 const dark = resolveSource(sources.dark);
 ---
 
-<span class:list={["themed-image", className]}>
+<span class:list={["themed-image", "not-content", className]}>
   <img class="themed-image-light" src={light} alt={alt} />
   <img class="themed-image-dark" src={dark} alt={alt} />
 </span>
