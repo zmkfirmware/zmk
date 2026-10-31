@@ -29,12 +29,11 @@ const resolvedFootnotes = footnotes.map((footnote) => ({
 }));
 ---
 
-<div class="footnotes">
-  <a id={id} class="anchor" aria-hidden="true"></a>
+<div class="footnotes" id={id}>
   <div class="label">Notes</div>
   <div class="notes">
-    {resolvedFootnotes.map(({ id: footnoteId, symbol, Component }) => (
-      <Footnote id={footnoteId} symbol={symbol}>
+    {resolvedFootnotes.map(({ anchor, symbol, Component }) => (
+      <Footnote id={anchor} symbol={symbol}>
         {Component ? <Component /> : null}
       </Footnote>
     ))}

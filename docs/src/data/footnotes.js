@@ -4,15 +4,15 @@
  * SPDX-License-Identifier: CC-BY-NC-SA-4.0
  */
 
-import macosLanguage from "../components/footnotes/macos-language.mdx";
-import macosInternational from "../components/footnotes/macos-international.mdx";
-import example from "../components/footnotes/example.mdx";
-import iosApplication from "../components/footnotes/ios-application.mdx";
-import iosPower from "../components/footnotes/ios-power.mdx";
-import macosEditing from "../components/footnotes/macos-editing.mdx";
-import macosPower from "../components/footnotes/macos-power.mdx";
-import macosUndoRedo from "../components/footnotes/macos-undo-redo.mdx";
-import globe from "../components/footnotes/globe.mdx";
+import macosLanguage from "../partials/footnotes/macos-language.mdx";
+import macosInternational from "../partials/footnotes/macos-international.mdx";
+import example from "../partials/footnotes/example.mdx";
+import iosApplication from "../partials/footnotes/ios-application.mdx";
+import iosPower from "../partials/footnotes/ios-power.mdx";
+import macosEditing from "../partials/footnotes/macos-editing.mdx";
+import macosPower from "../partials/footnotes/macos-power.mdx";
+import macosUndoRedo from "../partials/footnotes/macos-undo-redo.mdx";
+import globe from "../partials/footnotes/globe.mdx";
 
 const footnotes = {
   macosLanguage,

@@ -73,8 +73,6 @@ export function groupedMetadata(items: HardwareMetadata[]) {
         case "interconnect":
           return groupedInterconnect(agg, hm);
       }
-
-      return agg;
     },
     { onboard: [] as Board[], interconnects: {} }
   );

@@ -10,7 +10,7 @@ import {
   underglowPower,
   backlightPower,
   zmkBase,
-} from "../../data/power";
+} from "../../../data/power";
 
 // Average monthly discharge percent
 const lithiumIonMonthlyDischargePercent = 5;

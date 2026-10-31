@@ -12,6 +12,13 @@ interface Props {
 const { name } = Astro.props;
 ---
 
-<code class="name" data-copy={name} title="Copy 📋" role="button" tabindex="0">
+<code
+  class="name"
+  data-copy={name}
+  title="Copy 📋"
+  role="button"
+  tabindex="0"
+  aria-label={`Copy ${name}`}
+>
   {name}
 </code>

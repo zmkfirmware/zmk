@@ -108,8 +108,8 @@ export default defineConfig({
         },
       },
       components: {
-        Header: "./src/components/Header.astro",
-        Footer: "./src/components/Footer.astro",
+        Header: "./src/components/starlight/Header.astro",
+        Footer: "./src/components/starlight/Footer.astro",
       },
       head: [
         {

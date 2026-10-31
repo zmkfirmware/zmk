@@ -2,8 +2,8 @@
 import { TabItem, Tabs } from "@astrojs/starlight/components";
 import type { AstroComponentFactory } from "astro/runtime/server/index.js";
 
-import type { HardwareMetadata, Interconnect } from "../hardware-metadata";
-import { groupedMetadata } from "./hardware-utils";
+import type { HardwareMetadata, Interconnect } from "../../hardware-metadata";
+import { groupedMetadata } from "../../lib/hardware";
 
 interface Props {
   items: HardwareMetadata[];
@@ -36,11 +36,11 @@ function indexByDirectory<T>(
 // These files are generated before the Astro build by
 // scripts/generate-hardware-metadata.mjs, or provided alongside the docs content.
 const designGuidelineModules = import.meta.glob<DesignGuidelineModule>(
-  "../data/interconnects/*/design_guideline.mdx",
+  "../../data/interconnects/*/design_guideline.mdx",
   { eager: true }
 );
 const pinoutImages = import.meta.glob<string>(
-  "../content/docs/docs/assets/interconnects/*/pinout.png",
+  "../../content/docs/docs/assets/interconnects/*/pinout.png",
   { eager: true, query: "?url", import: "default" }
 );
 

@@ -1,8 +1,10 @@
 ---
 import AnchorHeading from "@astrojs/starlight/components/AnchorHeading.astro";
 
-import type { HardwareMetadata, Interconnect } from "../hardware-metadata";
-import { groupedMetadata, type InterconnectDetails } from "./hardware-utils";
+import type { HardwareMetadata, Interconnect } from "../../hardware-metadata";
+import { groupedMetadata, type InterconnectDetails } from "../../lib/hardware";
+
+import HardwareItem from "./HardwareItem.astro";
 
 interface Props {
   items: HardwareMetadata[];
@@ -24,25 +26,10 @@ const TYPE_LABELS: Record<
   HardwareMetadata["type"],
   { singular: string; plural: string }
 > = {
-  board: { plural: "Boards: ", singular: "Board: " },
-  shield: { singular: "Shield: ", plural: "Shields: " },
-  interconnect: { singular: "Interconnect: ", plural: "Interconnects: " },
+  board: { plural: "Boards:", singular: "Board:" },
+  shield: { singular: "Shield:", plural: "Shields:" },
+  interconnect: { singular: "Interconnect:", plural: "Interconnects:" },
 };
-
-function itemHasMultiple(item: HardwareMetadata): boolean {
-  return (
-    (item.type === "board" || item.type === "shield") &&
-    (item.siblings?.length ?? 1) > 1
-  );
-}
-
-function itemIds(item: HardwareMetadata): string[] {
-  if (item.type === "board" || item.type === "shield") {
-    return item.siblings ?? [item.id];
-  }
-
-  return [item.id];
-}
 ---
 
 <section>
@@ -79,19 +66,7 @@ function itemIds(item: HardwareMetadata): string[] {
       </AnchorHeading>
       <ul>
         {boards.map((board) => (
-          <li>
-            <a href={board.url}>{board.name}</a> (
-            {TYPE_LABELS.board[itemHasMultiple(board) ? "plural" : "singular"]}{" "}
-            <span>
-              {itemIds(board).map((id, index) => (
-                <Fragment>
-                  {index > 0 ? ", " : ""}
-                  <code>{id}</code>
-                </Fragment>
-              ))}
-            </span>
-            )
-          </li>
+          <HardwareItem item={board} labels={TYPE_LABELS.board} />
         ))}
       </ul>
       <AnchorHeading level={4} id={`${interconnect.id}-shields`}>
@@ -99,23 +74,7 @@ function itemIds(item: HardwareMetadata): string[] {
       </AnchorHeading>
       <ul>
         {shields.map((shield) => (
-          <li>
-            <a href={shield.url}>{shield.name}</a> (
-            {
-              TYPE_LABELS.shield[
-                itemHasMultiple(shield) ? "plural" : "singular"
-              ]
-            }{" "}
-            <span>
-              {itemIds(shield).map((id, index) => (
-                <Fragment>
-                  {index > 0 ? ", " : ""}
-                  <code>{id}</code>
-                </Fragment>
-              ))}
-            </span>
-            )
-          </li>
+          <HardwareItem item={shield} labels={TYPE_LABELS.shield} />
         ))}
       </ul>
     </div>
@@ -137,19 +96,7 @@ function itemIds(item: HardwareMetadata): string[] {
   </p>
   <ul>
     {onboard.map((board) => (
-      <li>
-        <a href={board.url}>{board.name}</a> (
-        {TYPE_LABELS.board[itemHasMultiple(board) ? "plural" : "singular"]}{" "}
-        <span>
-          {itemIds(board).map((id, index) => (
-            <Fragment>
-              {index > 0 ? ", " : ""}
-              <code>{id}</code>
-            </Fragment>
-          ))}
-        </span>
-        )
-      </li>
+      <HardwareItem item={board} labels={TYPE_LABELS.board} />
     ))}
   </ul>
 </section>

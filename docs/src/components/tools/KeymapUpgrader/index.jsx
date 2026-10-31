@@ -11,7 +11,7 @@ import {
   initParser,
   upgradeKeymap,
   rangesToLineNumbers,
-} from "../../keymap-upgrade";
+} from "../../../keymap-upgrade";
 
 import styles from "./styles.module.css";
 

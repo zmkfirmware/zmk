@@ -7,8 +7,8 @@
 import { useState } from "react";
 import PowerEstimate from "./power-estimate";
 import CustomBoardForm from "./custom-board-form";
-import { useInput } from "../../utils/hooks";
-import { zmkBoards, backlightLEDs } from "../../data/power";
+import { useInput } from "../../../utils/hooks";
+import { zmkBoards, backlightLEDs } from "../../../data/power";
 
 const Disclaimer = `This profiler makes many assumptions about typing
               activity, battery characteristics, hardware behavior, and

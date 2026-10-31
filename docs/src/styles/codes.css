@@ -219,11 +219,9 @@
   content: ":";
 }
 
-.codes .footnotes .anchor {
-  display: block;
-  position: relative;
-  top: calc(var(--sl-nav-height) * -1 - 6em);
-  visibility: hidden;
+.codes .footnotes,
+.codes .footnote {
+  scroll-margin-top: calc(var(--sl-nav-height) + 1rem);
 }
 
 .codes .footnote {

@@ -5,11 +5,9 @@
  * SPDX-License-Identifier: CC-BY-NC-SA-4.0
  */
 
-import codesData from "@data/hid.js";
-import groups from "@data/groups.js";
 import operatingSystems from "@data/operating-systems.js";
-import { getFootnote } from "@data/footnotes.js";
 
+import { getKeycodeTable } from "../../lib/keycodes";
 import "../../styles/codes.css";
 
 import Context from "./Context.astro";
@@ -23,83 +21,18 @@ interface Props {
   group: string;
 }
 
-interface CodeEntry {
-  names: string[];
-  description: string;
-  context?: string;
-  clarify?: boolean;
-  documentation: string;
-  os: Record<string, boolean | null>;
-  footnotes?: Record<string, string | string[] | undefined>;
-}
-
 const { group } = Astro.props;
-
-// The old site kept these lookups in src/hid.js and src/groups.js. The data
-// modules are plain exports here, so inline the same helpers to keep the
-// components self-contained.
-const codeMap = new Map<string, CodeEntry>();
-for (const code of codesData as unknown as CodeEntry[]) {
-  for (const name of code.names) {
-    codeMap.set(name, code);
-  }
-}
-
-const groupMap = groups as unknown as Record<string, string[] | undefined>;
-
-const getGroup = (id: string) => groupMap[id] ?? null;
-const getCodes = (ids: string[] | null) =>
-  (ids ?? [])
-    .map((id) => codeMap.get(id))
-    .filter((code): code is CodeEntry => code !== undefined);
-
-const codes = getCodes(getGroup(group));
-const footnotesAnchor = `${group}-footnotes`;
-
-// Collect every footnote referenced by at least one code in this group, in
-// first-seen order, and number them for this table.
-const footnoteIds = Array.from(
-  new Set(
-    codes
-      .flatMap(({ footnotes }) => Object.values(footnotes ?? {}))
-      .flatMap((refs) => (Array.isArray(refs) ? refs.flat() : refs))
-      .filter((id): id is string => typeof id === "string")
-  )
-);
-
-const tableFootnotes = footnoteIds.map((id, index) => ({
-  id,
-  anchor: footnotesAnchor,
-  symbol: index + 1,
-  value: getFootnote(id),
-}));
-
-const rows = codes.map((code) => {
-  const footnotesByOs = Object.fromEntries(
-    operatingSystems.map(({ key }) => [
-      key,
-      tableFootnotes.filter(({ id }) => {
-        const refs = code.footnotes?.[key];
-        return (Array.isArray(refs) && refs.includes(id)) || refs === id;
-      }),
-    ])
-  );
-
-  return {
-    names: code.names,
-    description: code.description,
-    context: code.context ?? "",
-    clarify: code.clarify ?? false,
-    documentation: code.documentation,
-    os: code.os,
-    footnotesByOs,
-  };
-});
+const {
+  rows,
+  footnotes: tableFootnotes,
+  footnotesAnchor,
+} = getKeycodeTable(group);
+const groupLabel = group.replaceAll("-", " ");
 ---
 
 <div class="codes">
   <div class="not-content">
-    <table>
+    <table aria-label={`Keycode table: ${groupLabel}`}>
       <thead>
         <tr>
           <th scope="col" class="names">
@@ -108,11 +41,21 @@ const rows = codes.map((code) => {
           <th scope="col" class="description">
             Description
           </th>
-          <th scope="col" class="documentation" title="Documentation">
+          <th
+            scope="col"
+            class="documentation"
+            title="Documentation"
+            aria-label="Documentation"
+          >
             <LinkIcon />
           </th>
           {operatingSystems.map(({ className, heading, title }) => (
-            <th scope="col" class={`os ${className}`} title={title}>
+            <th
+              scope="col"
+              class={`os ${className}`}
+              title={title}
+              aria-label={title}
+            >
               {heading}
             </th>
           ))}

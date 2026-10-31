@@ -1,22 +1,16 @@
 ---
-import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
-import PowerProfiler from "@components/PowerProfiler/index.jsx";
+import PowerProfiler from "@components/tools/PowerProfiler/index.jsx";
+import ToolPage from "@components/tools/ToolPage.astro";
 
 import "../styles/power-profiler.css";
 import "../styles/power-estimate.css";
 ---
 
-<StarlightPage
-  frontmatter={{
-    title: "ZMK Power Profiler",
-    description:
-      "Estimate your keyboard's power usage and battery life on ZMK.",
-    template: "splash",
-    hero: {
-      title: "ZMK Power Profiler",
-      tagline: "Estimate your keyboard's power usage and battery life on ZMK.",
-    },
-  }}
+<ToolPage
+  title="ZMK Power Profiler"
+  description="Estimate your keyboard's power usage and battery life on ZMK."
 >
-  <PowerProfiler client:only="react" />
-</StarlightPage>
+  <PowerProfiler client:only="react">
+    <p slot="fallback" class="not-content">Loading…</p>
+  </PowerProfiler>
+</ToolPage>

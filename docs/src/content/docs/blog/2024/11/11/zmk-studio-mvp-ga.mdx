@@ -7,7 +7,7 @@ tags: [firmware, studio, core]
 
 import Metadata from "@data/hardware-metadata.json";
 
-import ThemedImage from "@components/ThemedImage.astro";
+import ThemedImage from "@components/content/ThemedImage.astro";
 
 import studioApp from "./assets/2024-11-11-zmk-studio-mvp-ga/zmk-studio-screenshot.png";
 import studioAppDarkMode from "./assets/2024-11-11-zmk-studio-mvp-ga/zmk-studio-screenshot-dark-mode.png";
@@ -61,8 +61,8 @@ The app is available for compatible browsers, and as an installable desktop appl
 <ThemedImage
   alt="ZMK Studio Application"
   sources={{
-    light: studioApp.src,
-    dark: studioAppDarkMode.src,
+    light: studioApp,
+    dark: studioAppDarkMode,
   }}
 />
 
@@ -211,8 +211,8 @@ return (
           <ThemedImage
             alt={v.name}
             sources={{
-              light: v.img.src,
-              dark: (v.darkModeImg || v.img).src,
+              light: v.img,
+              dark: v.darkModeImg || v.img,
             }}
           />
         </a>

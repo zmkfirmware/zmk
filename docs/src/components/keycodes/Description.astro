@@ -1,0 +1,81 @@
+---
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: CC-BY-NC-SA-4.0
+ */
+
+interface Props {
+  description?: string;
+}
+
+const { description = "" } = Astro.props;
+
+// Matches the old Description.jsx pattern: an HTML entity, an underscore, or
+// any punctuation character, optionally followed by " [meaning]".
+const specialCharactersRegex =
+  /(?:^|\s)((?:&(?:(?:\w+)|(?:#\d+));)|[_]|[^\w\s])(?:\s*\[([^[\]]+?)\])/g;
+
+type DescriptionPart =
+  | { type: "text"; value: string }
+  | { type: "symbol"; symbol: string; meaning: string };
+
+function parseDescription(value: string): DescriptionPart[] {
+  const matches = Array.from(value.matchAll(specialCharactersRegex));
+  if (matches.length === 0) return [{ type: "text", value }];
+
+  let lastIndex = 0;
+  const parts: DescriptionPart[] = [];
+
+  for (const match of matches) {
+    const index = match.index ?? 0;
+    const str = match[0];
+    const chars = match[1];
+    const meaning = match[2] ?? "";
+
+    if (index !== lastIndex) {
+      parts.push({
+        type: "text",
+        value: value.substring(lastIndex, index),
+      });
+    }
+
+    const pos = str.indexOf(chars);
+    if (pos > 0) {
+      parts.push({
+        type: "text",
+        value: value.substring(index, index + pos),
+      });
+    }
+
+    parts.push({
+      type: "symbol",
+      symbol: value.substring(index + pos, index + pos + chars.length),
+      meaning,
+    });
+
+    lastIndex = index + str.length;
+  }
+
+  if (lastIndex < value.length) {
+    parts.push({ type: "text", value: value.substring(lastIndex) });
+  }
+
+  return parts;
+}
+
+const parts = parseDescription(description);
+---
+
+<span class="description">
+  {parts.map((part) =>
+    part.type === "text" ? (
+      part.value
+    ) : (
+      <span class="symbol" title={part.meaning}>
+        <code>{part.symbol}</code>
+        {part.meaning ? <span class="meaning">{part.meaning}</span> : null}
+      </span>
+    )
+  )}
+</span>

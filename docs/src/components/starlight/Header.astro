@@ -15,7 +15,7 @@ import {
   isDevelopmentVersion,
   versionDropdownLabel,
   versionNavbarItems,
-} from "../lib/versions.mjs";
+} from "../../lib/versions.mjs";
 
 const shouldRenderSearch =
   config.pagefind ||
@@ -129,11 +129,17 @@ const toolsActive = ["/power-profiler", "/keymap-upgrader"].some(isActive);
             GitHub
           </a>
         </div>
+        <div class="mobile-nav-group mobile-theme md:sl-hidden">
+          <ThemeSelect />
+        </div>
       </div>
     </details>
   </div>
-  <div class="sl-hidden lg:sl-flex print:hidden right-group">
-    <details class="nav-dropdown version-dropdown" data-header-dropdown>
+  <div class="sl-hidden md:sl-flex print:hidden right-group">
+    <details
+      class="nav-dropdown version-dropdown sl-hidden lg:block"
+      data-header-dropdown
+    >
       <summary>{versionDropdownLabel}</summary>
       <div class="dropdown-menu nav-dropdown-menu">
         {versionNavbarItems.map((item) => (
@@ -148,11 +154,11 @@ const toolsActive = ["/power-profiler", "/keymap-upgrader"].some(isActive);
       href="https://zmk.studio/"
       target="_blank"
       rel="noreferrer"
-      class="nav-external"
+      class="nav-external sl-hidden lg:sl-flex"
     >
       ZMK Studio
     </a>
-    <div class="sl-flex social-icons">
+    <div class="sl-hidden lg:sl-flex social-icons">
       <SocialIcons />
     </div>
     <ThemeSelect />
@@ -358,6 +364,10 @@ const toolsActive = ["/power-profiler", "/keymap-upgrader"].some(isActive);
       text-transform: uppercase;
       letter-spacing: 0.04em;
     }
+    .mobile-theme :global(starlight-theme-select) {
+      display: block;
+      padding: 0.35rem 0.6rem;
+    }
 
     @media (max-width: 25rem) {
       :global(.site-title span) {
@@ -411,7 +421,7 @@ const toolsActive = ["/power-profiler", "/keymap-upgrader"].some(isActive);
 
     @media (min-width: 50rem) and (max-width: 71.999rem) {
       .search-and-mobile {
-        grid-column: 2 / -1;
+        grid-column: 2;
         justify-content: flex-end;
       }
     }

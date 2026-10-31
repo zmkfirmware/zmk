@@ -13,15 +13,15 @@ const { value } = Astro.props;
 ---
 
 {value === true ? (
-  <span class="supported" title="Supported 😄">
+  <span class="supported" title="Supported 😄" aria-label="Supported">
     ⭐
   </span>
 ) : value === false ? (
-  <span class="not-supported" title="Not Supported 😢">
+  <span class="not-supported" title="Not Supported 😢" aria-label="Not supported">
     ❌
   </span>
 ) : (
-  <span class="not-tested" title="Not Tested Yet - PR's welcomed! 🧐">
+  <span class="not-tested" title="Not Tested Yet - PR's welcomed! 🧐" aria-label="Not tested">
     ❔
   </span>
 )}

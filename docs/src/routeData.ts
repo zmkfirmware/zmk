@@ -3,7 +3,7 @@ import {
   type StarlightRouteData,
 } from "@astrojs/starlight/route-data";
 
-import { groupedMetadata } from "./components/hardware-utils";
+import { groupedMetadata } from "./lib/hardware";
 import Metadata from "./data/hardware-metadata.json";
 import type { HardwareMetadata } from "./hardware-metadata";
 import { isDevelopmentVersion, releaseVersions } from "./lib/versions.mjs";
