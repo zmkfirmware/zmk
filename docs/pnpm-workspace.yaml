@@ -1,0 +1,5 @@
+allowBuilds:
+  tree-sitter: true
+  tree-sitter-devicetree: true
+minimumReleaseAgeExclude:
+  - '@astrojs/starlight@0.42.8'

@@ -1,0 +1,81 @@
+/*
+ * Copyright (c) 2021 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+.powerEstimate {
+  margin: 20px 0;
+}
+
+.powerEstimate > h3 > span {
+  text-transform: capitalize;
+}
+
+.powerEstimateBar {
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+  height: 64px;
+  overflow: hidden;
+  border-radius: 64px;
+  box-shadow: var(--sl-shadow-sm);
+}
+
+.powerEstimateBarSection {
+  flex-grow: 1;
+  transition: all 0.2s ease;
+}
+
+.powerEstimateBarSection.rightSection {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.powerEstimateTooltipWrap {
+  position: absolute;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  transform: translateY(calc(-100% - 8px));
+}
+
+.powerEstimateBarSection:hover .powerEstimateTooltipWrap {
+  visibility: visible;
+  opacity: 1;
+}
+
+.powerEstimateTooltip {
+  position: relative;
+  display: block;
+  width: 260px;
+  padding: 10px;
+  color: var(--sl-color-text);
+  background: var(--sl-color-bg-nav);
+  border-radius: 4px;
+  box-shadow: var(--sl-shadow-lg);
+  transform: translateX(-15px);
+}
+
+.rightSection .powerEstimateTooltip {
+  transform: translateX(15px);
+}
+
+.powerEstimateTooltip:after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 27px;
+  width: 0;
+  height: 0;
+  margin-left: -8px;
+  border-top: 8px solid var(--sl-color-bg-nav);
+  border-right: 8px solid transparent;
+  border-left: 8px solid transparent;
+}
+
+.rightSection .powerEstimateTooltip:after {
+  right: 27px;
+  left: unset;
+  margin-right: -8px;
+}

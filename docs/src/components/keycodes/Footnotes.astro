@@ -1,0 +1,41 @@
+---
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: CC-BY-NC-SA-4.0
+ */
+
+import type { AstroComponentFactory } from "astro/runtime/server/index.js";
+
+import Footnote from "./Footnote.astro";
+
+interface FootnoteItem {
+  id: string;
+  anchor: string;
+  symbol: number | string;
+  value?: unknown;
+}
+
+interface Props {
+  footnotes?: FootnoteItem[];
+  id: string;
+}
+
+const { footnotes = [], id } = Astro.props;
+
+const resolvedFootnotes = footnotes.map((footnote) => ({
+  ...footnote,
+  Component: footnote.value as AstroComponentFactory | undefined,
+}));
+---
+
+<div class="footnotes" id={id}>
+  <div class="label">Notes</div>
+  <div class="notes">
+    {resolvedFootnotes.map(({ anchor, symbol, Component }) => (
+      <Footnote id={anchor} symbol={symbol}>
+        {Component ? <Component /> : null}
+      </Footnote>
+    ))}
+  </div>
+</div>

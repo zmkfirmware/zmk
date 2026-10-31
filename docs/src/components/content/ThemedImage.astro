@@ -1,0 +1,85 @@
+---
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+
+type ThemedImageSource = string | ImageMetadata;
+
+interface Props {
+  sources: {
+    light: ThemedImageSource;
+    dark: ThemedImageSource;
+  };
+  alt: string;
+  class?: string;
+}
+
+const { sources, alt, class: className } = Astro.props;
+
+const isMetadata = (source: ThemedImageSource): source is ImageMetadata =>
+  typeof source !== "string";
+---
+
+<span class:list={["themed-image", "not-content", className]}>
+  {isMetadata(sources.light) ? (
+    <Image
+      class="themed-image-light"
+      src={sources.light}
+      alt={alt}
+      loading="lazy"
+      decoding="async"
+    />
+  ) : (
+    <img
+      class="themed-image-light"
+      src={sources.light}
+      alt={alt}
+      loading="lazy"
+      decoding="async"
+    />
+  )}
+  {isMetadata(sources.dark) ? (
+    <Image
+      class="themed-image-dark"
+      src={sources.dark}
+      alt={alt}
+      loading="lazy"
+      decoding="async"
+    />
+  ) : (
+    <img
+      class="themed-image-dark"
+      src={sources.dark}
+      alt={alt}
+      loading="lazy"
+      decoding="async"
+    />
+  )}
+</span>
+
+<style>
+  .themed-image {
+    display: inline-block;
+    max-width: 100%;
+  }
+
+  .themed-image img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .themed-image-light {
+    display: block;
+  }
+
+  .themed-image-dark {
+    display: none;
+  }
+
+  :global(html[data-theme="dark"]) .themed-image-light {
+    display: none;
+  }
+
+  :global(html[data-theme="dark"]) .themed-image-dark {
+    display: block;
+  }
+</style>

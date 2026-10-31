@@ -1,0 +1,25 @@
+---
+import type { Board, Shield } from "../../hardware-metadata";
+
+interface Props {
+  item: Board | Shield;
+  labels: { singular: string; plural: string };
+}
+
+const { item, labels } = Astro.props;
+const ids = item.siblings ?? [item.id];
+const label = labels[(item.siblings?.length ?? 1) > 1 ? "plural" : "singular"];
+---
+
+<li>
+  <a href={item.url}>{item.name}</a> ({label}{" "}
+  <span>
+    {ids.map((id, index) => (
+      <Fragment>
+        {index > 0 ? ", " : ""}
+        <code>{id}</code>
+      </Fragment>
+    ))}
+  </span>
+  )
+</li>

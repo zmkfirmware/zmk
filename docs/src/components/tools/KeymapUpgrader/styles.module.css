@@ -1,0 +1,47 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: CC-BY-NC-SA-4.0
+ */
+
+.editor {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 10em;
+  padding: 1rem;
+  resize: vertical;
+
+  color: var(--sl-color-white);
+  background-color: var(--sl-color-bg-nav);
+
+  border: 1px solid var(--sl-color-gray-5);
+  border-radius: 0.375rem;
+
+  font-family: var(--sl-font-mono, var(--sl-font-system-mono));
+  font-size: var(--sl-text-sm);
+  line-height: 1.5;
+  tab-size: 4;
+}
+
+.result {
+  margin-top: 1rem;
+  tab-size: 4;
+}
+
+.resultTitle {
+  margin-bottom: 0.5rem;
+  padding: 0.5rem 1rem;
+  color: var(--sl-color-gray-2);
+  background-color: var(--sl-color-bg-nav);
+  border: 1px solid var(--sl-color-gray-5);
+  border-radius: 0.375rem;
+
+  font-family: var(--sl-font-mono, var(--sl-font-system-mono));
+  font-size: var(--sl-text-sm);
+}
+
+.highlighted {
+  background-color: var(--sl-color-accent-low);
+  box-shadow: inset 3px 0 0 var(--sl-color-accent);
+}

@@ -1,0 +1,503 @@
+---
+// Based on @astrojs/starlight 0.42.8 `components/Header.astro`.
+// ZMK additions: Docs/Blog/Tools navigation, the version dropdown, the
+// mobile menu, and the ZMK Studio link. Re-diff against upstream when
+// upgrading Starlight.
+import config from "virtual:starlight/user-config";
+
+import LanguageSelect from "virtual:starlight/components/LanguageSelect";
+import Search from "virtual:starlight/components/Search";
+import SiteTitle from "virtual:starlight/components/SiteTitle";
+import SocialIcons from "virtual:starlight/components/SocialIcons";
+import ThemeSelect from "virtual:starlight/components/ThemeSelect";
+
+import {
+  isDevelopmentVersion,
+  versionDropdownLabel,
+  versionNavbarItems,
+} from "../../lib/versions.mjs";
+
+const shouldRenderSearch =
+  config.pagefind ||
+  config.components.Search !== "@astrojs/starlight/components/Search.astro";
+
+const blogHref = isDevelopmentVersion ? "/blog" : "https://zmk.dev/blog";
+
+const pathname = Astro.url.pathname.replace(/\/+$/, "") || "/";
+const isActive = (href: string) =>
+  href.startsWith("/") &&
+  (pathname === href || pathname.startsWith(href + "/"));
+
+const docsActive = isActive("/docs");
+const blogActive = isActive("/blog");
+const toolsActive = ["/power-profiler", "/keymap-upgrader"].some(isActive);
+---
+
+<div class="header">
+  <div class="title-and-nav sl-flex">
+    <div class="title-wrapper sl-flex">
+      <SiteTitle />
+    </div>
+    <nav class="nav-main" aria-label="Main navigation">
+      <a
+        href="/docs"
+        class:list={{ active: docsActive }}
+        aria-current={docsActive ? "page" : undefined}
+      >
+        Docs
+      </a>
+      <a
+        href={blogHref}
+        class:list={{ active: blogActive }}
+        aria-current={blogActive ? "page" : undefined}
+      >
+        Blog
+      </a>
+      <details class="nav-dropdown" data-header-dropdown>
+        <summary class:list={{ active: toolsActive }}>Tools</summary>
+        <div class="dropdown-menu nav-dropdown-menu">
+          <a
+            href="/power-profiler"
+            class:list={{ active: isActive("/power-profiler") }}
+            aria-current={isActive("/power-profiler") ? "page" : undefined}
+          >
+            Power Profiler
+          </a>
+          <a
+            href="/keymap-upgrader"
+            class:list={{ active: isActive("/keymap-upgrader") }}
+            aria-current={isActive("/keymap-upgrader") ? "page" : undefined}
+          >
+            Keymap Upgrader
+          </a>
+        </div>
+      </details>
+    </nav>
+  </div>
+  <div class="sl-flex print:hidden search-and-mobile">
+    {shouldRenderSearch && <Search />}
+    <details class="mobile-nav" data-header-dropdown>
+      <summary aria-label="Site navigation">Menu</summary>
+      <div class="dropdown-menu mobile-nav-menu">
+        <div class="mobile-nav-group">
+          <a
+            href="/docs"
+            class:list={{ active: docsActive }}
+            aria-current={docsActive ? "page" : undefined}
+          >
+            Docs
+          </a>
+          <a
+            href={blogHref}
+            class:list={{ active: blogActive }}
+            aria-current={blogActive ? "page" : undefined}
+          >
+            Blog
+          </a>
+          <a
+            href="/power-profiler"
+            class:list={{ active: isActive("/power-profiler") }}
+            aria-current={isActive("/power-profiler") ? "page" : undefined}
+          >
+            Power Profiler
+          </a>
+          <a
+            href="/keymap-upgrader"
+            class:list={{ active: isActive("/keymap-upgrader") }}
+            aria-current={isActive("/keymap-upgrader") ? "page" : undefined}
+          >
+            Keymap Upgrader
+          </a>
+        </div>
+        <div class="mobile-nav-group">
+          <span class="mobile-nav-heading">Version</span>
+          {versionNavbarItems.map((item) => (
+            <a href={item.href} target="_blank" rel="noreferrer">
+              {item.label}
+            </a>
+          ))}
+        </div>
+        <div class="mobile-nav-group">
+          <a href="https://zmk.studio/" target="_blank" rel="noreferrer">
+            ZMK Studio
+          </a>
+          <a
+            href="https://github.com/zmkfirmware/zmk"
+            target="_blank"
+            rel="noreferrer"
+          >
+            GitHub
+          </a>
+        </div>
+        <div class="mobile-nav-group mobile-theme md:sl-hidden">
+          <ThemeSelect />
+        </div>
+      </div>
+    </details>
+  </div>
+  <div class="sl-hidden md:sl-flex print:hidden right-group">
+    <details
+      class="nav-dropdown version-dropdown sl-hidden lg:block"
+      data-header-dropdown
+    >
+      <summary>{versionDropdownLabel}</summary>
+      <div class="dropdown-menu nav-dropdown-menu">
+        {versionNavbarItems.map((item) => (
+          <a href={item.href} target="_blank" rel="noreferrer">
+            <span>{item.label}</span>
+            <small>{item.description}</small>
+          </a>
+        ))}
+      </div>
+    </details>
+    <a
+      href="https://zmk.studio/"
+      target="_blank"
+      rel="noreferrer"
+      class="nav-external sl-hidden lg:sl-flex"
+    >
+      ZMK Studio
+    </a>
+    <div class="sl-hidden lg:sl-flex social-icons">
+      <SocialIcons />
+    </div>
+    <ThemeSelect />
+    <LanguageSelect />
+  </div>
+</div>
+
+<style>
+  @layer starlight.core {
+    .header {
+      display: flex;
+      gap: var(--sl-nav-gap);
+      justify-content: space-between;
+      align-items: center;
+      height: 100%;
+    }
+
+    .title-and-nav {
+      align-items: center;
+      gap: 1.25rem;
+      min-width: 0;
+    }
+
+    .title-wrapper {
+      /* Prevent long titles overflowing and covering the search and menu buttons on narrow viewports. */
+      overflow: clip;
+      /* Avoid clipping focus ring around link inside title wrapper. */
+      padding: 0.25rem;
+      margin: -0.25rem;
+      min-width: 0;
+    }
+
+    .right-group,
+    .social-icons {
+      gap: 1rem;
+      align-items: center;
+    }
+    .social-icons::after {
+      content: "";
+      height: 2rem;
+      border-inline-end: 1px solid var(--sl-color-gray-5);
+    }
+
+    .nav-main {
+      display: none;
+      align-items: center;
+      gap: 0.25rem;
+      font-size: var(--sl-text-sm);
+      white-space: nowrap;
+    }
+
+    .nav-main a,
+    .nav-main summary,
+    .right-group > .nav-external,
+    .right-group > .nav-dropdown > summary {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.35rem 0.55rem;
+      border-radius: 0.4rem;
+      color: var(--sl-color-gray-2);
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .nav-main a:hover,
+    .nav-main summary:hover,
+    .right-group > .nav-external:hover,
+    .right-group > .nav-dropdown > summary:hover {
+      color: var(--sl-color-white);
+      background-color: var(--sl-color-gray-6);
+    }
+    .nav-main a.active,
+    .nav-main summary.active,
+    .right-group > .nav-external.active {
+      color: var(--sl-color-white);
+    }
+
+    .nav-dropdown,
+    .mobile-nav {
+      position: relative;
+    }
+    .nav-dropdown > summary,
+    .mobile-nav > summary {
+      list-style: none;
+    }
+    .nav-dropdown > summary::-webkit-details-marker,
+    .mobile-nav > summary::-webkit-details-marker {
+      display: none;
+    }
+    .nav-dropdown > summary::marker,
+    .mobile-nav > summary::marker {
+      content: "";
+    }
+    .nav-dropdown > summary::after,
+    .mobile-nav > summary::after {
+      content: "";
+      flex: none;
+      width: 0.45em;
+      height: 0.45em;
+      margin-inline-start: 0.1rem;
+      border-right: 1.5px solid currentColor;
+      border-bottom: 1.5px solid currentColor;
+      transform: rotate(45deg) translateY(-0.1em);
+      transition: transform 0.15s ease;
+    }
+    .nav-dropdown[open] > summary::after,
+    .mobile-nav[open] > summary::after {
+      transform: rotate(-135deg) translateY(-0.1em);
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      z-index: var(--sl-z-index-navbar);
+      top: calc(100% + 0.75rem);
+      display: none;
+      flex-direction: column;
+      gap: 0.125rem;
+      min-width: 15rem;
+      padding: 0.5rem;
+      background-color: var(--sl-color-bg-nav);
+      border: 1px solid var(--sl-color-gray-5);
+      border-radius: 0.5rem;
+      box-shadow: var(--sl-shadow-md);
+    }
+    .nav-dropdown[open] > .dropdown-menu,
+    .mobile-nav[open] > .dropdown-menu {
+      display: flex;
+    }
+
+    .nav-dropdown-menu {
+      left: 0;
+    }
+    .version-dropdown .nav-dropdown-menu {
+      left: auto;
+      right: 0;
+    }
+
+    .dropdown-menu a {
+      display: flex;
+      flex-direction: column;
+      gap: 0.1rem;
+      padding: 0.45rem 0.6rem;
+      border-radius: 0.3rem;
+      color: var(--sl-color-gray-2);
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .dropdown-menu a:hover,
+    .dropdown-menu a:focus-visible,
+    .dropdown-menu a.active {
+      color: var(--sl-color-white);
+      background-color: var(--sl-color-gray-6);
+    }
+    .dropdown-menu small {
+      color: var(--sl-color-gray-3);
+      font-size: var(--sl-text-xs);
+    }
+
+    .search-and-mobile {
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .mobile-nav > summary {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      cursor: pointer;
+      color: var(--sl-color-gray-2);
+      font-size: var(--sl-text-sm);
+      padding: 0.35rem 0.55rem;
+      border: 1px solid var(--sl-color-gray-5);
+      border-radius: 0.4rem;
+    }
+    .mobile-nav > summary:hover {
+      color: var(--sl-color-white);
+      background-color: var(--sl-color-gray-6);
+    }
+
+    .mobile-nav-menu {
+      right: 0;
+      min-width: 16rem;
+      max-width: calc(100vw - 2rem);
+      max-height: calc(100dvh - var(--sl-nav-height) - 2rem);
+      overflow-y: auto;
+    }
+
+    .mobile-nav-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.125rem;
+      padding-block: 0.25rem;
+    }
+    .mobile-nav-group + .mobile-nav-group {
+      margin-top: 0.25rem;
+      padding-top: 0.5rem;
+      border-top: 1px solid var(--sl-color-gray-6);
+    }
+    .mobile-nav-heading {
+      padding: 0.35rem 0.6rem 0.15rem;
+      color: var(--sl-color-gray-3);
+      font-size: var(--sl-text-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .mobile-theme :global(starlight-theme-select) {
+      display: block;
+      padding: 0.35rem 0.6rem;
+    }
+
+    @media (max-width: 25rem) {
+      :global(.site-title span) {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border-width: 0;
+      }
+    }
+
+    @media (min-width: 50rem) {
+      :global(:root[data-has-sidebar]) {
+        --__sidebar-pad: calc(2 * var(--sl-nav-pad-x));
+      }
+      :global(:root:not([data-has-toc])) {
+        --__toc-width: 0rem;
+      }
+      .header {
+        --__sidebar-width: max(
+          0rem,
+          var(--sl-content-inline-start, 0rem) - var(--sl-nav-pad-x)
+        );
+        --__main-column-fr: calc(
+          (
+              100% + var(--__sidebar-pad, 0rem) -
+                var(--__toc-width, var(--sl-sidebar-width)) -
+                (2 * var(--__toc-width, var(--sl-nav-pad-x))) -
+                var(--sl-content-inline-start, 0rem) - var(--sl-content-width)
+            ) /
+            2
+        );
+        display: grid;
+        grid-template-columns:
+          minmax(
+            calc(
+              var(--__sidebar-width) +
+                max(0rem, var(--__main-column-fr) - var(--sl-nav-gap))
+            ),
+            auto
+          )
+          1fr
+          auto;
+        align-content: center;
+      }
+    }
+
+    @media (min-width: 50rem) and (max-width: 71.999rem) {
+      .search-and-mobile {
+        grid-column: 2;
+        justify-content: flex-end;
+      }
+    }
+
+    @media (min-width: 72rem) {
+      .nav-main {
+        display: flex;
+      }
+      .mobile-nav {
+        display: none;
+      }
+    }
+  }
+</style>
+
+<style is:global>
+  @layer starlight.core {
+    /* Keep every header control feeling clickable, including elements from
+     * Starlight components such as the site title and social icons. */
+    .header a,
+    .header button,
+    .header summary,
+    .header select {
+      cursor: pointer;
+    }
+
+    .header a:focus-visible,
+    .header button:focus-visible,
+    .header summary:focus-visible,
+    .header select:focus-visible {
+      outline: 2px solid var(--sl-color-accent);
+      outline-offset: 2px;
+    }
+  }
+</style>
+
+<script>
+  const dropdowns = document.querySelectorAll<HTMLDetailsElement>(
+    "details[data-header-dropdown]"
+  );
+
+  const closeDropdowns = (except?: HTMLDetailsElement) => {
+    dropdowns.forEach((details) => {
+      if (details !== except) details.open = false;
+    });
+  };
+
+  dropdowns.forEach((details) => {
+    details.addEventListener("toggle", () => {
+      if (details.open) closeDropdowns(details);
+    });
+
+    details.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", () => {
+        details.open = false;
+      });
+    });
+  });
+
+  document.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof Node)) return;
+
+    dropdowns.forEach((details) => {
+      if (details.open && !details.contains(target)) details.open = false;
+    });
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") return;
+
+    const openDropdown = [...dropdowns].find((details) => details.open);
+    if (!openDropdown) return;
+
+    openDropdown.open = false;
+    openDropdown.querySelector<HTMLElement>("summary")?.focus();
+    event.stopPropagation();
+  });
+</script>

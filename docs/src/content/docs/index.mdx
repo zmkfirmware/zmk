@@ -1,0 +1,33 @@
+---
+title: Home
+description: Modern, open source keyboard firmware.
+template: splash
+hero:
+  title: ZMK Firmware
+  tagline: Modern, open source keyboard firmware
+  image:
+    alt: ZMK Logo
+    file: ../../assets/zmk_logo.svg
+  actions:
+    - text: Get Started
+      link: /docs
+      icon: right-arrow
+      variant: primary
+---
+
+import { Card, CardGrid } from "@astrojs/starlight/components";
+
+<CardGrid>
+  <Card title="Powered by Zephyr™">
+    <p>
+      With a wide range of architecture support, ZMK is ready for many existing
+      keyboards.
+    </p>
+  </Card>
+  <Card title="Permissive Licensing">
+    <p>MIT licensed to remove any future limitations in innovation.</p>
+  </Card>
+  <Card title="Wireless First">
+    <p>Designed for the future, including wireless support.</p>
+  </Card>
+</CardGrid>

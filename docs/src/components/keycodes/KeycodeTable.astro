@@ -1,0 +1,213 @@
+---
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: CC-BY-NC-SA-4.0
+ */
+
+import operatingSystems from "@data/operating-systems.js";
+
+import { getKeycodeTable } from "../../lib/keycodes";
+import "../../styles/codes.css";
+
+import Context from "./Context.astro";
+import Description from "./Description.astro";
+import Footnotes from "./Footnotes.astro";
+import LinkIcon from "./LinkIcon.astro";
+import Name from "./Name.astro";
+import OsSupport from "./OsSupport.astro";
+
+interface Props {
+  group: string;
+}
+
+const { group } = Astro.props;
+const {
+  rows,
+  footnotes: tableFootnotes,
+  footnotesAnchor,
+} = getKeycodeTable(group);
+const groupLabel = group.replaceAll("-", " ");
+---
+
+<div class="codes">
+  <div class="not-content">
+    <table aria-label={`Keycode table: ${groupLabel}`}>
+      <thead>
+        <tr>
+          <th scope="col" class="names">
+            Names
+          </th>
+          <th scope="col" class="description">
+            Description
+          </th>
+          <th
+            scope="col"
+            class="documentation"
+            title="Documentation"
+            aria-label="Documentation"
+          >
+            <LinkIcon />
+          </th>
+          {operatingSystems.map(({ className, heading, title }) => (
+            <th
+              scope="col"
+              class={`os ${className}`}
+              title={title}
+              aria-label={title}
+            >
+              {heading}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((row) => (
+          <tr>
+            <td class="names">
+              {row.names.map((name) => (
+                <Name name={name} />
+              ))}
+            </td>
+            <td class="description">
+              <Description description={row.description} />
+              {row.clarify && row.context ? (
+                <Context>{row.context}</Context>
+              ) : null}
+            </td>
+            <td class="documentation" title="Documentation">
+              <a
+                href={row.documentation}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Documentation"
+              >
+                <LinkIcon />
+              </a>
+            </td>
+            {operatingSystems.map(({ key, className, title }) => (
+              <td class={`os ${className}`} title={title}>
+                <OsSupport
+                  value={row.os[key]}
+                  footnotes={row.footnotesByOs[key] ?? []}
+                />
+              </td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+  {tableFootnotes.length > 0 && (
+    <Footnotes id={footnotesAnchor} footnotes={tableFootnotes} />
+  )}
+</div>
+
+<script>
+  // A single delegated handler is installed for the page, even when several
+  // KeycodeTable instances are rendered.
+  const win = window as Window & { __zmkKeycodeCopyHandler?: boolean };
+
+  if (!win.__zmkKeycodeCopyHandler) {
+    win.__zmkKeycodeCopyHandler = true;
+
+    const TOAST_DURATION = 2000;
+    let toastTimer: number | undefined;
+
+    function showToast(text: string) {
+      let toast = document.querySelector<HTMLDivElement>(".codes-toast");
+
+      if (!toast) {
+        toast = document.createElement("div");
+        toast.className = "codes-toast";
+        toast.setAttribute("role", "status");
+        toast.setAttribute("aria-live", "polite");
+        toast.setAttribute("data-pagefind-ignore", "");
+
+        const label = document.createElement("span");
+        label.textContent = "📋 Copied ";
+
+        const code = document.createElement("code");
+        toast.append(label, code);
+        document.body.appendChild(toast);
+      }
+
+      const code = toast?.querySelector("code");
+      if (code) code.textContent = text;
+
+      toast?.classList.add("visible");
+      window.clearTimeout(toastTimer);
+      toastTimer = window.setTimeout(() => {
+        toast?.classList.remove("visible");
+      }, TOAST_DURATION);
+    }
+
+    function legacyCopy(text: string) {
+      const area = document.createElement("textarea");
+      area.value = text;
+      area.setAttribute("readonly", "");
+      area.style.position = "fixed";
+      area.style.top = "-1000px";
+      area.style.opacity = "0";
+      document.body.appendChild(area);
+      area.select();
+
+      try {
+        document.execCommand("copy");
+      } finally {
+        area.remove();
+      }
+    }
+
+    function copyText(text: string) {
+      if (navigator.clipboard?.writeText) {
+        return navigator.clipboard
+          .writeText(text)
+          .catch(() => legacyCopy(text));
+      }
+
+      legacyCopy(text);
+      return Promise.resolve();
+    }
+
+    function copyFrom(element: Element) {
+      const text = element.getAttribute("data-copy");
+      if (!text) return;
+
+      copyText(text).then(
+        () => showToast(text),
+        () => showToast(text)
+      );
+    }
+
+    document.addEventListener("click", (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+
+      const copyable = target.closest("[data-copy]");
+      if (!copyable) return;
+
+      copyFrom(copyable);
+    });
+
+    // <code class="name"> is a role="button", so handle Enter/Space as well.
+    document.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+
+      const copyable = target.closest("[data-copy]");
+      if (
+        !copyable ||
+        copyable.tagName === "BUTTON" ||
+        copyable.tagName === "A"
+      ) {
+        return;
+      }
+
+      event.preventDefault();
+      copyFrom(copyable);
+    });
+  }
+</script>
