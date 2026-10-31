@@ -59,7 +59,7 @@ The following resources are provided for those seeking further understanding:
 Files unrelated to behavior development should be removed from your copy of the ZMK module template.
 The minimum viable filesystem for a behavior follows the following structure:
 
-```
+```text {8,11,15,18-27}
 zmk-behavior-<name-of-behavior>/
 ├── CMakeLists.txt
 ├── Kconfig
@@ -67,22 +67,17 @@ zmk-behavior-<name-of-behavior>/
 ├── README.md
 ├── dts
 │   ├── behaviors
-// highlight-next-line
 │   │   └── <name_of_behavior>.dtsi (optional)
 │   └── bindings
 │       └── behaviors
-// highlight-next-line
 │           └── zmk,behavior-<name-of-behavior>.yaml
 ├── include
 │   └── dt-bindings
 │       └── zmk
-// highlight-next-line
 │           └── <name_of_behavior>.h (optional)
 ├── src
 │   └── behaviors
-// highlight-next-line
 │       └── behavior_<name_of_behavior>.c
-// highlight-start
 ├── tests
 │   └── <name_of_behavior>
 │       ├── behavior_keymap.dtsi
@@ -91,8 +86,6 @@ zmk-behavior-<name-of-behavior>/
 │           ├── keycode_events.snapshot
 │           ├── native_posix.keymap
 │           └── native_posix_64.keymap
-// highlight-end
-// highlight-next-line
 ├── west.yml (optional)
 └── zephyr
     └── module.yml
@@ -111,20 +104,16 @@ They are stored in `dts/bindings/behaviors/` and follow the same naming conventi
 
 The [mod-morph](/docs/keymaps/behaviors/mod-morph)'s devicetree binding is presented below as a simple example.
 
-```yaml title="zmk/app/dts/bindings/behaviors/zmk,behavior-mod-morph.yaml"
+```yaml title="zmk/app/dts/bindings/behaviors/zmk,behavior-mod-morph.yaml" {4,6,8,10}
 # Copyright (c) 2020 The ZMK Contributors
 # SPDX-License-Identifier: MIT
 
-// highlight-next-line
 description: Mod Morph Behavior
 
-// highlight-next-line
 compatible: "zmk,behavior-mod-morph"
 
-// highlight-next-line
 include: zero_param.yaml # Additional parameters
 
-// highlight-next-line
 properties:
   bindings:
     type: phandle-array
@@ -135,7 +124,6 @@ properties:
   keep-mods:
     type: int
     required: false
-
 ```
 
 It can be seen that the `.yaml` files used for new behaviors' devicetree bindings consist of the following fields:
@@ -428,7 +416,7 @@ One such example is the mod-tap (`&mt`), which is a predefined type of hold-tap 
 
 For the purpose of this section, we will discuss the structure of `zmk/app/dts/behaviors/gresc.dtsi` below.
 
-```dts title="zmk/app/dts/behaviors/gresc.dtsi"
+```dts title="zmk/app/dts/behaviors/gresc.dtsi" {13-15}
 /*
  * Copyright (c) 2020 The ZMK Contributors
  *
@@ -441,11 +429,9 @@ For the purpose of this section, we will discuss the structure of `zmk/app/dts/b
 
 / {
     behaviors {
-// highlight-start
 #if ZMK_BEHAVIOR_OMIT(GRESC)
         /omit-if-no-ref/
 #endif
-// highlight-end
         gresc: grave_escape {
             compatible = "zmk,behavior-mod-morph";
             #binding-cells = <0>;
@@ -896,8 +882,7 @@ If the author's intent is to contribute their work to ZMK in these manners, espe
 <Tabs>
 <TabItem label="Devicetree Bindings (.yaml) and CMakeLists.txt">
 
-```yaml
-// highlight-next-line
+```yaml {1}
 # Copyright (c) XXXX The ZMK Contributors
 # SPDX-License-Identifier: MIT
 ```
@@ -905,9 +890,8 @@ If the author's intent is to contribute their work to ZMK in these manners, espe
 </TabItem>
 <TabItem label="Drivers (.c) and predefined use-cases (.dtsi)">
 
-```c
+```c {2}
 /*
-// highlight-next-line
  * Copyright (c) XXXX The ZMK Contributors
  *
  * SPDX-License-Identifier: MIT

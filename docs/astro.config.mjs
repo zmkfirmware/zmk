@@ -6,6 +6,7 @@ import sitemap from "@astrojs/sitemap";
 import starlight from "@astrojs/starlight";
 import { defineConfig } from "astro/config";
 import starlightBlog from "starlight-blog";
+import mermaid from 'astro-mermaid';
 
 import { blogAuthors } from "./blog-authors.mjs";
 import {
@@ -75,6 +76,7 @@ export default defineConfig({
   },
   integrations: [
     react(),
+    mermaid(),
     starlight({
       title: "ZMK Firmware",
       description: "Modern, open source keyboard firmware",
