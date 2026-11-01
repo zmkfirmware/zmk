@@ -2,7 +2,6 @@
 import type { CollectionEntry } from "astro:content";
 
 import hardwareMetadata from "@data/hardware-metadata.json";
-import { hardwareSourceUrl } from "@/lib/hardware-catalog";
 
 import FactRow from "./FactRow.astro";
 import type { Fact, FactItem } from "./facts";
@@ -10,8 +9,10 @@ import type { Fact, FactItem } from "./facts";
 type HardwareEntry = CollectionEntry<"hardware">;
 
 interface Props {
-  /** Catalog entry whose metadata fills the spec, compatibility, and build-target sections. */
+  /** Catalog entry whose metadata fills the specification, compatibility, and related sections. */
   entry: HardwareEntry;
+  /** Other catalog entries that share this entry's metadata directory. */
+  related: HardwareEntry[];
 }
 
 const FEATURE_LABELS: Record<string, string> = {
@@ -34,7 +35,7 @@ const ARCH_LABELS: Record<string, string> = {
   riscv: "RISC-V",
 };
 
-const { entry } = Astro.props;
+const { entry, related } = Astro.props;
 const { data } = entry;
 
 const interconnectNames = new Map<string, string>(
@@ -52,13 +53,7 @@ function interconnectItem(id: string): FactItem {
     : { label: id, code: true, href };
 }
 
-const specFacts: Fact[] = [
-  {
-    label: data.type === "board" ? "Board ID" : "Shield ID",
-    value: data.id,
-    code: true,
-  },
-];
+const specFacts: Fact[] = [];
 
 if (data.manufacturer) {
   specFacts.push({ label: "Manufacturer", value: data.manufacturer });
@@ -70,15 +65,16 @@ if (data.version) {
 
 if (data.type === "board") {
   specFacts.push({
-    label: "Architecture",
-    value: ARCH_LABELS[data.arch] ?? data.arch,
-  });
-  specFacts.push({
     label: "Connectivity",
     items: data.outputs.map((output) => ({
       label: OUTPUT_LABELS[output] ?? output,
     })),
     inline: true,
+  });
+
+  specFacts.push({
+    label: "Architecture",
+    value: ARCH_LABELS[data.arch] ?? data.arch,
   });
 
   if (data.revisions?.length) {
@@ -112,17 +108,7 @@ if (data.features?.length) {
       label: FEATURE_LABELS[feature] ?? feature,
     })),
     wide: true,
-  });
-}
-
-if (data.siblings?.length) {
-  specFacts.push({
-    label: data.type === "board" ? "Sibling boards" : "Sibling shields",
-    items: data.siblings.map((sibling) => ({
-      label: sibling,
-      code: true,
-    })),
-    wide: true,
+    inline: true,
   });
 }
 
@@ -160,67 +146,52 @@ if (data.exposes?.length) {
   });
 }
 
-const targets = data.targets.map((target) => ({
-  id: target.id,
-  name: target.name,
-  sourceUrl: hardwareSourceUrl(target.sourcePath),
-  readmeUrl: target.readmePath
-    ? hardwareSourceUrl(target.readmePath)
-    : undefined,
-}));
-
-const showTargets =
-  targets.length > 1 || targets.some((target) => target.id !== data.id);
-const targetLabel = targets.length === 1 ? "Build target" : "Build targets";
+const hasDetails =
+  specFacts.length > 0 || compatibilityFacts.length > 0 || related.length > 0;
 ---
 
-<div class="hardware-meta">
-  <section class="meta-section">
-    <h2 class="meta-heading">Specifications</h2>
-    <dl class="facts">
-      {specFacts.map((fact) => (
-        <FactRow {...fact} />
-      ))}
-    </dl>
-  </section>
+{hasDetails && (
+  <div class="hardware-meta">
+    {specFacts.length > 0 && (
+      <section class="meta-section">
+        <h2 class="meta-heading">Specifications</h2>
+        <dl class="facts">
+          {specFacts.map((fact) => (
+            <FactRow {...fact} />
+          ))}
+        </dl>
+      </section>
+    )}
 
-  {compatibilityFacts.length > 0 && (
-    <section class="meta-section">
-      <h2 class="meta-heading">Compatibility</h2>
-      <dl class="facts">
-        {compatibilityFacts.map((fact) => (
-          <FactRow {...fact} />
-        ))}
-      </dl>
-    </section>
-  )}
+    {compatibilityFacts.length > 0 && (
+      <section class="meta-section">
+        <h2 class="meta-heading">Compatibility</h2>
+        <dl class="facts">
+          {compatibilityFacts.map((fact) => (
+            <FactRow {...fact} />
+          ))}
+        </dl>
+      </section>
+    )}
 
-  {showTargets && (
-    <section class="meta-section">
-      <h2 class="meta-heading">{targetLabel}</h2>
-      <ul class="targets">
-        {targets.map((target) => (
-          <li class="target">
-            <div class="target-identity">
-              <code>{target.id}</code>
-              {target.name !== data.name && <span>{target.name}</span>}
-            </div>
-            <div class="target-links">
-              <a href={target.sourceUrl} target="_blank" rel="noreferrer">
-                Metadata
+    {related.length > 0 && (
+      <section class="meta-section">
+        <h2 class="meta-heading">Related hardware</h2>
+        <ul class="related">
+          {related.map((relatedEntry) => (
+            <li>
+              <a
+                href={`/catalog/hardware/${relatedEntry.data.type}/${relatedEntry.data.slug}`}
+              >
+                {relatedEntry.data.name}
               </a>
-              {target.readmeUrl && (
-                <a href={target.readmeUrl} target="_blank" rel="noreferrer">
-                  README
-                </a>
-              )}
-            </div>
-          </li>
-        ))}
-      </ul>
-    </section>
-  )}
-</div>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+  </div>
+)}
 
 <style>
   .hardware-meta {
@@ -256,59 +227,21 @@ const targetLabel = targets.length === 1 ? "Build target" : "Build targets";
     margin: 0;
   }
 
-  .targets {
+  .related {
     display: grid;
-    gap: 0;
+    gap: 0.45rem;
     margin: 0;
     padding: 0;
     list-style: none;
   }
 
-  .target {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 0.25rem 1rem;
-    margin: 0;
-    padding-block: 0.45rem;
-  }
-
-  .target + .target {
-    border-block-start: 1px solid var(--sl-color-hairline-light);
-  }
-
-  .target-identity {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 0.35rem 0.6rem;
-    min-width: 0;
-  }
-
-  .target-identity code {
-    font-size: var(--sl-text-xs);
-  }
-
-  .target-identity span {
-    color: var(--sl-color-gray-3);
-    font-size: var(--sl-text-xs);
-  }
-
-  .target-links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem 0.9rem;
-    margin: 0;
-    font-size: var(--sl-text-xs);
-  }
-
-  .target-links a {
+  .related a {
     color: var(--sl-color-text-accent);
+    font-size: var(--sl-text-sm);
     text-decoration: none;
   }
 
-  .target-links a:hover {
+  .related a:hover {
     text-decoration: underline;
   }
 

@@ -4,9 +4,11 @@ import { getCollection, render } from "astro:content";
 import { Icon } from "@astrojs/starlight/components";
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
 
+import HardwareBuild from "@components/catalog/hardware/HardwareBuild.astro";
 import HardwareDetails from "@components/catalog/hardware/HardwareDetails.astro";
 import {
   HARDWARE_CATEGORY_LABELS,
+  hardwareRelatedEntries,
   hardwareSourceUrl,
 } from "@/lib/hardware-catalog";
 
@@ -15,16 +17,21 @@ export async function getStaticPaths() {
 
   return entries.map((entry) => ({
     params: { type: entry.data.type, name: entry.data.slug },
-    props: { entry },
+    props: {
+      entry,
+      related: hardwareRelatedEntries(entry, entries),
+    },
   }));
 }
 
 interface Props {
   /** Catalog entry for this route: page title, lead, and all rendered metadata. */
   entry: CollectionEntry<"hardware">;
+  /** Other entries from the same metadata directory, such as shield revisions. */
+  related: CollectionEntry<"hardware">[];
 }
 
-const { entry } = Astro.props;
+const { entry, related } = Astro.props;
 const { data } = entry;
 const categoryLabel = HARDWARE_CATEGORY_LABELS[data.category];
 const categoryHref = `/catalog/hardware?type=${data.category}`;
@@ -76,7 +83,9 @@ const pageHeadings = Content
 
     {data.description && <p class="hardware-lead">{data.description}</p>}
 
-    <HardwareDetails {entry} />
+    <HardwareDetails {entry} {related} />
+
+    <HardwareBuild {entry} />
 
     {Content && (
       <section class="hardware-readme" aria-labelledby="documentation">

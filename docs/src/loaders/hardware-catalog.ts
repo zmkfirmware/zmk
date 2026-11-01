@@ -163,6 +163,10 @@ async function findReadme(directory: string, target: HardwareTarget) {
  * `nrfmicro/nrf52840/flipped_zmk` share the board name `nrfmicro`, while
  * shields normally have a single target. The complete target data is retained
  * on `targets`; common fields are merged for the catalog page.
+ *
+ * The actual values accepted by `-b` and `-DSHIELD=` are exposed as
+ * `buildTargets`. Split hardware lists its parts in `siblings`, so those are
+ * the build targets even though the catalog entry keeps the logical device id.
  */
 function buildData(
   type: HardwareKind,
@@ -199,6 +203,12 @@ function buildData(
     ...(source.readmePath ? { readmePath: source.readmePath } : {}),
   }));
 
+  const buildTargets = siblings.length
+    ? siblings
+    : type === "board"
+      ? targets.map((target) => target.id)
+      : [name];
+
   return {
     ...primary.metadata,
     id: name,
@@ -210,6 +220,7 @@ function buildData(
       ? { readmePath: readmeSource.readmePath }
       : {}),
     targets,
+    buildTargets,
     ...(features.length ? { features } : {}),
     ...(exposes.length ? { exposes } : {}),
     ...(siblings.length ? { siblings } : {}),

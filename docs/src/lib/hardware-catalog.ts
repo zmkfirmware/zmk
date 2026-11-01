@@ -59,3 +59,46 @@ export function hardwareSlug(type: HardwareKind, id: string): string {
 export function hardwareSourceUrl(path: string): string {
   return `https://github.com/zmkfirmware/zmk/blob/main/${path}`;
 }
+
+/**
+ * The subset of a hardware catalog entry needed to find related entries.
+ */
+export interface HardwareCatalogEntry {
+  data: {
+    type: HardwareKind;
+    slug: string;
+    name: string;
+    sourcePath: string;
+  };
+}
+
+function hardwareSourceDirectory(sourcePath: string): string {
+  const separator = sourcePath.lastIndexOf("/");
+
+  return separator === -1 ? "" : sourcePath.slice(0, separator);
+}
+
+/**
+ * Find catalog entries that share a metadata directory with `entry`.
+ *
+ * Related hardware is not the same thing as split hardware: `siblings` are the
+ * parts of one logical device, while entries such as `kyria`, `kyria_rev2`,
+ * and `kyria_rev3` are separate revisions that live in one directory. Linking
+ * them as related hardware lets readers move between revisions without merging
+ * pages whose build targets differ.
+ */
+export function hardwareRelatedEntries<T extends HardwareCatalogEntry>(
+  entry: T,
+  entries: T[]
+): T[] {
+  const directory = hardwareSourceDirectory(entry.data.sourcePath);
+
+  return entries
+    .filter(
+      (candidate) =>
+        candidate.data.type === entry.data.type &&
+        candidate.data.slug !== entry.data.slug &&
+        hardwareSourceDirectory(candidate.data.sourcePath) === directory
+    )
+    .sort((a, b) => a.data.name.localeCompare(b.data.name));
+}
