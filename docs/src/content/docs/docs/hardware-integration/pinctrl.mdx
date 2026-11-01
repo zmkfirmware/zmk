@@ -6,7 +6,6 @@ sidebar:
 
 import { Tabs, TabItem } from "@astrojs/starlight/components";
 import InterconnectTabs from "@components/hardware/InterconnectTabs.astro";
-import Metadata from "@data/hardware-metadata.json";
 
 This page exists to provide a guide to [Pin Control](https://docs.zephyrproject.org/4.1.0/hardware/pinctrl/index.html#pin-control) for ZMK users and designers. Refer to [Zephyr's page on Pin Control](https://docs.zephyrproject.org/4.1.0/hardware/pinctrl/index.html#pin-control) for elaboration and more details on any of the points raised here.
 
@@ -36,7 +35,7 @@ If this is the case, then you should fork the source repository and add the over
 
 Many boards will already have some pins configured for particular protocols. We recommend using these pins whenever possible.
 
-<InterconnectTabs items={Metadata} gpio={false} />
+<InterconnectTabs gpio={false} />
 
 Note that some boards may have these pins configured to fit the above pinouts, rather than the capabilities of the MCU. Most notably, boards using the nRF52840 often end up putting low-frequency pins at the locations of the SPI buses above. More on low-frequency pins in the next section.
 

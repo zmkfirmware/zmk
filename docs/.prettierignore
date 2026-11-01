@@ -3,8 +3,5 @@ dist
 node_modules
 pnpm-lock.yaml
 pnpm-workspace.yaml
-src/hardware-metadata.d.ts
-src/data/hardware-metadata.json
-src/data/interconnects/*/design_guideline.mdx
 
 src/grammars/*.tmLanguage.json
