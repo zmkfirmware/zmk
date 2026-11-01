@@ -1,0 +1,85 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { getCollection, render } from "astro:content";
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+
+import HardwareDetails from "@components/catalog/hardware/HardwareDetails.astro";
+import { HARDWARE_CATEGORY_LABELS } from "@/lib/hardware-catalog";
+
+export async function getStaticPaths() {
+  const entries = await getCollection("hardware");
+
+  return entries.map((entry) => ({
+    params: { type: entry.data.type, name: entry.data.slug },
+    props: { entry },
+  }));
+}
+
+interface Props {
+  entry: CollectionEntry<"hardware">;
+}
+
+const { entry } = Astro.props;
+const { data } = entry;
+const categoryLabel = HARDWARE_CATEGORY_LABELS[data.category];
+
+const rendered = entry.body?.trim() ? await render(entry) : undefined;
+const Content = rendered?.Content;
+const headings = rendered?.headings ?? [];
+
+const sourceUrl = `https://github.com/zmkfirmware/zmk/blob/main/${data.sourcePath}`;
+const readmeUrl = data.readmePath
+  ? `https://github.com/zmkfirmware/zmk/blob/main/${data.readmePath}`
+  : undefined;
+---
+
+<StarlightPage
+  frontmatter={{
+    title: data.name,
+    description: data.description,
+  }}
+  headings={headings}
+  hasSidebar={false}
+>
+  <p class="hardware-catalog-breadcrumb">
+    <a href="/catalog/hardware">Hardware Catalog</a> / {categoryLabel}
+  </p>
+
+  {data.description && <p>{data.description}</p>}
+
+  <HardwareDetails {entry} />
+
+  {Content && (
+    <section class="hardware-catalog-readme">
+      <Content />
+    </section>
+  )}
+
+  <hr />
+
+  <p class="hardware-catalog-source">
+    Source metadata: <a href={sourceUrl}>{data.sourcePath}</a>
+    {readmeUrl && (
+      <>
+        {" · "}
+        <a href={readmeUrl}>{data.readmePath}</a>
+      </>
+    )}
+  </p>
+</StarlightPage>
+
+<style>
+  .hardware-catalog-breadcrumb {
+    color: var(--sl-color-gray-3);
+    font-size: var(--sl-text-sm);
+  }
+
+  .hardware-catalog-readme {
+    margin-block-start: 2rem;
+  }
+
+  .hardware-catalog-source {
+    color: var(--sl-color-gray-3);
+    font-size: var(--sl-text-sm);
+  }
+</style>

@@ -1,0 +1,143 @@
+---
+import type { CollectionEntry } from "astro:content";
+
+import { HARDWARE_CATEGORY_LABELS } from "@/lib/hardware-catalog";
+
+type HardwareEntry = CollectionEntry<"hardware">;
+
+interface Props {
+  entry: HardwareEntry;
+}
+
+interface DetailRow {
+  label: string;
+  value: string;
+  code?: boolean;
+}
+
+const { entry } = Astro.props;
+const { data } = entry;
+
+const targets = data.targets;
+const showTargets = targets.some((target) => target.id !== data.id);
+const targetLabel = targets.length === 1 ? "Target" : "Targets";
+
+const rows: DetailRow[] = [
+  {
+    label: "Category",
+    value: HARDWARE_CATEGORY_LABELS[data.category],
+  },
+  {
+    label: data.type === "board" ? "Board name" : "ID",
+    value: data.id,
+    code: true,
+  },
+];
+
+if (data.manufacturer) {
+  rows.push({ label: "Manufacturer", value: data.manufacturer });
+}
+
+if (data.type === "board") {
+  rows.push({ label: "Architecture", value: data.arch });
+  rows.push({
+    label: "Outputs",
+    value: data.outputs.map((output) => output.toUpperCase()).join(", "),
+  });
+
+  if (data.revisions?.length) {
+    rows.push({
+      label: "Revisions",
+      value: data.revisions.join(", "),
+      code: true,
+    });
+  }
+
+  if (data.default_revision) {
+    rows.push({
+      label: "Default revision",
+      value: data.default_revision,
+      code: true,
+    });
+  }
+}
+
+if (data.features?.length) {
+  rows.push({ label: "Features", value: data.features.join(", ") });
+}
+
+if (data.type === "shield") {
+  rows.push({ label: "Requires", value: data.requires.join(", "), code: true });
+}
+
+if (data.exposes?.length) {
+  rows.push({ label: "Exposes", value: data.exposes.join(", "), code: true });
+}
+
+if (data.siblings?.length) {
+  rows.push({ label: "Siblings", value: data.siblings.join(", "), code: true });
+}
+
+const variants =
+  data.variants?.map((variant) =>
+    typeof variant === "string" ? variant : variant.id
+  ) ?? [];
+
+if (variants.length) {
+  rows.push({ label: "Variants", value: variants.join(", "), code: true });
+}
+---
+
+<dl class="hardware-details" data-category={data.category}>
+  {rows.map((row) => (
+    <div class="hardware-detail">
+      <dt>{row.label}</dt>
+      <dd>{row.code ? <code>{row.value}</code> : row.value}</dd>
+    </div>
+  ))}
+  {showTargets && (
+    <div class="hardware-detail">
+      <dt>{targetLabel}</dt>
+      <dd>
+        <ul class="hardware-targets">
+          {targets.map((target) => (
+            <li>
+              <code>{target.id}</code>
+              {target.name !== data.name && <span> — {target.name}</span>}
+            </li>
+          ))}
+        </ul>
+      </dd>
+    </div>
+  )}
+</dl>
+
+<style>
+  .hardware-details {
+    display: grid;
+    gap: 0.5rem 1.5rem;
+    grid-template-columns: max-content minmax(0, 1fr);
+    margin-block: 1rem 2rem;
+  }
+
+  .hardware-detail {
+    display: contents;
+  }
+
+  .hardware-details dt {
+    font-weight: 600;
+  }
+
+  .hardware-details dd {
+    margin: 0;
+  }
+
+  .hardware-targets {
+    margin: 0;
+    padding-inline-start: 1.25rem;
+  }
+
+  .hardware-targets li + li {
+    margin-block-start: 0.25rem;
+  }
+</style>

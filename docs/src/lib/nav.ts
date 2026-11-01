@@ -43,6 +43,11 @@ export const navItems: NavItem[] = [
     isActive: (pathname) => isPath(pathname, "/docs"),
   },
   {
+    label: "Hardware",
+    href: "/catalog/hardware",
+    isActive: (pathname) => isPath(pathname, "/catalog/hardware"),
+  },
+  {
     label: "Blog",
     href: blogHref,
     isActive: (pathname) => isDevelopmentVersion && isPath(pathname, "/blog"),
