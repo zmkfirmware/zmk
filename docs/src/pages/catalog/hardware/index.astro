@@ -2,50 +2,69 @@
 import { getCollection } from "astro:content";
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
 
-import {
-  HARDWARE_CATEGORY_SECTION_LABELS,
-  type HardwareCategory,
-} from "@/lib/hardware-catalog";
-
-interface CatalogSection {
-  id: string;
-  category: HardwareCategory;
-  description?: string;
-}
-
-const sections: CatalogSection[] = [
-  {
-    id: "boards-controller",
-    category: "controller",
-    description:
-      "Controller boards pair with a separate shield over an interconnect.",
-  },
-  {
-    id: "boards-keyboard",
-    category: "keyboard",
-    description: "Keyboards with an onboard controller.",
-  },
-  {
-    id: "shields",
-    category: "shield",
-  },
-];
+import metadata from "@data/hardware-metadata.json";
+import HardwareCatalog from "@components/catalog/hardware/HardwareCatalog.tsx";
+import type {
+  HardwareCatalogItem,
+  HardwareInterconnectOption,
+} from "@/lib/hardware-catalog-search";
 
 const entries = await getCollection("hardware");
 
-const groupedSections = sections.map((section) => ({
-  ...section,
-  heading: HARDWARE_CATEGORY_SECTION_LABELS[section.category],
-  entries: entries
-    .filter((entry) => entry.data.category === section.category)
-    .sort((a, b) => a.data.name.localeCompare(b.data.name)),
-}));
+const interconnectNames = new Map<string, string>(
+  metadata
+    .filter((item) => item.type === "interconnect")
+    .map((item) => [item.id, item.name])
+);
+const interconnectIds = new Set<string>();
 
-const headings = groupedSections.map((section) => ({
-  depth: 2,
-  slug: section.id,
-  text: `${section.heading} — ${section.entries.length}`,
-}));
+for (const entry of entries) {
+  for (const id of entry.data.type === "shield" ? entry.data.requires : []) {
+    interconnectIds.add(id);
+  }
+
+  for (const id of entry.data.exposes ?? []) {
+    interconnectIds.add(id);
+  }
+}
+
+const interconnects: HardwareInterconnectOption[] = [...interconnectIds]
+  .map((id) => ({
+    id,
+    name: interconnectNames.get(id) ?? id,
+  }))
+  .sort((a, b) => a.name.localeCompare(b.name));
+
+const items: HardwareCatalogItem[] = entries.map((entry) => {
+  const { data } = entry;
+  const variants =
+    data.variants?.map((variant) =>
+      typeof variant === "string" ? variant : variant.id
+    ) ?? [];
+
+  return {
+    href: `/catalog/hardware/${data.type}/${data.slug}`,
+    slug: data.slug,
+    id: data.id,
+    name: data.name,
+    type: data.type,
+    category: data.category,
+    ...(data.manufacturer ? { manufacturer: data.manufacturer } : {}),
+    ...(data.description ? { description: data.description } : {}),
+    features: data.features ?? [],
+    requires: data.type === "shield" ? data.requires : [],
+    exposes: data.exposes ?? [],
+    siblings: data.siblings ?? [],
+    variants,
+    ...(data.type === "board"
+      ? { arch: data.arch, outputs: data.outputs }
+      : {}),
+    targets: data.targets.map((target) => ({
+      id: target.id,
+      name: target.name,
+    })),
+  };
+});
 ---
 
 <StarlightPage
@@ -53,42 +72,9 @@ const headings = groupedSections.map((section) => ({
     title: "Hardware Catalog",
     description:
       "Boards and shields supported by ZMK, generated from the hardware metadata files in the firmware repository.",
+    tableOfContents: false,
   }}
-  headings={headings}
   hasSidebar={false}
 >
-  <p>
-    This catalog is generated from the <code>.zmk.yml</code> metadata files in
-    the ZMK repository. Select a board or shield to see its metadata and
-    documentation.
-  </p>
-
-  {groupedSections.map((section) => (
-    <section>
-      <h2 id={section.id}>
-        {`${section.heading} — ${section.entries.length}`}
-      </h2>
-      {section.description && <p>{section.description}</p>}
-      <ul class="hardware-catalog-list">
-        {section.entries.map((entry) => (
-          <li>
-            <a href={`/catalog/hardware/${entry.data.type}/${entry.data.slug}`}>
-              {entry.data.name}
-            </a>{" "}
-            <code>{entry.data.id}</code>
-          </li>
-        ))}
-      </ul>
-    </section>
-  ))}
+  <HardwareCatalog client:load items={items} interconnects={interconnects} />
 </StarlightPage>
-
-<style>
-  section + section {
-    margin-block-start: 2rem;
-  }
-
-  .hardware-catalog-list code {
-    font-size: var(--sl-text-sm);
-  }
-</style>
