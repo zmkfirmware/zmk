@@ -1,13 +1,11 @@
 ---
-import type { CollectionEntry } from "astro:content";
-
 import { Code, TabItem, Tabs } from "@astrojs/starlight/components";
 
-type HardwareEntry = CollectionEntry<"hardware">;
+import type { HardwareDeviceEntry } from "@/lib/hardware-catalog";
 
 interface Props {
   /** Catalog entry whose build targets are turned into build instructions. */
-  entry: HardwareEntry;
+  entry: HardwareDeviceEntry;
 }
 
 const { entry } = Astro.props;

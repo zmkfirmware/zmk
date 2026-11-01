@@ -2,7 +2,6 @@
 import { Icon } from "@astrojs/starlight/components";
 
 import type { FactItem as FactItemData } from "./facts";
-import { factItemTitle } from "./facts";
 
 interface Props {
   /** Value to render: text plus its code, link, tooltip, and default styling. */
@@ -24,7 +23,7 @@ const Tag = item.href ? "a" : "span";
     },
   ]}
   href={item.href}
-  title={factItemTitle(item)}
+  title={item.title}
 >
   {item.default && (
     <span class="fact-star" role="img" aria-label="Default revision">

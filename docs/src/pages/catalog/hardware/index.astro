@@ -2,23 +2,27 @@
 import { getCollection } from "astro:content";
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
 
-import metadata from "@data/hardware-metadata.json";
 import HardwareCatalog from "@components/catalog/hardware/HardwareCatalog.tsx";
+import {
+  hardwareVariantIds,
+  isHardwareDeviceEntry,
+} from "@/lib/hardware-catalog";
 import type {
   HardwareCatalogItem,
   HardwareInterconnectOption,
 } from "@/lib/hardware-catalog-search";
 
 const entries = await getCollection("hardware");
+const devices = entries.filter(isHardwareDeviceEntry);
 
 const interconnectNames = new Map<string, string>(
-  metadata
-    .filter((item) => item.type === "interconnect")
-    .map((item) => [item.id, item.name])
+  entries
+    .filter((entry) => entry.data.type === "interconnect")
+    .map((entry) => [entry.data.id, entry.data.name])
 );
 const interconnectIds = new Set<string>();
 
-for (const entry of entries) {
+for (const entry of devices) {
   for (const id of entry.data.type === "shield" ? entry.data.requires : []) {
     interconnectIds.add(id);
   }
@@ -35,12 +39,8 @@ const interconnects: HardwareInterconnectOption[] = [...interconnectIds]
   }))
   .sort((a, b) => a.name.localeCompare(b.name));
 
-const items: HardwareCatalogItem[] = entries.map((entry) => {
+const items: HardwareCatalogItem[] = devices.map((entry) => {
   const { data } = entry;
-  const variants =
-    data.variants?.map((variant) =>
-      typeof variant === "string" ? variant : variant.id
-    ) ?? [];
 
   return {
     href: `/catalog/hardware/${data.type}/${data.slug}`,
@@ -49,16 +49,15 @@ const items: HardwareCatalogItem[] = entries.map((entry) => {
     name: data.name,
     type: data.type,
     category: data.category,
-    ...(data.manufacturer ? { manufacturer: data.manufacturer } : {}),
-    ...(data.description ? { description: data.description } : {}),
+    manufacturer: data.manufacturer,
+    description: data.description,
     features: data.features ?? [],
     requires: data.type === "shield" ? data.requires : [],
     exposes: data.exposes ?? [],
     siblings: data.siblings ?? [],
-    variants,
-    ...(data.type === "board"
-      ? { arch: data.arch, outputs: data.outputs }
-      : {}),
+    variants: hardwareVariantIds(data.variants),
+    arch: data.type === "board" ? data.arch : undefined,
+    outputs: data.type === "board" ? data.outputs : undefined,
     targets: data.targets.map((target) => ({
       id: target.id,
       name: target.name,
