@@ -49,6 +49,7 @@ const hardwareBaseSchema = {
   sourcePath: z.string(),
   readmePath: z.string().optional(),
   targets: z.array(targetSchema),
+  buildTargets: z.array(z.string()),
 };
 
 const boardSchema = z.looseObject({
