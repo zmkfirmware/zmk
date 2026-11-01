@@ -69,6 +69,38 @@ function uniqueVariants(values: unknown[]) {
   });
 }
 
+function normalizeHeadingText(text: string) {
+  return text
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+    .replace(/[*_`]/g, "")
+    .trim()
+    .toLocaleLowerCase();
+}
+
+/**
+ * Remove a leading README heading that repeats the catalog entry name.
+ *
+ * The catalog page already renders the entry name as its title, so keeping the
+ * README's matching title would show the same heading twice and mix up the
+ * page outline.
+ */
+function stripDuplicateTitle(markdown: string, name: string) {
+  const heading = markdown.match(/^\s*#\s+(.+?)\s*$/m);
+
+  if (
+    !heading ||
+    heading.index === undefined ||
+    normalizeHeadingText(heading[1]) !== name.trim().toLocaleLowerCase()
+  ) {
+    return markdown;
+  }
+
+  const before = markdown.slice(0, heading.index);
+  const after = markdown.slice(heading.index + heading[0].length);
+
+  return `${before}${after.replace(/^\s*\n/, "")}`;
+}
+
 /**
  * Find the first available documentation file for a hardware target.
  *
@@ -341,7 +373,7 @@ export const hardwareLoader: Loader = {
         const readme = readmeSource?.readme;
 
         if (readme && readmeSource?.readmeContents?.trim()) {
-          body = readmeSource.readmeContents;
+          body = stripDuplicateTitle(readmeSource.readmeContents, data.name);
           rendered = await renderMarkdown(body, {
             fileURL: pathToFileURL(readme),
           });

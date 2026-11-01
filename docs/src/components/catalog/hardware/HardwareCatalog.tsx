@@ -12,7 +12,9 @@ import {
 import styles from "./HardwareCatalog.module.css";
 
 interface Props {
+  /** Entries rendered as cards in the results grid; also the total in the "Showing X of Y" count. */
   items: HardwareCatalogItem[];
+  /** Options for the interconnect filter dropdown; also validates the URL's interconnect state. */
   interconnects: HardwareInterconnectOption[];
 }
 

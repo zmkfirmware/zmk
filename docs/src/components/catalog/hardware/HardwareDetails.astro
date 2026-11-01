@@ -1,60 +1,103 @@
 ---
 import type { CollectionEntry } from "astro:content";
 
-import { HARDWARE_CATEGORY_LABELS } from "@/lib/hardware-catalog";
+import hardwareMetadata from "@data/hardware-metadata.json";
+import { hardwareSourceUrl } from "@/lib/hardware-catalog";
+
+import FactRow from "./FactRow.astro";
+import type { Fact, FactItem } from "./facts";
 
 type HardwareEntry = CollectionEntry<"hardware">;
 
 interface Props {
+  /** Catalog entry whose metadata fills the spec, compatibility, and build-target sections. */
   entry: HardwareEntry;
 }
 
-interface DetailRow {
-  label: string;
-  value: string;
-  code?: boolean;
-}
+const FEATURE_LABELS: Record<string, string> = {
+  keys: "Keys",
+  display: "Display",
+  encoder: "Encoder",
+  underglow: "Underglow",
+  backlight: "Backlight",
+  pointer: "Pointing device",
+  studio: "ZMK Studio",
+};
+
+const OUTPUT_LABELS: Record<string, string> = {
+  usb: "USB",
+  ble: "BLE",
+};
+
+const ARCH_LABELS: Record<string, string> = {
+  arm: "Arm",
+  riscv: "RISC-V",
+};
 
 const { entry } = Astro.props;
 const { data } = entry;
 
-const targets = data.targets;
-const showTargets = targets.some((target) => target.id !== data.id);
-const targetLabel = targets.length === 1 ? "Target" : "Targets";
+const interconnectNames = new Map<string, string>(
+  hardwareMetadata
+    .filter((item) => item.type === "interconnect")
+    .map((item) => [item.id, item.name])
+);
 
-const rows: DetailRow[] = [
+function interconnectItem(id: string): FactItem {
+  const name = interconnectNames.get(id);
+  const href = `/catalog/hardware?interconnect=${encodeURIComponent(id)}`;
+
+  return name
+    ? { label: name, title: id, href }
+    : { label: id, code: true, href };
+}
+
+const specFacts: Fact[] = [
   {
-    label: "Category",
-    value: HARDWARE_CATEGORY_LABELS[data.category],
-  },
-  {
-    label: data.type === "board" ? "Board name" : "ID",
+    label: data.type === "board" ? "Board ID" : "Shield ID",
     value: data.id,
     code: true,
   },
 ];
 
 if (data.manufacturer) {
-  rows.push({ label: "Manufacturer", value: data.manufacturer });
+  specFacts.push({ label: "Manufacturer", value: data.manufacturer });
+}
+
+if (data.version) {
+  specFacts.push({ label: "Version", value: data.version });
 }
 
 if (data.type === "board") {
-  rows.push({ label: "Architecture", value: data.arch });
-  rows.push({
-    label: "Outputs",
-    value: data.outputs.map((output) => output.toUpperCase()).join(", "),
+  specFacts.push({
+    label: "Architecture",
+    value: ARCH_LABELS[data.arch] ?? data.arch,
+  });
+  specFacts.push({
+    label: "Connectivity",
+    items: data.outputs.map((output) => ({
+      label: OUTPUT_LABELS[output] ?? output,
+    })),
+    inline: true,
   });
 
   if (data.revisions?.length) {
-    rows.push({
+    specFacts.push({
       label: "Revisions",
-      value: data.revisions.join(", "),
-      code: true,
+      items: data.revisions.map((revision) => ({
+        label: revision,
+        code: true,
+        default: revision === data.default_revision,
+      })),
+      inline: true,
     });
   }
 
-  if (data.default_revision) {
-    rows.push({
+  if (
+    data.default_revision &&
+    !data.revisions?.includes(data.default_revision)
+  ) {
+    specFacts.push({
       label: "Default revision",
       value: data.default_revision,
       code: true,
@@ -63,19 +106,24 @@ if (data.type === "board") {
 }
 
 if (data.features?.length) {
-  rows.push({ label: "Features", value: data.features.join(", ") });
-}
-
-if (data.type === "shield") {
-  rows.push({ label: "Requires", value: data.requires.join(", "), code: true });
-}
-
-if (data.exposes?.length) {
-  rows.push({ label: "Exposes", value: data.exposes.join(", "), code: true });
+  specFacts.push({
+    label: "Features",
+    items: data.features.map((feature) => ({
+      label: FEATURE_LABELS[feature] ?? feature,
+    })),
+    wide: true,
+  });
 }
 
 if (data.siblings?.length) {
-  rows.push({ label: "Siblings", value: data.siblings.join(", "), code: true });
+  specFacts.push({
+    label: data.type === "board" ? "Sibling boards" : "Sibling shields",
+    items: data.siblings.map((sibling) => ({
+      label: sibling,
+      code: true,
+    })),
+    wide: true,
+  });
 }
 
 const variants =
@@ -84,60 +132,193 @@ const variants =
   ) ?? [];
 
 if (variants.length) {
-  rows.push({ label: "Variants", value: variants.join(", "), code: true });
+  specFacts.push({
+    label: "Variants",
+    items: variants.map((variant) => ({
+      label: variant,
+      code: true,
+    })),
+    wide: true,
+  });
 }
+
+const compatibilityFacts: Fact[] = [];
+
+if (data.type === "shield") {
+  compatibilityFacts.push({
+    label: "Requires",
+    items: data.requires.map(interconnectItem),
+    wide: true,
+  });
+}
+
+if (data.exposes?.length) {
+  compatibilityFacts.push({
+    label: data.type === "board" ? "Interconnect" : "Also exposes",
+    items: data.exposes.map(interconnectItem),
+    wide: true,
+  });
+}
+
+const targets = data.targets.map((target) => ({
+  id: target.id,
+  name: target.name,
+  sourceUrl: hardwareSourceUrl(target.sourcePath),
+  readmeUrl: target.readmePath
+    ? hardwareSourceUrl(target.readmePath)
+    : undefined,
+}));
+
+const showTargets =
+  targets.length > 1 || targets.some((target) => target.id !== data.id);
+const targetLabel = targets.length === 1 ? "Build target" : "Build targets";
 ---
 
-<dl class="hardware-details" data-category={data.category}>
-  {rows.map((row) => (
-    <div class="hardware-detail">
-      <dt>{row.label}</dt>
-      <dd>{row.code ? <code>{row.value}</code> : row.value}</dd>
-    </div>
-  ))}
-  {showTargets && (
-    <div class="hardware-detail">
-      <dt>{targetLabel}</dt>
-      <dd>
-        <ul class="hardware-targets">
-          {targets.map((target) => (
-            <li>
-              <code>{target.id}</code>
-              {target.name !== data.name && <span> — {target.name}</span>}
-            </li>
-          ))}
-        </ul>
-      </dd>
-    </div>
+<div class="hardware-meta">
+  <section class="meta-section">
+    <h2 class="meta-heading">Specifications</h2>
+    <dl class="facts">
+      {specFacts.map((fact) => (
+        <FactRow {...fact} />
+      ))}
+    </dl>
+  </section>
+
+  {compatibilityFacts.length > 0 && (
+    <section class="meta-section">
+      <h2 class="meta-heading">Compatibility</h2>
+      <dl class="facts">
+        {compatibilityFacts.map((fact) => (
+          <FactRow {...fact} />
+        ))}
+      </dl>
+    </section>
   )}
-</dl>
+
+  {showTargets && (
+    <section class="meta-section">
+      <h2 class="meta-heading">{targetLabel}</h2>
+      <ul class="targets">
+        {targets.map((target) => (
+          <li class="target">
+            <div class="target-identity">
+              <code>{target.id}</code>
+              {target.name !== data.name && <span>{target.name}</span>}
+            </div>
+            <div class="target-links">
+              <a href={target.sourceUrl} target="_blank" rel="noreferrer">
+                Metadata
+              </a>
+              {target.readmeUrl && (
+                <a href={target.readmeUrl} target="_blank" rel="noreferrer">
+                  README
+                </a>
+              )}
+            </div>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+</div>
 
 <style>
-  .hardware-details {
-    display: grid;
-    gap: 0.5rem 1.5rem;
-    grid-template-columns: max-content minmax(0, 1fr);
-    margin-block: 1rem 2rem;
+  .hardware-meta {
+    margin-block: 1.5rem 2rem;
+    border: 1px solid var(--sl-color-hairline-light);
+    border-radius: 0.65rem;
+    background-color: var(--sl-color-bg-nav);
   }
 
-  .hardware-detail {
-    display: contents;
+  .meta-section {
+    margin: 0;
+    padding: 1rem 1.25rem;
   }
 
-  .hardware-details dt {
+  .meta-section + .meta-section {
+    border-block-start: 1px solid var(--sl-color-hairline-light);
+  }
+
+  .meta-heading {
+    margin: 0 0 0.75rem;
+    color: var(--sl-color-gray-3);
+    font-size: var(--sl-text-2xs);
     font-weight: 600;
+    letter-spacing: 0.08em;
+    line-height: 1.3;
+    text-transform: uppercase;
   }
 
-  .hardware-details dd {
+  .facts {
+    display: grid;
+    gap: 0.85rem 1.75rem;
+    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
     margin: 0;
   }
 
-  .hardware-targets {
+  .targets {
+    display: grid;
+    gap: 0;
     margin: 0;
-    padding-inline-start: 1.25rem;
+    padding: 0;
+    list-style: none;
   }
 
-  .hardware-targets li + li {
-    margin-block-start: 0.25rem;
+  .target {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.25rem 1rem;
+    margin: 0;
+    padding-block: 0.45rem;
+  }
+
+  .target + .target {
+    border-block-start: 1px solid var(--sl-color-hairline-light);
+  }
+
+  .target-identity {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.35rem 0.6rem;
+    min-width: 0;
+  }
+
+  .target-identity code {
+    font-size: var(--sl-text-xs);
+  }
+
+  .target-identity span {
+    color: var(--sl-color-gray-3);
+    font-size: var(--sl-text-xs);
+  }
+
+  .target-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.9rem;
+    margin: 0;
+    font-size: var(--sl-text-xs);
+  }
+
+  .target-links a {
+    color: var(--sl-color-text-accent);
+    text-decoration: none;
+  }
+
+  .target-links a:hover {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 30rem) {
+    .meta-section {
+      padding: 0.9rem 1rem;
+    }
+
+    .facts {
+      grid-template-columns: 1fr;
+    }
   }
 </style>
