@@ -251,9 +251,6 @@ importers:
       globals:
         specifier: ^17.11.0
         version: 17.13.0
-      json-schema-to-typescript:
-        specifier: ^16.0.0
-        version: 16.0.0
       prettier:
         specifier: ^3.9.10
         version: 3.9.10
@@ -2493,11 +2490,6 @@ packages:
 
   json-buffer@3.0.1:
     resolution: {integrity: sha512-4bV5BfR2mqfQTJm+V5tPPdf+ZpuhiIvTuAB5g8kcrXOZpTT/QwwVRWBywX1ozr6lEuPdbHxwaJlm9G6mI2sfSQ==}
-
-  json-schema-to-typescript@16.0.0:
-    resolution: {integrity: sha512-Ah6kK4q6SjlMzWBH1eNOQkdRh5Qhr5T/RCFwfjQqWZA7UDW+N47A8wfyoiN0L884s4L4bAEI54IjIuN3/u0B/A==}
-    engines: {node: '>=16.0.0'}
-    hasBin: true
 
   json-schema-traverse@0.4.1:
     resolution: {integrity: sha512-xbbCH5dCYU5T8LcEhhuh7HJ88HXuW3qsI3Y0zOZFKfZEHcpWiHU/Jxzk629Brsab/mMiHQti9wMP+845RPe3Vg==}
@@ -6573,17 +6565,6 @@ snapshots:
       argparse: 3.0.4
 
   json-buffer@3.0.1: {}
-
-  json-schema-to-typescript@16.0.0:
-    dependencies:
-      '@apidevtools/json-schema-ref-parser': 11.9.3
-      '@types/json-schema': 7.0.15
-      '@types/lodash': 4.17.27
-      js-yaml: 5.5.0
-      lodash: 4.18.1
-      minimist: 1.2.8
-      prettier: 3.9.10
-      tinyglobby: 0.2.17
 
   json-schema-traverse@0.4.1: {}
 

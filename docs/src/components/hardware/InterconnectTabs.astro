@@ -1,18 +1,22 @@
 ---
+import { getCollection, render, type CollectionEntry } from "astro:content";
 import { TabItem, Tabs } from "@astrojs/starlight/components";
-import type { AstroComponentFactory } from "astro/runtime/server/index.js";
-
-import type { HardwareMetadata, Interconnect } from "../../hardware-metadata";
-import { groupedMetadata } from "../../lib/hardware";
 
 interface Props {
-  items: HardwareMetadata[];
   gpio: boolean;
 }
 
-const { items, gpio } = Astro.props;
+const { gpio } = Astro.props;
 
-type DesignGuidelineModule = { default: AstroComponentFactory };
+type HardwareEntry = CollectionEntry<"hardware">;
+type InterconnectEntry = HardwareEntry & {
+  data: Extract<HardwareEntry["data"], { type: "interconnect" }>;
+};
+type Interconnect = InterconnectEntry["data"];
+
+function isInterconnectEntry(entry: HardwareEntry): entry is InterconnectEntry {
+  return entry.data.type === "interconnect";
+}
 
 function directoryId(path: string, filename: string): string | undefined {
   const suffix = `/${filename}`;
@@ -33,29 +37,24 @@ function indexByDirectory<T>(
   return indexed;
 }
 
-// These files are generated before the Astro build by
-// scripts/generate-hardware-metadata.mjs, or provided alongside the docs content.
-const designGuidelineModules = import.meta.glob<DesignGuidelineModule>(
-  "../../data/interconnects/*/design_guideline.mdx",
-  { eager: true }
-);
 const pinoutImages = import.meta.glob<string>(
   "../../content/docs/docs/assets/interconnects/*/pinout.png",
   { eager: true, query: "?url", import: "default" }
 );
 
-const designGuidelines = indexByDirectory(
-  designGuidelineModules,
-  "design_guideline.mdx"
-);
 const pinouts = indexByDirectory(pinoutImages, "pinout.png");
 
-const interconnects = Object.values(groupedMetadata(items).interconnects)
-  .map((details) => details.interconnect)
-  .filter((interconnect): interconnect is Interconnect =>
-    Boolean(interconnect?.design_guideline)
-  )
-  .sort((a, b) => a.id.localeCompare(b.id));
+const interconnectEntries = (await getCollection("hardware"))
+  .filter(isInterconnectEntry)
+  .filter((entry) => Boolean(entry.data.design_guideline))
+  .sort((a, b) => a.data.id.localeCompare(b.data.id));
+
+const interconnects = await Promise.all(
+  interconnectEntries.map(async (entry) => ({
+    ...entry.data,
+    Guideline: gpio ? (await render(entry)).Content : undefined,
+  }))
+);
 
 // Starlight selects the first tab by default. Pin pro_micro first so the
 // default stays the same as the old Docusaurus tabs.
@@ -83,7 +82,7 @@ function nodeLabelRows(labels: Interconnect["node_labels"]) {
 
 const tabs = orderedInterconnects.map((interconnect) => ({
   interconnect,
-  Guideline: designGuidelines[interconnect.id]?.default,
+  Guideline: interconnect.Guideline,
   pinout: pinouts[interconnect.id],
   hasNodeLabels: interconnect.node_labels !== undefined,
   nodeLabels: nodeLabelRows(interconnect.node_labels),

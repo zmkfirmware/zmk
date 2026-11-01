@@ -95,6 +95,16 @@ function uniqueVariants(values: unknown[]) {
   });
 }
 
+function readDesignGuideline(metadata: Metadata) {
+  const value = metadata.design_guideline;
+
+  if (typeof value !== "string" || !value.trim()) {
+    return undefined;
+  }
+
+  return value;
+}
+
 function normalizeHeadingText(text: string) {
   return text
     .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
@@ -332,6 +342,47 @@ export const hardwareLoader: Loader = {
   }) => {
     const siteRoot = fileURLToPath(config.root);
 
+    async function storeInterconnect(
+      file: string,
+      metadata: Metadata,
+      metadataId: string,
+      sourcePath: string,
+      contents: string
+    ) {
+      const data = await parseData({
+        id: metadataId,
+        data: {
+          ...metadata,
+          slug: metadata.id,
+          sourcePath,
+        },
+        filePath: file,
+      });
+      const entry = {
+        id: metadataId,
+        data,
+        filePath: sourcePath,
+        digest: generateDigest(contents),
+      };
+      const guideline = readDesignGuideline(metadata);
+
+      if (!guideline) {
+        store.set(entry);
+        return;
+      }
+
+      const rendered = await renderMarkdown(guideline, {
+        fileURL: pathToFileURL(file),
+      });
+
+      store.set({
+        ...entry,
+        body: guideline,
+        rendered,
+        assetImports: rendered.metadata?.imagePaths ?? [],
+      });
+    }
+
     async function loadAll() {
       store.clear();
 
@@ -387,23 +438,13 @@ export const hardwareLoader: Loader = {
 
           // Interconnects share the collection but are not part of the catalog.
           if (type === "interconnect") {
-            const data = await parseData({
-              id: metadataId,
-              data: {
-                ...metadata,
-                slug: metadata.id,
-                sourcePath,
-              },
-              filePath: file,
-            });
-
-            store.set({
-              id: metadataId,
-              data,
-              filePath: sourcePath,
-              digest: generateDigest(contents),
-            });
-
+            await storeInterconnect(
+              file,
+              metadata,
+              metadataId,
+              sourcePath,
+              contents
+            );
             interconnectCount += 1;
             continue;
           }

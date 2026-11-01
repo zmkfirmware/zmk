@@ -1,8 +1,5 @@
 dist
 .astro
 node_modules
-src/hardware-metadata.d.ts
-src/data/hardware-metadata.json
-src/data/interconnects/*/design_guideline.mdx
 
 src/grammars/*.tmLanguage.json
