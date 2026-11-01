@@ -1,7 +1,7 @@
 ---
 // Based on @astrojs/starlight 0.42.8 `components/Header.astro`.
-// ZMK additions: Docs/Blog/Tools navigation, the version dropdown, the
-// mobile menu, and the ZMK Studio link. Re-diff against upstream when
+// ZMK additions: Docs/Hardware/Blog/Tools navigation, the version dropdown,
+// the mobile menu, and the ZMK Studio link. Re-diff against upstream when
 // upgrading Starlight.
 import config from "virtual:starlight/user-config";
 
@@ -29,6 +29,7 @@ const isActive = (href: string) =>
   (pathname === href || pathname.startsWith(href + "/"));
 
 const docsActive = isActive("/docs");
+const hardwareActive = isActive("/catalog/hardware");
 const blogActive = isActive("/blog");
 const toolsActive = ["/power-profiler", "/keymap-upgrader"].some(isActive);
 ---
@@ -45,6 +46,13 @@ const toolsActive = ["/power-profiler", "/keymap-upgrader"].some(isActive);
         aria-current={docsActive ? "page" : undefined}
       >
         Docs
+      </a>
+      <a
+        href="/catalog/hardware"
+        class:list={{ active: hardwareActive }}
+        aria-current={hardwareActive ? "page" : undefined}
+      >
+        Hardware
       </a>
       <a
         href={blogHref}
@@ -86,6 +94,13 @@ const toolsActive = ["/power-profiler", "/keymap-upgrader"].some(isActive);
             aria-current={docsActive ? "page" : undefined}
           >
             Docs
+          </a>
+          <a
+            href="/catalog/hardware"
+            class:list={{ active: hardwareActive }}
+            aria-current={hardwareActive ? "page" : undefined}
+          >
+            Hardware
           </a>
           <a
             href={blogHref}
