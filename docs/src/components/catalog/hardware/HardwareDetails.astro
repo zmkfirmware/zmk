@@ -56,11 +56,14 @@ function interconnectItem(id: string): FactItem {
 const specFacts: Fact[] = [];
 
 if (data.manufacturer) {
-  specFacts.push({ label: "Manufacturer", value: data.manufacturer });
+  specFacts.push({
+    label: "Manufacturer",
+    items: [{ label: data.manufacturer }],
+  });
 }
 
 if (data.version) {
-  specFacts.push({ label: "Version", value: data.version });
+  specFacts.push({ label: "Version", items: [{ label: data.version }] });
 }
 
 if (data.type === "board") {
@@ -69,12 +72,11 @@ if (data.type === "board") {
     items: data.outputs.map((output) => ({
       label: OUTPUT_LABELS[output] ?? output,
     })),
-    inline: true,
   });
 
   specFacts.push({
     label: "Architecture",
-    value: ARCH_LABELS[data.arch] ?? data.arch,
+    items: [{ label: ARCH_LABELS[data.arch] ?? data.arch }],
   });
 
   if (data.revisions?.length) {
@@ -85,7 +87,6 @@ if (data.type === "board") {
         code: true,
         default: revision === data.default_revision,
       })),
-      inline: true,
     });
   }
 
@@ -95,8 +96,7 @@ if (data.type === "board") {
   ) {
     specFacts.push({
       label: "Default revision",
-      value: data.default_revision,
-      code: true,
+      items: [{ label: data.default_revision, code: true }],
     });
   }
 }
@@ -108,7 +108,6 @@ if (data.features?.length) {
       label: FEATURE_LABELS[feature] ?? feature,
     })),
     wide: true,
-    inline: true,
   });
 }
 
@@ -125,6 +124,7 @@ if (variants.length) {
       code: true,
     })),
     wide: true,
+    chip: true,
   });
 }
 
@@ -132,17 +132,22 @@ const compatibilityFacts: Fact[] = [];
 
 if (data.type === "shield") {
   compatibilityFacts.push({
-    label: "Requires",
+    label: "Requires interconnect",
     items: data.requires.map(interconnectItem),
     wide: true,
+    chip: true,
   });
 }
 
 if (data.exposes?.length) {
   compatibilityFacts.push({
-    label: data.type === "board" ? "Interconnect" : "Also exposes",
+    label:
+      data.type === "board"
+        ? "Provides interconnect"
+        : "Also provides interconnect",
     items: data.exposes.map(interconnectItem),
     wide: true,
+    chip: true,
   });
 }
 

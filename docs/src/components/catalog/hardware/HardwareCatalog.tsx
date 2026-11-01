@@ -81,7 +81,7 @@ function itemSummary(
 
   if (item.exposes.length > 0) {
     parts.push(
-      `Exposes ${item.exposes.map((id) => names[id] ?? id).join(", ")}`
+      `Provides ${item.exposes.map((id) => names[id] ?? id).join(", ")}`
     );
   }
 
@@ -178,8 +178,9 @@ export default function HardwareCatalog({ items, interconnects }: Props) {
     }
 
     const nextSearch = params.toString();
-    const nextUrl = `${window.location.pathname}${nextSearch ? `?${nextSearch}` : ""
-      }${window.location.hash}`;
+    const nextUrl = `${window.location.pathname}${
+      nextSearch ? `?${nextSearch}` : ""
+    }${window.location.hash}`;
     const currentUrl = `${window.location.pathname}${window.location.search}${window.location.hash}`;
 
     if (nextUrl !== currentUrl) {

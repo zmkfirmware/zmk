@@ -5,7 +5,7 @@ export interface FactItem {
   code?: boolean;
   /** Native tooltip; falls back to a browse or default-revision hint. */
   title?: string;
-  /** Marks the default revision: adds the star (inline values turn semibold, chips get a stronger border). */
+  /** Marks the default revision: adds the star (plain values turn semibold, chips get a stronger border). */
   default?: boolean;
   /** Makes the item a link; chips gain hover and focus styling. */
   href?: string;
@@ -14,16 +14,12 @@ export interface FactItem {
 export interface Fact {
   /** Row label displayed above the value. */
   label: string;
-  /** Single plain value; takes precedence over `items`. */
-  value?: string;
-  /** Renders `value` as monospace code. */
-  code?: boolean;
-  /** Values to list; rendered as chips unless `inline` is set. */
-  items?: FactItem[];
+  /** Values to list; a single value is still expressed as an item. */
+  items: FactItem[];
   /** Makes the row span the full grid width. */
   wide?: boolean;
-  /** Renders `items` as a compact slash-separated line instead of chips. */
-  inline?: boolean;
+  /** Renders `items` as bordered chips instead of a compact slash-separated line. */
+  chip?: boolean;
 }
 
 export function factItemTitle(item: FactItem): string | undefined {
