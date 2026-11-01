@@ -1,5 +1,4 @@
 ---
-import type { CollectionEntry } from "astro:content";
 import { getCollection, render } from "astro:content";
 import { Icon } from "@astrojs/starlight/components";
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
@@ -10,29 +9,41 @@ import {
   HARDWARE_CATEGORY_LABELS,
   hardwareRelatedEntries,
   hardwareSourceUrl,
+  isHardwareDeviceEntry,
+  type HardwareDeviceEntry,
 } from "@/lib/hardware-catalog";
 
 export async function getStaticPaths() {
   const entries = await getCollection("hardware");
+  const devices = entries.filter(isHardwareDeviceEntry);
 
-  return entries.map((entry) => ({
+  return devices.map((entry) => ({
     params: { type: entry.data.type, name: entry.data.slug },
     props: {
       entry,
-      related: hardwareRelatedEntries(entry, entries),
+      related: hardwareRelatedEntries(entry, devices),
     },
   }));
 }
 
 interface Props {
   /** Catalog entry for this route: page title, lead, and all rendered metadata. */
-  entry: CollectionEntry<"hardware">;
+  entry: HardwareDeviceEntry;
   /** Other entries from the same metadata directory, such as shield revisions. */
-  related: CollectionEntry<"hardware">[];
+  related: HardwareDeviceEntry[];
 }
 
 const { entry, related } = Astro.props;
 const { data } = entry;
+
+let sourceLabel = data.url;
+
+try {
+  sourceLabel = new URL(data.url).hostname;
+} catch {
+  // Keep the raw URL when it cannot be parsed.
+}
+
 const categoryLabel = HARDWARE_CATEGORY_LABELS[data.category];
 const categoryHref = `/catalog/hardware?type=${data.category}`;
 
@@ -75,7 +86,7 @@ const pageHeadings = Content
           rel="noreferrer"
           title={data.url}
         >
-          {new URL(data.url).hostname}
+          {sourceLabel}
           <Icon name="external" />
         </a>
       )}
@@ -229,34 +240,6 @@ const pageHeadings = Content
   .hardware-readme-body :global(h5),
   .hardware-readme-body :global(h6) {
     font-size: var(--sl-text-base);
-  }
-
-  .hardware-source {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 0.35rem 0.6rem;
-    margin-block-start: 2.5rem;
-    padding-block-start: 1rem;
-    border-block-start: 1px solid var(--sl-color-hairline-light);
-    color: var(--sl-color-gray-3);
-    font-size: var(--sl-text-xs);
-  }
-
-  .hardware-source-label {
-    font-weight: 500;
-  }
-
-  .hardware-source a {
-    color: var(--sl-color-gray-3);
-    font-family: var(--sl-font-mono, var(--sl-font-system-mono));
-    text-decoration: none;
-    overflow-wrap: anywhere;
-  }
-
-  .hardware-source a:hover {
-    color: var(--sl-color-text-accent);
-    text-decoration: underline;
   }
 
   @media (max-width: 30rem) {
