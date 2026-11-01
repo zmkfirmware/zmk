@@ -5,8 +5,7 @@ authors: petejohanson
 tags: [firmware, studio, core]
 ---
 
-import Metadata from "@data/hardware-metadata.json";
-
+import HardwareByFeature from "@components/hardware/HardwareByFeature.astro";
 import ThemedImage from "@components/content/ThemedImage.astro";
 
 import studioApp from "./assets/2024-11-11-zmk-studio-mvp-ga/zmk-studio-screenshot.png";
@@ -240,15 +239,7 @@ The following in-tree keyboards have been updated to support ZMK Studio.
 If your keyboard is supported by an external module/config, check with the maintainer to see
 if support has been added.
 
-{(function() {
-return (
-
-<ul>
-  {Metadata.filter((m) => (m.features || []).includes("studio")).map((m) => {
-    return <li key={m.id}>{m.name}</li>;
-  })}
-</ul>
-); }())}
+<HardwareByFeature feature="studio" />
 
 ## Next Steps
 

@@ -4,6 +4,3 @@ dist
 .pnpm-store
 .DS_Store
 *.log
-src/hardware-metadata.d.ts
-src/data/hardware-metadata.json
-src/data/interconnects/*/design_guideline.mdx

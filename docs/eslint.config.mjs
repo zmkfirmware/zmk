@@ -6,15 +6,7 @@ import globals from "globals";
 import tseslint from "typescript-eslint";
 
 export default defineConfig([
-  globalIgnores([
-    "dist/",
-    ".astro/",
-    "node_modules/",
-    "src/env.d.ts",
-    "src/hardware-metadata.d.ts",
-    "src/data/hardware-metadata.json",
-    "src/data/interconnects/",
-  ]),
+  globalIgnores(["dist/", ".astro/", "node_modules/", "src/env.d.ts"]),
   { files: ["**/*.{js,mjs,jsx,ts,tsx,astro}"] },
   js.configs.recommended,
   ...tseslint.configs.strict,
