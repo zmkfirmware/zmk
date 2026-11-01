@@ -1,0 +1,75 @@
+---
+import type { Fact } from "./facts";
+import FactItem from "./FactItem.astro";
+
+/** One labeled row in a facts grid; fields are documented on `Fact` in ./facts.ts. */
+type Props = Fact;
+
+const { label, value, code, items, wide, inline } = Astro.props;
+---
+
+<div class:list={["fact", { "fact--wide": wide }]}>
+  <dt>{label}</dt>
+  <dd>
+    {value !== undefined ? (
+      code ? (
+        <code>{value}</code>
+      ) : (
+        value
+      )
+    ) : (
+      <span class:list={inline ? "inline-list" : "chips"}>
+        {items?.map((item) => (
+          <FactItem item={item} inline={inline} />
+        ))}
+      </span>
+    )}
+  </dd>
+</div>
+
+<style>
+  .fact {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    min-width: 0;
+    margin: 0;
+  }
+
+  .fact--wide {
+    grid-column: 1 / -1;
+  }
+
+  .fact dt {
+    color: var(--sl-color-gray-3);
+    font-size: var(--sl-text-xs);
+    font-weight: 500;
+    line-height: 1.35;
+  }
+
+  .fact dd {
+    margin: 0;
+    color: var(--sl-color-text);
+    font-size: var(--sl-text-sm);
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+
+  .fact dd > code {
+    font-size: var(--sl-text-xs);
+  }
+
+  .inline-list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    margin: 0;
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin: 0;
+  }
+</style>
