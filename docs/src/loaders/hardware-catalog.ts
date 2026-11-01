@@ -1,4 +1,4 @@
-import { promises as fs } from "node:fs";
+import { promises as fs, type Dirent } from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
@@ -9,6 +9,7 @@ import yaml from "js-yaml";
 import {
   hardwareBoardName,
   hardwareSlug,
+  type HardwareCategory,
   type HardwareKind,
 } from "../lib/hardware-catalog";
 
@@ -53,6 +54,31 @@ function unique(values: string[]) {
   return [...new Set(values)];
 }
 
+/** Use the words shared by all target names as the catalog title. */
+function commonNamePrefix(names: string[]): string {
+  const words = names.map((name) => name.trim().split(/\s+/));
+  const first = words[0];
+
+  if (!first) {
+    return "";
+  }
+
+  let length = 0;
+
+  while (
+    length < first.length &&
+    words.every((other) => other[length] === first[length])
+  ) {
+    length += 1;
+  }
+
+  if (length === 0) {
+    return first.join(" ");
+  }
+
+  return first.slice(0, length).join(" ");
+}
+
 function uniqueVariants(values: unknown[]) {
   const seen = new Set<string>();
 
@@ -77,13 +103,7 @@ function normalizeHeadingText(text: string) {
     .toLocaleLowerCase();
 }
 
-/**
- * Remove a leading README heading that repeats the catalog entry name.
- *
- * The catalog page already renders the entry name as its title, so keeping the
- * README's matching title would show the same heading twice and mix up the
- * page outline.
- */
+/** Remove a leading README heading that repeats the catalog entry name. */
 function stripDuplicateTitle(markdown: string, name: string) {
   const heading = markdown.match(/^\s*#\s+(.+?)\s*$/m);
 
@@ -101,55 +121,76 @@ function stripDuplicateTitle(markdown: string, name: string) {
   return `${before}${after.replace(/^\s*\n/, "")}`;
 }
 
+/** Check whether an error means the path does not exist. */
+function isMissingPathError(error: unknown): boolean {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    (error.code === "ENOENT" || error.code === "ENOTDIR")
+  );
+}
+
 /**
- * Find the first available documentation file for a hardware target.
- *
- * Full-target candidates use the target's path segments as directories, for
- * example `doc/nrf5340dk/nrf5340/cpuapp.zmk.md`. The final filename is matched
- * case-insensitively so existing `README.md` files keep working.
+ * Find the documentation file for a hardware target.
+ * Candidates are checked in order, then matched case-insensitively.
  */
 async function findReadme(directory: string, target: HardwareTarget) {
   const docDirectory = path.join(directory, "doc");
-  const fullTarget = target.id;
-  const justName =
+  const boardName =
     target.type === "board" ? hardwareBoardName(target.id) : target.id;
 
   const candidates = [
-    path.join(docDirectory, `${fullTarget}.zmk.md`),
-    path.join(docDirectory, `${justName}.zmk.md`),
-    path.join(docDirectory, `${fullTarget}.md`),
-    path.join(docDirectory, `${justName}.md`),
+    path.join(docDirectory, `${target.id}.zmk.md`),
+    path.join(docDirectory, `${boardName}.zmk.md`),
+    path.join(docDirectory, `${target.id}.md`),
+    path.join(docDirectory, `${boardName}.md`),
     path.join(docDirectory, "readme.zmk.md"),
     path.join(docDirectory, "readme.md"),
     path.join(directory, "readme.zmk.md"),
     path.join(directory, "readme.md"),
   ];
 
+  const listings = new Map<string, Dirent[] | undefined>();
+
   for (const candidate of new Set(candidates)) {
     try {
-      const stat = await fs.stat(candidate);
-
-      if (stat.isFile()) {
+      if ((await fs.stat(candidate)).isFile()) {
         return candidate;
       }
-    } catch {
-      // Try a case-insensitive match below.
+    } catch (error) {
+      if (!isMissingPathError(error)) {
+        throw error;
+      }
     }
 
     const parent = path.dirname(candidate);
-    const filename = path.basename(candidate).toLowerCase();
 
-    try {
-      const entries = await fs.readdir(parent, { withFileTypes: true });
-      const match = entries.find(
-        (entry) => entry.isFile() && entry.name.toLowerCase() === filename
-      );
+    if (!listings.has(parent)) {
+      try {
+        listings.set(parent, await fs.readdir(parent, { withFileTypes: true }));
+      } catch (error) {
+        if (!isMissingPathError(error)) {
+          throw error;
+        }
 
-      if (match) {
-        return path.join(parent, match.name);
+        listings.set(parent, undefined);
       }
-    } catch {
-      // Candidate directory does not exist.
+    }
+
+    const entries = listings.get(parent);
+
+    if (!entries) {
+      continue;
+    }
+
+    const filename = path.basename(candidate).toLowerCase();
+    const match = entries.find(
+      (entry) => entry.isFile() && entry.name.toLowerCase() === filename
+    );
+
+    if (match) {
+      return path.join(parent, match.name);
     }
   }
 
@@ -157,24 +198,18 @@ async function findReadme(directory: string, target: HardwareTarget) {
 }
 
 /**
- * Merge all targets of one board or shield into a single catalog entry.
- *
- * Board targets like `nrfmicro/nrf52840/zmk` and
- * `nrfmicro/nrf52840/flipped_zmk` share the board name `nrfmicro`, while
- * shields normally have a single target. The complete target data is retained
- * on `targets`; common fields are merged for the catalog page.
- *
- * The actual values accepted by `-b` and `-DSHIELD=` are exposed as
- * `buildTargets`. Split hardware lists its parts in `siblings`, so those are
- * the build targets even though the catalog entry keeps the logical device id.
+ * Merge the targets of one board or shield into a catalog entry.
+ * `targets` keeps the full metadata; `buildTargets` holds the values accepted
+ * by `-b` and `-DSHIELD=`.
  */
 function buildData(
   type: HardwareKind,
-  name: string,
+  slug: string,
   sources: Source[],
   primary: Source,
   readmeSource: Source | undefined
 ) {
+  const names = sources.map((source) => source.metadata.name);
   const features = unique(
     sources.flatMap((source) => stringArray(source.metadata.features))
   );
@@ -197,65 +232,92 @@ function buildData(
     sources.find((source) => source.metadata.default_revision)?.metadata
       .default_revision;
 
-  const targets = sources.map((source) => ({
-    ...source.metadata,
-    sourcePath: source.sourcePath,
-    ...(source.readmePath ? { readmePath: source.readmePath } : {}),
-  }));
+  const targets = sources.map((source) => {
+    const target: Record<string, unknown> = {
+      ...source.metadata,
+      sourcePath: source.sourcePath,
+    };
 
-  const buildTargets = siblings.length
-    ? siblings
-    : type === "board"
-      ? targets.map((target) => target.id)
-      : [name];
+    if (source.readmePath) {
+      target.readmePath = source.readmePath;
+    }
 
-  return {
+    return target;
+  });
+
+  let buildTargets = sources.map((source) => source.metadata.id);
+
+  if (siblings.length > 0) {
+    buildTargets = siblings;
+  }
+
+  let category: HardwareCategory;
+
+  if (type === "shield") {
+    category = "shield";
+  } else if (features.includes("keys")) {
+    category = "keyboard";
+  } else {
+    category = "controller";
+  }
+
+  const data: Record<string, unknown> & { name: string } = {
     ...primary.metadata,
-    id: name,
-    name: sources.length === 1 ? primary.metadata.name : name,
+    id: slug,
+    name: commonNamePrefix(names),
     type,
-    slug: name,
+    slug,
     sourcePath: primary.sourcePath,
-    ...(readmeSource?.readmePath
-      ? { readmePath: readmeSource.readmePath }
-      : {}),
     targets,
     buildTargets,
-    ...(features.length ? { features } : {}),
-    ...(exposes.length ? { exposes } : {}),
-    ...(siblings.length ? { siblings } : {}),
-    ...(revisions.length ? { revisions } : {}),
-    ...(targetVariants.length ? { variants: targetVariants } : {}),
-    ...(type === "board"
-      ? {
-          category: features.includes("keys") ? "keyboard" : "controller",
-          outputs: unique(
-            sources.flatMap((source) => stringArray(source.metadata.outputs))
-          ),
-        }
-      : {
-          category: "shield",
-          requires: unique(
-            sources.flatMap((source) => stringArray(source.metadata.requires))
-          ),
-        }),
-    ...(defaultRevision !== undefined
-      ? { default_revision: defaultRevision }
-      : {}),
+    category,
   };
+
+  if (readmeSource?.readmePath) {
+    data.readmePath = readmeSource.readmePath;
+  }
+
+  if (features.length > 0) {
+    data.features = features;
+  }
+
+  if (exposes.length > 0) {
+    data.exposes = exposes;
+  }
+
+  if (siblings.length > 0) {
+    data.siblings = siblings;
+  }
+
+  if (revisions.length > 0) {
+    data.revisions = revisions;
+  }
+
+  if (targetVariants.length > 0) {
+    data.variants = targetVariants;
+  }
+
+  if (type === "board") {
+    data.outputs = unique(
+      sources.flatMap((source) => stringArray(source.metadata.outputs))
+    );
+  } else {
+    data.requires = unique(
+      sources.flatMap((source) => stringArray(source.metadata.requires))
+    );
+  }
+
+  if (defaultRevision !== undefined) {
+    data.default_revision = defaultRevision;
+  }
+
+  return data;
 }
 
 /**
- * Load every board and shield metadata file into the `hardware` collection.
- *
- * A board's Zephyr target id contains the board name, revision, and qualifiers
- * (for example `nrf5340dk/nrf5340/cpuapp`). The catalog id is the board name,
- * so all targets for one board become a single page and the complete target
- * ids are retained in `targets`.
- *
- * If a README exists in the target directory it is injected as the entry body
- * and rendered with the markdown renderer, so README images and links keep
- * resolving relative to the README file.
+ * Load boards and shields into the `hardware` collection.
+ * Targets that share a board name become one entry; READMEs are rendered as the
+ * entry body relative to their source file.
  */
 export const hardwareLoader: Loader = {
   name: "zmk-hardware-catalog",
@@ -277,7 +339,8 @@ export const hardwareLoader: Loader = {
         await glob(METADATA_GLOB, { cwd: boardsRoot, absolute: true })
       ).sort();
       const sources: Source[] = [];
-      const targetIds = new Set<string>();
+      const metadataIds = new Set<string>();
+      let interconnectCount = 0;
 
       for (const file of files) {
         const contents = await fs.readFile(file, "utf8");
@@ -290,11 +353,13 @@ export const hardwareLoader: Loader = {
         const sourcePath = repoPath(file);
 
         for (const metadata of documents) {
-          // Interconnect metadata is shared by boards and shields but does not
-          // get a catalog page of its own in this first pass.
           const type = metadata.type;
 
-          if (type !== "board" && type !== "shield") {
+          if (
+            type !== "board" &&
+            type !== "shield" &&
+            type !== "interconnect"
+          ) {
             continue;
           }
 
@@ -310,21 +375,45 @@ export const hardwareLoader: Loader = {
             );
           }
 
+          const metadataId = `${type}/${metadata.id}`;
+
+          if (metadataIds.has(metadataId)) {
+            throw new Error(
+              `Duplicate ${type} "${metadata.id}" in ${sourcePath}.`
+            );
+          }
+
+          metadataIds.add(metadataId);
+
+          // Interconnects share the collection but are not part of the catalog.
+          if (type === "interconnect") {
+            const data = await parseData({
+              id: metadataId,
+              data: {
+                ...metadata,
+                slug: metadata.id,
+                sourcePath,
+              },
+              filePath: file,
+            });
+
+            store.set({
+              id: metadataId,
+              data,
+              filePath: sourcePath,
+              digest: generateDigest(contents),
+            });
+
+            interconnectCount += 1;
+            continue;
+          }
+
           const target: HardwareTarget = {
             ...metadata,
             id: metadata.id,
             name: metadata.name,
             type,
           };
-          const targetId = `${target.type}/${target.id}`;
-
-          if (targetIds.has(targetId)) {
-            throw new Error(
-              `Duplicate hardware target "${target.id}" in ${sourcePath}.`
-            );
-          }
-
-          targetIds.add(targetId);
 
           const readme = await findReadme(directory, target);
           let readmeContents: string | undefined;
@@ -362,7 +451,7 @@ export const hardwareLoader: Loader = {
       for (const [id, group] of groups) {
         const [first] = group;
         const type = first.metadata.type;
-        const name = hardwareSlug(type, first.metadata.id);
+        const slug = hardwareSlug(type, first.metadata.id);
         // Use the target with the most revisions for shared board fields.
         const primary = group.reduce((best, source) => {
           const bestRevisions = Array.isArray(best.metadata.revisions)
@@ -377,7 +466,7 @@ export const hardwareLoader: Loader = {
         const readmeSource =
           group.find((source) => source.readmeContents?.trim()) ??
           group.find((source) => source.readme);
-        const data = buildData(type, name, group, primary, readmeSource);
+        const data = buildData(type, slug, group, primary, readmeSource);
 
         let body: string | undefined;
         let rendered: Awaited<ReturnType<typeof renderMarkdown>> | undefined;
@@ -424,7 +513,7 @@ export const hardwareLoader: Loader = {
       }
 
       logger.info(
-        `Loaded ${groups.size} hardware entries from ${sources.length} board and shield targets in ${files.length} metadata files.`
+        `Loaded ${groups.size} board/shield entries and ${interconnectCount} interconnects from ${files.length} metadata files.`
       );
     }
 
