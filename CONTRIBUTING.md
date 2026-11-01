@@ -77,8 +77,10 @@ documentation to areas not currently covered are greatly appreciated.
 
 - The documentation site can be found in the main ZMK repo, in the
   [docs/](https://github.com/zmkfirmware/zmk/tree/main/docs) subdirectory.
-- The documentation is maintained using [Docusaurus V2](https://v2.docusaurus.io/docs/).
-- To get started, from the `docs/` directory, run `npm ci` and then `npm start`.
+- The documentation is maintained using [Astro](https://astro.build) and
+  [Starlight](https://starlight.astro.build).
+- To get started, from the `docs/` directory, run `pnpm install` and then
+  `pnpm dev`.
 - Enhancements should be submitted as pull requests to the `main` branch of ZMK.
 
 ### Formatting

@@ -1,0 +1,70 @@
+---
+import { Code, TabItem, Tabs } from "@astrojs/starlight/components";
+
+import type { HardwareDeviceEntry } from "@/lib/hardware-catalog";
+
+interface Props {
+  /** Catalog entry whose build targets are turned into build instructions. */
+  entry: HardwareDeviceEntry;
+}
+
+const { entry } = Astro.props;
+const { data } = entry;
+
+const BOARD_PLACEHOLDER = "<board>";
+const SHIELD_PLACEHOLDER = "<shield>";
+
+// Controller boards are built together with a shield, shields are built for a
+// board, and keyboard boards are self-contained.
+const isShield = data.type === "shield";
+const needsShield = isShield || data.category === "controller";
+
+function boardArgument(target: string) {
+  return isShield ? BOARD_PLACEHOLDER : target;
+}
+
+function shieldArgument(target: string) {
+  return isShield ? target : SHIELD_PLACEHOLDER;
+}
+
+function buildYamlEntry(target: string) {
+  const lines = [`  - board: ${boardArgument(target)}`];
+
+  if (needsShield) {
+    lines.push(`    shield: ${shieldArgument(target)}`);
+  }
+
+  return lines;
+}
+
+const buildYaml = [
+  "include:",
+  ...data.buildTargets.flatMap(buildYamlEntry),
+].join("\n");
+
+function westBuildCommand(target: string) {
+  const board = boardArgument(target);
+  const shield = needsShield ? ` -- -DSHIELD=${shieldArgument(target)}` : "";
+
+  return `west build -p -b ${board}${shield}`;
+}
+
+const buildCommands = data.buildTargets.map(westBuildCommand);
+---
+
+<div class="hardware-build">
+  <Tabs>
+    <TabItem label="GitHub Actions">
+      <Code code={buildYaml} lang="yaml" title="build.yaml" />
+    </TabItem>
+    <TabItem label="Manual Build">
+      <Code code={buildCommands.join("\n")} lang="sh" />
+    </TabItem>
+  </Tabs>
+</div>
+
+<style>
+  .hardware-build {
+    margin-block: 1.5rem 0;
+  }
+</style>

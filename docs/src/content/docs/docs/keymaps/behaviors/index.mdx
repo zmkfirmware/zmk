@@ -1,0 +1,92 @@
+---
+title: Behavior Overview
+sidebar:
+  label: Overview
+---
+
+# Behaviors Overview
+
+"Behaviors" are bindings that are assigned to and triggered by key positions on keymap layers, sensors (like an encoder) or combos. They describe what happens e.g. when a certain key position is pressed or released, or an encoder triggers a rotation event. They can also be recursively invoked by other behaviors, such as macros.
+
+Below is a summary of pre-defined behavior bindings and user-definable behaviors available in ZMK, with references to documentation pages describing them.
+
+## Key Press Behaviors
+
+| Binding       | Behavior                                      | Description                                                                                                                                                                                                                                       |
+| ------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `&kp`         | [Key Press](/docs/keymaps/behaviors/key-press)                     | Send keycodes to the connected host when a key is pressed                                                                                                                                                                                         |
+| `&mt`         | [Mod Tap](/docs/keymaps/behaviors/hold-tap#mod-tap)               | Sends a different key press depending on whether a key is held or tapped                                                                                                                                                                          |
+| `&kt`         | [Key Toggle](/docs/keymaps/behaviors/key-toggle)                   | Toggles the press of a key. If the key is not currently pressed, key toggle will press it, holding it until the key toggle is pressed again or the key is released in some other way. If the key is currently pressed, key toggle will release it |
+| `&sk`         | [Sticky Key](/docs/keymaps/behaviors/sticky-key)                   | Stays pressed until another key is pressed, then is released. It is often used for modifier keys like shift, which allows typing capital letters without holding it down                                                                          |
+| `&gresc`      | [Grave Escape](/docs/keymaps/behaviors/mod-morph#behavior-binding) | Sends Grave Accent `` ` `` keycode if shift or GUI is held, sends Escape keycode otherwise                                                                                                                                                        |
+| `&caps_word`  | [Caps Word](/docs/keymaps/behaviors/caps-word)                     | Behaves similar to caps lock, but automatically deactivates when any key not in a continue list is pressed, or if the caps word key is pressed again                                                                                              |
+| `&key_repeat` | [Key Repeat](/docs/keymaps/behaviors/key-repeat)                   | Sends again whatever keycode was last sent                                                                                                                                                                                                        |
+
+## Miscellaneous Behaviors
+
+| Binding  | Behavior                           | Description                                                                                                                           |
+| -------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `&trans` | [Transparent](/docs/keymaps/behaviors/misc#transparent) | Passes the key press down to the next active layer in the stack for processing                                                        |
+| `&none`  | [None](/docs/keymaps/behaviors/misc#none)               | Swallows and stops the key press, no keycode will be sent nor will the key press be passed down to the next active layer in the stack |
+
+## Layer Navigation Behaviors
+
+| Binding | Behavior                                     | Description                                                                                              |
+| ------- | -------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `&mo`   | [Momentary Layer](/docs/keymaps/behaviors/layers#momentary-layer) | Enables a layer while a key is pressed                                                                   |
+| `&lt`   | [Layer-tap](/docs/keymaps/behaviors/layers#layer-tap)             | Enables a layer when a key is held, and outputs a key press when the key is only tapped for a short time |
+| `&to`   | [To Layer](/docs/keymaps/behaviors/layers#to-layer)               | Enables a layer and disables all other layers except the default layer                                   |
+| `&tog`  | [Toggle Layer](/docs/keymaps/behaviors/layers#toggle-layer)       | Enables a layer until the layer is manually disabled                                                     |
+| `&sl`   | [Sticky Layer](/docs/keymaps/behaviors/sticky-layer)              | Activates a layer until another key is pressed, then deactivates it                                      |
+
+## Mouse Emulation Behaviors
+
+| Binding | Behavior                                                    | Description                     |
+| ------- | ----------------------------------------------------------- | ------------------------------- |
+| `&mkp`  | [Mouse Button Press](/docs/keymaps/behaviors/mouse-emulation#mouse-button-press) | Emulates pressing mouse buttons |
+| `&mmv`  | [Mouse Move](/docs/keymaps/behaviors/mouse-emulation#mouse-move)                 | Emulates mouse movement         |
+| `&msc`  | [Mouse Scroll](/docs/keymaps/behaviors/mouse-emulation#mouse-scroll)             | Emulates mouse scrolling        |
+
+## Reset Behaviors
+
+| Binding       | Behavior                                | Description                                                                              |
+| ------------- | --------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `&sys_reset`  | [Reset](/docs/keymaps/behaviors/reset#reset)                 | Resets the keyboard and re-runs the firmware flashed to the device                       |
+| `&bootloader` | [Bootloader](/docs/keymaps/behaviors/reset#bootloader-reset) | Resets the keyboard and puts it into bootloader mode, allowing you to flash new firmware |
+
+## Output Selection Behaviors
+
+| Binding | Behavior                                                 | Description                                                                                        |
+| ------- | -------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `&bt`   | [Bluetooth](/docs/keymaps/behaviors/bluetooth#bluetooth-behavior)             | Completes a bluetooth action given on press, for example switching between devices                 |
+| `&out`  | [Output Selection](/docs/keymaps/behaviors/outputs#output-selection-behavior) | Allows selecting whether output is sent to the USB or bluetooth connection when both are connected |
+
+## Lighting Behaviors
+
+| Binding   | Behavior                                       | Description                                                                  |
+| --------- | ---------------------------------------------- | ---------------------------------------------------------------------------- |
+| `&rgb_ug` | [RGB Underglow](/docs/keymaps/behaviors/underglow#behavior-binding) | Controls the RGB underglow, usually placed underneath the keyboard           |
+| `&bl`     | [Backlight](/docs/keymaps/behaviors/backlight#behavior-binding)     | Controls the keyboard backlighting, usually placed through or under switches |
+
+## Power Management Behaviors
+
+| Binding      | Behavior                                      | Description                                                     |
+| ------------ | --------------------------------------------- | --------------------------------------------------------------- |
+| `&ext_power` | [Power management](/docs/keymaps/behaviors/power#behavior-binding) | Allows enabling or disabling the VCC power output to save power |
+| `&soft_off`  | [Soft off](/docs/keymaps/behaviors/soft-off#behavior-binding)      | Turns the keyboard off.                                         |
+
+## ZMK Studio Behaviors
+
+| Binding          | Behavior                                               | Description                                               |
+| ---------------- | ------------------------------------------------------ | --------------------------------------------------------- |
+| `&studio_unlock` | [ZMK Studio Unlock](/docs/keymaps/behaviors/studio-unlock#behavior-binding) | Unlocks the device so that ZMK Studio UI can make changes |
+
+## User-Defined Behaviors
+
+| Behavior                            | Description                                                                                         |
+| ----------------------------------- | --------------------------------------------------------------------------------------------------- |
+| [Macros](/docs/keymaps/behaviors/macros)                 | Allows configuring a list of other behaviors to invoke when the key is pressed and/or released      |
+| [Hold-Tap](/docs/keymaps/behaviors/hold-tap)            | Invokes different behaviors depending on key press duration or interrupting keys.                   |
+| [Tap Dance](/docs/keymaps/behaviors/tap-dance)          | Invokes different behaviors corresponding to how many times a key is pressed                        |
+| [Mod-Morph](/docs/keymaps/behaviors/mod-morph)           | Invokes different behaviors depending on whether a specified modifier is held during a key press    |
+| [Sensor Rotation](/docs/keymaps/behaviors/sensor-rotate) | Invokes different behaviors depending on whether a sensor is rotated clockwise or counter-clockwise |

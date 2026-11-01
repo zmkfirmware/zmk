@@ -1,0 +1,128 @@
+---
+import { getCollection, render, type CollectionEntry } from "astro:content";
+import { TabItem, Tabs } from "@astrojs/starlight/components";
+
+interface Props {
+  gpio: boolean;
+}
+
+const { gpio } = Astro.props;
+
+type HardwareEntry = CollectionEntry<"hardware">;
+type InterconnectEntry = HardwareEntry & {
+  data: Extract<HardwareEntry["data"], { type: "interconnect" }>;
+};
+type Interconnect = InterconnectEntry["data"];
+
+function isInterconnectEntry(entry: HardwareEntry): entry is InterconnectEntry {
+  return entry.data.type === "interconnect";
+}
+
+function directoryId(path: string, filename: string): string | undefined {
+  const suffix = `/${filename}`;
+  if (!path.endsWith(suffix)) return undefined;
+  const directory = path.slice(0, -suffix.length);
+  return directory.slice(directory.lastIndexOf("/") + 1);
+}
+
+function indexByDirectory<T>(
+  modules: Record<string, T>,
+  filename: string
+): Record<string, T> {
+  const indexed: Record<string, T> = {};
+  for (const [path, module] of Object.entries(modules)) {
+    const id = directoryId(path, filename);
+    if (id) indexed[id] = module;
+  }
+  return indexed;
+}
+
+const pinoutImages = import.meta.glob<string>(
+  "../../content/docs/docs/assets/interconnects/*/pinout.png",
+  { eager: true, query: "?url", import: "default" }
+);
+
+const pinouts = indexByDirectory(pinoutImages, "pinout.png");
+
+const interconnectEntries = (await getCollection("hardware"))
+  .filter(isInterconnectEntry)
+  .filter((entry) => Boolean(entry.data.design_guideline))
+  .sort((a, b) => a.data.id.localeCompare(b.data.id));
+
+const interconnects = await Promise.all(
+  interconnectEntries.map(async (entry) => ({
+    ...entry.data,
+    Guideline: gpio ? (await render(entry)).Content : undefined,
+  }))
+);
+
+// Starlight selects the first tab by default. Pin pro_micro first so the
+// default stays the same as the old Docusaurus tabs.
+const proMicro = interconnects.find(
+  (interconnect) => interconnect.id === "pro_micro"
+);
+const orderedInterconnects = proMicro
+  ? [
+      proMicro,
+      ...interconnects.filter((interconnect) => interconnect !== proMicro),
+    ]
+  : interconnects;
+
+function nodeLabelRows(labels: Interconnect["node_labels"]) {
+  if (!labels) return [];
+  return [
+    { label: "I2C bus", value: labels.i2c },
+    { label: "SPI bus", value: labels.spi },
+    { label: "UART", value: labels.uart },
+    { label: "ADC", value: labels.adc },
+  ].filter(
+    (row): row is { label: string; value: string } => row.value !== undefined
+  );
+}
+
+const tabs = orderedInterconnects.map((interconnect) => ({
+  interconnect,
+  Guideline: interconnect.Guideline,
+  pinout: pinouts[interconnect.id],
+  hasNodeLabels: interconnect.node_labels !== undefined,
+  nodeLabels: nodeLabelRows(interconnect.node_labels),
+}));
+---
+
+{tabs.length > 0 && (
+  <Tabs syncKey="interconnect">
+    {tabs.map(
+      ({ interconnect, Guideline, pinout, hasNodeLabels, nodeLabels }) => (
+        <TabItem label={`${interconnect.name} Shields`}>
+          {pinout && (
+            <img
+              class="pinout"
+              src={pinout}
+              alt={`${interconnect.name} pinout`}
+            />
+          )}
+          {gpio && Guideline && <Guideline />}
+          {!gpio && hasNodeLabels && (
+            <Fragment>
+              <p>The following node labels are available:</p>
+              <ul>
+                {nodeLabels.map(({ label, value }) => (
+                  <li>
+                    {label}: <code>{`&${value}`}</code>
+                  </li>
+                ))}
+              </ul>
+            </Fragment>
+          )}
+        </TabItem>
+      )
+    )}
+  </Tabs>
+)}
+
+<style>
+  .pinout {
+    max-width: 100%;
+    height: auto;
+  }
+</style>

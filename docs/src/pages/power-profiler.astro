@@ -1,0 +1,16 @@
+---
+import PowerProfiler from "@components/tools/PowerProfiler/index.jsx";
+import ToolPage from "@components/tools/ToolPage.astro";
+
+import "../styles/power-profiler.css";
+import "../styles/power-estimate.css";
+---
+
+<ToolPage
+  title="ZMK Power Profiler"
+  description="Estimate your keyboard's power usage and battery life on ZMK."
+>
+  <PowerProfiler client:only="react">
+    <p slot="fallback" class="not-content">Loading…</p>
+  </PowerProfiler>
+</ToolPage>

@@ -1,0 +1,267 @@
+---
+import { getCollection } from "astro:content";
+
+import {
+  hardwareVariantIds,
+  type HardwareDeviceEntry,
+  type HardwareFeature,
+} from "@/lib/hardware-catalog";
+
+import FactRow from "./FactRow.astro";
+import type { Fact, FactItem } from "./facts";
+
+interface Props {
+  /** Catalog entry whose metadata fills the specification, compatibility, and related sections. */
+  entry: HardwareDeviceEntry;
+  /** Other catalog entries that share this entry's metadata directory. */
+  related: HardwareDeviceEntry[];
+}
+
+const FEATURE_LABELS: Record<HardwareFeature, string> = {
+  keys: "Keys",
+  display: "Display",
+  encoder: "Encoder",
+  underglow: "Underglow",
+  backlight: "Backlight",
+  pointer: "Pointing device",
+  studio: "ZMK Studio",
+};
+
+const OUTPUT_LABELS: Record<string, string> = {
+  usb: "USB",
+  ble: "BLE",
+};
+
+const ARCH_LABELS: Record<string, string> = {
+  arm: "Arm",
+  riscv: "RISC-V",
+};
+
+const { entry, related } = Astro.props;
+const { data } = entry;
+
+const entries = await getCollection("hardware");
+const interconnectNames = new Map<string, string>(
+  entries
+    .filter((candidate) => candidate.data.type === "interconnect")
+    .map((candidate) => [candidate.data.id, candidate.data.name])
+);
+
+function interconnectItem(id: string): FactItem {
+  const name = interconnectNames.get(id);
+  const href = `/catalog/hardware?interconnect=${encodeURIComponent(id)}`;
+
+  return name
+    ? { label: name, title: id, href }
+    : { label: id, title: `Browse hardware using ${id}`, code: true, href };
+}
+
+const specFacts: Fact[] = [];
+
+if (data.manufacturer) {
+  specFacts.push({
+    label: "Manufacturer",
+    items: [{ label: data.manufacturer }],
+  });
+}
+
+if (data.version) {
+  specFacts.push({ label: "Version", items: [{ label: data.version }] });
+}
+
+if (data.type === "board") {
+  specFacts.push({
+    label: "Connectivity",
+    items: data.outputs.map((output) => ({
+      label: OUTPUT_LABELS[output] ?? output,
+    })),
+  });
+
+  specFacts.push({
+    label: "Architecture",
+    items: [{ label: ARCH_LABELS[data.arch] ?? data.arch }],
+  });
+
+  if (data.revisions?.length) {
+    specFacts.push({
+      label: "Revisions",
+      items: data.revisions.map((revision) => {
+        const isDefault = revision === data.default_revision;
+
+        return {
+          label: revision,
+          code: true,
+          default: isDefault,
+          title: isDefault ? "Default revision" : undefined,
+        };
+      }),
+    });
+  }
+
+  if (
+    data.default_revision &&
+    !data.revisions?.includes(data.default_revision)
+  ) {
+    specFacts.push({
+      label: "Default revision",
+      items: [{ label: data.default_revision, code: true }],
+    });
+  }
+}
+
+if (data.features?.length) {
+  specFacts.push({
+    label: "Features",
+    items: data.features.map((feature) => ({
+      label: FEATURE_LABELS[feature],
+    })),
+    wide: true,
+  });
+}
+
+const variants = hardwareVariantIds(data.variants);
+
+if (variants.length) {
+  specFacts.push({
+    label: "Variants",
+    items: variants.map((variant) => ({
+      label: variant,
+      code: true,
+    })),
+    wide: true,
+    chip: true,
+  });
+}
+
+const compatibilityFacts: Fact[] = [];
+
+if (data.type === "shield") {
+  compatibilityFacts.push({
+    label: "Requires interconnect",
+    items: data.requires.map(interconnectItem),
+    wide: true,
+    chip: true,
+  });
+}
+
+if (data.exposes?.length) {
+  compatibilityFacts.push({
+    label:
+      data.type === "board"
+        ? "Provides interconnect"
+        : "Also provides interconnect",
+    items: data.exposes.map(interconnectItem),
+    wide: true,
+    chip: true,
+  });
+}
+
+const hasDetails =
+  specFacts.length > 0 || compatibilityFacts.length > 0 || related.length > 0;
+---
+
+{hasDetails && (
+  <div class="hardware-meta">
+    {specFacts.length > 0 && (
+      <section class="meta-section">
+        <h2 class="meta-heading">Specifications</h2>
+        <dl class="facts">
+          {specFacts.map((fact) => (
+            <FactRow {...fact} />
+          ))}
+        </dl>
+      </section>
+    )}
+
+    {compatibilityFacts.length > 0 && (
+      <section class="meta-section">
+        <h2 class="meta-heading">Compatibility</h2>
+        <dl class="facts">
+          {compatibilityFacts.map((fact) => (
+            <FactRow {...fact} />
+          ))}
+        </dl>
+      </section>
+    )}
+
+    {related.length > 0 && (
+      <section class="meta-section">
+        <h2 class="meta-heading">Related hardware</h2>
+        <ul class="related">
+          {related.map((relatedEntry) => (
+            <li>
+              <a
+                href={`/catalog/hardware/${relatedEntry.data.type}/${relatedEntry.data.slug}`}
+              >
+                {relatedEntry.data.name}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+  </div>
+)}
+
+<style>
+  .hardware-meta {
+    margin-block: 1.5rem 2rem;
+    border: 1px solid var(--sl-color-hairline-light);
+    border-radius: 0.65rem;
+    background-color: var(--sl-color-bg-nav);
+  }
+
+  .meta-section {
+    margin: 0;
+    padding: 1rem 1.25rem;
+  }
+
+  .meta-section + .meta-section {
+    border-block-start: 1px solid var(--sl-color-hairline-light);
+  }
+
+  .meta-heading {
+    margin: 0 0 0.75rem;
+    color: var(--sl-color-gray-3);
+    font-size: var(--sl-text-2xs);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    line-height: 1.3;
+    text-transform: uppercase;
+  }
+
+  .facts {
+    display: grid;
+    gap: 0.85rem 1.75rem;
+    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+    margin: 0;
+  }
+
+  .related {
+    display: grid;
+    gap: 0.45rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .related a {
+    color: var(--sl-color-text-accent);
+    font-size: var(--sl-text-sm);
+    text-decoration: none;
+  }
+
+  .related a:hover {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 30rem) {
+    .meta-section {
+      padding: 0.9rem 1rem;
+    }
+
+    .facts {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

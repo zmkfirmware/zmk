@@ -1,0 +1,26 @@
+---
+import { getCollection } from "astro:content";
+
+import {
+  isHardwareDeviceEntry,
+  type HardwareFeature,
+} from "@/lib/hardware-catalog";
+
+interface Props {
+  feature: HardwareFeature;
+}
+
+const { feature } = Astro.props;
+
+const items = (await getCollection("hardware"))
+  .filter(isHardwareDeviceEntry)
+  .filter((entry) => entry.data.features?.includes(feature))
+  .map((entry) => entry.data)
+  .sort((a, b) => a.name.localeCompare(b.name));
+---
+
+<ul>
+  {items.map((item) => (
+    <li>{item.name}</li>
+  ))}
+</ul>

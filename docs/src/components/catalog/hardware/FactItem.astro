@@ -1,0 +1,111 @@
+---
+import { Icon } from "@astrojs/starlight/components";
+
+import type { FactItem as FactItemData } from "./facts";
+
+interface Props {
+  /** Value to render: text plus its code, link, tooltip, and default styling. */
+  item: FactItemData;
+  /** Renders a bordered chip instead of a plain slash-separated item. */
+  chip?: boolean;
+}
+
+const { item, chip = false } = Astro.props;
+const Tag = item.href ? "a" : "span";
+---
+
+<Tag
+  class:list={[
+    chip ? "chip" : "inline-item",
+    {
+      "chip--default": chip && item.default,
+      "inline-item--default": !chip && item.default,
+    },
+  ]}
+  href={item.href}
+  title={item.title}
+>
+  {item.default && (
+    <span class="fact-star" role="img" aria-label="Default revision">
+      <Icon name="star" />
+    </span>
+  )}
+  {item.code ? <code>{item.label}</code> : item.label}
+</Tag>
+
+<style>
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    min-height: 1.5rem;
+    margin: 0;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.35rem;
+    background-color: var(--sl-color-bg);
+    color: var(--sl-color-text);
+    font-size: var(--sl-text-xs);
+    line-height: 1.2;
+    padding-inline: 0.45rem;
+  }
+
+  .chip code {
+    background: none;
+    color: inherit;
+    font-size: inherit;
+    padding: 0;
+  }
+
+  a.chip {
+    color: var(--sl-color-text);
+    text-decoration: none;
+  }
+
+  a.chip:hover {
+    border-color: var(--sl-color-gray-3);
+    color: var(--sl-color-text-accent);
+  }
+
+  a.chip:focus-visible {
+    outline: 2px solid var(--sl-color-accent);
+    outline-offset: 2px;
+  }
+
+  .chip--default {
+    border-color: var(--sl-color-gray-4);
+  }
+
+  .fact-star {
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
+    margin-inline-end: 0.3rem;
+    color: var(--sl-color-gray-3);
+    font-size: 0.85em;
+    line-height: 1;
+  }
+
+  .inline-item {
+    /* Flex items are blockified, so the star and value share one text baseline. */
+    display: inline;
+    white-space: nowrap;
+  }
+
+  .inline-item:not(:last-child)::after {
+    content: "/";
+    margin-inline: 0.2rem;
+    color: var(--sl-color-gray-4);
+  }
+
+  .inline-item code {
+    background: none;
+    border: none;
+    color: inherit;
+    font-size: var(--sl-text-xs);
+    padding: 0;
+  }
+
+  .inline-item--default,
+  .inline-item--default code {
+    font-weight: 600;
+  }
+</style>

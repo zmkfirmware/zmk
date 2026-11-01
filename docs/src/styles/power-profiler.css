@@ -1,0 +1,245 @@
+/*
+ * Copyright (c) 2021 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+.power-profiler {
+  width: 100%;
+}
+
+/*
+ * Minimal flexbox grid replacing the subset of Infima's grid used by the power
+ * profiler. Keeping the original class names avoids changing the component.
+ */
+.power-profiler .row {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -10px;
+}
+
+.power-profiler .col {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0 10px;
+}
+
+.power-profiler .col--4 {
+  flex: 0 0 33.3333%;
+  max-width: 33.3333%;
+}
+
+.power-profiler .col--8 {
+  flex: 0 0 66.6667%;
+  max-width: 66.6667%;
+}
+
+.power-profiler .col--offset-2 {
+  margin-left: 16.6667%;
+}
+
+@media (max-width: 60rem) {
+  .power-profiler .col--4,
+  .power-profiler .col--8 {
+    flex-basis: 100%;
+    max-width: 100%;
+  }
+
+  .power-profiler .col--offset-2 {
+    margin-left: 0;
+  }
+}
+
+.profilerSection {
+  margin: 10px 0;
+  padding: 10px 20px;
+  color: var(--sl-color-text);
+  background: var(--sl-color-bg-nav);
+  border-radius: 4px;
+  box-shadow: var(--sl-shadow-sm);
+}
+
+.profilerInput {
+  margin-bottom: 12px;
+}
+
+.profilerInput label {
+  display: block;
+}
+
+.profilerDisclaimer {
+  padding: 20px 0;
+  font-size: 14px;
+}
+
+.power-profiler span[data-tooltip] {
+  position: relative;
+}
+
+.power-profiler span[data-tooltip]::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: 50%;
+  width: 220px;
+  padding: 5px 10px;
+  color: var(--sl-color-text);
+  background: var(--sl-color-bg-nav);
+  border-radius: 4px;
+  opacity: 0;
+  visibility: hidden;
+  box-shadow: var(--sl-shadow-md);
+  transition: opacity 0.2s ease;
+  transform: translate(-50%, -100%);
+  font-size: 13px;
+}
+
+.power-profiler span[data-tooltip]::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-top: 8px solid var(--sl-color-bg-nav);
+  border-right: 8px solid transparent;
+  border-left: 8px solid transparent;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease;
+  transform: translateX(-50%);
+}
+
+.power-profiler span[data-tooltip]:hover::before {
+  opacity: 1;
+  visibility: visible;
+}
+
+.power-profiler span[data-tooltip]:hover::after {
+  opacity: 1;
+  visibility: visible;
+}
+
+.power-profiler input[type="checkbox"].toggleInput {
+  display: none;
+}
+
+.power-profiler input[type="checkbox"] + .toggle {
+  margin: 6px 2px;
+  width: 48px;
+  height: 20px;
+  background: var(--sl-color-gray-4);
+  border-radius: 20px;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.power-profiler input[type="checkbox"] + .toggle > .toggleThumb {
+  width: 16px;
+  height: 16px;
+  background: var(--sl-color-white);
+  border-radius: 20px;
+  box-shadow: var(--sl-shadow-sm);
+  transition: all 0.2s ease;
+  transform: translate(2px, 2px);
+}
+
+.power-profiler input[type="checkbox"]:checked + .toggle {
+  background: var(--sl-color-accent);
+}
+
+.power-profiler input[type="checkbox"]:checked + .toggle > .toggleThumb {
+  transform: translate(30px, 2px);
+}
+
+.power-profiler select {
+  display: flex;
+  width: 200px;
+  height: 34px;
+  margin: 0;
+  padding: 3px 5px;
+  color: inherit;
+  background: inherit;
+  border: solid 1px var(--sl-color-gray-4);
+  border-radius: 4px;
+  outline: none;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.power-profiler select > option {
+  background: var(--sl-color-bg-nav);
+}
+
+.power-profiler .inputBox {
+  display: flex;
+  width: 200px;
+  border: solid 1px var(--sl-color-gray-4);
+  border-radius: 4px;
+}
+
+.power-profiler .inputBox > input {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 3px 10px;
+  color: inherit;
+  background: inherit;
+  border: none;
+  outline: none;
+  font-size: inherit;
+  line-height: inherit;
+  text-align: right;
+}
+
+.power-profiler .inputBox > span {
+  padding: 3px 10px;
+  background: var(--sl-color-bg);
+  border-left: solid 1px var(--sl-color-gray-4);
+}
+
+/* Chrome, Safari, Edge, Opera */
+.power-profiler .inputBox > input::-webkit-outer-spin-button,
+.power-profiler .inputBox > input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+.power-profiler .inputBox > input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.disclaimerHolder {
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 1rem;
+  overflow-y: auto;
+  background: var(--sl-color-backdrop-overlay);
+}
+
+.disclaimer {
+  width: 500px;
+  max-width: 100%;
+  max-height: calc(100vh - 2rem);
+  padding: 20px 20px;
+  overflow-y: auto;
+  color: var(--sl-color-text);
+  background: var(--sl-color-bg-nav);
+  border-radius: 4px;
+  box-shadow: var(--sl-shadow-lg);
+}
+
+.disclaimer > button {
+  padding: 5px 15px;
+  color: var(--sl-color-white);
+  background: var(--sl-color-accent);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font: inherit;
+}
