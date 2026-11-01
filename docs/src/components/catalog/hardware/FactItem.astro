@@ -7,20 +7,20 @@ import { factItemTitle } from "./facts";
 interface Props {
   /** Value to render: text plus its code, link, tooltip, and default styling. */
   item: FactItemData;
-  /** Renders a plain slash-separated item instead of a bordered chip. */
-  inline?: boolean;
+  /** Renders a bordered chip instead of a plain slash-separated item. */
+  chip?: boolean;
 }
 
-const { item, inline = false } = Astro.props;
+const { item, chip = false } = Astro.props;
 const Tag = item.href ? "a" : "span";
 ---
 
 <Tag
   class:list={[
-    inline ? "inline-item" : "chip",
+    chip ? "chip" : "inline-item",
     {
-      "chip--default": !inline && item.default,
-      "inline-item--default": inline && item.default,
+      "chip--default": chip && item.default,
+      "inline-item--default": !chip && item.default,
     },
   ]}
   href={item.href}
