@@ -10,28 +10,12 @@ import mermaid from "astro-mermaid";
 import starlightLinksValidator from "starlight-links-validator";
 
 import { blogAuthors } from "./blog-authors.mjs";
-import {
-  copyHardwareMetadataToDist,
-  generateHardwareMetadata,
-} from "./scripts/generate-hardware-metadata.mjs";
 import { sidebar } from "./src/lib/sidebar.mjs";
 
 const readGrammar = (name) =>
   JSON.parse(
     readFileSync(new URL(`./src/grammars/${name}`, import.meta.url), "utf8")
   );
-
-// Generate the hardware metadata before Astro loads content collections.
-await generateHardwareMetadata();
-
-const hardwareMetadata = {
-  name: "zmk-hardware-metadata",
-  hooks: {
-    "astro:build:done": async ({ dir }) => {
-      await copyHardwareMetadataToDist(fileURLToPath(dir));
-    },
-  },
-};
 
 const blogPrefix = "blog";
 
@@ -162,6 +146,5 @@ export default defineConfig({
       ],
     }),
     sitemap(),
-    hardwareMetadata,
   ],
 });
