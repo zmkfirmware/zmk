@@ -13,8 +13,8 @@ export const BOARD_CATEGORIES = ["controller", "keyboard"] as const;
 export type HardwareCategory = (typeof BOARD_CATEGORIES)[number] | "shield";
 
 export const HARDWARE_CATEGORY_LABELS: Record<HardwareCategory, string> = {
-  controller: "Board (Controller)",
-  keyboard: "Board (Keyboard)",
+  controller: "Controller board",
+  keyboard: "Keyboard board",
   shield: "Shield",
 };
 
@@ -51,4 +51,11 @@ export function hardwareSlug(type: HardwareKind, id: string): string {
   const name = type === "board" ? hardwareBoardName(id) : id;
 
   return name.replace(/[@/]+/g, "-");
+}
+
+/**
+ * Build a link to a file in the ZMK repository on GitHub.
+ */
+export function hardwareSourceUrl(path: string): string {
+  return `https://github.com/zmkfirmware/zmk/blob/main/${path}`;
 }
