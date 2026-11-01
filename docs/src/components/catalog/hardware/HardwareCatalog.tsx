@@ -1,9 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 
-import type { HardwareCategory } from "@/lib/hardware-catalog";
+import {
+  HARDWARE_CATEGORIES,
+  HARDWARE_CATEGORY_LABELS,
+  type HardwareCategory,
+} from "@/lib/hardware-catalog";
 import {
   ALL_INTERCONNECTS,
-  HARDWARE_CATALOG_CATEGORY_ORDER,
   filterHardwareCatalog,
   type HardwareCatalogItem,
   type HardwareInterconnectOption,
@@ -12,50 +15,31 @@ import {
 import styles from "./HardwareCatalog.module.css";
 
 interface Props {
-  /** Entries rendered as cards in the results grid; also the total in the "Showing X of Y" count. */
+  /** Catalog entries shown as cards. */
   items: HardwareCatalogItem[];
-  /** Options for the interconnect filter dropdown; also validates the URL's interconnect state. */
+  /** Interconnect options for the filter and URL validation. */
   interconnects: HardwareInterconnectOption[];
 }
-
-const FILTER_LABELS: Record<HardwareCategory, string> = {
-  controller: "Board (Controller)",
-  keyboard: "Board (Keyboard)",
-  shield: "Shields",
-};
-
-const TYPE_LABELS: Record<HardwareCategory, string> = {
-  controller: "Controller Board",
-  keyboard: "Keyboard Board",
-  shield: "Shield",
-};
 
 // ?q=nice&type=controller&type=keyboard&interconnect=pro_micro
 const QUERY_PARAM = "q";
 const TYPE_PARAM = "type";
 const INTERCONNECT_PARAM = "interconnect";
 
-function parseCategories(values: string[]): HardwareCategory[] {
-  const requested = new Set(
-    values.flatMap((value) => value.split(",")).map((value) => value.trim())
-  );
-
-  return HARDWARE_CATALOG_CATEGORY_ORDER.filter((category) =>
-    requested.has(category)
-  );
-}
-
 function readFiltersFromUrl(
   search: string,
   interconnects: HardwareInterconnectOption[]
 ) {
   const params = new URLSearchParams(search);
-  const requestedInterconnect = params.get(INTERCONNECT_PARAM)?.trim();
+  const requestedCategories = new Set(params.getAll(TYPE_PARAM));
+  const requestedInterconnect = params.get(INTERCONNECT_PARAM);
   const validInterconnects = new Set(interconnects.map((option) => option.id));
 
   return {
     query: params.get(QUERY_PARAM) ?? "",
-    categories: parseCategories(params.getAll(TYPE_PARAM)),
+    categories: HARDWARE_CATEGORIES.filter((category) =>
+      requestedCategories.has(category)
+    ),
     interconnect:
       requestedInterconnect && validInterconnects.has(requestedInterconnect)
         ? requestedInterconnect
@@ -116,10 +100,15 @@ export default function HardwareCatalog({ items, interconnects }: Props) {
     [items, query, selectedCategories, interconnect, interconnectNames]
   );
 
+  // No category selected means no filtering, same as all of them selected.
+  const hasCategoryFilter =
+    selectedCategories.length > 0 &&
+    selectedCategories.length < HARDWARE_CATEGORIES.length;
+
   const hasActiveFilters =
     query.trim() !== "" ||
     interconnect !== ALL_INTERCONNECTS ||
-    selectedCategories.length > 0;
+    hasCategoryFilter;
 
   function toggleCategory(category: HardwareCategory) {
     setSelectedCategories((current) =>
@@ -165,7 +154,7 @@ export default function HardwareCatalog({ items, interconnects }: Props) {
 
     params.delete(TYPE_PARAM);
 
-    for (const category of HARDWARE_CATALOG_CATEGORY_ORDER) {
+    for (const category of HARDWARE_CATEGORIES) {
       if (selectedCategories.includes(category)) {
         params.append(TYPE_PARAM, category);
       }
@@ -236,7 +225,7 @@ export default function HardwareCatalog({ items, interconnects }: Props) {
               role="group"
               aria-labelledby="hardware-catalog-type"
             >
-              {HARDWARE_CATALOG_CATEGORY_ORDER.map((category) => (
+              {HARDWARE_CATEGORIES.map((category) => (
                 <button
                   key={category}
                   type="button"
@@ -244,7 +233,7 @@ export default function HardwareCatalog({ items, interconnects }: Props) {
                   aria-pressed={selectedCategories.includes(category)}
                   onClick={() => toggleCategory(category)}
                 >
-                  {FILTER_LABELS[category]}
+                  {HARDWARE_CATEGORY_LABELS[category]}
                 </button>
               ))}
             </div>
@@ -324,7 +313,7 @@ export default function HardwareCatalog({ items, interconnects }: Props) {
                     <span
                       className={`${styles.typeBadge} ${styles[item.category]}`}
                     >
-                      {TYPE_LABELS[item.category]}
+                      {HARDWARE_CATEGORY_LABELS[item.category]}
                     </span>
                     {item.type === "board" &&
                       item.outputs &&

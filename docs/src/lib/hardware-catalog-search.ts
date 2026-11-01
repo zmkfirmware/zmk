@@ -1,12 +1,10 @@
-import type { HardwareCategory } from "./hardware-catalog";
+import {
+  HARDWARE_CATEGORIES,
+  type HardwareCategory,
+  type HardwareKind,
+} from "./hardware-catalog";
 
 export const ALL_INTERCONNECTS = "all";
-
-export const HARDWARE_CATALOG_CATEGORY_ORDER = [
-  "controller",
-  "keyboard",
-  "shield",
-] as const satisfies readonly HardwareCategory[];
 
 export interface HardwareCatalogTarget {
   id: string;
@@ -18,7 +16,7 @@ export interface HardwareCatalogItem {
   slug: string;
   id: string;
   name: string;
-  type: "board" | "shield";
+  type: HardwareKind;
   category: HardwareCategory;
   manufacturer?: string;
   description?: string;
@@ -44,26 +42,16 @@ interface SearchField {
 
 function normalize(value: string): string {
   return value
-    .toLowerCase()
     .normalize("NFKD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9]+/g, " ")
+    .replace(/\p{M}/gu, "")
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}]+/gu, " ")
     .trim();
-}
-
-function compareNames(a: string, b: string): number {
-  const left = a.toLowerCase();
-  const right = b.toLowerCase();
-
-  return left < right ? -1 : left > right ? 1 : 0;
 }
 
 /**
  * Find the edit distance between two strings when it is at most `max`.
- *
- * Returns `undefined` once the distance is known to exceed the limit. This is
- * a small bounded Levenshtein implementation used to make word matches
- * tolerant of a typo or two.
+ * Returns `undefined` once the distance is known to exceed the limit.
  */
 function boundedEditDistance(
   a: string,
@@ -119,9 +107,8 @@ function allowedTypos(token: string): number {
  * Score a single query token against a searchable string.
  *
  * Direct substrings score highest, with a bonus for matches at a word
- * boundary. Otherwise each word is checked for a prefix, substring, or a
- * close spelling (bounded Levenshtein distance), so a query like "nrf52840"
- * still finds "nrf52840" and "ncie" finds "nice".
+ * boundary. Otherwise words are checked for prefixes, substrings, and close
+ * spellings, so a typo like "ncie" still finds "nice".
  */
 function scoreText(text: string, token: string): number {
   if (!text) return 0;
@@ -246,11 +233,15 @@ export function filterHardwareCatalog(
   interconnectNames: Record<string, string>
 ): HardwareCatalogItem[] {
   const tokens = normalize(query).split(" ").filter(Boolean);
-  const categoryFilter =
+  let categoryFilter: Set<HardwareCategory> | undefined;
+
+  if (
     selectedCategories.length > 0 &&
-    selectedCategories.length < HARDWARE_CATALOG_CATEGORY_ORDER.length
-      ? new Set(selectedCategories)
-      : undefined;
+    selectedCategories.length < HARDWARE_CATEGORIES.length
+  ) {
+    categoryFilter = new Set(selectedCategories);
+  }
+
   const matches: { item: HardwareCatalogItem; score: number }[] = [];
 
   for (const item of items) {
@@ -272,7 +263,7 @@ export function filterHardwareCatalog(
   }
 
   matches.sort(
-    (a, b) => b.score - a.score || compareNames(a.item.name, b.item.name)
+    (a, b) => b.score - a.score || a.item.name.localeCompare(b.item.name)
   );
 
   return matches.map((match) => match.item);

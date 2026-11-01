@@ -1,21 +1,23 @@
 ---
-import type { CollectionEntry } from "astro:content";
+import { getCollection } from "astro:content";
 
-import hardwareMetadata from "@data/hardware-metadata.json";
+import {
+  hardwareVariantIds,
+  type HardwareDeviceEntry,
+  type HardwareFeature,
+} from "@/lib/hardware-catalog";
 
 import FactRow from "./FactRow.astro";
 import type { Fact, FactItem } from "./facts";
 
-type HardwareEntry = CollectionEntry<"hardware">;
-
 interface Props {
   /** Catalog entry whose metadata fills the specification, compatibility, and related sections. */
-  entry: HardwareEntry;
+  entry: HardwareDeviceEntry;
   /** Other catalog entries that share this entry's metadata directory. */
-  related: HardwareEntry[];
+  related: HardwareDeviceEntry[];
 }
 
-const FEATURE_LABELS: Record<string, string> = {
+const FEATURE_LABELS: Record<HardwareFeature, string> = {
   keys: "Keys",
   display: "Display",
   encoder: "Encoder",
@@ -38,10 +40,11 @@ const ARCH_LABELS: Record<string, string> = {
 const { entry, related } = Astro.props;
 const { data } = entry;
 
+const entries = await getCollection("hardware");
 const interconnectNames = new Map<string, string>(
-  hardwareMetadata
-    .filter((item) => item.type === "interconnect")
-    .map((item) => [item.id, item.name])
+  entries
+    .filter((candidate) => candidate.data.type === "interconnect")
+    .map((candidate) => [candidate.data.id, candidate.data.name])
 );
 
 function interconnectItem(id: string): FactItem {
@@ -50,7 +53,7 @@ function interconnectItem(id: string): FactItem {
 
   return name
     ? { label: name, title: id, href }
-    : { label: id, code: true, href };
+    : { label: id, title: `Browse hardware using ${id}`, code: true, href };
 }
 
 const specFacts: Fact[] = [];
@@ -82,11 +85,16 @@ if (data.type === "board") {
   if (data.revisions?.length) {
     specFacts.push({
       label: "Revisions",
-      items: data.revisions.map((revision) => ({
-        label: revision,
-        code: true,
-        default: revision === data.default_revision,
-      })),
+      items: data.revisions.map((revision) => {
+        const isDefault = revision === data.default_revision;
+
+        return {
+          label: revision,
+          code: true,
+          default: isDefault,
+          title: isDefault ? "Default revision" : undefined,
+        };
+      }),
     });
   }
 
@@ -105,16 +113,13 @@ if (data.features?.length) {
   specFacts.push({
     label: "Features",
     items: data.features.map((feature) => ({
-      label: FEATURE_LABELS[feature] ?? feature,
+      label: FEATURE_LABELS[feature],
     })),
     wide: true,
   });
 }
 
-const variants =
-  data.variants?.map((variant) =>
-    typeof variant === "string" ? variant : variant.id
-  ) ?? [];
+const variants = hardwareVariantIds(data.variants);
 
 if (variants.length) {
   specFacts.push({
