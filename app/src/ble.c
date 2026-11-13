@@ -291,6 +291,17 @@ int zmk_ble_prof_select(uint8_t index) {
 
     LOG_DBG("profile %d", index);
     if (active_profile == index) {
+        // Re-selecting the active profile resyncs instead of being a no-op: if the
+        // host is not connected, advertising_status may not match the controller
+        // (e.g. a failed start), and update_advertising() trusts it. Restart
+        // advertising from scratch, and re-raise the event so indicators redraw.
+        if (!zmk_ble_active_profile_is_connected()) {
+            LOG_INF("profile %d reselected while disconnected, restarting advertising", index);
+            bt_le_adv_stop();
+            advertising_status = ZMK_ADV_NONE;
+            update_advertising();
+        }
+        raise_profile_changed_event();
         return 0;
     }
 
