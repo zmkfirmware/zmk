@@ -42,7 +42,7 @@ const TYPE_LABELS: Record<
 function HardwareLineItem({ item }: { item: HardwareMetadata }) {
   return (
     <li>
-      <a href={item.url}>{item.name}</a> (
+      {item.url ? <a href={item.url}>{item.name}</a> : item.name} (
       {TYPE_LABELS[item.type][itemHasMultiple(item) ? "plural" : "singular"]}{" "}
       {itemIds(item)})
     </li>
