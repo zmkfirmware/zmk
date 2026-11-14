@@ -84,8 +84,9 @@ KEYMAP_VAR(zmk_keymap, COND_CODE_1(IS_ENABLED(CONFIG_ZMK_KEYMAP_SETTINGS_STORAGE
 
 KEYMAP_VAR(zmk_stock_keymap, const, 0)
 
-static char zmk_keymap_layer_names[ZMK_KEYMAP_LAYERS_LEN][CONFIG_ZMK_KEYMAP_LAYER_NAME_MAX_LEN] = {
-    ZMK_KEYMAP_LAYERS_FOREACH_SEP(LAYER_NAME, (, ))};
+static char zmk_keymap_layer_names[ZMK_KEYMAP_LAYERS_LEN]
+                                  [CONFIG_ZMK_KEYMAP_LAYER_NAME_MAX_LEN + 1] = {
+                                      ZMK_KEYMAP_LAYERS_FOREACH_SEP(LAYER_NAME, (, ))};
 
 static uint32_t changed_layer_names = 0;
 
@@ -424,16 +425,14 @@ int zmk_keymap_restore_layer(zmk_keymap_layer_id_t id, zmk_keymap_layer_index_t 
 int zmk_keymap_set_layer_name(zmk_keymap_layer_id_t id, const char *name, size_t size) {
     ASSERT_LAYER_VAL(id, -EINVAL);
 
-    if (size >= CONFIG_ZMK_KEYMAP_LAYER_NAME_MAX_LEN) {
+    if (size > CONFIG_ZMK_KEYMAP_LAYER_NAME_MAX_LEN) {
         return -ENOSPC;
     }
 
-    strlcpy(zmk_keymap_layer_names[id], name, CONFIG_ZMK_KEYMAP_LAYER_NAME_MAX_LEN);
+    strlcpy(zmk_keymap_layer_names[id], name, CONFIG_ZMK_KEYMAP_LAYER_NAME_MAX_LEN + 1);
 
     // Ensure we properly null terminate our name if we previously had a longer one.
-    if (size < CONFIG_ZMK_KEYMAP_LAYER_NAME_MAX_LEN - 1) {
-        zmk_keymap_layer_names[id][size] = 0;
-    }
+    zmk_keymap_layer_names[id][size] = 0;
 
     WRITE_BIT(changed_layer_names, id, 1);
 
@@ -860,7 +859,7 @@ static int keymap_handle_set(const char *name, size_t len, settings_read_cb read
         }
 
         int ret = read_cb(cb_arg, zmk_keymap_layer_names[layer],
-                          MIN(len, CONFIG_ZMK_KEYMAP_LAYER_NAME_MAX_LEN - 1));
+                          MIN(len, CONFIG_ZMK_KEYMAP_LAYER_NAME_MAX_LEN));
         if (ret <= 0) {
             LOG_ERR("Failed to handle keymap layer name from settings (err %d)", ret);
             return ret;
