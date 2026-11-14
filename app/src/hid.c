@@ -50,6 +50,8 @@ static zmk_mod_flags_t masked_modifiers = 0;
 
 zmk_mod_flags_t zmk_hid_get_explicit_mods(void) { return explicit_modifiers; }
 
+zmk_mod_flags_t zmk_hid_get_masked_mods(void) { return masked_modifiers; }
+
 int zmk_hid_register_mod(zmk_mod_t modifier) {
     explicit_modifier_counts[modifier]++;
     LOG_DBG("Modifier %d count %d", modifier, explicit_modifier_counts[modifier]);
