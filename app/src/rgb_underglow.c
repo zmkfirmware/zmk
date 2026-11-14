@@ -70,6 +70,23 @@ static struct rgb_underglow_state state;
 static const struct device *const ext_power = DEVICE_DT_GET(DT_INST(0, zmk_ext_power_generic));
 #endif
 
+#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_IDLE) ||                                          \
+    IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB)
+struct rgb_underglow_sleep_state {
+    bool is_awake;
+    bool rgb_state_before_sleeping;
+};
+
+static struct rgb_underglow_sleep_state sleep_state = {
+    is_awake : true,
+    rgb_state_before_sleeping : false
+};
+#endif
+
+#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB)
+static int rgb_underglow_usb_start(void);
+#endif
+
 static struct zmk_led_hsb hsb_scale_min_max(struct zmk_led_hsb hsb) {
     hsb.b = CONFIG_ZMK_RGB_UNDERGLOW_BRT_MIN +
             (CONFIG_ZMK_RGB_UNDERGLOW_BRT_MAX - CONFIG_ZMK_RGB_UNDERGLOW_BRT_MIN) * hsb.b / BRT_MAX;
@@ -221,6 +238,11 @@ static int rgb_settings_set(const char *name, size_t len, settings_read_cb read_
 
         rc = read_cb(cb_arg, &state, sizeof(state));
         if (rc >= 0) {
+#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB)
+            // Not restored: an automatic off saves this field too, so it holds the last USB
+            // transition, not a choice. USB power decides, from rgb_settings_commit() on.
+            state.on = false;
+#endif
             if (state.on) {
                 k_timer_start(&underglow_tick, K_NO_WAIT, K_MSEC(50));
             }
@@ -234,7 +256,16 @@ static int rgb_settings_set(const char *name, size_t len, settings_read_cb read_
     return -ENOENT;
 }
 
-SETTINGS_STATIC_HANDLER_DEFINE(rgb_underglow, "rgb/underglow", NULL, rgb_settings_set, NULL, NULL);
+static int rgb_settings_commit(void) {
+#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB)
+    return rgb_underglow_usb_start();
+#else
+    return 0;
+#endif
+}
+
+SETTINGS_STATIC_HANDLER_DEFINE(rgb_underglow, "rgb/underglow", NULL, rgb_settings_set,
+                               rgb_settings_commit, NULL);
 
 static void zmk_rgb_underglow_save_state_work(struct k_work *_work) {
     settings_save_one("rgb/underglow/state", &state, sizeof(state));
@@ -270,12 +301,18 @@ static int zmk_rgb_underglow_init(void) {
 #endif
 
 #if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB)
-    state.on = zmk_usb_is_powered();
+    // zmk_usb_init() runs after this (ZMK_USB_INIT_PRIORITY), so the USB state is not known
+    // yet: stay off until rgb_underglow_usb_start().
+    state.on = false;
 #endif
 
     if (state.on) {
         k_timer_start(&underglow_tick, K_NO_WAIT, K_MSEC(50));
     }
+
+#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB) && !IS_ENABLED(CONFIG_SETTINGS)
+    return rgb_underglow_usb_start();
+#endif
 
     return 0;
 }
@@ -462,17 +499,7 @@ int zmk_rgb_underglow_change_spd(int direction) {
 
 #if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_IDLE) ||                                          \
     IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB)
-struct rgb_underglow_sleep_state {
-    bool is_awake;
-    bool rgb_state_before_sleeping;
-};
-
 static int rgb_underglow_auto_state(bool target_wake_state) {
-    static struct rgb_underglow_sleep_state sleep_state = {
-        is_awake : true,
-        rgb_state_before_sleeping : false
-    };
-
     // wake up event while awake, or sleep event while sleeping -> no-op
     if (target_wake_state == sleep_state.is_awake) {
         return 0;
@@ -490,6 +517,18 @@ static int rgb_underglow_auto_state(bool target_wake_state) {
         return zmk_rgb_underglow_off();
     }
 }
+
+#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB)
+// The first evaluation of the USB rule, once zmk_usb_init() has run and the saved state is
+// loaded: the underglow is off, and the sleep state is set as after an automatic off, with USB
+// power turning it on, so that this evaluation and every later USB event take the same path.
+// A USB event before this point is a no-op, since is_awake starts true, and this covers it.
+static int rgb_underglow_usb_start(void) {
+    sleep_state.is_awake = false;
+    sleep_state.rgb_state_before_sleeping = true;
+    return rgb_underglow_auto_state(zmk_usb_is_powered());
+}
+#endif
 
 static int rgb_underglow_event_listener(const zmk_event_t *eh) {
 
