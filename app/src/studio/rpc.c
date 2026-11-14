@@ -177,6 +177,7 @@ static pb_ostream_t pb_ostream_for_tx_buf(void *user_data) {
 }
 
 static int send_response(const zmk_studio_Response *resp) {
+    int ret = 0;
     k_mutex_lock(&rpc_transport_mutex, K_FOREVER);
 
     if (!selected_transport) {
@@ -188,7 +189,10 @@ static int send_response(const zmk_studio_Response *resp) {
     pb_ostream_t stream = pb_ostream_for_tx_buf(user_data);
 
     uint8_t framing_byte = FRAMING_SOF;
-    ring_buf_put(&rpc_tx_buf, &framing_byte, 1);
+    if (ring_buf_put(&rpc_tx_buf, &framing_byte, 1) != 1) {
+        ret = -ENOMEM;
+        goto exit;
+    }
 
     selected_transport->tx_notify(&rpc_tx_buf, 1, false, user_data);
 
@@ -199,17 +203,20 @@ static int send_response(const zmk_studio_Response *resp) {
 #if !IS_ENABLED(CONFIG_NANOPB_NO_ERRMSG)
         LOG_ERR("Failed to encode the message %s", stream.errmsg);
 #endif // !IS_ENABLED(CONFIG_NANOPB_NO_ERRMSG)
-        return -EINVAL;
+        ret = -EINVAL;
+        goto exit;
     }
 
     framing_byte = FRAMING_EOF;
-    ring_buf_put(&rpc_tx_buf, &framing_byte, 1);
+    while (ring_buf_put(&rpc_tx_buf, &framing_byte, 1) != 1) {
+        k_sleep(K_MSEC(1));
+    }
 
     selected_transport->tx_notify(&rpc_tx_buf, 1, true, user_data);
 
 exit:
     k_mutex_unlock(&rpc_transport_mutex);
-    return 0;
+    return ret;
 }
 
 static void rpc_main(void) {
