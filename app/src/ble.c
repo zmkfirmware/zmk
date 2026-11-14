@@ -662,6 +662,7 @@ static void auth_pairing_complete(struct bt_conn *conn, bool bonded) {
     }
 
     set_profile_address(active_profile, dst);
+    zmk_ble_save_profile_immediate();
     update_advertising();
 };
 
