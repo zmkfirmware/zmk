@@ -15,6 +15,11 @@ static struct zmk_hid_keyboard_report keyboard_report = {
 
     .report_id = ZMK_HID_REPORT_ID_KEYBOARD, .body = {.modifiers = 0, ._reserved = 0, .keys = {0}}};
 
+#if IS_ENABLED(CONFIG_ZMK_HID_VKEY)
+static struct zmk_hid_vkey_report vkey_report = {.report_id = ZMK_HID_REPORT_ID_VKEY,
+                                                 .body = {.id = 0}};
+#endif
+
 static struct zmk_hid_consumer_report consumer_report = {.report_id = ZMK_HID_REPORT_ID_CONSUMER,
                                                          .body = {.keys = {0}}};
 
@@ -471,6 +476,17 @@ void zmk_hid_mouse_clear(void) {
 struct zmk_hid_keyboard_report *zmk_hid_get_keyboard_report(void) { return &keyboard_report; }
 
 struct zmk_hid_consumer_report *zmk_hid_get_consumer_report(void) { return &consumer_report; }
+
+#if IS_ENABLED(CONFIG_ZMK_HID_VKEY)
+int zmk_hid_vkey_set(uint8_t id) {
+    vkey_report.body.id = id;
+    return 0;
+}
+
+void zmk_hid_vkey_clear(void) { vkey_report.body.id = 0; }
+
+struct zmk_hid_vkey_report *zmk_hid_get_vkey_report(void) { return &vkey_report; }
+#endif // IS_ENABLED(CONFIG_ZMK_HID_VKEY)
 
 #if IS_ENABLED(CONFIG_ZMK_POINTING)
 

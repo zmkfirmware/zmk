@@ -261,6 +261,38 @@ int zmk_endpoint_send_report(uint16_t usage_page) {
     return -ENOTSUP;
 }
 
+#if IS_ENABLED(CONFIG_ZMK_HID_VKEY)
+int zmk_endpoint_send_vkey_report(void) {
+    switch (current_instance.transport) {
+    case ZMK_TRANSPORT_NONE:
+        return 0;
+
+    case ZMK_TRANSPORT_USB: {
+#if IS_ENABLED(CONFIG_ZMK_USB)
+        int err = zmk_usb_hid_send_vkey_report();
+        if (err) {
+            LOG_ERR("FAILED TO SEND VKEY OVER USB: %d", err);
+        }
+        return err;
+#else
+        LOG_ERR("USB endpoint is not supported");
+        return -ENOTSUP;
+#endif /* IS_ENABLED(CONFIG_ZMK_USB) */
+    }
+
+    case ZMK_TRANSPORT_BLE:
+        // vkey over BLE HOG is not implemented yet (USB transport only for now).
+        // The vendor collection is still present in the HOG report map because
+        // the report descriptor is shared; only the send path is missing.
+        LOG_WRN("vkey over BLE HOG not implemented");
+        return -ENOTSUP;
+    }
+
+    LOG_ERR("Unhandled endpoint transport %d", current_instance.transport);
+    return -ENOTSUP;
+}
+#endif // IS_ENABLED(CONFIG_ZMK_HID_VKEY)
+
 #if IS_ENABLED(CONFIG_ZMK_POINTING)
 int zmk_endpoint_send_mouse_report() {
     switch (current_instance.transport) {
@@ -471,12 +503,18 @@ static int zmk_endpoints_init(void) {
 void zmk_endpoint_clear_reports(void) {
     zmk_hid_keyboard_clear();
     zmk_hid_consumer_clear();
+#if IS_ENABLED(CONFIG_ZMK_HID_VKEY)
+    zmk_hid_vkey_clear();
+#endif
 #if IS_ENABLED(CONFIG_ZMK_POINTING)
     zmk_hid_mouse_clear();
 #endif // IS_ENABLED(CONFIG_ZMK_POINTING)
 
     zmk_endpoint_send_report(HID_USAGE_KEY);
     zmk_endpoint_send_report(HID_USAGE_CONSUMER);
+#if IS_ENABLED(CONFIG_ZMK_HID_VKEY)
+    zmk_endpoint_send_vkey_report();
+#endif
 }
 
 static void update_current_endpoint(void) {
