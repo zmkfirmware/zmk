@@ -1,0 +1,16 @@
+# Copyright (c) 2022 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Dynamic Macro Behavior
+
+compatible: "zmk,behavior-dynamic-macro"
+
+include: one_param.yaml
+
+properties:
+  wait-ms:
+    type: int
+    default: -1
+    description: The default time to wait (in milliseconds) before triggering the next behavior in the macro bindings list.
+  no-output:
+    type: boolean
