@@ -336,19 +336,28 @@ void send_keyboard_report_callback(struct k_work *work) {
 K_WORK_DEFINE(hog_keyboard_work, send_keyboard_report_callback);
 
 int zmk_hog_send_keyboard_report(struct zmk_hid_keyboard_report_body *report) {
-    int err = k_msgq_put(&zmk_hog_keyboard_msgq, report, K_MSEC(100));
-    if (err) {
-        switch (err) {
-        case -EAGAIN: {
-            LOG_WRN("Keyboard message queue full, popping first message and queueing again");
-            struct zmk_hid_keyboard_report_body discarded_report;
-            k_msgq_get(&zmk_hog_keyboard_msgq, &discarded_report, K_NO_WAIT);
-            return zmk_hog_send_keyboard_report(report);
+    // Bounded retry loop. This must not recurse: while the GATT consumer is
+    // stalled, a competing producer can win the freed slot on every retry,
+    // and unbounded recursion overflows the caller's stack.
+    for (int attempt = 0;; attempt++) {
+        int err = k_msgq_put(&zmk_hog_keyboard_msgq, report, K_MSEC(100));
+        if (err == 0) {
+            break;
         }
-        default:
+
+        if (err != -EAGAIN) {
             LOG_WRN("Failed to queue keyboard report to send (%d)", err);
             return err;
         }
+
+        if (attempt >= 2) {
+            LOG_WRN("Keyboard message queue stuck full, dropping report");
+            return err;
+        }
+
+        LOG_WRN("Keyboard message queue full, popping first message and queueing again");
+        struct zmk_hid_keyboard_report_body discarded_report;
+        k_msgq_get(&zmk_hog_keyboard_msgq, &discarded_report, K_NO_WAIT);
     }
 
     k_work_submit_to_queue(&hog_work_q, &hog_keyboard_work);
@@ -388,19 +397,26 @@ void send_consumer_report_callback(struct k_work *work) {
 K_WORK_DEFINE(hog_consumer_work, send_consumer_report_callback);
 
 int zmk_hog_send_consumer_report(struct zmk_hid_consumer_report_body *report) {
-    int err = k_msgq_put(&zmk_hog_consumer_msgq, report, K_MSEC(100));
-    if (err) {
-        switch (err) {
-        case -EAGAIN: {
-            LOG_WRN("Consumer message queue full, popping first message and queueing again");
-            struct zmk_hid_consumer_report_body discarded_report;
-            k_msgq_get(&zmk_hog_consumer_msgq, &discarded_report, K_NO_WAIT);
-            return zmk_hog_send_consumer_report(report);
+    // Bounded retry loop; see zmk_hog_send_keyboard_report for rationale.
+    for (int attempt = 0;; attempt++) {
+        int err = k_msgq_put(&zmk_hog_consumer_msgq, report, K_MSEC(100));
+        if (err == 0) {
+            break;
         }
-        default:
+
+        if (err != -EAGAIN) {
             LOG_WRN("Failed to queue consumer report to send (%d)", err);
             return err;
         }
+
+        if (attempt >= 2) {
+            LOG_WRN("Consumer message queue stuck full, dropping report");
+            return err;
+        }
+
+        LOG_WRN("Consumer message queue full, popping first message and queueing again");
+        struct zmk_hid_consumer_report_body discarded_report;
+        k_msgq_get(&zmk_hog_consumer_msgq, &discarded_report, K_NO_WAIT);
     }
 
     k_work_submit_to_queue(&hog_work_q, &hog_consumer_work);
@@ -441,19 +457,26 @@ void send_mouse_report_callback(struct k_work *work) {
 K_WORK_DEFINE(hog_mouse_work, send_mouse_report_callback);
 
 int zmk_hog_send_mouse_report(struct zmk_hid_mouse_report_body *report) {
-    int err = k_msgq_put(&zmk_hog_mouse_msgq, report, K_MSEC(100));
-    if (err) {
-        switch (err) {
-        case -EAGAIN: {
-            LOG_WRN("Consumer message queue full, popping first message and queueing again");
-            struct zmk_hid_mouse_report_body discarded_report;
-            k_msgq_get(&zmk_hog_mouse_msgq, &discarded_report, K_NO_WAIT);
-            return zmk_hog_send_mouse_report(report);
+    // Bounded retry loop; see zmk_hog_send_keyboard_report for rationale.
+    for (int attempt = 0;; attempt++) {
+        int err = k_msgq_put(&zmk_hog_mouse_msgq, report, K_MSEC(100));
+        if (err == 0) {
+            break;
         }
-        default:
+
+        if (err != -EAGAIN) {
             LOG_WRN("Failed to queue mouse report to send (%d)", err);
             return err;
         }
+
+        if (attempt >= 2) {
+            LOG_WRN("Mouse message queue stuck full, dropping report");
+            return err;
+        }
+
+        LOG_WRN("Mouse message queue full, popping first message and queueing again");
+        struct zmk_hid_mouse_report_body discarded_report;
+        k_msgq_get(&zmk_hog_mouse_msgq, &discarded_report, K_NO_WAIT);
     }
 
     k_work_submit_to_queue(&hog_work_q, &hog_mouse_work);
