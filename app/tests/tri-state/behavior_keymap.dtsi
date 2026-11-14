@@ -1,0 +1,40 @@
+#include <dt-bindings/zmk/keys.h>
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+
+/ {
+    behaviors {
+        swap: swap {
+            compatible = "zmk,behavior-tri-state";
+            label = "SWAPPER";
+            #binding-cells = <0>;
+            bindings = <&kt LALT>, <&kp TAB>, <&kt LALT>;
+            ignored-key-positions = <2 3>;
+            ignored-layers = <1>;
+            timeout-ms = <200>;
+        };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+        label ="Default keymap";
+
+        default_layer {
+            bindings = <
+                &swap    &kp A
+                &kp B    &tog 1>;
+        };
+
+        extra_layer {
+            bindings = <
+                &kp A     &kp B
+                &tog 2    &trans>;
+        };
+
+        extra_layer2 {
+            bindings = <
+                &kp N1    &kp N2
+                &trans     &kp N3>;
+        };
+    };
+};

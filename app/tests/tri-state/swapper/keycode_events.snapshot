@@ -1,0 +1,14 @@
+tri_state_binding_pressed: 0 created new tri_state
+tri_state_binding_pressed: 0 tri_state pressed
+kp_pressed: usage_page 0x07 keycode 0xE2 implicit_mods 0x00 explicit_mods 0x00
+kp_pressed: usage_page 0x07 keycode 0x2B implicit_mods 0x00 explicit_mods 0x00
+tri_state_binding_released: 0 tri_state keybind released
+kp_released: usage_page 0x07 keycode 0x2B implicit_mods 0x00 explicit_mods 0x00
+tri_state_binding_pressed: 0 tri_state pressed
+kp_pressed: usage_page 0x07 keycode 0x2B implicit_mods 0x00 explicit_mods 0x00
+tri_state_binding_released: 0 tri_state keybind released
+kp_released: usage_page 0x07 keycode 0x2B implicit_mods 0x00 explicit_mods 0x00
+tri_state_binding_pressed: 0 tri_state pressed
+kp_pressed: usage_page 0x07 keycode 0x2B implicit_mods 0x00 explicit_mods 0x00
+tri_state_binding_released: 0 tri_state keybind released
+kp_released: usage_page 0x07 keycode 0x2B implicit_mods 0x00 explicit_mods 0x00
