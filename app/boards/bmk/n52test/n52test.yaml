@@ -1,0 +1,14 @@
+identifier: n52test
+name: n52test
+type: keyboard
+arch: arm
+toolchain:
+  - zephyr
+  - gnuarmemb
+  - xtools
+supported:
+  - gpio
+  - usb_device
+  - ble
+  - pwm
+  - kscan

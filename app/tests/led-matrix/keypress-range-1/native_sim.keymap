@@ -1,0 +1,74 @@
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/kscan_mock.h>
+#include <dt-bindings/zmk/led_matrix.h>
+#include <dt-bindings/zmk/led_matrix_colors.h>
+#include <dt-bindings/led/led.h>
+#include <behaviors.dtsi>
+
+/ {
+    chosen {
+        zmk,kscan = &kscan;
+        zmk,led-matrix = &led_matrix;
+    };
+
+    kscan: native_posix_64_kscan_mock {
+        compatible = "zmk,kscan-mock";
+        rows = <3>;
+        columns = <3>;
+        exit-after;
+        events = <
+            ZMK_MOCK_PRESS(1,1,10)
+            ZMK_MOCK_RELEASE(1,1,10)
+        >;
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+                &kp A &kp B &kp C
+                &kp D &kp E &kp F
+                &kp G &kp H &kp I
+            >;
+        };
+    };
+
+    led_matrix_dev: led_matrix_dev {
+        compatible = "zmk,led-mock";
+        mode = "color";
+
+        led_0 { index = <0>; color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>; };
+        led_1 { index = <1>; color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>; };
+        led_2 { index = <2>; color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>; };
+        led_3 { index = <3>; color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>; };
+        led_4 { index = <4>; color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>; };
+        led_5 { index = <5>; color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>; };
+        led_6 { index = <6>; color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>; };
+        led_7 { index = <7>; color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>; };
+        led_8 { index = <8>; color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>; };
+    };
+
+    led_matrix: led_matrix {
+        compatible = "zmk,led-matrix";
+        led-driver = "matrix";
+        led-device = <&led_matrix_dev>;
+        led-count = <9>;
+        matrix-led-grid = <
+            0 1 2 LM_BREAK
+            3 4 5 LM_BREAK
+            6 7 8
+        >;
+
+        profile0 {
+            profile-id = <0>;
+            display-name = "Range One";
+            renderer = "keypress";
+            keypress-afterglow-ms = <0>;
+            keypress-range = <1>;
+            colors = <0x640000>;
+            brightness = <100>;
+            period-ms = <1000>;
+        };
+    };
+};

@@ -1,0 +1,4 @@
+/^LED matrix v4 settings injected:/p
+/^LED matrix state save scheduled:/p
+/^LED matrix state save start:/p
+/^LED matrix state save success:/p

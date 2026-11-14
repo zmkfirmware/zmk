@@ -1,0 +1,8 @@
+# Copyright (c) 2026 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: LED Matrix v4 Settings Injector Behavior
+
+compatible: "zmk,behavior-inject-led-matrix-settings-v4"
+
+include: zero_param.yaml

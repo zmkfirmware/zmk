@@ -1,0 +1,3 @@
+LED composite "led_composite" scalar child 0 "scalar_child" channel-count 6 must equal three times LED count 1
+LED matrix output device "led_composite" is not ready
+

@@ -1,0 +1,59 @@
+# Copyright (c) 2021 Nick Winans
+# SPDX-License-Identifier: MIT
+
+if BOARD_NUMPAD
+
+config ZMK_KEYBOARD_NAME
+	default "numpad"
+
+if USB_DEVICE_STACK
+
+config USB_NRFX
+    default y
+
+endif # USB_DEVICE_STACK
+
+config BT_CTLR
+	default BT
+
+if DISPLAY
+    
+config SPI
+    default y
+
+if LVGL
+
+config LV_Z_VDB_SIZE
+    default 100
+
+config LV_DPI_DEF
+    default 148
+
+config LV_Z_BITS_PER_PIXEL
+    default 1
+
+choice LV_COLOR_DEPTH
+    default LV_COLOR_DEPTH_1
+endchoice
+
+endif # LVGL
+endif # DISPLAY
+
+if ZMK_DISPLAY
+
+config ZMK_DISPLAY_BLANK_ON_IDLE
+    default n
+
+config ZMK_DISPLAY_DEDICATED_THREAD_STACK_SIZE
+    default 4096
+
+endif # ZMK_DISPLAY
+
+if ZMK_DISPLAY && ZMK_LED_MATRIX
+
+config ZMK_WIDGET_LED_MATRIX_EFFECT_STATUS
+    default y
+
+endif # ZMK_DISPLAY && ZMK_LED_MATRIX
+
+endif # BOARD_NUMPAD

@@ -1,0 +1,11 @@
+EXT power generic runtime[EXT_POWER]=1
+Initialized LED matrix: leds=1 independent=0 backend=strip sink=strip channels=3 output-channels=3 profiles=1 layer-colors=0 local-grid=0x0 cells=0
+LED strip mock pixel[0]=16,32,48
+LED strip mock pixel[0]=0,0,0
+EXT power generic runtime[EXT_POWER]=0
+EXT power generic runtime[EXT_POWER]=1
+LED strip mock pixel[0]=16,32,48
+LED strip mock pixel[0]=0,0,0
+EXT power generic runtime[EXT_POWER]=0
+EXT power generic runtime[EXT_POWER]=1
+LED strip mock pixel[0]=16,32,48

@@ -1,0 +1,5 @@
+config ZMK_EXT_POWER_MOCK
+    bool "ZMK EXT power mock"
+    default y
+    depends on ZMK_EXT_POWER
+    depends on DT_HAS_ZMK_EXT_POWER_MOCK_ENABLED

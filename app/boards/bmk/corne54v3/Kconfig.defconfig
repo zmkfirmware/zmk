@@ -1,0 +1,73 @@
+#
+# Copyright (c) 2023 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+#
+
+if BOARD_CORNE54V3_LEFT
+
+config ZMK_KEYBOARD_NAME
+    default "CORNE54V3"
+
+config ZMK_SPLIT_ROLE_CENTRAL
+    default y
+
+endif # BOARD_CORNE54V3_LEFT
+
+if BOARD_CORNE54V3_RIGHT
+
+config ZMK_KEYBOARD_NAME
+    default "CORNE54V3 rt"
+
+endif # BOARD_CORNE54V3_RIGHT
+
+
+if BOARD_CORNE54V3_LEFT || BOARD_CORNE54V3_RIGHT
+
+
+config ZMK_SPLIT
+    default y
+
+config SPI
+    default y
+
+config BT_CTLR
+    default BT
+
+if USB
+
+config USB_DEVICE_STACK
+    default y
+
+endif # USB
+
+config ZMK_BATTERY_VOLTAGE_DIVIDER
+    default y
+
+
+if ZMK_RGB_UNDERGLOW || ZMK_LED_MATRIX
+
+config SPI
+    default y
+
+endif # ZMK_RGB_UNDERGLOW || ZMK_LED_MATRIX
+
+
+if LVGL
+
+config LV_Z_VDB_SIZE
+    default 64
+
+config LV_DPI_DEF
+    default 148
+
+config LV_Z_BITS_PER_PIXEL
+    default 1
+
+choice LV_COLOR_DEPTH
+    default LV_COLOR_DEPTH_1
+endchoice
+
+endif # LVG
+
+
+endif # BOARD_CORNE54V3_LEFT || BOARD_CORNE54V3_RIGHT

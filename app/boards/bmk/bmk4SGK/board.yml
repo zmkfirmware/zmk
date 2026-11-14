@@ -1,0 +1,7 @@
+board:
+  name: bmk4SGK
+  vendor: bmk
+  socs:
+    - name: nrf52840
+      variants:
+        - name: zmk

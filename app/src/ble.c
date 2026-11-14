@@ -62,6 +62,11 @@ enum advertising_type {
 static struct zmk_ble_profile profiles[ZMK_BLE_PROFILE_COUNT];
 static uint8_t active_profile;
 
+#if IS_ENABLED(CONFIG_ZMK_TEST_BEHAVIORS)
+static int8_t test_active_profile_open_override = -1;
+static int8_t test_active_profile_connected_override = -1;
+#endif
+
 #define DEVICE_NAME CONFIG_BT_DEVICE_NAME
 #define DEVICE_NAME_LEN (sizeof(DEVICE_NAME) - 1)
 
@@ -94,7 +99,15 @@ static void raise_profile_changed_event_callback(struct k_work *work) {
 
 K_WORK_DEFINE(raise_profile_changed_event_work, raise_profile_changed_event_callback);
 
-bool zmk_ble_active_profile_is_open(void) { return zmk_ble_profile_is_open(active_profile); }
+bool zmk_ble_active_profile_is_open(void) {
+#if IS_ENABLED(CONFIG_ZMK_TEST_BEHAVIORS)
+    if (test_active_profile_open_override >= 0) {
+        return test_active_profile_open_override != 0;
+    }
+#endif
+
+    return zmk_ble_profile_is_open(active_profile);
+}
 
 bool zmk_ble_profile_is_open(uint8_t index) {
     if (index >= ZMK_BLE_PROFILE_COUNT) {
@@ -119,6 +132,12 @@ void set_profile_address(uint8_t index, const bt_addr_le_t *addr) {
 }
 
 bool zmk_ble_active_profile_is_connected(void) {
+#if IS_ENABLED(CONFIG_ZMK_TEST_BEHAVIORS)
+    if (test_active_profile_connected_override >= 0) {
+        return test_active_profile_connected_override != 0;
+    }
+#endif
+
     return zmk_ble_profile_is_connected(active_profile);
 }
 
@@ -260,6 +279,25 @@ int zmk_ble_profile_index(const bt_addr_le_t *addr) {
     }
     return -ENODEV;
 }
+
+#if IS_ENABLED(CONFIG_ZMK_TEST_BEHAVIORS)
+int zmk_ble_test_set_active_profile_open(bool open) {
+    test_active_profile_open_override = open ? 1 : 0;
+    k_work_submit(&raise_profile_changed_event_work);
+    return 0;
+}
+
+int zmk_ble_test_set_active_profile_connected(bool connected) {
+    test_active_profile_connected_override = connected ? 1 : 0;
+    k_work_submit(&raise_profile_changed_event_work);
+    return 0;
+}
+
+int zmk_ble_test_raise_active_profile_changed(void) {
+    raise_profile_changed_event();
+    return 0;
+}
+#endif
 
 bt_addr_le_t *zmk_ble_profile_address(uint8_t index) {
     if (index >= ZMK_BLE_PROFILE_COUNT) {

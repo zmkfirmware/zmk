@@ -1,0 +1,740 @@
+---
+title: BlackBerry Trackball 配置与使用指南
+sidebar_label: BlackBerry Trackball
+toc_max_heading_level: 3
+---
+
+本指南介绍如何在 ZMK 中使用 SparkFun BlackBerry Trackballer Breakout，包括轨迹球移动、
+速度加速、按键自定义、split 键盘连接，以及 WHT、GRN、RED、BLU 四颗 PWM LED。
+
+这里使用的是通用 Devicetree 配置，不绑定任何具体键盘或控制器。示例中的 GPIO、PWM
+controller、channel 和 pinctrl 都是占位值，使用前必须按自己的原理图修改。
+
+硬件信号和接口可对照 SparkFun 的
+[接线说明](https://learn.sparkfun.com/tutorials/blackberry-trackballer-breakout-hookup-guide/all)与
+[官方示例程序](https://github.com/sparkfun/Blackberry_Trackballer_Breakout/blob/master/Firmware/SparkFun_BlackBerry_Trackballer_Breakout_Demo/SparkFun_BlackBerry_Trackballer_Breakout_Demo.ino)。
+
+## 1. 功能概览
+
+`compatible = "sparkfun,blackberry-trackballer"` 驱动提供：
+
+- 四路方向脉冲输入，输出标准 `INPUT_REL_X`、`INPUT_REL_Y` 相对移动事件。
+- 左、右、上、下分别对应 X 负、X 正、Y 负、Y 正。
+- 根据相邻脉冲频率使用非线性曲线自动加速，慢滚精确、快滚快速移动。
+- 可在运行时切换百分比速度档位，并用 settings 保存当前档位。
+- 可按方向过滤间隔过短的运动脉冲，抑制 GPIO 高频杂波造成的静止抖动。
+- 在一个报告周期内合并 X/Y，支持对角移动和相反方向抵消。
+- 可将较大的单脉冲位移分摊到多个高频报告，保持总距离不变并改善高速平滑度。
+- 轨迹球按键消抖，默认作为鼠标左键，也可触发任意 ZMK behavior。
+- suspend/resume 时清除旧运动和速度状态，并避免按键卡住。
+- 四颗 LED 通过标准 `pwm-leds` 和 ZMK LED Matrix 控制，无专用 LED behavior。
+
+驱动会由 Devicetree 自动启用，通常不需要手动设置
+`CONFIG_INPUT_SPARKFUN_BLACKBERRY_TRACKBALLER`。
+
+## 2. 硬件连接
+
+### 2.1 电气注意事项
+
+建议使用 **3.3 V** 为 breakout 供电，并确保 breakout 与 MCU 共地。即使模块本身允许更高
+电源电压，也不要让 5 V GPIO 信号直接进入 3.3 V MCU。
+
+| Breakout 信号 | 连接目标        | Devicetree 属性 | 有效电平         |
+| ------------- | --------------- | --------------- | ---------------- |
+| `VCC`         | 3.3 V           | —               | —                |
+| `GND`         | MCU GND         | —               | —                |
+| `LFT`         | 任意可中断 GPIO | `left-gpios`    | 通常为高有效脉冲 |
+| `RHT`         | 任意可中断 GPIO | `right-gpios`   | 通常为高有效脉冲 |
+| `UP`          | 任意可中断 GPIO | `up-gpios`      | 通常为高有效脉冲 |
+| `DWN`         | 任意可中断 GPIO | `down-gpios`    | 通常为高有效脉冲 |
+| `BTN`         | 带上拉的 GPIO   | `button-gpios`  | 通常为低有效     |
+| `WHT`         | PWM 输出，可选  | `pwm-leds`      | 高有效 PWM       |
+| `GRN`         | PWM 输出，可选  | `pwm-leds`      | 高有效 PWM       |
+| `RED`         | PWM 输出，可选  | `pwm-leds`      | 高有效 PWM       |
+| `BLU`         | PWM 输出，可选  | `pwm-leds`      | 高有效 PWM       |
+
+方向输出必须连接到支持 GPIO 中断的引脚。四颗 LED 可以不连接；这不会影响轨迹球和按键功能。
+
+## 3. 最小可用配置
+
+### 3.1 Kconfig
+
+在键盘的 `.conf` 文件中启用 ZMK pointing：
+
+```ini title="my_keyboard.conf"
+CONFIG_ZMK_POINTING=y
+```
+
+### 3.2 Trackball Devicetree 节点
+
+下面示例使用 `gpio0` 的 2–6 号引脚。它们只是演示值，必须替换成实际连接。
+
+```dts title="my_keyboard.overlay"
+#include <zephyr/dt-bindings/gpio/gpio.h>
+#include <zephyr/dt-bindings/input/input-event-codes.h>
+
+/ {
+    trackball: trackball {
+        compatible = "sparkfun,blackberry-trackballer";
+
+        /* 替换为实际 GPIO。 */
+        left-gpios = <&gpio0 2 GPIO_ACTIVE_HIGH>;
+        right-gpios = <&gpio0 3 GPIO_ACTIVE_HIGH>;
+        up-gpios = <&gpio0 4 GPIO_ACTIVE_HIGH>;
+        down-gpios = <&gpio0 5 GPIO_ACTIVE_HIGH>;
+        button-gpios = <&gpio0 6 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+
+        zephyr,axis-x = <INPUT_REL_X>;
+        zephyr,axis-y = <INPUT_REL_Y>;
+    };
+
+    trackball_listener: trackball_listener {
+        compatible = "zmk,input-listener";
+        device = <&trackball>;
+    };
+};
+```
+
+编译并刷入后应得到以下行为：
+
+- 向左滚：指针向左移动。
+- 向右滚：指针向右移动。
+- 向上滚：指针向上移动。
+- 向下滚：指针向下移动。
+- 按下轨迹球：鼠标左键。
+
+## 4. Devicetree 参数
+
+### 4.1 必填参数
+
+| 属性            | 说明                                 |
+| --------------- | ------------------------------------ |
+| `left-gpios`    | 左方向有效脉冲 GPIO                  |
+| `right-gpios`   | 右方向有效脉冲 GPIO                  |
+| `up-gpios`      | 上方向有效脉冲 GPIO                  |
+| `down-gpios`    | 下方向有效脉冲 GPIO                  |
+| `button-gpios`  | 轨迹球按键 GPIO                      |
+| `zephyr,axis-x` | 水平轴事件代码，通常是 `INPUT_REL_X` |
+| `zephyr,axis-y` | 垂直轴事件代码，通常是 `INPUT_REL_Y` |
+
+GPIO 的有效电平由 flags 决定。若实际电路使用反相输出，应修改 `GPIO_ACTIVE_HIGH` 或
+`GPIO_ACTIVE_LOW`，不要在驱动中交换方向。
+
+### 4.2 可调参数
+
+| 属性                        | 默认值        | 说明                                     |
+| --------------------------- | ------------- | ---------------------------------------- |
+| `button-code`               | `INPUT_BTN_0` | 按键产生的 Zephyr input code             |
+| `report-period-ms`          | `8`           | 合并方向脉冲及发送插值帧的周期           |
+| `interpolation-frames`      | `1`           | 位移最多分摊的帧数；范围 1–255，`1` 关闭 |
+| `debounce-interval-ms`      | `5`           | 按键延迟采样消抖时间                     |
+| `minimum-pulse-interval-us` | `0`           | 同方向运动脉冲的最小间隔；`0` 表示不过滤 |
+| `acceleration-start-hz`     | `20`          | 低于或等于此频率时使用最小步长           |
+| `acceleration-max-hz`       | `120`         | 高于或等于此频率时使用最大步长           |
+| `acceleration-exponent`     | `2`           | 归一化频率的指数，范围 1–4；`1` 为线性   |
+| `minimum-step`              | `1`           | 首个或慢速脉冲的移动量                   |
+| `maximum-step`              | `8`           | 高速脉冲的最大移动量                     |
+
+完整调校示例：
+
+```dts
+&trackball {
+    report-period-ms = <4>;
+    interpolation-frames = <4>;
+    debounce-interval-ms = <5>;
+    minimum-pulse-interval-us = <4000>;
+    acceleration-start-hz = <20>;
+    acceleration-max-hz = <120>;
+    acceleration-exponent = <2>;
+    minimum-step = <1>;
+    maximum-step = <8>;
+};
+```
+
+在两个频率阈值之间，驱动先将频率归一化，再使用指数曲线：
+
+```text
+x = (frequency - acceleration-start-hz)
+    / (acceleration-max-hz - acceleration-start-hz)
+
+step = minimum-step
+     + (maximum-step - minimum-step)
+     * x^acceleration-exponent
+```
+
+默认指数 2 是二次曲线：低速区增长比线性曲线缓慢，越接近最大频率，步长增长越明显。
+指数 1 可恢复原有等比例增长；指数 3 或 4 会进一步把加速集中在高速区。驱动内部保留定点
+小数余量，因此中间速度不会因为每个脉冲取整而持续丢失移动量。静止后第一个脉冲会恢复为
+`minimum-step`。
+
+参数必须满足：报告周期、按键消抖时间、起始频率和最小步长均大于 0；插值帧数必须为
+1–255；加速指数必须为 1–4；运动脉冲最小间隔不能为负数；
+`acceleration-max-hz` 必须大于 `acceleration-start-hz`；`maximum-step` 必须不小于
+`minimum-step` 且不能超过 32767。不满足时构建会失败并给出对应错误。
+
+`interpolation-frames` 只改变报告时序，不增加脉冲数或总移动量。驱动按每个轴当前剩余帧数
+平均取出完整整数位移，并向远离零的方向取整。例如步长 8、四帧插值会产生
+`2、2、2、2`；后接 300% 速度 processor 时会产生 `6、6、6、6`。小于帧数的位移优先
+发送，所以 1-step 慢速脉冲不会等待四帧，也不会生成空报告。
+
+X/Y 的积压和帧状态互相独立，但仍在同一个 Input 报告中同步输出。新脉冲会叠加到尚未发送
+的积压并重置对应轴的剩余帧数；同轴反向脉冲先抵消未发送部分，减少停止或反向后的旧方向
+尾随。最大平滑窗口约为
+`report-period-ms × interpolation-frames`；例如 4 ms × 4 帧为 16 ms。设置为 1 可完全
+恢复原始单报告行为。
+
+### 4.3 常用调校方向
+
+| 现象                            | 建议                                            |
+| ------------------------------- | ----------------------------------------------- |
+| `minimum-step = 1` 时慢滚仍太快 | 使用第 4.4 节的低倍率运行时速度档位             |
+| 加速太早                        | 提高 `acceleration-start-hz`                    |
+| 很难达到高速                    | 降低 `acceleration-max-hz`                      |
+| 中低速增长仍太快                | 提高 `acceleration-exponent`，最大为 4          |
+| 希望恢复线性增长                | 设置 `acceleration-exponent = <1>`              |
+| 高速移动仍然太慢                | 提高 `maximum-step`                             |
+| 高速档移动有跳跃感              | 使用 4 ms 周期和 4 帧插值                       |
+| 指针更新不够平滑                | 适当降低 `report-period-ms`                     |
+| 报告过于频繁、功耗偏高          | 适当提高 `report-period-ms`                     |
+| 按键偶尔重复触发                | 提高 `debounce-interval-ms`，例如从 5 调到 8–10 |
+| 静止时指针持续抖动              | 设置 `minimum-pulse-interval-us = <4000>`       |
+
+建议一次只修改一个参数，并分别测试慢滚、连续快滚和突然反向。
+
+`minimum-pulse-interval-us` 按 LFT、RHT、UP、DWN 分别计时。4 ms 会拒绝同方向超过
+250 Hz 的重复边沿，同时不会限制默认 120 Hz 的加速上限。被过滤的边沿不会参与测速。若设置后
+仍有静止移动，说明 GPIO 上存在间隔更长、软件无法与真实运动区分的跳变，应检查供电、共地、
+接线串扰和 Trackball 固定螺丝。
+
+### 4.4 运行时速度档位
+
+若要像鼠标 DPI 键一样在小屏精细定位和大屏快速移动之间切换，可把
+`zmk,input-processor-speed-profile` 加到 Trackball listener。它在驱动的频率加速之后统一
+缩放 X/Y：
+
+```dts title="my_keyboard.overlay"
+trackball_speed: trackball_speed {
+    compatible = "zmk,input-processor-speed-profile";
+    #input-processor-cells = <0>;
+    type = <INPUT_EV_REL>;
+    codes = <INPUT_REL_X INPUT_REL_Y>;
+    speed-percentages = <50 100 150 200 300>;
+    default-speed-level = <2>;
+    persist-speed-level;
+    track-remainders;
+};
+
+&trackball_listener {
+    input-processors = <&trackball_speed>;
+};
+```
+
+这组配置有五档，默认第 2 档 100%。`speed-percentages` 可以使用 1–65535 的整数百分比，
+最多 255 档；`default-speed-level` 和 keymap 档位都从 1 开始编号。构建会拒绝空列表、
+0% 倍率、超过 255 档、超过范围的百分比或无效默认档位。
+
+`track-remainders` 使 X/Y 分别保存除法余数。例如 50% 档下，两个值为 1 的慢速报告最终仍
+产生一个单位移动。切换档位不会丢弃已有余数；大倍率计算会饱和到 HID 可接受的 `INT16`
+范围。BTN 和其他不在 `codes` 中的事件不受影响。
+
+定义用于控制该 processor 的 behavior：
+
+```dts title="my_keyboard.keymap"
+#include <dt-bindings/zmk/input_speed.h>
+
+/ {
+    behaviors {
+        tbspd: trackball_speed_behavior {
+            compatible = "zmk,behavior-input-speed";
+            #binding-cells = <2>;
+            processor = <&trackball_speed>;
+        };
+    };
+};
+
+/* 放入任意 layer 的 bindings。 */
+&tbspd INPUT_SPEED_DOWN
+&tbspd INPUT_SPEED_UP
+&tbspd INPUT_SPEED_SET(1)
+&tbspd INPUT_SPEED_SET(5)
+```
+
+`INPUT_SPEED_DOWN` 和 `INPUT_SPEED_UP` 到首尾档后停止，不循环。`INPUT_SPEED_SET(level)`
+直选某档，越界时保持当前状态。相对命令使用 central-state-dependent 转换成绝对 `SET`；
+split 键盘应把速度 processor 放在 central listener 上，即使切换键或 Trackball 位于
+peripheral，也只由 central 维护当前档位。
+
+`persist-speed-level` 需要 `CONFIG_SETTINGS=y`，以
+`input_speed/<processor-device-name>` 保存一字节档位，并遵循
+`CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE` 延迟写入。没有存储值或存储值越界时使用
+`default-speed-level`。如果不希望保存，删除 `persist-speed-level`。
+
+## 5. 方向旋转和反向
+
+不要为了改变安装方向而交换驱动的 X/Y code。使用 ZMK 已有的 input transformer：
+
+```dts title="my_keyboard.keymap"
+#include <input/processors.dtsi>
+#include <dt-bindings/zmk/input_transform.h>
+
+&trackball_listener {
+    input-processors = <
+        &zip_xy_transform (INPUT_TRANSFORM_XY_SWAP | INPUT_TRANSFORM_Y_INVERT)
+    >;
+};
+```
+
+可用 flags：
+
+- `INPUT_TRANSFORM_XY_SWAP`：交换 X/Y。
+- `INPUT_TRANSFORM_X_INVERT`：反转 X。
+- `INPUT_TRANSFORM_Y_INVERT`：反转 Y。
+
+多个 flags 使用 `|` 组合。具体方向取决于轨迹球在键盘上的安装角度。
+
+## 6. 自定义轨迹球按键
+
+### 6.1 默认鼠标左键
+
+默认 `button-code = <INPUT_BTN_0>`，且 listener 没有捕获该事件时，按键直接作为鼠标左键。
+这是最简单的配置。
+
+### 6.2 直接改成鼠标右键
+
+如果按键只需要固定为右键，可直接更改 input code：
+
+```dts
+&trackball {
+    button-code = <INPUT_BTN_1>;
+};
+```
+
+### 6.3 触发任意 ZMK behavior
+
+需要按键、layer、macro、hold-tap 或鼠标 behavior 时，使用
+`zmk,input-processor-behaviors`：
+
+```dts title="my_keyboard.keymap"
+#include <behaviors.dtsi>
+#include <input/processors.dtsi>
+#include <zephyr/dt-bindings/input/input-event-codes.h>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/pointing.h>
+
+/ {
+    trackball_button_behavior: trackball_button_behavior {
+        compatible = "zmk,input-processor-behaviors";
+        #input-processor-cells = <0>;
+        codes = <INPUT_BTN_0>;
+
+        /* 从下面选择一个，也可以换成自定义 macro 或 hold-tap。 */
+        bindings = <&mkp RCLK>;  /* 鼠标右键 */
+        // bindings = <&mkp LCLK>;  /* 鼠标左键 */
+        // bindings = <&kp ESC>;    /* 普通按键 */
+        // bindings = <&mo 1>;      /* 按住时进入 layer 1 */
+    };
+};
+
+&trackball_listener {
+    input-processors = <&trackball_button_behavior>;
+};
+```
+
+如果还需要方向 transformer，可把两个 processor 按顺序放入同一列表：
+
+```dts
+&trackball_listener {
+    input-processors = <
+        &zip_xy_transform INPUT_TRANSFORM_Y_INVERT
+        &trackball_button_behavior
+    >;
+};
+```
+
+## 7. Split 键盘
+
+轨迹球可以连接在 split central 或 split peripheral。连接在 central 时与单体键盘相同；连接
+在 peripheral 时，通过现有 `zmk,input-split` 将移动和按键事件转发到 central。
+
+### 7.1 两侧共享定义
+
+```dts title="my_split.dtsi"
+/ {
+    split_inputs {
+        #address-cells = <1>;
+        #size-cells = <0>;
+
+        trackball_split: trackball_split@0 {
+            compatible = "zmk,input-split";
+            reg = <0>;
+        };
+    };
+
+    trackball_listener: trackball_listener {
+        compatible = "zmk,input-listener";
+        status = "disabled";
+        device = <&trackball_split>;
+    };
+};
+```
+
+若有多个 split input，每个节点必须使用不同的 `reg`。
+
+### 7.2 Peripheral 侧
+
+在实际安装轨迹球的一侧定义硬件，并把它交给 input split：
+
+```dts title="my_split_right.overlay"
+#include "my_split.dtsi"
+#include <zephyr/dt-bindings/gpio/gpio.h>
+#include <zephyr/dt-bindings/input/input-event-codes.h>
+
+/ {
+    trackball: trackball {
+        compatible = "sparkfun,blackberry-trackballer";
+        left-gpios = <&gpio0 2 GPIO_ACTIVE_HIGH>;
+        right-gpios = <&gpio0 3 GPIO_ACTIVE_HIGH>;
+        up-gpios = <&gpio0 4 GPIO_ACTIVE_HIGH>;
+        down-gpios = <&gpio0 5 GPIO_ACTIVE_HIGH>;
+        button-gpios = <&gpio0 6 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+        zephyr,axis-x = <INPUT_REL_X>;
+        zephyr,axis-y = <INPUT_REL_Y>;
+    };
+};
+
+&trackball_split {
+    device = <&trackball>;
+};
+```
+
+安装方向修正也可以放在 peripheral 的 `&trackball_split` 上，以减少转发前的无效处理。
+
+### 7.3 Central 侧
+
+```dts title="my_split_left.overlay"
+#include "my_split.dtsi"
+
+&trackball_listener {
+    status = "okay";
+};
+```
+
+自定义按键 behavior 和运行时速度 processor 都应配置在 central 的 listener 上。这样即使
+轨迹球位于 peripheral，`&kp`、layer、macro、`&mkp` 以及 DPI 式速度档位仍只在 central
+执行和保存。
+
+更多 split input 细节参见[通用 Pointing Device 集成文档](./pointing.mdx#listener-and-input-split-device)。
+
+## 8. 配置四颗 PWM LED
+
+LED 顺序固定按 WHT、GRN、RED、BLU 描述，但使用哪个 PWM controller、channel 和物理引脚
+由板级 DTS 决定。
+
+### 8.1 Kconfig
+
+```ini title="my_keyboard.conf"
+CONFIG_PWM=y
+CONFIG_ZMK_LED_MATRIX=y
+
+# 可选：保存 LED Matrix 开关、亮度和 independent profile。
+CONFIG_SETTINGS=y
+```
+
+`CONFIG_ZMK_LED_MATRIX` 会选择标准 LED API；存在可用 `pwm-leds` 节点时，Zephyr 会自动
+启用 PWM LED driver。
+
+### 8.2 nRF52 pinctrl 示例
+
+以下仅演示如何把 PWM0 的四个 channel 映射到 P0.07–P0.10。必须根据自己的 MCU 和引脚
+重新配置；非 nRF 控制器应使用对应平台的 pinctrl 语法。
+
+```dts
+#include <zephyr/dt-bindings/pinctrl/nrf-pinctrl.h>
+
+&pinctrl {
+    trackball_pwm_default: trackball_pwm_default {
+        group1 {
+            psels = <NRF_PSEL(PWM_OUT0, 0, 7)>,
+                    <NRF_PSEL(PWM_OUT1, 0, 8)>,
+                    <NRF_PSEL(PWM_OUT2, 0, 9)>,
+                    <NRF_PSEL(PWM_OUT3, 0, 10)>;
+        };
+    };
+
+    trackball_pwm_sleep: trackball_pwm_sleep {
+        group1 {
+            psels = <NRF_PSEL(PWM_OUT0, 0, 7)>,
+                    <NRF_PSEL(PWM_OUT1, 0, 8)>,
+                    <NRF_PSEL(PWM_OUT2, 0, 9)>,
+                    <NRF_PSEL(PWM_OUT3, 0, 10)>;
+            low-power-enable;
+        };
+    };
+};
+
+&pwm0 {
+    status = "okay";
+    pinctrl-0 = <&trackball_pwm_default>;
+    pinctrl-1 = <&trackball_pwm_sleep>;
+    pinctrl-names = "default", "sleep";
+};
+```
+
+### 8.3 Trackball 独立使用 LED Matrix
+
+下面定义 1 ms、高有效 PWM，以及关闭、白灯 30%、绿红混合 70%、四灯 50% 四个状态：
+
+```dts title="my_keyboard.overlay"
+#include <zephyr/dt-bindings/pwm/pwm.h>
+#include <dt-bindings/zmk/led_matrix.h>
+
+/ {
+    chosen {
+        zmk,led-matrix = &trackball_led_matrix;
+    };
+
+    trackball_leds: trackball_leds {
+        compatible = "pwm-leds";
+
+        wht { pwms = <&pwm0 0 PWM_MSEC(1) PWM_POLARITY_NORMAL>; };
+        grn { pwms = <&pwm0 1 PWM_MSEC(1) PWM_POLARITY_NORMAL>; };
+        red { pwms = <&pwm0 2 PWM_MSEC(1) PWM_POLARITY_NORMAL>; };
+        blu { pwms = <&pwm0 3 PWM_MSEC(1) PWM_POLARITY_NORMAL>; };
+    };
+
+    trackball_led_matrix: trackball_led_matrix {
+        compatible = "zmk,led-matrix";
+        led-driver = "matrix";
+        led-device = <&trackball_leds>;
+        led-count = <4>;
+        led-indexes = <0 1 2 3>;
+
+        trackball_group: independent0 {
+            independent-id = <0>;
+            independent-leds = <0 1 2 3>;
+
+            profile0 {
+                profile-id = <0>;
+                renderer = "solid";
+                colors = <0x000000 0x000000 0x000000 0x000000>;
+                brightness = <100>;
+                period-ms = <1000>;
+            };
+
+            profile1 {
+                profile-id = <1>;
+                renderer = "solid";
+                colors = <0xFFFFFF 0x000000 0x000000 0x000000>;
+                brightness = <30>;
+                period-ms = <1000>;
+            };
+
+            profile2 {
+                profile-id = <2>;
+                renderer = "solid";
+                colors = <0x000000 0x00FF00 0xFF0000 0x000000>;
+                brightness = <70>;
+                period-ms = <1000>;
+            };
+
+            profile3 {
+                profile-id = <3>;
+                renderer = "solid";
+                colors = <0xFFFFFF 0x00FF00 0xFF0000 0x0000FF>;
+                brightness = <50>;
+                period-ms = <1000>;
+            };
+        };
+    };
+};
+```
+
+在 keymap 中原子切换整个四灯组合：
+
+```dts title="keymap bindings 片段"
+#include <dt-bindings/zmk/led_matrix.h>
+
+bindings = <
+    &lm LM_CFS(0, 0)  /* 全关 */
+    &lm LM_CFS(0, 1)  /* 白灯 30% */
+    &lm LM_CFS(0, 2)  /* 绿灯 + 红灯 70% */
+    &lm LM_CFS(0, 3)  /* 四灯 50% */
+>;
+```
+
+同一个灯光组合需要多个亮度时，应定义多个 profile。`LM_BRT` 调节整个 LED Matrix 的全局
+亮度，而 profile 中的 `brightness` 定义该组合自身的亮度。
+
+### 8.4 与键盘已有 LED backend 共存
+
+若键盘已有 channel backend，用 `zmk,led-composite` 把 Trackball PWM LED 追加为 scalar
+child。假设键盘 backend 使用 24 个通道：
+
+```dts
+/ {
+    led_chain: led_chain {
+        compatible = "zmk,led-composite";
+
+        keyboard {
+            led-device = <&keyboard_led_driver>;
+            channel-offset = <0>;
+            channel-count = <24>;
+        };
+
+        trackball {
+            led-device = <&trackball_leds>;
+            channel-offset = <24>;
+            channel-count = <12>; /* 4 颗物理 LED × 3 个逻辑 RGB 通道 */
+        };
+    };
+};
+
+&keyboard_led_matrix {
+    led-device = <&led_chain>;
+    output-channel-count = <36>;
+
+    /* 在原 channel-indexes 后追加四组 Trackball 通道。 */
+    channel-indexes = <
+        /* 原键盘 LED 映射 0..23 */
+        0 1 2  3 4 5  6 7 8  9 10 11
+        12 13 14  15 16 17  18 19 20  21 22 23
+
+        /* WHT、GRN、RED、BLU */
+        24 25 26  27 28 29  30 31 32  33 34 35
+    >;
+};
+```
+
+scalar child 的 `channel-count` 必须是物理 LED 数量的三倍。每颗灯对应的三个逻辑 RGB
+分量取最大值，然后转换为 0–100% PWM brightness。`write_channels` backend、scalar PWM
+LED 和 binary LED 可以存在于同一个 composite 中。
+
+详细规则参见 [LED Matrix 与 LED Composite 参考](../led-matrix-led-composite-reference.mdx)。
+
+## 9. 完整组合示例
+
+下面是一套常见组合：单体键盘、Y 轴反转、轨迹球按键作为右键、默认 1–8 加速曲线、五档
+运行时速度，以及通过独立 profile 切换四灯。
+
+```ini title="my_keyboard.conf"
+CONFIG_ZMK_POINTING=y
+CONFIG_PWM=y
+CONFIG_ZMK_LED_MATRIX=y
+CONFIG_SETTINGS=y
+```
+
+硬件 `.overlay` 中包含：
+
+1. 第 3 节的 `trackball` 和 `trackball_listener`。
+2. 第 4.4 节的 `trackball_speed`。
+3. 第 8.2 节的 PWM pinctrl。
+4. 第 8.3 节的 `trackball_leds` 和 `trackball_led_matrix`。
+
+在 `.keymap` 中加入：
+
+```dts title="my_keyboard.keymap"
+#include <behaviors.dtsi>
+#include <input/processors.dtsi>
+#include <zephyr/dt-bindings/input/input-event-codes.h>
+#include <dt-bindings/zmk/input_speed.h>
+#include <dt-bindings/zmk/input_transform.h>
+#include <dt-bindings/zmk/pointing.h>
+#include <dt-bindings/zmk/led_matrix.h>
+
+/ {
+    trackball_button_behavior: trackball_button_behavior {
+        compatible = "zmk,input-processor-behaviors";
+        #input-processor-cells = <0>;
+        codes = <INPUT_BTN_0>;
+        bindings = <&mkp RCLK>;
+    };
+
+    behaviors {
+        tbspd: trackball_speed_behavior {
+            compatible = "zmk,behavior-input-speed";
+            #binding-cells = <2>;
+            processor = <&trackball_speed>;
+        };
+    };
+};
+
+&trackball_listener {
+    input-processors = <
+        &zip_xy_transform INPUT_TRANSFORM_Y_INVERT
+        &trackball_speed
+        &trackball_button_behavior
+    >;
+};
+
+/* 在现有 keymap layer 的 bindings 中使用：
+ * &tbspd INPUT_SPEED_DOWN  降低一档
+ * &tbspd INPUT_SPEED_UP    提高一档
+ * &lm LM_CFS(0, 0)  全关
+ * &lm LM_CFS(0, 1)  白灯
+ * &lm LM_CFS(0, 2)  绿灯 + 红灯
+ */
+```
+
+## 10. 编译与验收
+
+常用构建命令：
+
+```sh
+west build -s app -p -b nice_nano_v2 -- -DSHIELD="my_keyboard"
+```
+
+刷入后建议按以下顺序检查：
+
+1. 单独滚动四个方向，确认符号和安装方向。
+2. 慢滚确认能精确移动，连续快滚确认有明显加速。
+3. 依次切换速度档位，确认首尾不循环，50% 和 300% 差异明显。
+4. 检查 45° 对角滚动、最高速度档、突然停止和快速反向；插值尾窗不应超过配置上限。
+5. 按下并释放轨迹球，确认没有重复点击或卡住。
+6. split peripheral 配置中，确认 central 能收到移动和按键 behavior。
+7. 依次切换 LED profile，确认单灯、多灯和亮度正确。
+8. 断电重启，确认速度档位和 LED profile 选择可以恢复。
+
+## 11. 常见问题
+
+### 完全没有移动
+
+- 确认 `CONFIG_ZMK_POINTING=y`。
+- 确认 `/trackball` 节点为 `status = "okay"` 或没有被禁用。
+- 检查四个方向 GPIO 是否支持中断。
+- 检查 breakout 是否使用 3.3 V 且与 MCU 共地。
+- 检查 `trackball_listener` 的 `device` 是否指向正确节点。
+
+### 方向错误
+
+- 安装角度问题使用 `&zip_xy_transform` 修正。
+- 单根信号逻辑反相时修改相应 GPIO 的 `GPIO_ACTIVE_*` flag。
+- 不要仅为了旋转而把 `zephyr,axis-x` 和 `zephyr,axis-y` 改成非标准 code。
+
+### 指针只有慢速或加速过强
+
+- 检查 `acceleration-start-hz` 是否小于 `acceleration-max-hz`。
+- 先恢复默认 20–120 Hz、1–8 step，再一次修改一个参数。
+- 检查当前运行时速度档位及 `speed-percentages`。
+- GPIO 方向脉冲不使用按键式消抖；不要在外部再加入会吞掉快速脉冲的软件消抖。
+
+### 按键没有触发自定义 behavior
+
+- processor 的 `codes` 必须与 `button-code` 相同。
+- split peripheral 场景中，应把 behavior processor 放在 central listener 上。
+- 检查相应 behavior 所需的 `.dtsi` 和 dt-bindings header 是否已 include。
+
+### LED 不亮或无法调光
+
+- 确认 `CONFIG_PWM=y`，PWM controller 为 `status = "okay"`。
+- 检查 pinctrl 的 `PWM_OUT0..3` 与 `pwm-leds` channel 顺序一致。
+- 高有效输出使用 `PWM_POLARITY_NORMAL`；若外部电路反相，按原理图选择 polarity。
+- composite scalar child 必须使用 `channel-count = <12>`。
+- 检查 `/chosen` 的 `zmk,led-matrix` 是否指向实际 LED Matrix 节点。
+
+## 12. 延伸阅读
+
+- [Pointing Device 通用集成](./pointing.mdx)
+- [Pointing Device 配置参考](../config/pointing.md)
+- [Behaviors Input Processor](../keymaps/input-processors/behaviors.md)
+- [LED Matrix 硬件集成](../development/hardware-integration/lighting/led-matrix.mdx)
+- [LED Matrix 与 LED Composite 权威参考](../led-matrix-led-composite-reference.mdx)

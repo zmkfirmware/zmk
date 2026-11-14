@@ -1,0 +1,42 @@
+# Copyright (c) 2026 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Test LED controller with selectable Zephyr LED API capabilities
+
+compatible: "zmk,led-mock"
+
+include: ["led-controller.yaml"]
+
+properties:
+  mode:
+    type: string
+    required: true
+    enum: ["binary", "brightness", "color", "channels", "none"]
+    description: |
+      Selects which Zephyr LED callbacks this test device exposes.
+      The "none" mode intentionally exposes no callbacks for validation tests.
+
+  channel-count:
+    type: int
+    required: false
+    description: Number of writable channels when mode is "channels".
+
+  managed-power-kind:
+    type: string
+    required: false
+    enum: ["none", "is31fl3733", "is31fl3737"]
+    description: |
+      Optional test-only managed power personality used by zmk,led-composite
+      power-path tests.
+
+  sdb-gpios:
+    type: phandle-array
+    required: false
+    description: Optional mock SDB GPIO for composite hard-power tests.
+
+child-binding:
+  properties:
+    index:
+      required: true
+    color-mapping:
+      required: true

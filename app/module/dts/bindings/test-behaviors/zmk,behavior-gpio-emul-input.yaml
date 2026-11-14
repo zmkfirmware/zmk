@@ -1,0 +1,14 @@
+# Copyright (c) 2026 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: GPIO Emulator Input Test Behavior
+
+compatible: "zmk,behavior-gpio-emul-input"
+
+include: zero_param.yaml
+
+properties:
+  gpios:
+    type: phandle-array
+    required: true
+

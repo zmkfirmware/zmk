@@ -1,0 +1,12 @@
+#
+# Copyright (c) 2023 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+#
+
+config BOARD_CORNE54V2_LEFT
+    bool "CORNE54V2_left"
+    depends on SOC_NRF52840_QIAA
+
+config BOARD_CORNE54V2_RIGHT
+    bool "CORNE54V2_right"
+    depends on SOC_NRF52840_QIAA

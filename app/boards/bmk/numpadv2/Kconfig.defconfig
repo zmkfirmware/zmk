@@ -1,0 +1,33 @@
+# Copyright (c) 2021 Nick Winans
+# SPDX-License-Identifier: MIT
+
+if BOARD_NUMPADV2
+
+config ZMK_KEYBOARD_NAME
+	default "numpadv2"
+
+if USB_DEVICE_STACK
+    config USB_NRFX
+        default y
+endif # USB_DEVICE_STACK
+
+config BT_CTLR
+	default BT
+
+#config ZMK_BLE
+#	default y
+
+#config ZMK_USB
+#	default y
+
+config ZMK_BATTERY_VOLTAGE_DIVIDER
+	default y
+    
+if ZMK_RGB_UNDERGLOW
+
+config SPI
+    default y
+
+endif # ZMK_RGB_UNDERGLOW
+
+endif # BOARD_NUMPADV2

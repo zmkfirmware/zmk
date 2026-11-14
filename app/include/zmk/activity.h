@@ -9,3 +9,7 @@
 enum zmk_activity_state { ZMK_ACTIVITY_ACTIVE, ZMK_ACTIVITY_IDLE, ZMK_ACTIVITY_SLEEP };
 
 enum zmk_activity_state zmk_activity_get_state(void);
+
+#if defined(CONFIG_ZMK_TEST_BEHAVIORS)
+int zmk_activity_test_set_state(enum zmk_activity_state state);
+#endif

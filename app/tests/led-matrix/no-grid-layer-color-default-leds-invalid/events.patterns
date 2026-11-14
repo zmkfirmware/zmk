@@ -1,0 +1,2 @@
+/Layer color 1 requires matrix-led-grid or explicit layer-leds/p
+/^Invalid zmk,led-matrix DTS configuration/p

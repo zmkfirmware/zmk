@@ -1,0 +1,4 @@
+LED matrix v4 settings injected: bytes=9 ids=4 on=1 brt=73 profile=0 speed=2 hue=5 child0=1 child1=0
+LED matrix state save scheduled: debounce=1 ids=2 on=1 brt=73 profile=0 speed=2 hue=5
+LED matrix state save start: debounce=1 bytes=7 ids=2 on=1 brt=73 profile=0 speed=2 hue=5
+LED matrix state save success: bytes=7 ids=2 on=1 brt=73 profile=0 speed=2 hue=5

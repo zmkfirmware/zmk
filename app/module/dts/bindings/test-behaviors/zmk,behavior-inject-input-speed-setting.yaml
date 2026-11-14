@@ -1,0 +1,14 @@
+# Copyright (c) 2026 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Input speed profile settings injector behavior
+
+compatible: "zmk,behavior-inject-input-speed-setting"
+
+include: one_param.yaml
+
+properties:
+  processor:
+    type: phandle
+    required: true
+    description: Speed profile processor whose settings entry is injected.

@@ -1,0 +1,6 @@
+/^Initialized LED matrix:/p
+/LED matrix idle suspend -> auto-suspended/p
+/LED matrix entered BLE pairing transient/p
+/LED matrix BLE pairing transient expired/p
+/LED matrix transient timeout expired, restoring lower-priority output and power-off output/p
+/^LED mock color/p

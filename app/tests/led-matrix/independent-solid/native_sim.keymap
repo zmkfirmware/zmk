@@ -1,0 +1,51 @@
+#include "../behavior_keymap.dtsi"
+
+/ {
+    chosen {
+        zmk,led-matrix = &led_matrix;
+    };
+
+    led_matrix_dev: led_matrix_dev {
+        compatible = "zmk,led-mock";
+        mode = "color";
+
+        led_0 { index = <0>; color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>; };
+        led_1 { index = <1>; color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>; };
+        led_2 { index = <2>; color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>; };
+        led_3 { index = <3>; color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>; };
+        led_4 { index = <4>; color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>; };
+    };
+
+    led_matrix: led_matrix {
+        compatible = "zmk,led-matrix";
+        led-driver = "matrix";
+        led-device = <&led_matrix_dev>;
+        led-count = <5>;
+        matrix-led-grid = <
+            0 1 LM_BREAK
+            2 3
+        >;
+
+        profile0 {
+            profile-id = <0>;
+            display-name = "Independent Solid";
+            renderer = "solid";
+            colors = <0x010203 0x100020 0x0000FF 0xAB0000 0x123456>;
+            brightness = <100>;
+            period-ms = <1000>;
+        };
+
+        independent0 {
+            independent-id = <0>;
+            independent-leds = <4>;
+
+            profile0 {
+                profile-id = <0>;
+                renderer = "solid";
+                colors = <0x123456>;
+                brightness = <100>;
+                period-ms = <1000>;
+            };
+        };
+    };
+};

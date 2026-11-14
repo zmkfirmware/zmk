@@ -1,0 +1,44 @@
+#include "../behavior_keymap.dtsi"
+
+/ {
+    chosen {
+        zmk,led-matrix = &led_matrix;
+    };
+
+    bad_strip_child: bad_strip_child {
+        compatible = "zmk,led-strip-mock";
+        chain-length = <2>;
+        support-update-channels;
+    };
+
+    led_chain: led_composite {
+        compatible = "zmk,led-composite";
+
+        child0 {
+            led-strip-device = <&bad_strip_child>;
+            channel-offset = <0>;
+            channel-count = <5>;
+        };
+    };
+
+    led_matrix: led_matrix {
+        compatible = "zmk,led-matrix";
+        led-driver = "matrix";
+        led-device = <&led_chain>;
+        led-count = <2>;
+        output-channel-count = <6>;
+        channel-indexes = <
+            0 1 2
+            3 4 5
+        >;
+
+        profile0 {
+            profile-id = <0>;
+            display-name = "Composite Strip Count Invalid";
+            renderer = "solid";
+            colors = <0x010203 0x040506>;
+            brightness = <100>;
+            period-ms = <1000>;
+        };
+    };
+};

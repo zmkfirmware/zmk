@@ -1,0 +1,2 @@
+Layer color 1 layer-colors length must be 1 or 2, got 3
+Invalid zmk,led-matrix DTS configuration (-22)

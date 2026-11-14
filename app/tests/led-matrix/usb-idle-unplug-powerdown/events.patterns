@@ -1,0 +1,3 @@
+/^EXT power generic runtime/p
+/LED matrix output sync failed/p
+/LED matrix render failed/p

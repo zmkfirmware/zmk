@@ -1,6 +1,16 @@
 
 if INPUT
 
+config INPUT_SPARKFUN_BLACKBERRY_TRACKBALLER
+    bool "SparkFun BlackBerry Trackballer"
+    default y
+    depends on DT_HAS_SPARKFUN_BLACKBERRY_TRACKBALLER_ENABLED
+    depends on GPIO
+    help
+      Enable the GPIO input driver for the SparkFun BlackBerry Trackballer
+      Breakout. The driver reports relative X/Y movement and the integrated
+      push button through the Zephyr input subsystem.
+
 config ZMK_INPUT_MOCK
     bool "Input Mock"
     default y

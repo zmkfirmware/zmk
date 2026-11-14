@@ -160,6 +160,7 @@ module.exports = {
         "hardware-integration/encoders",
         "hardware-integration/soft-off-setup",
         "hardware-integration/pointing",
+        "hardware-integration/blackberry-trackball",
         "hardware-integration/battery",
         {
           type: "category",

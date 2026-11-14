@@ -1,0 +1,13 @@
+file_format: "1"
+id: n52test
+name: n52test
+type: board
+arch: arm
+features:
+  - keys
+  - pointer
+  - backlight
+outputs:
+  - usb
+  - ble
+url: https://bmk-io.com

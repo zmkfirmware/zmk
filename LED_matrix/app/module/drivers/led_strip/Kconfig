@@ -1,0 +1,5 @@
+config ZMK_LED_STRIP_MOCK
+    bool "ZMK LED Strip Mock"
+    default y
+    depends on LED_STRIP
+    depends on DT_HAS_ZMK_LED_STRIP_MOCK_ENABLED

@@ -1,0 +1,12 @@
+file_format: "1"
+id: bmk4SGK
+name: bmk4SGK
+type: board
+arch: arm
+features:
+  - keys
+  - studio
+outputs:
+  - usb
+  - ble
+url: https://bmk-io.com
