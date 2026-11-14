@@ -562,6 +562,17 @@ static void security_changed(struct bt_conn *conn, bt_security_t level, enum bt_
         LOG_DBG("Security changed: %s level %u", addr, level);
     } else {
         LOG_ERR("Security failed: %s level %u err %d", addr, level, err);
+#if IS_ENABLED(CONFIG_ZMK_BLE_AUTO_UNPAIR_ON_KEY_MISSING)
+        if (err == BT_SECURITY_ERR_PIN_OR_KEY_MISSING) {
+            // Peer holds a different (or no) bond for us, so the handshake
+            // will loop on every reconnect until something resets state.
+            // Drop our half of the bond and disconnect; the next advert
+            // initiates a fresh pairing exchange.
+            LOG_WRN("Stale bond detected, clearing and disconnecting");
+            bt_unpair(BT_ID_DEFAULT, bt_conn_get_dst(conn));
+            bt_conn_disconnect(conn, BT_HCI_ERR_AUTH_FAIL);
+        }
+#endif
     }
 }
 
