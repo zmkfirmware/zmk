@@ -1,0 +1,68 @@
+#include <dt-bindings/zmk/matrix_transform.h>
+#include "tester_rpi_zero-layouts.dtsi"
+
+&physical_layout0 {
+    transform = <&transform0>;
+};
+
+&physical_layout1 {
+    transform = <&transform0>;
+};
+
+/ {
+    chosen {
+        zmk,kscan = &kscan0;
+        zmk,physical-layout = &physical_layout0;
+    };
+
+    kscan0: kscan {
+        compatible = "zmk,kscan-gpio-direct";
+        wakeup-source;
+        debounce-press-ms = <10>;
+        debounce-release-ms = <10>;
+        input-gpios
+            = <&gpio0 0 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&gpio0 1 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&gpio0 3 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&gpio0 4 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&gpio0 5 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&gpio0 6 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&gpio0 7 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&gpio0 8 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&gpio0 9 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&gpio0 10 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&gpio0 11 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&gpio0 12 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&gpio0 13 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&gpio0 14 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&gpio0 15 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            // GP16 is not exposed, used for the RGB LED
+            , <&gpio0 17 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&gpio0 18 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&gpio0 19 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&gpio0 20 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&gpio0 21 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&gpio0 22 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&gpio0 23 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&gpio0 24 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&gpio0 25 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&gpio0 26 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&gpio0 27 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&gpio0 28 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&gpio0 29 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            ;
+    };
+
+    // 29 keys, GP0 to GP29 except GP16:
+    transform0: keymap_transform {
+        compatible = "zmk,matrix-transform";
+        columns = <26>;
+        rows = <1>;
+        map = <
+        RC(0,0)  RC(0,1)  RC(0,2)  RC(0,3)  RC(0,4)  RC(0,5)  RC(0,6)  RC(0,7)  RC(0,8)  RC(0,9)
+        RC(0,10) RC(0,11) RC(0,12) RC(0,13) RC(0,14) RC(0,15) RC(0,16) RC(0,17) RC(0,18) RC(0,19)
+        RC(0,20) RC(0,21) RC(0,22) RC(0,23) RC(0,24) RC(0,25) RC(0,26) RC(0,27) RC(0,28)
+        >;
+    };
+};
