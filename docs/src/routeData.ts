@@ -79,7 +79,7 @@ function addDevelopmentBanner(route: StarlightRouteData) {
   if (!isDevelopmentVersion || !isDocsPage(route.id)) return;
 
   const latestVersion = releaseVersions[0];
-  const releaseUrl = `https://v${latestVersion.replaceAll(".", "-")}-branch.zmk.dev/docs/`;
+  const releaseUrl = `https://v${latestVersion.replaceAll(".", "-")}-branch.zmk.dev/docs`;
   const devBanner = `You're viewing the documentation for the development version of ZMK. You may want the latest release <a href="${releaseUrl}">v${latestVersion}</a>.`;
 
   const existingBanner = route.entry.data.banner?.content;

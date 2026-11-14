@@ -126,7 +126,7 @@ This _only_ applies to boards. Shields do not need any changes to account for th
 
 ### Board Upgrade Script
 
-The Zephyr project provides a script to automate updating a board to HWMv2. To run the script, you'll need to have a local [development setup](/docs/development/local-toolchain/setup/) ready to use. You'll need to ensure you've updated to the new ZMK version and run `west update` to ensure you've got the new Zephyr version with the script available.
+The Zephyr project provides a script to automate updating a board to HWMv2. To run the script, you'll need to have a local [development setup](/docs/development/local-toolchain/setup) ready to use. You'll need to ensure you've updated to the new ZMK version and run `west update` to ensure you've got the new Zephyr version with the script available.
 
 :::note
 

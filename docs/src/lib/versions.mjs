@@ -25,12 +25,12 @@ export const versionNavbarItems = [
   {
     label: "Pre-Release",
     description: "Current active development branch (main)",
-    href: "https://zmk.dev/docs/",
+    href: "https://zmk.dev/docs",
   },
   ...releaseVersions.map((r) => ({
     label: "v" + r,
     description: "Stable release v" + r,
-    href: `https://v${r.replaceAll(".", "-")}-branch.zmk.dev/docs/`,
+    href: `https://v${r.replaceAll(".", "-")}-branch.zmk.dev/docs`,
   })),
 ];
 

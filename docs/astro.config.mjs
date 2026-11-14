@@ -60,8 +60,13 @@ const removeBlogRssSocial = {
 export default defineConfig({
   site: "https://zmk.dev",
   trailingSlash: "never",
+  // Emit flat `.html` files so Netlify serves extensionless URLs and
+  // redirects `/x/` to `/x`.
+  // Starlight is patched (see patches/) to strip `.html` from canonical and
+  // Pagefind result URLs under this format.
+  // Also see: https://github.com/withastro/starlight/discussions/3600
   build: {
-    format: "directory",
+    format: "preserve",
   },
   vite: {
     resolve: {

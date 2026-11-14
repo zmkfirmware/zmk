@@ -1,0 +1,58 @@
+diff --git a/dist/components/Search.astro b/dist/components/Search.astro
+index d8c80d826995d6c8ce598aa618ddf7ea575ecadc..f40325abb8a3dce88323216af147916beae4e7c4 100644
+--- a/dist/components/Search.astro
++++ b/dist/components/Search.astro
+@@ -13,6 +13,7 @@ const pagefindTranslations = {
+ 
+ const dataAttributes: DOMStringMap = { 'data-translations': JSON.stringify(pagefindTranslations) };
+ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash'] = '';
++if (project.build.format === 'preserve') dataAttributes['data-strip-html-extension'] = '';
+ ---
+ 
+ <site-search class={Astro.props.class} {...dataAttributes}>
+@@ -129,8 +130,14 @@ if (project.trailingSlash === 'never') dataAttributes['data-strip-trailing-slash
+ 			} catch {}
+ 
+ 			const shouldStrip = this.dataset.stripTrailingSlash !== undefined;
++			const shouldStripHtmlExtension = this.dataset.stripHtmlExtension !== undefined;
+ 			const stripTrailingSlash = (path: string) => path.replace(/(.)\/(#.*)?$/, '$1$2');
+-			const formatURL = shouldStrip ? stripTrailingSlash : (path: string) => path;
++			const stripHtmlExtension = (path: string) => path.replace(/\.html(?=($|[#?]))/, '');
++			const formatURL = (path: string) => {
++				if (shouldStripHtmlExtension) path = stripHtmlExtension(path);
++				if (shouldStrip) path = stripTrailingSlash(path);
++				return path;
++			};
+ 
+ 			window.addEventListener('DOMContentLoaded', () => {
+ 				if (import.meta.env.DEV) return;
+diff --git a/dist/utils/canonical.js b/dist/utils/canonical.js
+index 893f720620317e85ee8bfa9b259cfc7f0ed1c191..504e0db0a44b557991503e9155040902f4a366c0 100644
+--- a/dist/utils/canonical.js
++++ b/dist/utils/canonical.js
+@@ -5,9 +5,25 @@ const canonicalTrailingSlashStrategies = {
+ 	never: stripTrailingSlash,
+ 	ignore: ensureTrailingSlash
+ };
++/**
++ * `build.format: "preserve"` emits flat `foo.html` files, but Starlight
++ * treats their URLs as extensionless elsewhere (links, site title, search).
++ * Strip the generated HTML filename so canonical/og:url match those URLs.
++ */
++function stripPreserveHtmlExtension(href) {
++	const url = new URL(href);
++	if (url.pathname.endsWith("/index.html")) {
++		url.pathname = url.pathname.slice(0, -"index.html".length);
++		if (url.pathname.length > 1) url.pathname = url.pathname.slice(0, -1);
++	} else if (url.pathname.endsWith(".html")) {
++		url.pathname = url.pathname.slice(0, -".html".length);
++	}
++	return url.href;
++}
+ /** Format a canonical link based on the project config. */
+ function formatCanonical(href, opts) {
+ 	if (opts.format === "file") return href;
++	if (opts.format === "preserve") href = stripPreserveHtmlExtension(href);
+ 	return canonicalTrailingSlashStrategies[opts.trailingSlash](href);
+ }
+ //#endregion
