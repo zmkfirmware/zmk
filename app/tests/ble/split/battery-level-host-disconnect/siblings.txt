@@ -1,0 +1,2 @@
+./ble_test_central.exe -d=2 -disconnect_and_reconnect
+./tests_ble_split_battery-level-host-disconnect_peripheral.exe -d=3
