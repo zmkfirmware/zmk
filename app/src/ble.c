@@ -142,6 +142,13 @@ bool zmk_ble_profile_is_connected(uint8_t index) {
     return info.state == BT_CONN_STATE_CONNECTED;
 }
 
+// A start can fail transiently, e.g. -EALREADY from connected() while the set that
+// produced the connection has not been reported terminated yet; the stack then
+// deletes it and nothing would ever restart advertising. Retry instead.
+static void update_advertising_retry(struct k_work *work);
+static K_WORK_DELAYABLE_DEFINE(update_advertising_retry_work, update_advertising_retry);
+#define ADV_START_RETRY_DELAY K_SECONDS(1)
+
 #define CHECKED_ADV_STOP()                                                                         \
     err = bt_le_adv_stop();                                                                        \
     advertising_status = ZMK_ADV_NONE;                                                             \
@@ -161,7 +168,8 @@ bool zmk_ble_profile_is_connected(uint8_t index) {
     err = bt_le_adv_start(BT_LE_ADV_CONN_DIR_LOW_DUTY(addr), zmk_ble_ad, ARRAY_SIZE(zmk_ble_ad),   \
                           NULL, 0);                                                                \
     if (err) {                                                                                     \
-        LOG_ERR("Advertising failed to start (err %d)", err);                                      \
+        LOG_WRN("Advertising failed to start (err %d), retrying", err);                            \
+        k_work_reschedule(&update_advertising_retry_work, ADV_START_RETRY_DELAY);                  \
         return err;                                                                                \
     }                                                                                              \
     advertising_status = ZMK_ADV_DIR;
@@ -169,7 +177,8 @@ bool zmk_ble_profile_is_connected(uint8_t index) {
 #define CHECKED_OPEN_ADV()                                                                         \
     err = bt_le_adv_start(ZMK_ADV_CONN_NAME, zmk_ble_ad, ARRAY_SIZE(zmk_ble_ad), NULL, 0);         \
     if (err) {                                                                                     \
-        LOG_ERR("Advertising failed to start (err %d)", err);                                      \
+        LOG_WRN("Advertising failed to start (err %d), retrying", err);                            \
+        k_work_reschedule(&update_advertising_retry_work, ADV_START_RETRY_DELAY);                  \
         return err;                                                                                \
     }                                                                                              \
     advertising_status = ZMK_ADV_CONN;
@@ -220,6 +229,8 @@ int update_advertising(void) {
 };
 
 static void update_advertising_callback(struct k_work *work) { update_advertising(); }
+
+static void update_advertising_retry(struct k_work *work) { update_advertising(); }
 
 K_WORK_DEFINE(update_advertising_work, update_advertising_callback);
 
