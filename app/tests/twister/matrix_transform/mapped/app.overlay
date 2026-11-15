@@ -1,0 +1,31 @@
+#include <dt-bindings/zmk/matrix_transform.h>
+
+/ {
+    chosen {
+        zmk,matrix-transform = &offset_transform;
+    };
+
+    offset_transform: matrix_transform_offset {
+        compatible = "zmk,matrix-transform";
+        rows = <4>;
+        columns = <4>;
+        row-offset = <1>;
+        col-offset = <1>;
+        map = <RC(1,1) RC(1,2) RC(2,2) RC(2,3)>;
+    };
+
+    wide_transform: matrix_transform_wide {
+        compatible = "zmk,matrix-transform";
+        rows = <2>;
+        columns = <8>;
+        col-offset = <3>;
+        map = <RC(0,3) RC(0,7) RC(1,3) RC(1,7)>;
+    };
+
+    single_row_transform: matrix_transform_single_row {
+        compatible = "zmk,matrix-transform";
+        rows = <1>;
+        columns = <2>;
+        map = <RC(0,0) RC(0,1)>;
+    };
+};

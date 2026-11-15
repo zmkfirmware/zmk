@@ -1,0 +1,6 @@
+tests:
+  zmk.units.matrix_transform.fallback:
+    tags:
+      - units
+    integration_platforms:
+      - native_sim/native/64
