@@ -1,0 +1,8 @@
+central <dbg> zmk: split_central_connected: SKIPPING FOR ROLE 1
+central <dbg> zmk: split_central_connected: Connected: D1:0B:03:A3:ED:6F (random)
+central <dbg> zmk: split_central_battery_level_read_func: Battery level: 100
+central <dbg> zmk: peripheral_batt_lvl_listener: Peripheral battery level event: 100
+central <dbg> zmk: split_central_disconnected: Disconnected: DD:FD:C1:CE:9A:C0 (random) (reason 19)
+central <wrn> zmk: Failed to release peripheral slot (-22)
+central <wrn> zmk: Ignoring battery event from out of range peripheral 234
+central <dbg> zmk: split_central_connected: SKIPPING FOR ROLE 1

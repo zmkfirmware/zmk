@@ -55,6 +55,18 @@ int zmk_split_transport_central_peripheral_event_handler(
 #endif // IS_ENABLED(CONFIG_ZMK_POINTING)
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING)
     case ZMK_SPLIT_TRANSPORT_PERIPHERAL_EVENT_TYPE_BATTERY_EVENT: {
+        // source is only range checked on the read side
+        // (zmk_split_central_get_peripheral_battery_level). The BLE transport
+        // builds a disconnect event with peripheral_slot_index_for_conn(),
+        // which returns -EINVAL for a connection that never held a slot, and
+        // split_central_disconnected() has no BT_CONN_ROLE_CENTRAL filter, so
+        // dropping any non-split connection delivers source == (uint8_t)-EINVAL
+        // == 234 here and writes one byte far past the array.
+        if (source >= ZMK_SPLIT_CENTRAL_PERIPHERAL_COUNT) {
+            LOG_WRN("Ignoring battery event from out of range peripheral %d", source);
+            return -EINVAL;
+        }
+
         struct zmk_peripheral_battery_state_changed battery_ev = {
             .source = source,
             .state_of_charge = ev.data.battery_event.level,
