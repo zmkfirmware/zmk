@@ -97,9 +97,98 @@
 #define HID_PHYSICAL_MAX8(a) HID_ITEM(HID_ITEM_TAG_PHYSICAL_MAX, HID_ITEM_TYPE_GLOBAL, 1), a
 #endif
 
+#ifndef HID_PHYSICAL_MIN16
+#define HID_PHYSICAL_MIN16(a, b) HID_ITEM(HID_ITEM_TAG_PHYSICAL_MIN, HID_ITEM_TYPE_GLOBAL, 2), a, b
+#endif
+
+#ifndef HID_PHYSICAL_MAX16
+#define HID_PHYSICAL_MAX16(a, b) HID_ITEM(HID_ITEM_TAG_PHYSICAL_MAX, HID_ITEM_TYPE_GLOBAL, 2), a, b
+#endif
+
+#ifndef HID_ITEM_TAG_UNIT_EXPONENT
+#define HID_ITEM_TAG_UNIT_EXPONENT 0x5
+#endif
+
+#ifndef HID_ITEM_TAG_UNIT
+#define HID_ITEM_TAG_UNIT 0x6
+#endif
+
+#ifndef HID_UNIT_EXPONENT
+#define HID_UNIT_EXPONENT(a) HID_ITEM(HID_ITEM_TAG_UNIT_EXPONENT, HID_ITEM_TYPE_GLOBAL, 1), a
+#endif
+
+#ifndef HID_UNIT8
+#define HID_UNIT8(a) HID_ITEM(HID_ITEM_TAG_UNIT, HID_ITEM_TYPE_GLOBAL, 1), a
+#endif
+
 #define HID_USAGE16(a, b) HID_ITEM(HID_ITEM_TAG_USAGE, HID_ITEM_TYPE_LOCAL, 2), a, b
 
 #define HID_USAGE16_SINGLE(a) HID_USAGE16((a & 0xFF), ((a >> 8) & 0xFF))
+
+#if defined(CONFIG_ZMK_POINTING_SCROLL_RESOLUTION) && CONFIG_ZMK_POINTING_SCROLL_RESOLUTION > 0
+
+/*
+ * Declare the physical resolution of the scroll axes, in counts per inch.
+ *
+ * A host needs this to tell a fine grained scroll stream from a notched wheel,
+ * and the report descriptor has no field that states it outright. It is
+ * derived from the ranges instead:
+ *
+ *     resolution = (logical range * 10^-unit_exponent) / physical range
+ *
+ * Leaving the physical range at zero, as this descriptor did before, claims
+ * nothing, and hosts then fall back to a default that assumes a notched wheel.
+ * On macOS that default is 9 counts per inch (kDefaultScrollFixedResolution in
+ * IOHIDEventService.cpp), with two consequences: the high resolution scroll
+ * path stays off, because it is gated on the declared resolution exceeding
+ * twice that default, and the scroll acceleration curve is fed a velocity
+ * divided by resolution/report_rate, so a device that really emits hundreds of
+ * counts per inch is reported as moving far faster than it is and accelerates
+ * away. Scrolling comes out coarse and jumpy no matter how fine the stream is.
+ *
+ * The scroll axes use the whole int16 logical range, so with a unit exponent
+ * of -1, meaning physical units of 0.1 inch, the physical range that expresses
+ * R counts per inch is 65535 * 10 / R. It is split about zero because these
+ * are relative axes and travel either way.
+ */
+#define ZMK_HID_SCROLL_PHYS_RANGE (655350 / CONFIG_ZMK_POINTING_SCROLL_RESOLUTION)
+#define ZMK_HID_SCROLL_PHYS_MAX (ZMK_HID_SCROLL_PHYS_RANGE / 2)
+#define ZMK_HID_SCROLL_PHYS_MIN (ZMK_HID_SCROLL_PHYS_MAX - ZMK_HID_SCROLL_PHYS_RANGE)
+
+/*
+ * A host can only derive the resolution when the physical range differs from
+ * the logical one at both ends, so the range has to stay strictly inside the
+ * int16 logical range. Reaching either end is not a rounding error that shows
+ * up as slightly wrong scrolling: the resolution silently reverts to the
+ * host's notched wheel default, which is the whole problem this is here to
+ * avoid. Hence an assert rather than a clamp.
+ */
+BUILD_ASSERT(ZMK_HID_SCROLL_PHYS_RANGE <= 65533,
+             "CONFIG_ZMK_POINTING_SCROLL_RESOLUTION is too low to express: the physical range "
+             "would reach the ends of the logical range and the host would ignore it. Use 11 or "
+             "more.");
+BUILD_ASSERT(ZMK_HID_SCROLL_PHYS_RANGE >= 1,
+             "CONFIG_ZMK_POINTING_SCROLL_RESOLUTION is too high to express: the physical range "
+             "would round down to nothing. Use 655350 or less.");
+
+/* Masked before shifting: these values are signed and go negative. */
+#define ZMK_HID_ITEM_LO(v) ((v) & 0xFF)
+#define ZMK_HID_ITEM_HI(v) ((((v) & 0xFFFF) >> 8) & 0xFF)
+
+/* 0x13 is English Linear with length to the first power, that is, inches. */
+#define ZMK_HID_SCROLL_RESOLUTION_ITEMS                                                            \
+    HID_PHYSICAL_MIN16(ZMK_HID_ITEM_LO(ZMK_HID_SCROLL_PHYS_MIN),                                   \
+                       ZMK_HID_ITEM_HI(ZMK_HID_SCROLL_PHYS_MIN)),                                  \
+        HID_PHYSICAL_MAX16(ZMK_HID_ITEM_LO(ZMK_HID_SCROLL_PHYS_MAX),                               \
+                           ZMK_HID_ITEM_HI(ZMK_HID_SCROLL_PHYS_MAX)),                              \
+        HID_UNIT8(0x13), HID_UNIT_EXPONENT(0x0F)
+
+#else
+
+/* A physical range of zero claims no particular resolution. */
+#define ZMK_HID_SCROLL_RESOLUTION_ITEMS HID_PHYSICAL_MIN8(0x00), HID_PHYSICAL_MAX8(0x00)
+
+#endif // CONFIG_ZMK_POINTING_SCROLL_RESOLUTION > 0
 
 static const uint8_t zmk_hid_report_desc[] = {
     HID_USAGE_PAGE(HID_USAGE_GEN_DESKTOP),
@@ -228,8 +317,7 @@ static const uint8_t zmk_hid_report_desc[] = {
     HID_USAGE(HID_USAGE_GD_WHEEL),
     HID_LOGICAL_MIN16(0x00, 0x80),
     HID_LOGICAL_MAX16(0xFF, 0x7F),
-    HID_PHYSICAL_MIN8(0x00),
-    HID_PHYSICAL_MAX8(0x00),
+    ZMK_HID_SCROLL_RESOLUTION_ITEMS,
     HID_REPORT_SIZE(0x10),
     HID_REPORT_COUNT(0x01),
     HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_REL),
@@ -244,8 +332,7 @@ static const uint8_t zmk_hid_report_desc[] = {
     HID_USAGE16_SINGLE(HID_USAGE_CONSUMER_AC_PAN),
     HID_LOGICAL_MIN16(0x00, 0x80),
     HID_LOGICAL_MAX16(0xFF, 0x7F),
-    HID_PHYSICAL_MIN8(0x00),
-    HID_PHYSICAL_MAX8(0x00),
+    ZMK_HID_SCROLL_RESOLUTION_ITEMS,
     HID_REPORT_SIZE(0x10),
     HID_REPORT_COUNT(0x01),
     HID_INPUT(ZMK_HID_MAIN_VAL_DATA | ZMK_HID_MAIN_VAL_VAR | ZMK_HID_MAIN_VAL_REL),
