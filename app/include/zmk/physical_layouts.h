@@ -9,6 +9,7 @@
 #include <zephyr/kernel.h>
 #include <zmk/matrix_transform.h>
 #include <zmk/event_manager.h>
+#include <zmk/boot_magic.h>
 
 struct zmk_physical_layout_selection_changed {
     uint8_t selection;
@@ -39,6 +40,9 @@ struct zmk_physical_layout {
 
     const struct zmk_key_physical_attrs *keys;
     size_t keys_len;
+
+    const struct zmk_boot_magic_combo_config *const *boot_magic_combos;
+    size_t boot_magic_combos_len;
 };
 
 #define ZMK_PHYS_LAYOUTS_FOREACH(_ref) STRUCT_SECTION_FOREACH(zmk_physical_layout, _ref)
