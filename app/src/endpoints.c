@@ -7,8 +7,6 @@
 #include <zephyr/init.h>
 #include <zephyr/settings/settings.h>
 
-#include <stdio.h>
-
 #include <zmk/ble.h>
 #include <zmk/endpoints.h>
 #include <zmk/hid.h>
@@ -70,39 +68,8 @@ static int endpoints_save_preferred(void) {
 #endif
 }
 
-bool zmk_endpoint_instance_eq(struct zmk_endpoint_instance a, struct zmk_endpoint_instance b) {
-    if (a.transport != b.transport) {
-        return false;
-    }
-
-    switch (a.transport) {
-    case ZMK_TRANSPORT_NONE:
-    case ZMK_TRANSPORT_USB:
-        return true;
-
-    case ZMK_TRANSPORT_BLE:
-        return a.ble.profile_index == b.ble.profile_index;
-    }
-
-    LOG_ERR("Invalid transport %d", a.transport);
-    return false;
-}
-
-int zmk_endpoint_instance_to_str(struct zmk_endpoint_instance endpoint, char *str, size_t len) {
-    switch (endpoint.transport) {
-    case ZMK_TRANSPORT_NONE:
-        return snprintf(str, len, "None");
-
-    case ZMK_TRANSPORT_USB:
-        return snprintf(str, len, "USB");
-
-    case ZMK_TRANSPORT_BLE:
-        return snprintf(str, len, "BLE:%d", endpoint.ble.profile_index);
-
-    default:
-        return snprintf(str, len, "Invalid");
-    }
-}
+// zmk_endpoint_instance_eq() and zmk_endpoint_instance_to_str() live in
+// endpoints_common.c, because a split peripheral can use them as-is.
 
 #define INSTANCE_INDEX_OFFSET_NONE 0
 #define INSTANCE_INDEX_OFFSET_USB (INSTANCE_INDEX_OFFSET_NONE + ZMK_ENDPOINT_NONE_COUNT)

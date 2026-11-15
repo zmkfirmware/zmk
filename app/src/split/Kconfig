@@ -30,6 +30,13 @@ config ZMK_SPLIT_PERIPHERAL_HID_INDICATORS
     help
       Enable propagating the HID (LED) Indicator state to the split peripheral(s).
 
+config ZMK_SPLIT_PERIPHERAL_ENDPOINTS
+    bool "Peripheral Endpoint State"
+    help
+      Enable propagating the selected endpoint and the preferred transport to the split
+      peripheral(s), so that peripheral side consumers such as indicator LEDs can tell
+      whether the keyboard is connected and to what. Enable it on both halves.
+
 endif # ZMK_SPLIT
 
 rsource "bluetooth/Kconfig"

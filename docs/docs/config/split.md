@@ -16,6 +16,7 @@ Following [split keyboard](../features/split-keyboards.md) settings are defined 
 | `CONFIG_ZMK_SPLIT`                           | bool | Enable split keyboard support                                            | n       |
 | `CONFIG_ZMK_SPLIT_ROLE_CENTRAL`              | bool | `y` for central device, `n` for peripheral                               | n       |
 | `CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS` | bool | Enable split keyboard support for passing indicator state to peripherals | n       |
+| `CONFIG_ZMK_SPLIT_PERIPHERAL_ENDPOINTS`      | bool | Pass the selected endpoint state from the central to peripherals         | n       |
 
 ### Bluetooth Splits
 
