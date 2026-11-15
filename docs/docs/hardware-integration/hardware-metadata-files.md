@@ -67,7 +67,7 @@ type: shield
 
 ### URL
 
-The `url` property should contain the canonical URL used to learn more about the board/shield, e.g. the main vendor website or GitHub repository for a given keyboard/controller:
+The `url` property is optional. When present it should contain the canonical URL used to learn more about the hardware, e.g. the main vendor website or GitHub repository for a given keyboard/controller:
 
 ```yaml
 url: https://github.com/foostan/crkbd/
