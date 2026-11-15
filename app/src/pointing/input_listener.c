@@ -228,6 +228,13 @@ static int filter_with_input_config(const struct input_listener_config *cfg,
                 if (ret < 0) {
                     return ret;
                 }
+                // A processor that consumed the event has to end its handling here,
+                // exactly as it would on the base list: neither the remaining
+                // overrides/base (process-next) nor the built-in key/rel handling
+                // may see it again.
+                if (ret == ZMK_INPUT_PROC_STOP) {
+                    return ret;
+                }
                 if (!override->process_next) {
                     return 0;
                 }
