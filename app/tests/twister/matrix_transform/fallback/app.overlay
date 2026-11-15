@@ -1,0 +1,13 @@
+/ {
+    chosen {
+        zmk,kscan = &kscan;
+    };
+
+    /* The kscan is defined without a matrix transform, as that
+     * is what causes the default transform to be created. */
+    kscan: kscan_mock {
+        compatible = "zmk,kscan-mock";
+        rows = <2>;
+        columns = <3>;
+    };
+};

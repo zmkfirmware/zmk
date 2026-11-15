@@ -28,7 +28,7 @@ jobs:
         id: test-dirs
         run: |
           cd app/tests/
-          export TESTS=$(ls -d * | grep -v ble | jq -R -s -c 'split("\n")[:-1]')
+          export TESTS=$(ls -d * | grep -v -e ble -e twister | jq -R -s -c 'split("\n")[:-1]')
           echo "test-dirs=${TESTS}" >> $GITHUB_OUTPUT
   run-tests:
     needs: collect-tests
