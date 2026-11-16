@@ -932,6 +932,14 @@ static void split_central_connected(struct bt_conn *conn, uint8_t conn_err) {
         return;
     }
 
+    // Only handle our own peripheral links. Other central-role connections (e.g. an
+    // app/module connecting to a BLE mouse) have no slot: logging their failures as
+    // split errors and running the slot/scan handling for them is just noise.
+    if (peripheral_slot_index_for_conn(conn) < 0) {
+        LOG_DBG("SKIPPING NON-PERIPHERAL CONNECTION %s", addr);
+        return;
+    }
+
     if (conn_err) {
         LOG_ERR("Failed to connect to %s (%u)", addr, conn_err);
 
