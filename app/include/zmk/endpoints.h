@@ -69,6 +69,8 @@ int zmk_endpoint_set_preferred_transport(enum zmk_transport transport);
 
 enum zmk_transport zmk_endpoint_get_preferred_transport(void);
 
+int zmk_preferred_transport();
+
 /**
  * If the preferred endpoint transport is USB, sets it to BLE, else sets it to USB.
  */
@@ -98,6 +100,8 @@ bool zmk_endpoint_is_connected(void);
  * Sends the HID report for the given usage page to the selected endpoint.
  */
 int zmk_endpoint_send_report(uint16_t usage_page);
+
+struct zmk_endpoint_instance zmk_last_endpoint();
 
 #if IS_ENABLED(CONFIG_ZMK_POINTING)
 /**

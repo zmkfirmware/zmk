@@ -82,6 +82,7 @@ module.exports = {
             "keymaps/behaviors/reset",
             "keymaps/behaviors/bluetooth",
             "keymaps/behaviors/outputs",
+            "keymaps/behaviors/last-device",
             "keymaps/behaviors/underglow",
             "keymaps/behaviors/backlight",
             "keymaps/behaviors/power",
