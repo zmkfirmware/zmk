@@ -17,23 +17,27 @@ RGB underglow depends on [Zephyr's LED strip driver](https://github.com/zephyrpr
 
 Definition file: [zmk/app/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/app/Kconfig)
 
-| Config                                   | Type | Description                                               | Default |
-| ---------------------------------------- | ---- | --------------------------------------------------------- | ------- |
-| `CONFIG_ZMK_RGB_UNDERGLOW`               | bool | Enable RGB underglow                                      | n       |
-| `CONFIG_ZMK_RGB_UNDERGLOW_EXT_POWER`     | bool | Underglow toggling also controls external power           | y       |
-| `CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_IDLE` | bool | Turn off RGB underglow when keyboard goes into idle state | n       |
-| `CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB`  | bool | Turn off RGB underglow when USB is disconnected           | n       |
-| `CONFIG_ZMK_RGB_UNDERGLOW_HUE_STEP`      | int  | Hue step in degrees (0-359) used by RGB actions           | 10      |
-| `CONFIG_ZMK_RGB_UNDERGLOW_SAT_STEP`      | int  | Saturation step in percent used by RGB actions            | 10      |
-| `CONFIG_ZMK_RGB_UNDERGLOW_BRT_STEP`      | int  | Brightness step in percent used by RGB actions            | 10      |
-| `CONFIG_ZMK_RGB_UNDERGLOW_HUE_START`     | int  | Default hue in degrees (0-359)                            | 0       |
-| `CONFIG_ZMK_RGB_UNDERGLOW_SAT_START`     | int  | Default saturation percent (0-100)                        | 100     |
-| `CONFIG_ZMK_RGB_UNDERGLOW_BRT_START`     | int  | Default brightness in percent (0-100)                     | 100     |
-| `CONFIG_ZMK_RGB_UNDERGLOW_SPD_START`     | int  | Default effect speed (1-5)                                | 3       |
-| `CONFIG_ZMK_RGB_UNDERGLOW_EFF_START`     | int  | Default effect index from the effect list (see below)     | 0       |
-| `CONFIG_ZMK_RGB_UNDERGLOW_ON_START`      | bool | Default on state                                          | y       |
-| `CONFIG_ZMK_RGB_UNDERGLOW_BRT_MIN`       | int  | Minimum brightness in percent (0-100)                     | 0       |
-| `CONFIG_ZMK_RGB_UNDERGLOW_BRT_MAX`       | int  | Maximum brightness in percent (0-100)                     | 100     |
+| Config                                    | Type | Description                                                               | Default |
+| ----------------------------------------- | ---- | ------------------------------------------------------------------------- | ------- |
+| `CONFIG_ZMK_RGB_UNDERGLOW`                | bool | Enable RGB underglow                                                      | n       |
+| `CONFIG_ZMK_RGB_UNDERGLOW_EXT_POWER`      | bool | Underglow toggling also controls external power                           | y       |
+| `CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_IDLE`  | bool | Turn off RGB underglow when keyboard goes into idle state                 | n       |
+| `CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB`   | bool | Turn off RGB underglow when USB is disconnected                           | n       |
+| `CONFIG_ZMK_RGB_UNDERGLOW_HUE_STEP`       | int  | Hue step in degrees (0-359) used by RGB actions                           | 10      |
+| `CONFIG_ZMK_RGB_UNDERGLOW_SAT_STEP`       | int  | Saturation step in percent used by RGB actions                            | 10      |
+| `CONFIG_ZMK_RGB_UNDERGLOW_BRT_STEP`       | int  | Brightness step in percent used by RGB actions                            | 10      |
+| `CONFIG_ZMK_RGB_UNDERGLOW_HUE_START`      | int  | Default hue in degrees (0-359)                                            | 0       |
+| `CONFIG_ZMK_RGB_UNDERGLOW_SAT_START`      | int  | Default saturation percent (0-100)                                        | 100     |
+| `CONFIG_ZMK_RGB_UNDERGLOW_BRT_START`      | int  | Default brightness in percent (0-100)                                     | 100     |
+| `CONFIG_ZMK_RGB_UNDERGLOW_SPD_START`      | int  | Default effect speed (1-5)                                                | 3       |
+| `CONFIG_ZMK_RGB_UNDERGLOW_EFF_START`      | int  | Default effect index from the effect list (see below)                     | 0       |
+| `CONFIG_ZMK_RGB_UNDERGLOW_ON_START`       | bool | Default on state                                                          | y       |
+| `CONFIG_ZMK_RGB_UNDERGLOW_BRT_MIN`        | int  | Minimum brightness in percent (0-100)                                     | 0       |
+| `CONFIG_ZMK_RGB_UNDERGLOW_BRT_MAX`        | int  | Maximum brightness in percent (0-100)                                     | 100     |
+| `CONFIG_ZMK_RGB_UNDERGLOW_BATTERY_STATUS` | bool | Display battery status on startup and when reaching critcal level         | n       |
+| `CONFIG_ZMK_RGB_UNDERGLOW_BATTERY_CRIT`   | int  | Battery level considered critical in percent (0-100)                      | 5       |
+| `CONFIG_ZMK_RGB_UNDERGLOW_BATTERY_LOW`    | int  | Battery level considered low in percent (0-100)                           | 15      |
+| `CONFIG_ZMK_RGB_UNDERGLOW_BLE_STATUS`     | bool | Display blutooth connection status on startup and when connection changes | n       |
 
 Values for `CONFIG_ZMK_RGB_UNDERGLOW_EFF_START`:
 
