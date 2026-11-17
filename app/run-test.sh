@@ -24,7 +24,7 @@ fi
 ZMK_BUILD_DIR=${ZMK_BUILD_DIR:-${ZMK_SRC_DIR:-.}/build}
 mkdir -p ${ZMK_BUILD_DIR}/tests
 
-testcases=$(find $path -name native_sim.keymap -exec dirname \{\} \;)
+testcases=$(find $path \( -name native_sim.keymap -o -name testcase.yaml \) -exec dirname \{\} \;)
 num_cases=$(echo "$testcases" | wc -l)
 if [ $num_cases -gt 1 ] || [ "$testcases" != "$path" ]; then
     echo "" >${ZMK_BUILD_DIR}/tests/pass-fail.log
@@ -40,6 +40,11 @@ echo "Running $testcase:"
 build_cmd="west build ${ZMK_SRC_DIR:+-s $ZMK_SRC_DIR} -d ${ZMK_BUILD_DIR}/tests/$testcase \
     -b native_sim//zmk_test_mock -p -- -DCONFIG_ASSERT=y -DZMK_CONFIG="$(realpath $path)" \
     ${ZMK_EXTRA_MODULES:+-DZMK_EXTRA_MODULES="$(realpath ${ZMK_EXTRA_MODULES})"}"
+
+if [ -f "$path/testcase.yaml" ]; then
+    build_cmd="west build -s $(realpath $path) -d ${ZMK_BUILD_DIR}/tests/$testcase \
+        -b native_sim/native/64 -p"
+fi
 
 # Add extra cmake arguments from file if it exists
 if [ -f "$path/extra-cmake-args" ]; then
@@ -58,6 +63,19 @@ rmdir -p $(dirname $build_log_tmp) 2>/dev/null || true
 if [ $build_exit_code -gt 0 ]; then
     echo "FAILED: $testcase did not build (see ${build_log})" | tee -a ${ZMK_BUILD_DIR}/tests/pass-fail.log
     exit 1
+fi
+
+if [ -f "$path/testcase.yaml" ]; then
+    output_log="${ZMK_BUILD_DIR}/tests/$testcase/output.log"
+    ${ZMK_BUILD_DIR}/tests/$testcase/zephyr/zephyr.exe >"$output_log" 2>&1
+    run_exit_code=$?
+    cat "$output_log"
+    if [ $run_exit_code -ne 0 ]; then
+        echo "FAILED: $testcase" | tee -a ${ZMK_BUILD_DIR}/tests/pass-fail.log
+        exit 1
+    fi
+    echo "PASS: $testcase" | tee -a ${ZMK_BUILD_DIR}/tests/pass-fail.log
+    exit 0
 fi
 
 ${ZMK_BUILD_DIR}/tests/$testcase/zephyr/zmk.exe |
