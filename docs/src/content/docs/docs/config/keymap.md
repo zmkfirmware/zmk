@@ -4,7 +4,7 @@ sidebar:
   label: Keymap
 ---
 
-See [Configuration Overview](index.md) for instructions on how to change these settings.
+See [Configuration Overview](/docs/config) for instructions on how to change these settings.
 
 ## Keymap
 
@@ -18,13 +18,13 @@ The `zmk,keymap` node itself has no properties. It should have one child node pe
 
 Each child node can have the following properties:
 
-| Property          | Type          | Description                                                          |
-| ----------------- | ------------- | -------------------------------------------------------------------- |
-| `display-name`    | string        | Name for the layer in ZMK Studio and on displays                     |
-| `bindings`        | phandle-array | List of [key behaviors](../keymaps/index.mdx#behaviors), one per key |
-| `sensor-bindings` | phandle-array | List of sensor behaviors, one per sensor                             |
+| Property          | Type          | Description                                                   |
+| ----------------- | ------------- | ------------------------------------------------------------- |
+| `display-name`    | string        | Name for the layer in ZMK Studio and on displays              |
+| `bindings`        | phandle-array | List of [key behaviors](/docs/keymaps#behaviors), one per key |
+| `sensor-bindings` | phandle-array | List of sensor behaviors, one per sensor                      |
 
-Items for `bindings` must be listed in the order the keys are defined in the [keyboard scan configuration](kscan.md).
+Items for `bindings` must be listed in the order the keys are defined in the [keyboard scan configuration](/docs/config/kscan).
 
 Items for `sensor-bindings` must be listed in the order the [sensors](#keymap-sensors) are defined.
 
@@ -40,4 +40,4 @@ Applies to: `compatible = "zmk,keymap-sensors"`
 
 The following types of nodes can be used as a sensor:
 
-- [`alps,ec11`](encoders.md#ec11-encoders)
+- [`alps,ec11`](/docs/config/encoders#ec11-encoders)

@@ -47,8 +47,8 @@ The output selection behavior changes the preferred output on press.
 - Parameter #1: Command, e.g. `OUT_BLE`
 
 :::note[Output selection persistence]
-The endpoint that is selected by the `&out` behavior will be [saved to flash storage](../../config/settings.md) and hence persist across restarts and firmware flashes.
-However it will only be saved after [`CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE`](../../config/system.md#general) milliseconds in order to reduce potential wear on the flash memory.
+The endpoint that is selected by the `&out` behavior will be [saved to flash storage](/docs/config/settings) and hence persist across restarts and firmware flashes.
+However it will only be saved after [`CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE`](/docs/config/system#general) milliseconds in order to reduce potential wear on the flash memory.
 :::
 
 ### Examples

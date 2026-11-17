@@ -4,12 +4,12 @@ sidebar:
   label: Power Management
 ---
 
-See [Configuration Overview](index.md) for instructions on how to
+See [Configuration Overview](/docs/config) for instructions on how to
 change these settings.
 
 ## Low Power States
 
-Configuration for entering [low power states](../features/low-power-states.md) when the keyboard is idle.
+Configuration for entering [low power states](/docs/features/low-power-states) when the keyboard is idle.
 
 ### Kconfig
 
@@ -24,7 +24,7 @@ Definition file: [zmk/app/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/
 
 ## External Power Control
 
-Driver for enabling or disabling power to peripherals such as displays and lighting. This driver must be configured to use [power management behaviors](../keymaps/behaviors/power.md).
+Driver for enabling or disabling power to peripherals such as displays and lighting. This driver must be configured to use [power management behaviors](/docs/keymaps/behaviors/power).
 
 ### Kconfig
 
@@ -45,7 +45,7 @@ Applies to: `compatible = "zmk,ext-power-generic"`
 
 ## GPIO Key Wakeup Trigger
 
-A device similar to a [kscan](./kscan.md) which will be enabled only when the keyboard is entering [soft off](../features/low-power-states.md#soft-off) state. This is used to configure a GPIO key to wake the keyboard from [soft off](../features/low-power-states.md#soft-off) once it is pressed.
+A device similar to a [kscan](/docs/config/kscan) which will be enabled only when the keyboard is entering [soft off](/docs/features/low-power-states#soft-off) state. This is used to configure a GPIO key to wake the keyboard from [soft off](/docs/features/low-power-states#soft-off) once it is pressed.
 
 ### Devicetree
 
@@ -63,7 +63,7 @@ The `wakeup-source` property should always be present for this node to be useful
 
 ## Soft Off Wakeup Sources
 
-Selects a list of devices to enable during [soft off](../features/low-power-states.md#soft-off), allowing those with `wakeup-source` as a property to wake the keyboard.
+Selects a list of devices to enable during [soft off](/docs/features/low-power-states#soft-off), allowing those with `wakeup-source` as a property to wake the keyboard.
 
 ### Devicetree
 

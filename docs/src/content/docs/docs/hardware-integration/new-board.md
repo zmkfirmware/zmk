@@ -2,7 +2,7 @@
 title: New Board
 ---
 
-This guide will walk through the necessary steps to write a [board](./index.mdx#boards--shields) suitable for use with ZMK. Boards used with ZMK fall into two categories:
+This guide will walk through the necessary steps to write a [board](/docs/hardware-integration#boards--shields) suitable for use with ZMK. Boards used with ZMK fall into two categories:
 
 - Boards with interconnects, such as `nice_nano` or `seeed_xiao`. Such boards will (active development of ZMK aside) always be used with a shield to create a keyboard.
 - Boards that are themselves keyboards, such as `bt75` or `ferris`.
@@ -11,7 +11,7 @@ Some keyboards are boards but also have interconnects for modular add-ons. These
 
 ## Boards Included in ZMK
 
-Boards with interconnects can be considered for inclusion to the tree of ZMK. If this is your aim, it is vital that you read through our [clean room policy](../development/contributing/clean-room.md).
+Boards with interconnects can be considered for inclusion to the tree of ZMK. If this is your aim, it is vital that you read through our [clean room policy](/docs/development/contributing/clean-room).
 
 Boards with interconnects that are included with ZMK are generally:
 
@@ -43,9 +43,9 @@ Follow these steps to create your new repository:
 
 The repository is a combination of the directories and files required of a ZMK config, and those required of a shield module.
 This enables the use of GitHub Actions to test that the shield is defined correctly.
-See also the page on [module creation](../development/module-creation.md) for a reference on exactly which file structure and files are required for a ZMK keyboard module.
+See also the page on [module creation](/docs/development/module-creation) for a reference on exactly which file structure and files are required for a ZMK keyboard module.
 
-We recommend that you take this moment to name your module according to our [convention](../development/module-creation.md), i.e. your `zephyr/module.yml` file should begin with
+We recommend that you take this moment to name your module according to our [convention](/docs/development/module-creation), i.e. your `zephyr/module.yml` file should begin with
 
 ```yaml title="zephyr/module.yml"
 name: zmk-keyboard-<keyboard_name>
@@ -178,10 +178,10 @@ Note that none of our in-tree boards have all of the above flags set. We recomme
 };
 ```
 
-See [here](./bootloader/index.mdx) for bootloader instructions for other SoCs. Depending on your SoC and design you may need to make further changes. Please refer to our in-tree boards with the same SoC as yours as examples.
+See [here](/docs/hardware-integration/bootloader) for bootloader instructions for other SoCs. Depending on your SoC and design you may need to make further changes. Please refer to our in-tree boards with the same SoC as yours as examples.
 
 ## Next Steps
 
 If your board is a keyboard, continue from [the `Kconfig.defconfig` step](https://zmk.dev/docs/hardware-integration/new-shield?keyboard-type=unibody#kconfigdefconfig) of the new shield guide. Use your ZMK variant's devicetree instead of the overlay file which would be used for a shield.
 
-If your board is a board with an interconnect, your next step should be to write a [tester shield](../troubleshooting/hardware-issues.mdx#identifying-issues). Such a shield should be the bare minimum shield to verify that your board works with ZMK.
+If your board is a board with an interconnect, your next step should be to write a [tester shield](/docs/troubleshooting/hardware-issues#identifying-issues). Such a shield should be the bare minimum shield to verify that your board works with ZMK.

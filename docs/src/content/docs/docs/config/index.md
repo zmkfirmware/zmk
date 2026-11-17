@@ -25,7 +25,7 @@ When building with a `zmk-config` folder, ZMK will search the `zmk-config/config
 
 These files hold your personal settings for the keyboard. All files are optional. If present, they override any configuration set in the board or shield folders. Otherwise, the default configuration and/or keymap is used.
 
-When using a [split keyboard](../features/split-keyboards.md), you can use a single file without the `_left` or `_right` suffix to configure both sides. For example, `corne.conf` and `corne.keymap` will apply to both `corne_left` and `corne_right`. If a shared config file exists, any left or right files will be ignored.
+When using a [split keyboard](/docs/features/split-keyboards), you can use a single file without the `_left` or `_right` suffix to configure both sides. For example, `corne.conf` and `corne.keymap` will apply to both `corne_left` and `corne_right`. If a shared config file exists, any left or right files will be ignored.
 
 ### Board Folder
 
@@ -36,7 +36,7 @@ ZMK will search for config files in:
 - `<module>/boards/<vendor>/<board>`
 - `zmk-config/config/boards/<vendor>/<board>` (For backwards compatibility only, do not use.)
 
-...where `<vendor>` is the name of the creator or vendor, `<board>` is the name of the board and `<module>` is the root directory of any [included module](../features/modules.mdx). These files describe the hardware of the board.
+...where `<vendor>` is the name of the creator or vendor, `<board>` is the name of the board and `<module>` is the root directory of any [included module](/docs/features/modules). These files describe the hardware of the board.
 
 ZMK will search the board folder for the following config files _in addition_ to [Zephyr board-defining files](https://docs.zephyrproject.org/4.1.0/hardware/porting/board_porting.html#create-your-board-directory):
 
@@ -56,7 +56,7 @@ When building with a shield, ZMK will search for config files in:
 - `<module>/boards/shields/<shield>`
 - `zmk-config/config/boards/shields/<shield>` (For backwards compatibility only, do not use.)
 
-...where `<shield>` is the name of the shield and `<module>` is the root directory of any [included module](../features/modules.mdx). These files describe the hardware of the shield that the board is plugged into.
+...where `<shield>` is the name of the shield and `<module>` is the root directory of any [included module](/docs/features/modules). These files describe the hardware of the shield that the board is plugged into.
 
 ZMK will search the shield folder for the following config files _in addition_ to [Zephyr shield-defining files](https://docs.zephyrproject.org/4.1.0/hardware/porting/shields.html#shield-porting-and-configuration):
 
@@ -65,7 +65,7 @@ ZMK will search the shield folder for the following config files _in addition_ t
 
 Shared config files (excluding any `_left` or `_right` suffix) are not currently supported in shield folders.
 
-For more documentation on creating and configuring a new shield, see [Zephyr's shield documentation](https://docs.zephyrproject.org/4.1.0/hardware/porting/shields.html) and [ZMK's new keyboard shield](../hardware-integration/new-shield.mdx) guide.
+For more documentation on creating and configuring a new shield, see [Zephyr's shield documentation](https://docs.zephyrproject.org/4.1.0/hardware/porting/shields.html) and [ZMK's new keyboard shield](/docs/hardware-integration/new-shield) guide.
 
 ## Kconfig Files
 
@@ -87,7 +87,7 @@ See [Zephyr's Kconfig documentation](https://docs.zephyrproject.org/4.1.0/build/
 
 :::tip
 
-You can investigate the [final set of configuration settings](../troubleshooting/building-issues.md#configuration-setting-issues) that are in effect during a build to diagnose any issues with changing Kconfig settings.
+You can investigate the [final set of configuration settings](/docs/troubleshooting/building-issues#configuration-setting-issues) that are in effect during a build to diagnose any issues with changing Kconfig settings.
 
 :::
 
@@ -113,7 +113,7 @@ Example: `CONFIG_FOO="foo"`
 
 ## Devicetree Files
 
-Various Devicetree files are combined to build a tree that describes the hardware for a keyboard. They are also used to define keymaps. A full primer on Devicetree can be found in the [Devicetree Overview page](../development/devicetree.md) -- a shorter summary of some of the points can be found below.
+Various Devicetree files are combined to build a tree that describes the hardware for a keyboard. They are also used to define keymaps. A full primer on Devicetree can be found in the [Devicetree Overview page](/docs/development/devicetree) -- a shorter summary of some of the points can be found below.
 
 ### Devicetree Overview
 
@@ -144,7 +144,7 @@ See [Zephyr's Devicetree guide](https://docs.zephyrproject.org/4.1.0/build/dts/i
 
 :::tip
 
-You can investigate the [final combined Devicetree](../troubleshooting/building-issues.md#devicetree-related-issues) produced during a build to diagnose any issues with changing Devicetree nodes.
+You can investigate the [final combined Devicetree](/docs/troubleshooting/building-issues#devicetree-related-issues) produced during a build to diagnose any issues with changing Devicetree nodes.
 
 :::
 

@@ -5,6 +5,7 @@ import sitemap from "@astrojs/sitemap";
 import starlight from "@astrojs/starlight";
 import { defineConfig } from "astro/config";
 import starlightBlog from "starlight-blog";
+import starlightLinksValidator from "starlight-links-validator";
 
 import { blogAuthors } from "./src/data/blog-authors";
 
@@ -75,6 +76,20 @@ export default defineConfig({
             readingTime: true,
           },
           rss: true,
+        }),
+        starlightLinksValidator({
+          exclude: [
+            // Validator doesn't know about the custom pages
+            "/power-profiler",
+            "/keymap-upgrader",
+            // Validator doesn't know about the hash, because it's from custom HTML, not markdown
+            "/docs/hardware#composite",
+            "/docs/hardware#onboard",
+            // Cross-file includes the validator can't check in these files
+            // docs/hardware-integration/includes/_sideband-direct.mdx
+            // docs/hardware-integration/includes/_sideband-wakeup-direct.mdx
+            "#gpio-key",
+          ],
         }),
       ],
     }),

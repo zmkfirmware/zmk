@@ -4,9 +4,9 @@ sidebar:
   label: ZMK Studio
 ---
 
-The following settings affect the ZMK Studio portions of ZMK. See the [ZMK Studio feature](../features/studio.md) for more information on enabling and building with ZMK Studio enabled.
+The following settings affect the ZMK Studio portions of ZMK. See the [ZMK Studio feature](/docs/features/studio) for more information on enabling and building with ZMK Studio enabled.
 
-See [Configuration Overview](index.md) for instructions on how to change these settings.
+See [Configuration Overview](/docs/config) for instructions on how to change these settings.
 
 ## Kconfig
 

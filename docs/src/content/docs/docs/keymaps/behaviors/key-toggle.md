@@ -15,7 +15,7 @@ Example uses for key toggle include shift lock, or `ALT-TAB` window switching wi
 ### Behavior Binding
 
 - Reference: `&kt`
-- Parameter: The [keycode](../list-of-keycodes.mdx), e.g. `LALT` or `DOWN_ARROW`
+- Parameter: The [keycode](/docs/keymaps/list-of-keycodes), e.g. `LALT` or `DOWN_ARROW`
 
 Example:
 
@@ -23,7 +23,7 @@ Example:
 &kt LALT
 ```
 
-You can use any keycode that works for `&kp` as parameter to `&kt`, however, [modified keys](../modifiers.mdx#modifier-functions) such as `LA(A)` will be toggled based on the status of the base keycode (in this case `A`).
+You can use any keycode that works for `&kp` as parameter to `&kt`, however, [modified keys](/docs/keymaps/modifiers#modifier-functions) such as `LA(A)` will be toggled based on the status of the base keycode (in this case `A`).
 In other words, modifiers are ignored when determining whether or not the key is currently pressed.
 
 ### Configuration

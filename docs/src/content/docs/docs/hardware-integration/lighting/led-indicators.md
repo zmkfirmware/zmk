@@ -48,7 +48,7 @@ In your shield's `.overlay` file or board's `.dts` file, create a `gpio-leds` no
 
 The above example only supports LEDs being off or on at full brightness. If you want to be able to reduce the brightness or use multiple brightness levels, you must use `pwm-leds` instead of `gpio-leds`. Note that this will increase power usage slightly when LEDs are enabled compared to using `gpio-leds`.
 
-See the [backlight hardware integration page](backlight.mdx) for an example of configuring PWM LEDs.
+See the [backlight hardware integration page](/docs/hardware-integration/lighting/backlight) for an example of configuring PWM LEDs.
 
 ## Indicator Definitions
 
@@ -116,4 +116,4 @@ You can also control multiple LEDs from the same indicator:
 
 ## LED Behavior
 
-See the [feature page](../../features/led-indicators.md) and [configuration page](../../config/led-indicators.md) for details on configuring LED brightness according to the indicator state.
+See the [feature page](/docs/features/led-indicators) and [configuration page](/docs/config/led-indicators) for details on configuring LED brightness according to the indicator state.

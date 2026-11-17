@@ -13,7 +13,7 @@ to ensure that you are happy with installing the required dependencies.
 
 There are two ways to set up the ZMK development environment:
 
-- [Docker or Podman](container.mdx): \
+- [Docker or Podman](/docs/development/local-toolchain/setup/container): \
   A self-contained development environment. It uses the same
   [Docker image which is used by the GitHub action](https://github.com/zmkfirmware/zmk-docker)
   for local development. Beyond the benefits of
@@ -22,10 +22,10 @@ There are two ways to set up the ZMK development environment:
   necessary when using a container; the image has the toolchain installed and
   set up to use.
 
-- [Native](native.mdx): \
+- [Native](/docs/development/local-toolchain/setup/native): \
   This uses your operating system directly. Usually runs slightly faster than
   the container approach, and can be preferable for users who already have the
   dependencies on their system.
 
-Please see the [container](container.mdx) or [native](native.mdx) instructions
+Please see the [container](/docs/development/local-toolchain/setup/container) or [native](/docs/development/local-toolchain/setup/native) instructions
 to continue the setup.

@@ -4,13 +4,13 @@ sidebar:
   label: Lighting
 ---
 
-See the [Lighting feature page](../features/lighting.md) for an overview of the available lighting systems in ZMK.
+See the [Lighting feature page](/docs/features/lighting) for an overview of the available lighting systems in ZMK.
 
 ## RGB Underglow
 
-See the [RGB underglow section](../features/lighting.md#rgb-underglow) in the Lighting feature page for more details, and [hardware integration page](../hardware-integration/lighting/underglow.md) for adding underglow support to a board.
+See the [RGB underglow section](/docs/features/lighting#rgb-underglow) in the Lighting feature page for more details, and [hardware integration page](/docs/hardware-integration/lighting/underglow) for adding underglow support to a board.
 
-See [Configuration Overview](index.md) for instructions on how to change these settings.
+See [Configuration Overview](/docs/config) for instructions on how to change these settings.
 
 ### Kconfig
 
@@ -46,20 +46,20 @@ Values for `CONFIG_ZMK_RGB_UNDERGLOW_EFF_START`:
 | 3     | Swirl       |
 
 :::note
-The `*_START` settings only determine the initial underglow state. Any changes you make with the [underglow behavior](../keymaps/behaviors/underglow.md) are saved to flash after a one minute delay and will be used after that.
+The `*_START` settings only determine the initial underglow state. Any changes you make with the [underglow behavior](/docs/keymaps/behaviors/underglow) are saved to flash after a one minute delay and will be used after that.
 :::
 
 ### Devicetree
 
 ZMK does not have any Devicetree properties of its own. See the Devicetree bindings for [Zephyr's LED strip drivers](https://github.com/zephyrproject-rtos/zephyr/tree/main/dts/bindings/led_strip).
 
-See the [RGB underglow hardware integration page](../hardware-integration/lighting/underglow.md) for examples of the properties that must be set to enable underglow.
+See the [RGB underglow hardware integration page](/docs/hardware-integration/lighting/underglow) for examples of the properties that must be set to enable underglow.
 
 ## Backlight
 
-See the [backlight section](../features/lighting.md#backlight) in Lighting feature page for more details, and [hardware integration page](../hardware-integration/lighting/backlight.mdx) for adding backlight support to a board.
+See the [backlight section](/docs/features/lighting#backlight) in Lighting feature page for more details, and [hardware integration page](/docs/hardware-integration/lighting/backlight) for adding backlight support to a board.
 
-See [Configuration Overview](index.md) for instructions on how to change these settings.
+See [Configuration Overview](/docs/config) for instructions on how to change these settings.
 
 ### Kconfig
 
@@ -75,7 +75,7 @@ Definition file: [zmk/app/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/
 | `CONFIG_ZMK_BACKLIGHT_AUTO_OFF_USB`  | bool | Turn off backlight when USB is disconnected           | n       |
 
 :::note
-The `*_START` settings only determine the initial backlight state. Any changes you make with the [backlight behavior](../keymaps/behaviors/backlight.md) are saved to flash after a one minute delay and will be used after that.
+The `*_START` settings only determine the initial backlight state. Any changes you make with the [backlight behavior](/docs/keymaps/behaviors/backlight) are saved to flash after a one minute delay and will be used after that.
 :::
 
 ### Devicetree
@@ -91,4 +91,4 @@ See the Zephyr devicetree bindings for LED drivers:
 - [gpio-leds](https://docs.zephyrproject.org/4.1.0/build/dts/api/bindings/led/gpio-leds.html)
 - [pwm-leds](https://docs.zephyrproject.org/4.1.0/build/dts/api/bindings/led/pwm-leds.html)
 
-See the [backlight hardware integration page](../hardware-integration/lighting/backlight.mdx) for examples of the properties that must be set to enable backlighting.
+See the [backlight hardware integration page](/docs/hardware-integration/lighting/backlight) for examples of the properties that must be set to enable backlighting.

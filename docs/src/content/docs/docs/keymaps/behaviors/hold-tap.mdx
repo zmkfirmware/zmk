@@ -18,7 +18,7 @@ ZMK predefines two hold-tap behaviors: [mod-tap](#mod-tap) and [layer-tap](#laye
 
 ## Mod-Tap
 
-The "mod-tap" behavior sends a different [key press](key-press.md), depending on whether it's held or tapped.
+The "mod-tap" behavior sends a different [key press](/docs/keymaps/behaviors/key-press), depending on whether it's held or tapped.
 
 - If you hold the key for longer than 200ms or press any other key while it is held, the first keycode ("mod") is sent.
 - If you tap the key (release before 200ms), the second keycode ("tap") is sent.
@@ -187,7 +187,7 @@ Depending on your typing behavior, you may wish to adjust this configuration. Fo
 
 <TabItem label="Autoshift">
 
-A popular method of implementing Autoshift in ZMK involves a C-preprocessor macro, commonly defined as `AS(keycode)`. This macro applies the `LSHIFT` modifier to the specified `keycode` when `AS(keycode)` is held, and simply performs a [keypress](key-press.md), `&kp keycode`, when the `AS(keycode)` binding is tapped. This simplifies the use of Autoshift in a keymap, as the complete hold-tap bindings for each desired Autoshift key, as in `&as LS(<keycode 1>) <keycode 1> &as LS(<keycode 2>) <keycode 2> ... &as LS(<keycode n>) <keycode n>`, can be quite cumbersome to use when applied to a large portion of the keymap.
+A popular method of implementing Autoshift in ZMK involves a C-preprocessor macro, commonly defined as `AS(keycode)`. This macro applies the `LSHIFT` modifier to the specified `keycode` when `AS(keycode)` is held, and simply performs a [keypress](/docs/keymaps/behaviors/key-press), `&kp keycode`, when the `AS(keycode)` binding is tapped. This simplifies the use of Autoshift in a keymap, as the complete hold-tap bindings for each desired Autoshift key, as in `&as LS(<keycode 1>) <keycode 1> &as LS(<keycode 2>) <keycode 2> ... &as LS(<keycode n>) <keycode n>`, can be quite cumbersome to use when applied to a large portion of the keymap.
 
 ```dts title="Hold-Tap Example: Autoshift"
 #include <dt-bindings/zmk/keys.h>
@@ -222,7 +222,7 @@ A popular method of implementing Autoshift in ZMK involves a C-preprocessor macr
 
 <TabItem label="Tog-Tap, Mo-Hold Layers">
 
-This hold-tap example implements a [momentary-layer](layers.md#momentary-layer) when the keybind is held and a [toggle-layer](layers.md#toggle-layer) when it is tapped. Similar to the Autoshift and Sticky Hold use-cases, a `MO_TOG(layer)` macro is defined such that the `&mo` and `&tog` behaviors can target a single layer.
+This hold-tap example implements a [momentary-layer](/docs/keymaps/behaviors/layers#momentary-layer) when the keybind is held and a [toggle-layer](/docs/keymaps/behaviors/layers#toggle-layer) when it is tapped. Similar to the Autoshift and Sticky Hold use-cases, a `MO_TOG(layer)` macro is defined such that the `&mo` and `&tog` behaviors can target a single layer.
 
 ```dts title="Hold-Tap Example: Momentary layer on Hold, Toggle layer on Tap"
 #include <dt-bindings/zmk/keys.h>
@@ -271,19 +271,19 @@ This value defines how long a key must be pressed to trigger the "hold" behavior
 
 ### Using different behavior types with hold-taps
 
-You can create instances of hold-taps invoking most [behavior types](../index.mdx#behaviors) for hold or tap actions, by referencing their node labels in the `bindings` value.
+You can create instances of hold-taps invoking most [behavior types](/docs/keymaps#behaviors) for hold or tap actions, by referencing their node labels in the `bindings` value.
 The two parameters that are passed to the hold-tap in your keymap will be forwarded to the referred behaviors, first one to the hold behavior and second one to the tap.
 
-If you use behaviors that accept no parameters such as [mod-morphs](mod-morph.md) or [tap-dances](tap-dance.mdx), you can pass a dummy parameter value such as `0` to the hold-tap when you use it in your keymap.
-For instance, a hold-tap with node label `caps` and `bindings = <&kp>, <&caps_word>;` can be used in the keymap as below to send the caps lock keycode on hold and invoke the [caps word behavior](caps-word.md) on tap:
+If you use behaviors that accept no parameters such as [mod-morphs](/docs/keymaps/behaviors/mod-morph) or [tap-dances](/docs/keymaps/behaviors/tap-dance), you can pass a dummy parameter value such as `0` to the hold-tap when you use it in your keymap.
+For instance, a hold-tap with node label `caps` and `bindings = <&kp>, <&caps_word>;` can be used in the keymap as below to send the caps lock keycode on hold and invoke the [caps word behavior](/docs/keymaps/behaviors/caps-word) on tap:
 
 ```dts
 &caps CAPS 0
 ```
 
 :::note
-You cannot use behaviors that expect more than one parameter such as [`&bt`](bluetooth.md) and [`&rgb_ug`](underglow.md) with hold-taps, due to the limitations of the [devicetree keymap format](../../config/index.md#devicetree-files).
-One workaround is to create a [macro](macros.md) that invokes those behaviors and use the macro as the hold or tap action.
+You cannot use behaviors that expect more than one parameter such as [`&bt`](/docs/keymaps/behaviors/bluetooth) and [`&rgb_ug`](/docs/keymaps/behaviors/underglow) with hold-taps, due to the limitations of the [devicetree keymap format](/docs/config#devicetree-files).
+One workaround is to create a [macro](/docs/keymaps/behaviors/macros) that invokes those behaviors and use the macro as the hold or tap action.
 :::
 
 ### Interrupt Flavors

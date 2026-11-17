@@ -259,7 +259,7 @@ If ZMK doesn't support your keyboard by default, you have two options:
 
 **Add a Module**
 
-ZMK can be extended with [modules](features/modules.mdx) to add new keyboards. If someone has already created a module for your keyboard, run the following command to add it, replacing `<url>` with the URL of the Git repository for the module:
+ZMK can be extended with [modules](/docs/features/modules) to add new keyboards. If someone has already created a module for your keyboard, run the following command to add it, replacing `<url>` with the URL of the Git repository for the module:
 
 ```sh
 zmk module add <url>
@@ -271,7 +271,7 @@ Run `zmk keyboard add` again, and the new keyboards should appear in the list.
 
 **Create It Yourself**
 
-If nobody has created a module for your keyboard yet, or if it is your own custom design, you will need to set it up yourself. Your config repo is already set up as a module, so you can define new keyboards there. See ZMK's [new keyboard shield guide](hardware-integration/new-shield.mdx) for more information.
+If nobody has created a module for your keyboard yet, or if it is your own custom design, you will need to set it up yourself. Your config repo is already set up as a module, so you can define new keyboards there. See ZMK's [new keyboard shield guide](/docs/hardware-integration/new-shield) for more information.
 
 ZMK CLI can also help generate some of the boilerplate for defining a new keyboard:
 
@@ -283,7 +283,7 @@ zmk keyboard new
 
 ### Edit Your Keymap and Configuration
 
-See the [customizing ZMK](customization.md) documentation for instructions on editing your keymap and configuring ZMK settings.
+See the [customizing ZMK](/docs/customization) documentation for instructions on editing your keymap and configuring ZMK settings.
 
 As a shortcut to open your keymap in a text editor, you can run the following command, replacing `<keyboard>` with the ID of the keyboard you chose earlier:
 
@@ -297,7 +297,7 @@ If you have an editor like [VS Code](https://code.visualstudio.com/) that can op
 zmk code
 ```
 
-The first time you run this command, it will try to identify which text editors you have installed and ask you which one to use. If you want to change this later, change the [`core.editor`](zmk-cli.mdx#coreeditor) setting.
+The first time you run this command, it will try to identify which text editors you have installed and ask you which one to use. If you want to change this later, change the [`core.editor`](/docs/zmk-cli#coreeditor) setting.
 
 ### Commit and Push to GitHub
 
@@ -341,7 +341,7 @@ a link to download the `firmware` upload:
 
 :::note[Fixing build errors]
 
-If you see a red X instead of a link to download the firmware, the build failed, likely due to an error in your repo. See the [troubleshooting page](./troubleshooting/building-issues.md) for help fixing the error. After making changes, [commit and push](#commit-and-push-to-github) again and GitHub will start a new build.
+If you see a red X instead of a link to download the firmware, the build failed, likely due to an error in your repo. See the [troubleshooting page](/docs/troubleshooting/building-issues) for help fixing the error. After making changes, [commit and push](#commit-and-push-to-github) again and GitHub will start a new build.
 
 :::
 
@@ -363,7 +363,7 @@ connect to it wirelessly.
 For split keyboards, only the central half (typically the left side) will send keyboard outputs over USB or advertise to other devices
 over bluetooth. Peripheral half will only send keystrokes to the central once they are paired and connected. For this reason it is
 recommended to test the left half of a split keyboard first.
-Please refer to [split keyboards documentation](features/split-keyboards.md) for more information.
+Please refer to [split keyboards documentation](/docs/features/split-keyboards) for more information.
 
 :::
 
@@ -377,17 +377,17 @@ Open QMK Toolbox, click the "Open" button, and select the correct `.hex` file (e
 
 ZMK will automatically advertise itself as connectable if it is not currently connected to a device. You should be able to see your keyboard from the bluetooth scanning view of your computer or phone / tablet. It is reported by some users that the connections with Android / iOS devices are generally smoother than with laptops, so if you have trouble connecting, you could try to connect from your phone or tablet first to eliminate any potential hardware issues with bluetooth receivers.
 
-ZMK supports multiple BLE “profiles”, which allows you to connect to and switch among multiple devices. Please refer to the [Bluetooth behavior](keymaps/behaviors/bluetooth.md) section for detailed explanations on how to use them. If you don't make use of the mentioned behaviors you will have issues pairing your keyboard to other devices.
+ZMK supports multiple BLE “profiles”, which allows you to connect to and switch among multiple devices. Please refer to the [Bluetooth behavior](/docs/keymaps/behaviors/bluetooth) section for detailed explanations on how to use them. If you don't make use of the mentioned behaviors you will have issues pairing your keyboard to other devices.
 
 ### Connecting Split Keyboard Halves
 
 For split keyboards, after flashing each half individually you can connect them together by resetting them at the same time. Within a few seconds of resetting, both halves should automatically connect to each other.
-Please refer to [the pairing section in the split keyboards documentation](features/split-keyboards.md#pairing-for-wireless-split-keyboards) for more information.
+Please refer to [the pairing section in the split keyboards documentation](/docs/features/split-keyboards#pairing-for-wireless-split-keyboards) for more information.
 
 :::note
 
 If you have issues connecting the halves, make sure that both sides are getting powered properly through USB or batteries, then follow the
-[recommended troubleshooting procedure](troubleshooting/connection-issues.mdx#split-keyboard-parts-unable-to-pair). This is typically necessary if you
+[recommended troubleshooting procedure](/docs/troubleshooting/connection-issues#split-keyboard-parts-unable-to-pair). This is typically necessary if you
 swapped firmware sides between controllers, like flashing left side firmware to the same controller after flashing the right, or vice versa.
 
 :::

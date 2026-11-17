@@ -33,7 +33,7 @@ After we have verified functionality, ironed out any major bugs, and given any t
 
 Some readers may be coming here because the above changes have _broken_ their builds. ZMK uses a formal release process that allows users to build against a specific release, instead of following the unstable/development version found in the `main` branch. However, since this is a relatively new process, many users may still be tracking `main`.
 
-For all users, except those willing to accept periodic breaks they need to track down, we highly recommend [pinning your ZMK version](./2025-06-20-pinned-zmk.md). Doing so will allow you to avoid any issues related to the Zephyr upgrade, and allow you to choose when to upgrade to a future ZMK release when you are ready.
+For all users, except those willing to accept periodic breaks they need to track down, we highly recommend [pinning your ZMK version](/blog/2025/06/20/pinned-zmk). Doing so will allow you to avoid any issues related to the Zephyr upgrade, and allow you to choose when to upgrade to a future ZMK release when you are ready.
 
 ## Getting The Changes
 
@@ -42,7 +42,7 @@ For all users, except those willing to accept periodic breaks they need to track
 Existing user repositories that have `revision: main` in their `west.yml` will receive the changes automatically when rebuilding.
 
 Any user repositories created on or after `2025-07-03` are currently pinned to the most recent ZMK release. You will need to change over to `main` to get these changes immediately, or wait for `v0.4` and upgrade your version then.
-See the recent [blog post on pinning ZMK versions](./2025-06-20-pinned-zmk.md) for more information.
+See the recent [blog post on pinning ZMK versions](/blog/2025/06/20/pinned-zmk) for more information.
 
 Likewise, if you are currently on `main` but do not wish to upgrade yet, please pin your ZMK version to `v0.3` by following the instructions in said blog post.
 
@@ -126,7 +126,7 @@ This _only_ applies to boards. Shields do not need any changes to account for th
 
 ### Board Upgrade Script
 
-The Zephyr project provides a script to automate updating a board to HWMv2. To run the script, you'll need to have a local [development setup](/docs/development/local-toolchain/setup/) ready to use. You'll need to ensure you've updated to the new ZMK version and run `west update` to ensure you've got the new Zephyr version with the script available.
+The Zephyr project provides a script to automate updating a board to HWMv2. To run the script, you'll need to have a local [development setup](/docs/development/local-toolchain/setup) ready to use. You'll need to ensure you've updated to the new ZMK version and run `west update` to ensure you've got the new Zephyr version with the script available.
 
 :::note
 

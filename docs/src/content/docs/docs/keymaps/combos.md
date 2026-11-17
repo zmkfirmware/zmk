@@ -30,7 +30,7 @@ Combos configured in your `.keymap` file, but are separate from the `keymap` nod
 - `layers = <0 1...>` will allow limiting a combo to specific layers. This is an _optional_ parameter, when omitted it defaults to global scope.
 - `bindings` is the behavior that is activated when the behavior is pressed.
 - (advanced) you can specify `slow-release` if you want the combo binding to be released when all key-positions are released. The default is to release the combo as soon as any of the keys in the combo is released.
-- (advanced) you can specify a `require-prior-idle-ms` value much like for [hold-taps](behaviors/hold-tap.mdx#require-prior-idle-ms). If any non-modifier key is pressed within `require-prior-idle-ms` before a key in the combo, the combo will not trigger.
+- (advanced) you can specify a `require-prior-idle-ms` value much like for [hold-taps](/docs/keymaps/behaviors/hold-tap#require-prior-idle-ms). If any non-modifier key is pressed within `require-prior-idle-ms` before a key in the combo, the combo will not trigger.
 
 :::note
 
@@ -45,7 +45,7 @@ Key positions are numbered like the keys in your keymap, starting at 0. So, if t
 - You are not limited to `&kp` bindings. You can use all ZMK behaviors there, like `&mo`, `&bt`, `&mt`, `&lt` etc.
 
 :::note[Source-specific behaviors on split keyboards]
-Invoking a [source-specific behavior](../features/split-keyboards.md#source-locality-behaviors) such as one of the [reset behaviors](behaviors/reset.md) using a combo will always trigger it on the central side of the keyboard, regardless of the side that the keys corresponding to `key-positions` are on.
+Invoking a [source-specific behavior](/docs/features/split-keyboards#source-locality-behaviors) such as one of the [reset behaviors](/docs/keymaps/behaviors/reset) using a combo will always trigger it on the central side of the keyboard, regardless of the side that the keys corresponding to `key-positions` are on.
 :::
 
-See [combo configuration](../config/combos.md) for advanced configuration options.
+See [combo configuration](/docs/config/combos) for advanced configuration options.

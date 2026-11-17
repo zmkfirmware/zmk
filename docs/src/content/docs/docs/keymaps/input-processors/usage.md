@@ -4,11 +4,11 @@ sidebar:
   label: Usage
 ---
 
-Input processors are used by assigning them to a given [input listener](../../features/pointing.md#input-listeners). A base set of processors is assigned to a listener, and then overrides can be set that are only active when certain [layers](../index.mdx#layers) are active. The examples in the following assume you are adding processors to the `&trackpad` device which is set up with a `&trackpad_listener`.
+Input processors are used by assigning them to a given [input listener](/docs/features/pointing#input-listeners). A base set of processors is assigned to a listener, and then overrides can be set that are only active when certain [layers](/docs/keymaps#layers) are active. The examples in the following assume you are adding processors to the `&trackpad` device which is set up with a `&trackpad_listener`.
 
 ### Base Processors
 
-Base processors are assigned in the `input-processors` property, and when events are generated, the events are process in the sequence in the order the processors are listed. For example, if you wanted your trackpad to always scale the values to increase the movements, you would assign the [scaler](scaler.md#pre-defined-instances) input processor to the property:
+Base processors are assigned in the `input-processors` property, and when events are generated, the events are process in the sequence in the order the processors are listed. For example, if you wanted your trackpad to always scale the values to increase the movements, you would assign the [scaler](/docs/keymaps/input-processors/scaler#pre-defined-instances) input processor to the property:
 
 ```dts
 #include <input/processors.dtsi>
@@ -57,4 +57,4 @@ By default, the first-defined override node that matches the layer specification
 }
 ```
 
-For more details, see the [Input Listener configuration](../../config/pointing.md#input-listener) section.
+For more details, see the [Input Listener configuration](/docs/config/pointing#input-listener) section.

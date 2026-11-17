@@ -6,7 +6,7 @@ sidebar:
 
 ## Overview
 
-The temporary layer input processor is used to enable a layer when input events are received, and automatically disable it when no further events are received in the given timeout duration. This most frequently is used to temporarily enable a layer with a set of [mouse button emulation behaviors](../behaviors/mouse-emulation.md#mouse-button-press) on it, so you can press various mouse buttons with the normal keyboard keys while using a physical pointer device for X/Y movement.
+The temporary layer input processor is used to enable a layer when input events are received, and automatically disable it when no further events are received in the given timeout duration. This most frequently is used to temporarily enable a layer with a set of [mouse button emulation behaviors](/docs/keymaps/behaviors/mouse-emulation#mouse-button-press) on it, so you can press various mouse buttons with the normal keyboard keys while using a physical pointer device for X/Y movement.
 
 ## Usage
 

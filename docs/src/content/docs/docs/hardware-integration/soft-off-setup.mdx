@@ -18,7 +18,7 @@ import SidebandDirect from "./includes/_sideband-direct.mdx";
 import SidebandMatrix from "./includes/_sideband-matrix.mdx";
 import SidebandWakeupDirect from "./includes/_sideband-wakeup-direct.mdx";
 
-Advanced methods of adding [soft off](../features/low-power-states.md#soft-off) to a keyboard are detailed below. The first two tabs describe methods involving hardware changes, while the last describes the firmware changes necessary to define a single specific key switch for waking up.
+Advanced methods of adding [soft off](/docs/features/low-power-states#soft-off) to a keyboard are detailed below. The first two tabs describe methods involving hardware changes, while the last describes the firmware changes necessary to define a single specific key switch for waking up.
 
 <Tabs syncKey="advanced-methods">
   <TabItem label="Direct Pin"></TabItem>
@@ -70,7 +70,7 @@ Several items work together to make both triggering soft off properly, and setti
 
 ### Soft off behavior
 
-For this approach, you will need to make sure that the [soft off behavior](../keymaps/behaviors/soft-off.md) is present in your keymap, to trigger soft off.
+For this approach, you will need to make sure that the [soft off behavior](/docs/keymaps/behaviors/soft-off) is present in your keymap, to trigger soft off.
 
   </TabItem>
 </SyncedTabs>
@@ -153,7 +153,7 @@ Finally, we will list the `wakeup_scan` device in an additional configuration se
 Here are the properties for the node:
 
 - The `compatible` property for the node must be `zmk,soft-off-wakeup-sources`.
-- The `wakeup-sources` property is a [phandle array](../development/devicetree.md#property-types) pointing to all the devices that should be enabled during the shutdown process to be sure they can later wake the keyboard.
+- The `wakeup-sources` property is a [phandle array](/docs/development/devicetree#property-types) pointing to all the devices that should be enabled during the shutdown process to be sure they can later wake the keyboard.
 
 :::tip
 If you add your kscan to the `wakeup-sources` array, then your keyboard will wake upon pressing any key in your kscan. Essentially, this causes `&soft_off` to behave like a behavior that puts the keyboard in deep sleep. If you choose to do so, then you can omit everything aside from the `soft_off_wakers` node.

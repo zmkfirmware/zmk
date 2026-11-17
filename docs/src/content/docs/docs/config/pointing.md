@@ -6,7 +6,7 @@ sidebar:
 
 These are settings related to the pointing device/mouse support in ZMK.
 
-See [Configuration Overview](index.md) for instructions on how to change these settings.
+See [Configuration Overview](/docs/config) for instructions on how to change these settings.
 
 ## Kconfig
 
@@ -29,7 +29,7 @@ The following settings are from Zephyr and should be defaulted to sane values, b
 
 ## Input Listener
 
-The following documents settings related to [input listeners](../features/pointing.md#input-listeners).
+The following documents settings related to [input listeners](/docs/features/pointing#input-listeners).
 
 ### Devicetree
 
@@ -54,7 +54,7 @@ Additional properties can be set on child nodes, which allows changing the setti
 
 ## Input Split
 
-Input splits are used for [pointing devices on split peripherals](../hardware-integration/pointing.mdx#listener-and-input-split-device).
+Input splits are used for [pointing devices on split peripherals](/docs/hardware-integration/pointing#listener-and-input-split-device).
 
 ### Devicetree
 
