@@ -1,6 +1,11 @@
 import type { Tree } from "web-tree-sitter";
 import { Devicetree, findCapture } from "./parser";
-import { getUpgradeEdits, MatchFunc, ReplaceFunc, TextEdit } from "./textedit";
+import {
+  getUpgradeEdits,
+  TextEdit,
+  type MatchFunc,
+  type ReplaceFunc,
+} from "./textedit";
 
 // Map of { "deprecated": "replacement" } header paths.
 const HEADERS = {

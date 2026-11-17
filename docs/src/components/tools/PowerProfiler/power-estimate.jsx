@@ -10,8 +10,7 @@ import {
   underglowPower,
   backlightPower,
   zmkBase,
-} from "../data/power";
-import "../css/power-estimate.css";
+} from "../../../data/power";
 
 // Average monthly discharge percent
 const lithiumIonMonthlyDischargePercent = 5;
@@ -100,7 +99,7 @@ function PowerEstimate({
             className="powerEstimateBarSection"
             style={{
               width: "100%",
-              background: "#e0e0e0",
+              background: "var(--sl-color-gray-5)",
               mixBlendMode: "overlay",
             }}
           ></div>
@@ -285,13 +284,13 @@ function PowerEstimate({
 }
 
 PowerEstimate.propTypes = {
-  board: PropTypes.Object,
+  board: PropTypes.object,
   splitType: PropTypes.string,
   batteryMilliAh: PropTypes.number,
-  usage: PropTypes.Object,
-  underglow: PropTypes.Object,
-  backlight: PropTypes.Object,
-  display: PropTypes.Object,
+  usage: PropTypes.object,
+  underglow: PropTypes.object,
+  backlight: PropTypes.object,
+  display: PropTypes.object,
 };
 
 export default PowerEstimate;

@@ -13,20 +13,18 @@
 }
 
 .powerEstimateBar {
-  height: 64px;
-  width: 100%;
-  box-shadow:
-    rgba(0, 0, 0, 0.03) 0px 10px 20px 0px,
-    rgba(0, 0, 0, 0.1) 0px 1px 4px 0px;
-  border-radius: 64px;
   display: flex;
   justify-content: flex-start;
+  width: 100%;
+  height: 64px;
   overflow: hidden;
+  border-radius: 64px;
+  box-shadow: var(--sl-shadow-sm);
 }
 
 .powerEstimateBarSection {
-  transition: all 0.2s ease;
   flex-grow: 1;
+  transition: all 0.2s ease;
 }
 
 .powerEstimateBarSection.rightSection {
@@ -38,8 +36,8 @@
   position: absolute;
   visibility: hidden;
   opacity: 0;
-  transform: translateY(calc(-100% - 8px));
   transition: opacity 0.2s ease;
+  transform: translateY(calc(-100% - 8px));
 }
 
 .powerEstimateBarSection:hover .powerEstimateTooltipWrap {
@@ -48,13 +46,14 @@
 }
 
 .powerEstimateTooltip {
-  display: block;
   position: relative;
-  box-shadow: var(--ifm-global-shadow-tl);
+  display: block;
   width: 260px;
   padding: 10px;
+  color: var(--sl-color-text);
+  background: var(--sl-color-bg-nav);
   border-radius: 4px;
-  background: var(--ifm-background-surface-color);
+  box-shadow: var(--sl-shadow-lg);
   transform: translateX(-15px);
 }
 
@@ -67,16 +66,16 @@
   position: absolute;
   top: 100%;
   left: 27px;
-  margin-left: -8px;
   width: 0;
   height: 0;
-  border-top: 8px solid var(--ifm-background-surface-color);
+  margin-left: -8px;
+  border-top: 8px solid var(--sl-color-bg-nav);
   border-right: 8px solid transparent;
   border-left: 8px solid transparent;
 }
 
 .rightSection .powerEstimateTooltip:after {
-  left: unset;
   right: 27px;
+  left: unset;
   margin-right: -8px;
 }
