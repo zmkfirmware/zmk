@@ -346,6 +346,15 @@ config ZMK_RGB_UNDERGLOW_AUTO_OFF_USB
     bool "Turn off RGB underglow when USB is disconnected"
     depends on USB_DEVICE_STACK
 
+config ZMK_RGB_UNDERGLOW_AUTO_OFF_USB_SUSPEND
+    bool "Turn off RGB underglow when USB is suspended"
+    depends on USB_DEVICE_STACK
+    default n
+    help
+      Temporarily turn off underglow while the USB host suspends the device.
+      Restore its previous on/off state when the host resumes, subject to
+      any other enabled automatic-off conditions.
+
 endif # ZMK_RGB_UNDERGLOW
 
 menuconfig ZMK_BACKLIGHT

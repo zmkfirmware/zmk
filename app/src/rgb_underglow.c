@@ -66,6 +66,10 @@ static struct led_rgb pixels[STRIP_NUM_PIXELS];
 
 static struct rgb_underglow_state state;
 
+#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB_SUSPEND)
+static int rgb_underglow_restore_auto_state(void);
+#endif
+
 #if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_EXT_POWER)
 static const struct device *const ext_power = DEVICE_DT_GET(DT_INST(0, zmk_ext_power_generic));
 #endif
@@ -221,6 +225,12 @@ static int rgb_settings_set(const char *name, size_t len, settings_read_cb read_
 
         rc = read_cb(cb_arg, &state, sizeof(state));
         if (rc >= 0) {
+#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB_SUSPEND)
+            int err = rgb_underglow_restore_auto_state();
+            if (err < 0) {
+                return err;
+            }
+#endif
             if (state.on) {
                 k_timer_start(&underglow_tick, K_NO_WAIT, K_MSEC(50));
             }
@@ -271,6 +281,14 @@ static int zmk_rgb_underglow_init(void) {
 
 #if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB)
     state.on = zmk_usb_is_powered();
+#endif
+
+#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB_SUSPEND)
+    // A USB suspend notification may have arrived before underglow initialized.
+    int err = rgb_underglow_restore_auto_state();
+    if (err < 0) {
+        return err;
+    }
 #endif
 
     if (state.on) {
@@ -461,17 +479,19 @@ int zmk_rgb_underglow_change_spd(int direction) {
 }
 
 #if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_IDLE) ||                                          \
-    IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB)
+    IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB) ||                                           \
+    IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB_SUSPEND)
 struct rgb_underglow_sleep_state {
     bool is_awake;
     bool rgb_state_before_sleeping;
 };
 
+static struct rgb_underglow_sleep_state sleep_state = {
+    is_awake : true,
+    rgb_state_before_sleeping : false
+};
+
 static int rgb_underglow_auto_state(bool target_wake_state) {
-    static struct rgb_underglow_sleep_state sleep_state = {
-        is_awake : true,
-        rgb_state_before_sleeping : false
-    };
 
     // wake up event while awake, or sleep event while sleeping -> no-op
     if (target_wake_state == sleep_state.is_awake) {
@@ -491,17 +511,50 @@ static int rgb_underglow_auto_state(bool target_wake_state) {
     }
 }
 
+static bool rgb_underglow_should_be_awake(void) {
+#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_IDLE)
+    if (zmk_activity_get_state() != ZMK_ACTIVITY_ACTIVE) {
+        return false;
+    }
+#endif
+#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB)
+    if (!zmk_usb_is_powered()) {
+        return false;
+    }
+#endif
+#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB_SUSPEND)
+    if (zmk_usb_get_status() == USB_DC_SUSPEND) {
+        return false;
+    }
+#endif
+    return true;
+}
+
+#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB_SUSPEND)
+static int rgb_underglow_restore_auto_state(void) {
+    // Treat newly initialized/loaded settings as the user's current preference,
+    // then apply the current host state, including an already-suspended host.
+    sleep_state.is_awake = rgb_underglow_should_be_awake();
+    sleep_state.rgb_state_before_sleeping = state.on;
+    return sleep_state.is_awake && state.on ? zmk_rgb_underglow_on() : zmk_rgb_underglow_off();
+}
+#endif
+
 static int rgb_underglow_event_listener(const zmk_event_t *eh) {
+    if (!led_strip) {
+        return -ENODEV;
+    }
 
 #if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_IDLE)
     if (as_zmk_activity_state_changed(eh)) {
-        return rgb_underglow_auto_state(zmk_activity_get_state() == ZMK_ACTIVITY_ACTIVE);
+        return rgb_underglow_auto_state(rgb_underglow_should_be_awake());
     }
 #endif
 
-#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB)
+#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB) ||                                           \
+    IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB_SUSPEND)
     if (as_zmk_usb_conn_state_changed(eh)) {
-        return rgb_underglow_auto_state(zmk_usb_is_powered());
+        return rgb_underglow_auto_state(rgb_underglow_should_be_awake());
     }
 #endif
 
@@ -510,13 +563,15 @@ static int rgb_underglow_event_listener(const zmk_event_t *eh) {
 
 ZMK_LISTENER(rgb_underglow, rgb_underglow_event_listener);
 #endif // IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_IDLE) ||
-       // IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB)
+       // IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB) ||
+       // IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB_SUSPEND)
 
 #if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_IDLE)
 ZMK_SUBSCRIPTION(rgb_underglow, zmk_activity_state_changed);
 #endif
 
-#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB)
+#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB) ||                                           \
+    IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB_SUSPEND)
 ZMK_SUBSCRIPTION(rgb_underglow, zmk_usb_conn_state_changed);
 #endif
 

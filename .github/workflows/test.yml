@@ -5,6 +5,8 @@ on:
     paths:
       - ".github/workflows/test.yml"
       - "app/run-test.sh"
+      - "app/Kconfig"
+      - "app/scripts/tests/test_rgb_underglow_usb_suspend.py"
       - "app/tests/**"
       - "app/src/**"
       - "app/include/**"
@@ -12,11 +14,20 @@ on:
     paths:
       - ".github/workflows/test.yml"
       - "app/run-test.sh"
+      - "app/Kconfig"
+      - "app/scripts/tests/test_rgb_underglow_usb_suspend.py"
       - "app/tests/**"
       - "app/src/**"
       - "app/include/**"
 
 jobs:
+  underglow-usb-suspend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Check underglow USB suspend policy
+        run: python3 app/scripts/tests/test_rgb_underglow_usb_suspend.py
   collect-tests:
     outputs:
       test-dirs: ${{ steps.test-dirs.outputs.test-dirs }}

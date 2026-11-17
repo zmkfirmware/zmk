@@ -17,23 +17,24 @@ RGB underglow depends on [Zephyr's LED strip driver](https://github.com/zephyrpr
 
 Definition file: [zmk/app/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/app/Kconfig)
 
-| Config                                   | Type | Description                                               | Default |
-| ---------------------------------------- | ---- | --------------------------------------------------------- | ------- |
-| `CONFIG_ZMK_RGB_UNDERGLOW`               | bool | Enable RGB underglow                                      | n       |
-| `CONFIG_ZMK_RGB_UNDERGLOW_EXT_POWER`     | bool | Underglow toggling also controls external power           | y       |
-| `CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_IDLE` | bool | Turn off RGB underglow when keyboard goes into idle state | n       |
-| `CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB`  | bool | Turn off RGB underglow when USB is disconnected           | n       |
-| `CONFIG_ZMK_RGB_UNDERGLOW_HUE_STEP`      | int  | Hue step in degrees (0-359) used by RGB actions           | 10      |
-| `CONFIG_ZMK_RGB_UNDERGLOW_SAT_STEP`      | int  | Saturation step in percent used by RGB actions            | 10      |
-| `CONFIG_ZMK_RGB_UNDERGLOW_BRT_STEP`      | int  | Brightness step in percent used by RGB actions            | 10      |
-| `CONFIG_ZMK_RGB_UNDERGLOW_HUE_START`     | int  | Default hue in degrees (0-359)                            | 0       |
-| `CONFIG_ZMK_RGB_UNDERGLOW_SAT_START`     | int  | Default saturation percent (0-100)                        | 100     |
-| `CONFIG_ZMK_RGB_UNDERGLOW_BRT_START`     | int  | Default brightness in percent (0-100)                     | 100     |
-| `CONFIG_ZMK_RGB_UNDERGLOW_SPD_START`     | int  | Default effect speed (1-5)                                | 3       |
-| `CONFIG_ZMK_RGB_UNDERGLOW_EFF_START`     | int  | Default effect index from the effect list (see below)     | 0       |
-| `CONFIG_ZMK_RGB_UNDERGLOW_ON_START`      | bool | Default on state                                          | y       |
-| `CONFIG_ZMK_RGB_UNDERGLOW_BRT_MIN`       | int  | Minimum brightness in percent (0-100)                     | 0       |
-| `CONFIG_ZMK_RGB_UNDERGLOW_BRT_MAX`       | int  | Maximum brightness in percent (0-100)                     | 100     |
+| Config                                          | Type | Description                                                   | Default |
+| ----------------------------------------------- | ---- | ------------------------------------------------------------- | ------- |
+| `CONFIG_ZMK_RGB_UNDERGLOW`                      | bool | Enable RGB underglow                                          | n       |
+| `CONFIG_ZMK_RGB_UNDERGLOW_EXT_POWER`            | bool | Underglow toggling also controls external power               | y       |
+| `CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_IDLE`        | bool | Turn off RGB underglow when keyboard goes into idle state     | n       |
+| `CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB`         | bool | Turn off RGB underglow when USB is disconnected               | n       |
+| `CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB_SUSPEND` | bool | Turn off RGB underglow while the USB host suspends the device | n       |
+| `CONFIG_ZMK_RGB_UNDERGLOW_HUE_STEP`             | int  | Hue step in degrees (0-359) used by RGB actions               | 10      |
+| `CONFIG_ZMK_RGB_UNDERGLOW_SAT_STEP`             | int  | Saturation step in percent used by RGB actions                | 10      |
+| `CONFIG_ZMK_RGB_UNDERGLOW_BRT_STEP`             | int  | Brightness step in percent used by RGB actions                | 10      |
+| `CONFIG_ZMK_RGB_UNDERGLOW_HUE_START`            | int  | Default hue in degrees (0-359)                                | 0       |
+| `CONFIG_ZMK_RGB_UNDERGLOW_SAT_START`            | int  | Default saturation percent (0-100)                            | 100     |
+| `CONFIG_ZMK_RGB_UNDERGLOW_BRT_START`            | int  | Default brightness in percent (0-100)                         | 100     |
+| `CONFIG_ZMK_RGB_UNDERGLOW_SPD_START`            | int  | Default effect speed (1-5)                                    | 3       |
+| `CONFIG_ZMK_RGB_UNDERGLOW_EFF_START`            | int  | Default effect index from the effect list (see below)         | 0       |
+| `CONFIG_ZMK_RGB_UNDERGLOW_ON_START`             | bool | Default on state                                              | y       |
+| `CONFIG_ZMK_RGB_UNDERGLOW_BRT_MIN`              | int  | Minimum brightness in percent (0-100)                         | 0       |
+| `CONFIG_ZMK_RGB_UNDERGLOW_BRT_MAX`              | int  | Maximum brightness in percent (0-100)                         | 100     |
 
 Values for `CONFIG_ZMK_RGB_UNDERGLOW_EFF_START`:
 
@@ -47,6 +48,14 @@ Values for `CONFIG_ZMK_RGB_UNDERGLOW_EFF_START`:
 :::note
 The `*_START` settings only determine the initial underglow state. Any changes you make with the [underglow behavior](../keymaps/behaviors/underglow.md) are saved to flash after a one minute delay and will be used after that.
 :::
+
+### USB suspend
+
+Set `CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB_SUSPEND=y` to temporarily turn off underglow when a connected USB host suspends the device. On resume, the previous on/off state is restored only after all other enabled automatic-off conditions allow it. An idle keyboard therefore stays dark if the USB host resumes before keyboard activity resumes. Color, brightness, and effect selections are preserved.
+
+This differs from `CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB`, which responds to USB disconnection. With only the suspend option enabled, disconnecting USB allows lighting to resume for battery-powered Bluetooth use. A connected USB host's suspend state still controls lighting while Bluetooth output is selected.
+
+USB suspend is not a display-sleep signal: a host may suspend an idle device while its display remains awake, including during a screensaver. Leave this option disabled if lighting should follow the actual display state instead.
 
 ### Devicetree
 
