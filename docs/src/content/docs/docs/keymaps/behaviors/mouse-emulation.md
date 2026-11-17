@@ -1,6 +1,7 @@
 ---
 title: Mouse Emulation Behaviors
-sidebar_label: Mouse Emulation
+sidebar:
+  label: Mouse Emulation
 ---
 
 ## Summary

@@ -1,6 +1,7 @@
 ---
 title: Encoder Configuration
-sidebar_label: Encoders
+sidebar:
+  label: Encoders
 ---
 
 See the [Encoders informational page](../features/encoders.md) for more details, including instructions for adding encoder support to a board.

@@ -1,6 +1,7 @@
 ---
 title: Key Press Behaviors
-sidebar_label: Key Press
+sidebar:
+  label: Key Press
 ---
 
 ## Summary

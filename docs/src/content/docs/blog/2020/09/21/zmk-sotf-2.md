@@ -1,4 +1,5 @@
 ---
+date: 2020-09-21
 title: "ZMK State Of The Firmware #2"
 authors: petejohanson
 tags: [SOTF, keyboards, firmware, oss, ble]
@@ -9,7 +10,7 @@ Welcome to the second ZMK "State Of The Firmware" (SOTF)!
 This update will cover all the major activity since [SOTF #1](/blog/2020/08/12/zmk-sotf-1), preparations for the upcoming
 Hacktoberfest activity, and a current open call for community feedback on a ZMK mascot.
 
-<!-- truncate -->
+<!-- excerpt -->
 
 ## Recent Activity
 

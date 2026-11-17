@@ -1,6 +1,7 @@
 ---
 title: Encoders
-sidebar_label: Encoders
+sidebar:
+  label: Encoders
 ---
 
 Existing support for encoders in ZMK is focused around the five pin EC11 rotary encoder with push button design used in the majority of current keyboard and macropad designs.

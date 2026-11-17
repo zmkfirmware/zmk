@@ -1,6 +1,7 @@
 ---
 title: LED Indicators Configuration
-sidebar_label: LED Indicators
+sidebar:
+  label: LED Indicators
 ---
 
 See the [LED indicators feature page](../features/led-indicators.md) for more details.

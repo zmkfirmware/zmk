@@ -1,6 +1,7 @@
 ---
 title: LED Indicators
-sidebar_label: LED Indicators
+sidebar:
+  label: LED Indicators
 ---
 
 ZMK supports the following five LED indicator states from the HID specification:

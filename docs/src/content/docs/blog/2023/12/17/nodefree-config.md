@@ -1,4 +1,5 @@
 ---
+date: 2023-12-17
 title: "Community Spotlight Series #2: Node-free Config"
 authors: caksoylar
 tags: [keyboards, firmware, community]
@@ -14,7 +15,7 @@ by [urob](https://github.com/urob) that contains helper methods that utilizes th
 for users who prefer editing and maintaining their ZMK config directly using the Devicetree
 syntax format.
 
-<!-- truncate -->
+<!-- excerpt -->
 
 In the rest of the post we leave it to urob to introduce and explain the motivations of the
 project, and various ways it can be used to help maintain ZMK keymaps. Stay tuned for future

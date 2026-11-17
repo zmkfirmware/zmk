@@ -1,6 +1,7 @@
 ---
 title: Low Power States
-sidebar_label: Low Power States
+sidebar:
+  label: Low Power States
 ---
 
 ## Idle

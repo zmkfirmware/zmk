@@ -1,6 +1,7 @@
 ---
 title: Keyboard Scan Configuration
-sidebar_label: Keyboard Scan
+sidebar:
+  label: Keyboard Scan
 ---
 
 See [Configuration Overview](index.md) for instructions on how to change these settings.

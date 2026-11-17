@@ -1,6 +1,7 @@
 ---
 title: Persistent Settings
-sidebar_label: Settings
+sidebar:
+  label: Settings
 ---
 
 ZMK uses [Zephyr's settings subsystem](https://docs.zephyrproject.org/4.1.0/services/settings/index.html) to store certain runtime settings in the "storage" partition of the controller's flash memory.

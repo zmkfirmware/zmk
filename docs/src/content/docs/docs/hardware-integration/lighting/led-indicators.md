@@ -1,6 +1,7 @@
 ---
 title: LED Indicators
-sidebar_label: LED Indicators
+sidebar:
+  label: LED Indicators
 description: Lighting system that indicates HID states such as caps lock.
 ---
 

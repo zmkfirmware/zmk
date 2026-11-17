@@ -1,6 +1,7 @@
 ---
 title: Backlight Behavior
-sidebar_label: Backlight
+sidebar:
+  label: Backlight
 ---
 
 ## Summary

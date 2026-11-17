@@ -1,6 +1,7 @@
 ---
 title: Code Mapper Input Processor
-sidebar_label: Code Mapper
+sidebar:
+  label: Code Mapper
 ---
 
 ## Overview

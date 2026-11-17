@@ -1,6 +1,7 @@
 ---
 title: Split Keyboards
-sidebar_label: Split Keyboards
+sidebar:
+  label: Split Keyboards
 ---
 
 ZMK supports setups where a keyboard is split into two or more physical parts (also called "sides" or "halves" when split in two), each with their own controller running ZMK. The parts communicate with each other to work as a single keyboard device.

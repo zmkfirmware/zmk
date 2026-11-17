@@ -1,6 +1,7 @@
 ---
 title: Behaviors Input Processor
-sidebar_label: Behaviors
+sidebar:
+  label: Behaviors
 ---
 
 ## Overview

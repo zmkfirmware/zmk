@@ -1,6 +1,7 @@
 ---
 title: Bootloader Integration Configuration
-sidebar_label: Bootloader Integration
+sidebar:
+  label: Bootloader Integration
 ---
 
 These are general settings that control the various bootloader integration features of ZMK.

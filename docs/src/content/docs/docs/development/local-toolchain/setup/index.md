@@ -1,6 +1,7 @@
 ---
 title: Getting Started
-sidebar_label: Getting Started
+sidebar:
+  label: Getting Started
 ---
 
 :::tip

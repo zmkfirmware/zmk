@@ -1,4 +1,5 @@
 ---
+date: 2024-01-05
 title: "Community Spotlight Series #3: ZMK Tools and ZMK Locale Generator"
 authors: caksoylar
 tags: [keyboards, firmware, community]
@@ -10,7 +11,7 @@ that we think are interesting and that the users might benefit from knowing abou
 In this installment, we are highlighting two projects (and a bonus one!) from [Joel Spadin](https://github.com/joelspadin),
 a member of the core ZMK team.
 
-<!-- truncate -->
+<!-- excerpt -->
 
 The first one is [ZMK Tools](#zmk-tools), a handy Visual Studio Code extension to ease working with ZMK configurations, and the second is [ZMK Locale Generator](#zmk-locale-generator), a tool to help users that use non-US English keyboard locales in their operating systems.
 

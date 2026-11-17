@@ -1,6 +1,7 @@
 ---
 title: Battery Level
-sidebar_label: Battery Level
+sidebar:
+  label: Battery Level
 ---
 
 See the [battery level feature page](../features/battery.md) for more details on configuring a battery sensor.

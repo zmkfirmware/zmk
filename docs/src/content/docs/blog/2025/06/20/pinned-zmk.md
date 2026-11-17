@@ -1,4 +1,5 @@
 ---
+date: 2025-06-20
 title: "Pin your ZMK version"
 authors: nmunnich
 tags: [keyboards, firmware, oss, versioning]
@@ -6,7 +7,7 @@ tags: [keyboards, firmware, oss, versioning]
 
 ZMK is preparing for a big breaking change. As such, users should consider pinning their ZMK version. Read on to find out more about our versioning system and how you can pin your ZMK version.
 
-<!-- truncate -->
+<!-- excerpt -->
 
 ## ZMK Versioning -- The 'what' and the 'why'
 

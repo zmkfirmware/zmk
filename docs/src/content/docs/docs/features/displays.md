@@ -1,6 +1,7 @@
 ---
 title: Displays
-sidebar_label: Displays
+sidebar:
+  label: Displays
 ---
 
 Displays in ZMK are currently a proof of concept and official support is coming soon.

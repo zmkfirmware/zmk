@@ -1,6 +1,7 @@
 ---
 title: RGB Underglow Behavior
-sidebar_label: RGB Underglow
+sidebar:
+  label: RGB Underglow
 ---
 
 ## Summary

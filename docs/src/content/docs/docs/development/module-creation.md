@@ -1,6 +1,7 @@
 ---
 title: Module Creation
-sidebar_label: ZMK Module Creation
+sidebar:
+  label: ZMK Module Creation
 ---
 
 [ZMK modules](../features/modules.mdx) are the recommended method of adding content to ZMK, whenever it is possible. This page will guide you through creating a module for ZMK. Distinction is made between modules used for different purposes:

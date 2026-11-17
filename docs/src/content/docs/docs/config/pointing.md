@@ -1,6 +1,7 @@
 ---
 title: Pointing Device Configuration
-sidebar_label: Pointing
+sidebar:
+  label: Pointing
 ---
 
 These are settings related to the pointing device/mouse support in ZMK.

@@ -1,4 +1,5 @@
 ---
+date: 2021-01-27
 title: "ZMK State Of The Firmware #4"
 authors: petejohanson
 tags: [SOTF, keyboards, firmware, oss, ble]
@@ -8,7 +9,7 @@ Welcome to the fourth ZMK "State Of The Firmware" (SOTF)!
 
 This update will cover all the major activity since [SOTF #3](/blog/2020/11/09/zmk-sotf-3).
 
-<!-- truncate -->
+<!-- excerpt -->
 
 ## Recent Activity
 

@@ -1,6 +1,7 @@
 ---
 title: Flashing Issues
-sidebar_label: Flashing Issues
+sidebar:
+  label: Flashing Issues
 description: Troubleshooting issues when flashing ZMK firmware to devices.
 ---
 
