@@ -394,7 +394,7 @@ In addition to this `compatible` override, a setting needs to be tweaked to ensu
 
 The following should be added to the board's/shield's `Kconfig.defconfig`:
 
-```dts
+```kconfig
 config UART_0_INTERRUPT_DRIVEN
     depends on !ZMK_SPLIT_WIRED_UART_MODE_ASYNC
 ```

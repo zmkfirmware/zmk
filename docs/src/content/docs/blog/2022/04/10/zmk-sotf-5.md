@@ -163,7 +163,7 @@ using "high voltage mode" with that SoC.
 
 [petejohanson]'s work on the HID foundation also included adding support for full NKRO HID in [#726](https://github.com/zmkfirmware/zmk/pull/726) that can be enabled by adding the following to your `.conf` file for your config:
 
-```ini
+```kconfig
 CONFIG_ZMK_HID_REPORT_TYPE_NKRO=y
 ```
 
@@ -175,7 +175,7 @@ It's been live for a while, but [nicell] added an amazing [power profiler](/powe
 
 [malinges](https://github.com/malinges) added support for configuring min/max underglow brightness in [#944](https://github.com/zmkfirmware/zmk/pull/944) by setting the values in your `.conf` file as percentages of full:
 
-```ini
+```kconfig
 CONFIG_ZMK_RGB_UNDERGLOW_BRT_MIN=20
 CONFIG_ZMK_RGB_UNDERGLOW_BRT_MAX=80
 ```
