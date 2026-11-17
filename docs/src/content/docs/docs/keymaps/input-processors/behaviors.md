@@ -11,7 +11,7 @@ The behaviors input processor is used invoke standard behaviors when certain inp
 This input processor is primarily intended for `INPUT_EV_KEY` type of events that have a binary on/off state, not vector types for relative or absolute movements.
 
 :::note[Source-specific behaviors on split keyboards]
-Invoking a [source-specific behavior](../../features/split-keyboards.md#source-locality-behaviors) such as one of the [reset behaviors](../behaviors/reset.md) using this input processor will always trigger it on the central side of the keyboard, regardless of the side includes the input device that originally generated the input event.
+Invoking a [source-specific behavior](/docs/features/split-keyboards#source-locality-behaviors) such as one of the [reset behaviors](/docs/keymaps/behaviors/reset) using this input processor will always trigger it on the central side of the keyboard, regardless of the side includes the input device that originally generated the input event.
 :::
 
 ## Usage
@@ -38,7 +38,7 @@ Should you wish to update the existing instance to trigger different behaviors f
 };
 ```
 
-By default, the `bindings` property maps all the buttons to [`&none`](../behaviors/misc.md#none), so you will want to override the `bindings` property like above if you use this processor by assigning it to an [input listener](usage.md).
+By default, the `bindings` property maps all the buttons to [`&none`](/docs/keymaps/behaviors/misc#none), so you will want to override the `bindings` property like above if you use this processor by assigning it to an [input listener](/docs/keymaps/input-processors/usage).
 
 ## User-Defined Instances
 

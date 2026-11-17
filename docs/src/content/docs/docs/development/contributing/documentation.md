@@ -5,7 +5,7 @@ sidebar:
 ---
 
 :::danger
-Before reading this section, it is **vital** that you read through our [clean room policy](clean-room.md).
+Before reading this section, it is **vital** that you read through our [clean room policy](/docs/development/contributing/clean-room).
 :::
 
 This document outlines how to test your documentation changes locally and prepare the changes for a pull request.

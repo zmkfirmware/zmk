@@ -4,7 +4,7 @@ sidebar:
   label: ZMK Events
 ---
 
-ZMK makes use of events to decouple individual components such as behaviors and peripherals from the core functionality. For this purpose, ZMK has implemented its own event manager. This page is a (brief) overview of the functionality and methods exposed by the event manager, documenting its API. Its purpose is to aid module developers and contributors, such as for the development of [new behaviors](./new-behavior.mdx) or [new features](./module-creation.md). There is no value in reading this page as an end-user.
+ZMK makes use of events to decouple individual components such as behaviors and peripherals from the core functionality. For this purpose, ZMK has implemented its own event manager. This page is a (brief) overview of the functionality and methods exposed by the event manager, documenting its API. Its purpose is to aid module developers and contributors, such as for the development of [new behaviors](/docs/development/new-behavior) or [new features](/docs/development/module-creation). There is no value in reading this page as an end-user.
 
 To see what events exist and what data they contain, it is best to view the corresponding [event header files](https://github.com/zmkfirmware/zmk/tree/main/app/include/zmk/events) directly. Including the event_manager header via `#include <zmk/event_manager.h>` is required for any interaction with the event system.
 
@@ -91,7 +91,7 @@ int behavior_hold_tap_listener(const zmk_event_t *eh) {
 }
 ```
 
-The priority of the listeners is determined by the order in which the linker links the files. Within ZMK, this is the order of the corresponding files in `CMakeLists.txt`. External modules targeting `app` are linked prior to any files within ZMK itself, making them the highest priority. It is thus the module maintainer's responsibility to both ensure that their module does not cause issues by being first in the listener queue. For example, [hold-tap](../keymaps/behaviors/hold-tap.mdx) is the first listener to `position_state_changed`, and may behave inconsistently if a behavior defined in a module listens to `position_state_changed` and invokes a `hold-tap` (e.g. by calling `zmk_behavior_invoke_event` with a `hold-tap` as the binding).
+The priority of the listeners is determined by the order in which the linker links the files. Within ZMK, this is the order of the corresponding files in `CMakeLists.txt`. External modules targeting `app` are linked prior to any files within ZMK itself, making them the highest priority. It is thus the module maintainer's responsibility to both ensure that their module does not cause issues by being first in the listener queue. For example, [hold-tap](/docs/keymaps/behaviors/hold-tap) is the first listener to `position_state_changed`, and may behave inconsistently if a behavior defined in a module listens to `position_state_changed` and invokes a `hold-tap` (e.g. by calling `zmk_behavior_invoke_event` with a `hold-tap` as the binding).
 
 In addition, because modules listen to the events first, they should _never_ capture/handle an event defined in ZMK without releasing it later. Unless it is unavoidable, it is recommended to bubble events whenever possible.
 

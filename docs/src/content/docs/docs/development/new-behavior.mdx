@@ -7,13 +7,13 @@ sidebar:
 import { Tabs, TabItem } from "@astrojs/starlight/components";
 
 :::danger
-Before reading this section, it is **vital** that you read through our [clean room policy](./contributing/clean-room.md).
+Before reading this section, it is **vital** that you read through our [clean room policy](/docs/development/contributing/clean-room).
 :::
 
 ## Overview
 
-[Behaviors](../keymaps/behaviors/index.mdx) refer to the actions that are invoked when a key is pressed or released.
-This guide outlines how to create a [ZMK module](../development/module-creation.md) that contains a new [behavior](../keymaps/behaviors/index.mdx).
+[Behaviors](/docs/keymaps/behaviors) refer to the actions that are invoked when a key is pressed or released.
+This guide outlines how to create a [ZMK module](/docs/development/module-creation) that contains a new [behavior](/docs/keymaps/behaviors).
 
 :::note
 If an out-of-tree behavior's use-case is deemed widespread enough to be merged into upstream ZMK, a new pull request may be issued instead.
@@ -54,7 +54,7 @@ The following resources are provided for those seeking further understanding:
    ZMK behavior modules should follow the naming convention, **`zmk-behavior-<name-of-behavior>`**, using all lowercase letters and dashes to separate words
 1. Complete the module's creation by selecting the repository's visibility, before clicking **"Create repository"**
 1. Clone a copy of your module to your development environment.
-   The cloned repository should be easily accessible when [building and testing firmware using a local toolchain](./local-toolchain/build-flash.mdx#building-with-external-modules).
+   The cloned repository should be easily accessible when [building and testing firmware using a local toolchain](/docs/development/local-toolchain/build-flash#building-with-external-modules).
 
 Files unrelated to behavior development should be removed from your copy of the ZMK module template.
 The minimum viable filesystem for a behavior follows the following structure:
@@ -98,7 +98,7 @@ zmk-behavior-<name-of-behavior>/
     └── module.yml
 ```
 
-For more information on module preparation, such as details on the contents of `west.yml` and `zephyr/module.yml`, refer to the page on [module creation](./module-creation.md).
+For more information on module preparation, such as details on the contents of `west.yml` and `zephyr/module.yml`, refer to the page on [module creation](/docs/development/module-creation).
 
 Once the module's tree has been organized properly, the relevant files are now ready to be populated.
 We will explain the purpose of the files listed in the tree above in order of increasing complexity.
@@ -109,7 +109,7 @@ Devicetree bindings use `.yaml` files to declare their properties.
 
 They are stored in `dts/bindings/behaviors/` and follow the same naming convention as the repository itself.
 
-The [mod-morph](../keymaps/behaviors/mod-morph.md)'s devicetree binding is presented below as a simple example.
+The [mod-morph](/docs/keymaps/behaviors/mod-morph)'s devicetree binding is presented below as a simple example.
 
 ```yaml title="zmk/app/dts/bindings/behaviors/zmk,behavior-mod-morph.yaml"
 # Copyright (c) 2020 The ZMK Contributors
@@ -163,7 +163,7 @@ Choose between `zero_param.yaml`, `one_param.yaml`, or `two_param.yaml` dependin
 | `two_param.yaml`  | `&mt LSHFT Z`          |
 
 :::note
-Some behaviors, like the [Bluetooth behavior](../keymaps/behaviors/bluetooth.md), use `two_param.yaml` despite their keymap usage _appearing_ to only use one extra parameter, e.g., `&bt BT_NXT` or `&bt BT_PRV`.
+Some behaviors, like the [Bluetooth behavior](/docs/keymaps/behaviors/bluetooth), use `two_param.yaml` despite their keymap usage _appearing_ to only use one extra parameter, e.g., `&bt BT_NXT` or `&bt BT_PRV`.
 Expanding their C preprocessor definitions reveals the following definitions: `#define BT_NXT BT_NXT_CMD 0` and `#define BT_PRV BT_PRV_CMD 0`, respecting the use of `two_param.yaml`.
 This is useful for creating behaviors that may have a primary "command", followed by a secondary parameter.
 
@@ -173,7 +173,7 @@ See [Behavior Metadata](#behavior-metadata) for more information.
 #### `properties` (Optional)
 
 These are additional variables required to configure a particular instance of a behavior.
-More information can be found in [ZMK's Devicetree primer](./devicetree.md) or [Zephyr's own documentation on Devicetree bindings](https://docs.zephyrproject.org/4.1.0/build/dts/bindings-syntax.html#properties).
+More information can be found in [ZMK's Devicetree primer](/docs/development/devicetree) or [Zephyr's own documentation on Devicetree bindings](https://docs.zephyrproject.org/4.1.0/build/dts/bindings-syntax.html#properties).
 
 ### Behavior Source Files (`.c`)
 
@@ -348,7 +348,7 @@ DT_INST_FOREACH_STATUS_OKAY(<NAME_OF_BEHAVIOR>_INST)
 
 A more thorough explanation of the contents of a behavior source file can be [found below](#developing-the-behavior-functionality).
 
-Other source files may be created as well, as is often the case when creating new features or [events](events.md) from scratch.
+Other source files may be created as well, as is often the case when creating new features or [events](/docs/development/events) from scratch.
 For parity with upstream ZMK, these files will generally be placed in the root `src/` directory, or `src/events/`.
 
 ### Updating `Kconfig`
@@ -381,9 +381,9 @@ endif #ZMK_BEHAVIOR_<NAME_OF_BEHAVIOR>
 ```
 
 :::note
-For an overview on Kconfig files, see [Configuration](../config/index.md#kconfig-files).
+For an overview on Kconfig files, see [Configuration](/docs/config#kconfig-files).
 
-For more examples of behavior-specific Kconfig settings, see [Behavior Configuration](../config/behaviors.md).
+For more examples of behavior-specific Kconfig settings, see [Behavior Configuration](/docs/config/behaviors).
 :::
 
 ### Updating `CMakeLists.txt`
@@ -391,7 +391,7 @@ For more examples of behavior-specific Kconfig settings, see [Behavior Configura
 `CMakeLists.txt` files are used in Zephyr's [configuration stage](https://docs.zephyrproject.org/3.5.0/build/cmake/index.html) when building firmware.
 These specify which source files are included in the build, and may depend on the Kconfig settings shown previously.
 
-At this point the developer should consider the behavior's [locality](../features/split-keyboards.md#behaviors-with-locality).
+At this point the developer should consider the behavior's [locality](/docs/features/split-keyboards#behaviors-with-locality).
 
 Most behaviors are processed on a unibody keyboard, or the central half of a split board.
 An example is shown below.
@@ -513,7 +513,7 @@ The dependencies required for any ZMK behavior are:
 
 - `zephyr/device.h`: [Zephyr Device APIs](https://docs.zephyrproject.org/apidoc/3.5.0/group__device__model.html)
 - `drivers/behavior.h`: ZMK Behavior Functions (e.g. [locality](#zmk-api-struct), `behavior_keymap_binding_pressed`, `behavior_keymap_binding_released`, `behavior_sensor_keymap_binding_triggered`)
-- `zephyr/logging/log.h`: [Zephyr Logging APIs](https://docs.zephyrproject.org/3.5.0/services/logging/index.html) (for more information on USB Logging in ZMK, see [USB Logging](usb-logging.mdx)).
+- `zephyr/logging/log.h`: [Zephyr Logging APIs](https://docs.zephyrproject.org/3.5.0/services/logging/index.html) (for more information on USB Logging in ZMK, see [USB Logging](/docs/development/usb-logging)).
 - `zmk/behavior.h`: ZMK Behavior Information (e.g. parameters, position and timestamp of events)
   - `return` values:
     - `ZMK_BEHAVIOR_OPAQUE`: Used to terminate `on_<name_of_behavior>_binding_pressed` and `on_<name_of_behavior>_binding_released` functions that accept `(struct zmk_behavior_binding *binding, struct zmk_behavior_binding_event event)` as parameters
@@ -648,8 +648,8 @@ Locality in the context of the API struct refers to runtime locality.
 The `.locality` field may take the following values.
 
 - `BEHAVIOR_LOCALITY_CENTRAL`: Behavior only affects the central half, which is the case for most keymap-related behavior.
-- `BEHAVIOR_LOCALITY_EVENT_SOURCE`: Behavior affects only the central _or_ peripheral half depending on which side invoked the behavior binding, such as [reset behaviors](../keymaps/behaviors/reset.md).
-- `BEHAVIOR_LOCALITY_GLOBAL`: Behavior affects the entire keyboard, such as [external power](../keymaps/behaviors/power.md) and lighting-related behaviors that need to be synchronized across halves.
+- `BEHAVIOR_LOCALITY_EVENT_SOURCE`: Behavior affects only the central _or_ peripheral half depending on which side invoked the behavior binding, such as [reset behaviors](/docs/keymaps/behaviors/reset).
+- `BEHAVIOR_LOCALITY_GLOBAL`: Behavior affects the entire keyboard, such as [external power](/docs/keymaps/behaviors/power) and lighting-related behaviors that need to be synchronized across halves.
 
 :::note
 For unibody keyboards, all locality values perform the same as `BEHAVIOR_LOCALITY_GLOBAL`.
@@ -659,8 +659,8 @@ The API struct's metadata-specific fields are shown below.
 
 | Field                   | Description                                                                                                                                                                                   |
 | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| .get_parameter_metadata | Callback function that can dynamically provide/populate the metadata describing the parameters to use with the behavior so the behavior may be used with [ZMK Studio](../features/studio.md). |
-| .parameter_metadata     | Pointer to metadata describing the parameters to use with the behavior so the behavior may be used with [ZMK Studio](../features/studio.md).                                                  |
+| .get_parameter_metadata | Callback function that can dynamically provide/populate the metadata describing the parameters to use with the behavior so the behavior may be used with [ZMK Studio](/docs/features/studio). |
+| .parameter_metadata     | Pointer to metadata describing the parameters to use with the behavior so the behavior may be used with [ZMK Studio](/docs/features/studio).                                                  |
 
 ### Invoking `BEHAVIOR_DT_INST_DEFINE`
 
@@ -737,7 +737,7 @@ The **fifth** argument of `BEHAVIOR_DT_INST_DEFINE` can be set to `NULL` instead
 
 Let us examine one of the simplest behavior actions: sending and releasing keycodes.
 
-The core of the [key press behavior](../keymaps/behaviors/key-press.md) is `raise_zmk_keycode_state_changed_from_encoded()`, found in `keycode_state_changed.h`.
+The core of the [key press behavior](/docs/keymaps/behaviors/key-press) is `raise_zmk_keycode_state_changed_from_encoded()`, found in `keycode_state_changed.h`.
 This function takes in three arguments: an HID usage, a boolean value to determine if the keycode is pressed or released, and a timestamp.
 We present a snippet from the key press behavior source, where it is seen that the HID usage of each keycode is extracted from the keymap, before it is determined to be pressed or released.
 
@@ -801,7 +801,7 @@ Some examples of events that are the most relevant to behavior development can b
 
 :::note
 See the [`events` directory](https://github.com/zmkfirmware/zmk/tree/main/app/include/zmk/events) for other examples of events.
-For more information on how to interact with events and the event manager, see [Events](./events.md).
+For more information on how to interact with events and the event manager, see [Events](/docs/development/events).
 :::
 
 ### Interacting with other behaviors and the ZMK Behavior Queue
@@ -822,7 +822,7 @@ They are used to retrieve the device associated with a keymap binding, or invoke
 
 #### `#include <zmk/behavior_queue.h>`
 
-The behavior queue is leveraged by [macros](../keymaps/behaviors/macros.md) and [sensor rotation](../keymaps/behaviors/sensor-rotate.md) behaviors.
+The behavior queue is leveraged by [macros](/docs/keymaps/behaviors/macros) and [sensor rotation](/docs/keymaps/behaviors/sensor-rotate) behaviors.
 This queue ensures that behaviors may be invoked sequentially using specific time-based triggers without blocking the rest of the keyboard functionality.
 
 | Function                 | Description                              |
@@ -840,8 +840,8 @@ Zephyr currently does not support logging over Bluetooth, so any use of the seri
 
 :::note
 
-- See [Tests](local-toolchain/tests.md) for more information on how to create virtual test sets.
-- For hardware-based testing, see [USB Logging](usb-logging.mdx).
+- See [Tests](/docs/development/local-toolchain/tests) for more information on how to create virtual test sets.
+- For hardware-based testing, see [USB Logging](/docs/development/usb-logging).
 
 :::
 
@@ -857,7 +857,7 @@ Consider the following prompts when writing documentation for new behaviors:
 Including visual aids alongside written documentation for additional clarity may be helpful.
 
 :::note
-If submitting a pull request, see [Documentation](contributing/documentation.md) for more information on writing, testing, and formatting ZMK documentation.
+If submitting a pull request, see [Documentation](/docs/development/contributing/documentation) for more information on writing, testing, and formatting ZMK documentation.
 :::
 
 ## Licensing Information
@@ -888,7 +888,7 @@ For more information, consider looking at the following resources:
 ### Contributing to ZMK (MIT License)
 
 The [MIT License](https://github.com/zmkfirmware/zmk/blob/main/LICENSE) is used for developers submitting a pull request or those wish to make their work usable, modifiable, and distributable in its entirety to the ZMK community.
-If the author's intent is to contribute their work to ZMK in these manners, especially when submitting pull requests, they should be aware of the constraints specified in our [clean room policy](./contributing/clean-room.md).
+If the author's intent is to contribute their work to ZMK in these manners, especially when submitting pull requests, they should be aware of the constraints specified in our [clean room policy](/docs/development/contributing/clean-room).
 
 [SPDX copyright headers](https://spdx.dev/learn/handling-license-info/) for each of the files outlined in this document can be copied and pasted from the tabs below.
 
@@ -928,5 +928,5 @@ Some common example are [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0
 However, software licenses are generally treated as "one-way" compatible.
 This means that code registered under a more permissive license may be used in a project with a more restrictive license, but not the other way around.
 
-For example, as noted in ZMK's [clean room policy](./contributing/clean-room.md), projects like QMK and TMK use GPL licenses, which are more restrictive than ZMK's MIT license.
+For example, as noted in ZMK's [clean room policy](/docs/development/contributing/clean-room), projects like QMK and TMK use GPL licenses, which are more restrictive than ZMK's MIT license.
 Code from ZMK may be used as a reference when developing work for QMK/TMK, but code from QMK/TMK may **not** be used as source material when working on ZMK.

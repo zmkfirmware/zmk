@@ -3,7 +3,7 @@ title: ZMK Studio RPC Protocol
 ---
 
 :::danger
-Before reading this section, it is **vital** that you read through our [clean room policy](./contributing/clean-room.md).
+Before reading this section, it is **vital** that you read through our [clean room policy](/docs/development/contributing/clean-room).
 :::
 
 ## Overview

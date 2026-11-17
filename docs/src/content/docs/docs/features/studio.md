@@ -17,32 +17,32 @@ ZMK Studio currently has the following capabilities:
 | Legend: | ✅ Supported | 🚧 Under Development | 💡 Planned | 🕯️ Low Priority | ❌ Not Planned |
 | :------ | :----------- | :------------------- | :--------- | :-------------- | -------------- |
 
-| Status | Feature/Capability                                                                                                                        |
-| :----: | ----------------------------------------------------------------------------------------------------------------------------------------- |
-|   ✅   | Making keymap changes while keyboard is in use                                                                                            |
-|   ✅   | Making changes while connected via USB                                                                                                    |
-|   ✅   | Native app for: Windows, Linux, MacOS                                                                                                     |
-|   ✅   | Making changes while connected via BLE (Linux web-app & native apps only)                                                                 |
-|   ✅   | Assigning [predefined behaviors](../keymaps/behaviors/index.mdx) to keys                                                                  |
-|   ✅   | Assigning [user-defined behaviors](../keymaps/behaviors/index.mdx#user-defined-behaviors) to keys                                         |
-|   💡   | [Configuring basic behavior properties](../config/behaviors.md)                                                                           |
-|   💡   | Configuring advanced behavior properties, e.g. [tap dance](../keymaps/behaviors/tap-dance.mdx), [macros](../keymaps/behaviors/macros.md), |
-|   ❌   | Defining new behaviors not specified in devicetree                                                                                        |
-|   💡   | Configuring [combos](../keymaps/combos.md)                                                                                                |
-|   💡   | Configuring [conditional layers](../keymaps/conditional-layers.md)                                                                        |
-|   🕯️   | Assigning behaviors to encoders                                                                                                           |
-|   ✅   | Selecting alternative pre-defined physical layouts for the keyboard                                                                       |
-|   ❌   | Defining new physical layouts for the keyboard                                                                                            |
-|   ✅   | Renaming layers & enabling [extra layers](#including-extra-layers)                                                                        |
-|   ❌   | Adding more layers than specified by devicetree                                                                                           |
-|   💡   | Host locale selection                                                                                                                     |
-|   💡   | Importing and exporting keymaps                                                                                                           |
+| Status | Feature/Capability                                                                                                                       |
+| :----: | ---------------------------------------------------------------------------------------------------------------------------------------- |
+|   ✅   | Making keymap changes while keyboard is in use                                                                                           |
+|   ✅   | Making changes while connected via USB                                                                                                   |
+|   ✅   | Native app for: Windows, Linux, MacOS                                                                                                    |
+|   ✅   | Making changes while connected via BLE (Linux web-app & native apps only)                                                                |
+|   ✅   | Assigning [predefined behaviors](/docs/keymaps/behaviors) to keys                                                                        |
+|   ✅   | Assigning [user-defined behaviors](/docs/keymaps/behaviors#user-defined-behaviors) to keys                                               |
+|   💡   | [Configuring basic behavior properties](/docs/config/behaviors)                                                                          |
+|   💡   | Configuring advanced behavior properties, e.g. [tap dance](/docs/keymaps/behaviors/tap-dance), [macros](/docs/keymaps/behaviors/macros), |
+|   ❌   | Defining new behaviors not specified in devicetree                                                                                       |
+|   💡   | Configuring [combos](/docs/keymaps/combos)                                                                                               |
+|   💡   | Configuring [conditional layers](/docs/keymaps/conditional-layers)                                                                       |
+|   🕯️   | Assigning behaviors to encoders                                                                                                          |
+|   ✅   | Selecting alternative pre-defined physical layouts for the keyboard                                                                      |
+|   ❌   | Defining new physical layouts for the keyboard                                                                                           |
+|   ✅   | Renaming layers & enabling [extra layers](#including-extra-layers)                                                                       |
+|   ❌   | Adding more layers than specified by devicetree                                                                                          |
+|   💡   | Host locale selection                                                                                                                    |
+|   💡   | Importing and exporting keymaps                                                                                                          |
 
-Items listed as "planned", "under development", "low priority", or "not planned" can be configured using [devicetree](../config/index.md#devicetree-files) instead.
+Items listed as "planned", "under development", "low priority", or "not planned" can be configured using [devicetree](/docs/config#devicetree-files) instead.
 
 ## Keymap Changes
 
-To unlock your keyboard to allow ZMK Studio to make changes, you'll need to add a [`&studio_unlock`](../keymaps/behaviors/studio-unlock.md) binding to the keymap.
+To unlock your keyboard to allow ZMK Studio to make changes, you'll need to add a [`&studio_unlock`](/docs/keymaps/behaviors/studio-unlock) binding to the keymap.
 
 :::note
 
@@ -67,7 +67,7 @@ To use ZMK Studio over USB, you need permission to access the USB serial port. T
 :::note
 
 If you are connected to the computer over both USB and BLE endpoints, you should set the keyboard output to the same endpoint that you connect to ZMK Studio using.
-For example, if you are connecting to ZMK Studio over USB, ensure that USB output is selected by invoking the `&out OUT_USB` [behavior](../keymaps/behaviors/outputs.md).
+For example, if you are connecting to ZMK Studio over USB, ensure that USB output is selected by invoking the `&out OUT_USB` [behavior](/docs/keymaps/behaviors/outputs).
 
 :::
 
@@ -172,12 +172,12 @@ The reserved layers will be ignored during regular ZMK builds but will become av
 
 To allow ZMK Studio to be used with a keyboard, the keyboard will need to have a physical layout with the `keys` property defined. The keyboard should also **not** have a `chosen` `zmk,matrix-transform`. Relevant information can be found in:
 
-- The [dedicated page on physical layouts](../hardware-integration/physical-layouts.md), informing you how to define one
-- The [new shield guide](../hardware-integration/new-shield.mdx), informing you how to select a physical layout once defined
-- The corresponding [configuration page](../config/layout.md#physical-layout), for reference
+- The [dedicated page on physical layouts](/docs/hardware-integration/physical-layouts), informing you how to define one
+- The [new shield guide](/docs/hardware-integration/new-shield), informing you how to select a physical layout once defined
+- The corresponding [configuration page](/docs/config/layout#physical-layout), for reference
 
-To use the `studio-rpc-usb-uart` snippet, the keyboard also needs to be configured to allow CDC-ACM console snippets (this is also used for [USB logging](../development/usb-logging.mdx)). If your keyboard is a composite keyboard, consisting of an in-tree board and a shield, then you can skip this step as the board will already be configured properly. Relevant information on that can be found [in the Zephyr documentation](https://docs.zephyrproject.org/4.1.0/snippets/cdc-acm-console/README.html).
+To use the `studio-rpc-usb-uart` snippet, the keyboard also needs to be configured to allow CDC-ACM console snippets (this is also used for [USB logging](/docs/development/usb-logging)). If your keyboard is a composite keyboard, consisting of an in-tree board and a shield, then you can skip this step as the board will already be configured properly. Relevant information on that can be found [in the Zephyr documentation](https://docs.zephyrproject.org/4.1.0/snippets/cdc-acm-console/README.html).
 
 Firmware with ZMK Studio enabled require significantly more RAM. Some MCUs, such as the STM32F072 series, will require fine tuning of various settings in order to reduce the RAM consumption enough for a Studio enabled build to fit.
 
-Finally, once you have successfully built and tested firmware with ZMK Studio enabled, add the `studio` flag to your keyboard's [metadata](../hardware-integration/hardware-metadata-files#features).
+Finally, once you have successfully built and tested firmware with ZMK Studio enabled, add the `studio` flag to your keyboard's [metadata](/docs/hardware-integration/hardware-metadata-files#features).

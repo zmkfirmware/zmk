@@ -4,9 +4,9 @@ sidebar:
   label: LED Indicators
 ---
 
-See the [LED indicators feature page](../features/led-indicators.md) for more details.
+See the [LED indicators feature page](/docs/features/led-indicators) for more details.
 
-See [Configuration Overview](index.md) for instructions on how to change these settings.
+See [Configuration Overview](/docs/config) for instructions on how to change these settings.
 
 ## Kconfig
 

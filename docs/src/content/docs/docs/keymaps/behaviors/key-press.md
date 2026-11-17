@@ -11,14 +11,14 @@ a certain key.
 
 The categories of supported keycodes are:
 
-- [Keyboard](../list-of-keycodes.mdx#keyboard)
-- [Modifiers](../list-of-keycodes.mdx#modifiers)
-- [Keypad](../list-of-keycodes.mdx#keypad)
-- [Editing](../list-of-keycodes.mdx#editing)
-- [Media](../list-of-keycodes.mdx#media)
-- [Applications](../list-of-keycodes.mdx#applications)
-- [Input Assist](../list-of-keycodes.mdx#input-assist)
-- [Power & Lock](../list-of-keycodes.mdx#power--lock)
+- [Keyboard](/docs/keymaps/list-of-keycodes#keyboard)
+- [Modifiers](/docs/keymaps/list-of-keycodes#modifiers)
+- [Keypad](/docs/keymaps/list-of-keycodes#keypad)
+- [Editing](/docs/keymaps/list-of-keycodes#editing)
+- [Media](/docs/keymaps/list-of-keycodes#media)
+- [Applications](/docs/keymaps/list-of-keycodes#applications)
+- [Input Assist](/docs/keymaps/list-of-keycodes#input-assist)
+- [Power & Lock](/docs/keymaps/list-of-keycodes#power--lock)
 
 For advanced users, user-defined HID usages are also supported but must be encoded, please see [`dt-bindings/zmk/keys.h`](https://github.com/zmkfirmware/zmk/blob/main/app/include/dt-bindings/zmk/keys.h) for further insight.
 
@@ -32,7 +32,7 @@ provided by ZMK near the top:
 #include <dt-bindings/zmk/keys.h>
 ```
 
-Doing so makes a set of defines such as `A`, `N1`, etc. (see the [list of keycodes](../list-of-keycodes)) available for use with these behaviors.
+Doing so makes a set of defines such as `A`, `N1`, etc. (see the [list of keycodes](/docs/keymaps/list-of-keycodes)) available for use with these behaviors.
 
 ## Key Press
 

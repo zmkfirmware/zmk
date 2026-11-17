@@ -50,7 +50,7 @@ and layouts with a fifth column, but those seem to be much less common.
 
 #### Pre-Commit
 
-To help make sure you don't need to wait for GitHub Actions to check your commits, you can [set up pre-commit](../local-toolchain/pre-commit.md) to check your commits as you create them.
+To help make sure you don't need to wait for GitHub Actions to check your commits, you can [set up pre-commit](/docs/development/local-toolchain/pre-commit) to check your commits as you create them.
 
 #### Types
 

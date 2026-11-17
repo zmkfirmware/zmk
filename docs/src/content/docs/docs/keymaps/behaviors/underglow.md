@@ -6,7 +6,7 @@ sidebar:
 
 ## Summary
 
-This page contains [RGB Underglow](../../features/lighting.md#rgb-underglow) behaviors supported by ZMK.
+This page contains [RGB Underglow](/docs/features/lighting#rgb-underglow) behaviors supported by ZMK.
 
 ## RGB Action Defines
 
@@ -57,9 +57,9 @@ Value Limits:
 :::
 
 :::note[RGB settings persistence]
-The RGB settings that are changed via the `&rgb_ug` behavior will be [saved to flash storage](../../config/settings.md) and hence persist across restarts and firmware flashes.
-They will also override the start values set by [`CONFIG_ZMK_RGB_*_START` settings](../../config/lighting.md#kconfig).
-However the settings will only be saved after [`CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE`](../../config/system.md#general) milliseconds in order to reduce potential wear on the flash memory.
+The RGB settings that are changed via the `&rgb_ug` behavior will be [saved to flash storage](/docs/config/settings) and hence persist across restarts and firmware flashes.
+They will also override the start values set by [`CONFIG_ZMK_RGB_*_START` settings](/docs/config/lighting#kconfig).
+However the settings will only be saved after [`CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE`](/docs/config/system#general) milliseconds in order to reduce potential wear on the flash memory.
 :::
 
 ## Examples
@@ -78,4 +78,4 @@ However the settings will only be saved after [`CONFIG_ZMK_SETTINGS_SAVE_DEBOUNC
 
 ## Split Keyboards
 
-RGB underglow behaviors are [global](../../features/split-keyboards.md#global-locality-behaviors): This means that when triggered, they affect both the central and peripheral side of split keyboards.
+RGB underglow behaviors are [global](/docs/features/split-keyboards#global-locality-behaviors): This means that when triggered, they affect both the central and peripheral side of split keyboards.

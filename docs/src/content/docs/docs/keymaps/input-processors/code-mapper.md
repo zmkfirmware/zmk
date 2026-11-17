@@ -25,7 +25,7 @@ Three pre-defined instance of the code mapper input processor are available:
 | `&zip_xy_to_scroll_mapper` | Map X/Y movement events to horizontal wheel/wheel events, respectively. |
 | `&zip_xy_swap_mapper`      | Map X to Y, and Y to X for movements.                                   |
 
-Note that swapping X and Y movements can also be accomplished with the [transformer](transformer.md#pre-defined-instances) processors.
+Note that swapping X and Y movements can also be accomplished with the [transformer](/docs/keymaps/input-processors/transformer#pre-defined-instances) processors.
 
 ## User-Defined Instances
 

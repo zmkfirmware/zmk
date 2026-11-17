@@ -4,7 +4,7 @@ sidebar:
   label: Bluetooth
 ---
 
-ZMK's bluetooth functionality allows users to connect their keyboards to hosts using Bluetooth Low Energy (BLE) technology. It also is used for [split keyboards](split-keyboards.md) to connect the two halves wirelessly.
+ZMK's bluetooth functionality allows users to connect their keyboards to hosts using Bluetooth Low Energy (BLE) technology. It also is used for [split keyboards](/docs/features/split-keyboards) to connect the two halves wirelessly.
 
 :::note
 
@@ -25,7 +25,7 @@ device should receive the keyboard input.
 
 :::note[Connection Management]
 
-When pairing to a host device ZMK saves bond information to the selected profile. It will not replace this automatically when you initiate pairing with another device. To pair with a new device select an unused profile with or clearing the current profile, using the [`&bt` behavior](../keymaps/behaviors/bluetooth.md) on your keyboard.
+When pairing to a host device ZMK saves bond information to the selected profile. It will not replace this automatically when you initiate pairing with another device. To pair with a new device select an unused profile with or clearing the current profile, using the [`&bt` behavior](/docs/keymaps/behaviors/bluetooth) on your keyboard.
 
 A ZMK device may show as "connected" on multiple hosts at the same time. This is working as intended, and only the host associated with the active profile will receive keystrokes.
 
@@ -35,7 +35,7 @@ Failure to manage the profiles can result in unexpected/broken behavior with hos
 
 ## Bluetooth Behavior
 
-Management of the bluetooth in ZMK is accomplished using the [`&bt` behavior](../keymaps/behaviors/bluetooth.md). Be sure to refer to that documentation to learn how to manage profiles, switch between connected hosts, etc.
+Management of the bluetooth in ZMK is accomplished using the [`&bt` behavior](/docs/keymaps/behaviors/bluetooth). Be sure to refer to that documentation to learn how to manage profiles, switch between connected hosts, etc.
 
 ## Refreshing the HID Descriptor
 
@@ -43,9 +43,9 @@ Enabling certain features or behaviors in ZMK changes the data structure that ZM
 This in turn requires [HID report descriptors](https://docs.kernel.org/hid/hidintro.html) to be modified for the reports to be parsed correctly.
 Firmware changes that would modify the descriptor include the following:
 
-- Changing any of the settings under the [HID category](../config/system.md#hid), including enabling/disabling NKRO or HID indicators
-- Enabling mouse features, such as adding [mouse keys](../keymaps/behaviors/mouse-emulation.md) to your keymap
+- Changing any of the settings under the [HID category](/docs/config/system#hid), including enabling/disabling NKRO or HID indicators
+- Enabling mouse features, such as adding [mouse keys](/docs/keymaps/behaviors/mouse-emulation) to your keymap
 
 While the descriptor refresh happens on boot for USB, hosts will frequently cache this descriptor for BLE devices.
 In order to refresh this cache, you need to remove the keyboard from the host device, clear the profile associated with the host on the keyboard, then pair again.
-For Windows systems you might need to follow the additional instructions in [the section on troubleshooting connection issues](troubleshooting/connection-issues.mdx#windows-connected-but-not-working).
+For Windows systems you might need to follow the additional instructions in [the section on troubleshooting connection issues](/docs/troubleshooting/connection-issues#windows-connected-but-not-working).

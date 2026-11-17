@@ -23,17 +23,17 @@ For the setup described on this page, the dongle is simply a central split keybo
 
 <ReadMore>
 
-See [Split Keyboards](../features/split-keyboards.md) for more information on the central and peripheral roles.
+See [Split Keyboards](/docs/features/split-keyboards) for more information on the central and peripheral roles.
 
 </ReadMore>
 
 <ReadMore>
 
-See [Hardware Integration](../hardware-integration/index.mdx) for more information about "boards" and "shields".
+See [Hardware Integration](/docs/hardware-integration) for more information about "boards" and "shields".
 
 </ReadMore>
 
-Depending on how the dongle is used, there are some additional [latency considerations](../features/split-keyboards.md#latency-considerations) to keep in mind.
+Depending on how the dongle is used, there are some additional [latency considerations](/docs/features/split-keyboards#latency-considerations) to keep in mind.
 The addition of the dongle adds an extra "hop" for the former central, increasing its latency to that of a peripheral. The other parts are unchanged latency-wise. There is also a commonly occurring case where the peripherals benefit.
 Assuming the dongle is connected to USB and the former central would have been connected via bluetooth to the host if the dongle wasn't present:
 
@@ -51,7 +51,7 @@ It assumes that you are adding a dongle to an existing keyboard definition, with
 The dongle shield is defined in your personal ZMK config, no change is needed to the existing keyboard boards and/or shields.
 
 If you are creating a new keyboard, the dongle shield can be defined together with other parts of the keyboard.
-Follow the [new keyboard shield guide](../hardware-integration/new-shield.mdx) and use the mock kscan driver for the shield with central role.
+Follow the [new keyboard shield guide](/docs/hardware-integration/new-shield) and use the mock kscan driver for the shield with central role.
 
 Prior to adding a dongle to your keyboard, please test its functionality without a dongle.
 
@@ -141,7 +141,7 @@ Add the following lines to the overlay file, introducing a mock kscan for the do
 Next, find all matrix transforms for your keyboard and copy them to the dongle shield. Look for a devicetree node with `compatible = "zmk,matrix-transform";` in the devicetree files for your keyboard.
 
 <ReadMore>
-  See [Devicetree Overview](../development/devicetree.md) for details on the
+  See [Devicetree Overview](/docs/development/devicetree) for details on the
   devicetree format.
 </ReadMore>
 
@@ -318,15 +318,15 @@ include:
     shield: settings_reset
 ```
 
-If you are building locally, you can append these flags to the end of the [build command](../development/local-toolchain/build-flash.mdx#cmake-arguments).
+If you are building locally, you can append these flags to the end of the [build command](/docs/development/local-toolchain/build-flash#cmake-arguments).
 
-You can then flash the firmware to your device as detailed in our [user setup](../user-setup.mdx#install-the-firmware) and [split keyboard](../features/split-keyboards.md#building-and-flashing-firmware) pages.
+You can then flash the firmware to your device as detailed in our [user setup](/docs/user-setup#install-the-firmware) and [split keyboard](/docs/features/split-keyboards#building-and-flashing-firmware) pages.
 
 :::caution
-Before flashing your new firmware, you need to flash [`settings_reset` firmware](../troubleshooting/connection-issues.mdx#building-a-reset-firmware) on all devices to clear any previous bonding information.
+Before flashing your new firmware, you need to flash [`settings_reset` firmware](/docs/troubleshooting/connection-issues#building-a-reset-firmware) on all devices to clear any previous bonding information.
 Flashing standard ZMK firmware on a device will not clear any previous settings.
 :::
 
-To use your dongled keyboard with [ZMK Studio](../features/studio.md), apply the instructions for [building with Studio](../features/studio.md#building) to the dongle.
+To use your dongled keyboard with [ZMK Studio](/docs/features/studio), apply the instructions for [building with Studio](/docs/features/studio#building) to the dongle.
 
 If you ever want to "undongle" your keyboard, simply remove these CMake arguments, perform the settings reset procedure, and flash the newly built firmware to your devices.

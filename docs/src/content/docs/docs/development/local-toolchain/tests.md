@@ -4,7 +4,7 @@ sidebar:
   label: Tests
 ---
 
-- Running tests requires [native posix support](posix-board.md).
+- Running tests requires [native posix support](/docs/development/local-toolchain/posix-board).
 - Any folder under `/app/tests` containing `native_posix_64.keymap` will be selected when running `west test`.
 - Run tests from within the `/zmk/app` directory.
 - Run a single test with `west test <testname>`, like `west test tests/toggle-layer/normal`.

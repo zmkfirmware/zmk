@@ -21,7 +21,7 @@ socket or using some sharp tweezers to bend the contacts back together.
 ## Debounce Configuration
 
 :::note
-Currently the `zmk,kscan-gpio-matrix` and `zmk,kscan-gpio-direct` [drivers](../config/kscan.md) supports these options, while `zmk,kscan-gpio-demux` driver does not.
+Currently the `zmk,kscan-gpio-matrix` and `zmk,kscan-gpio-direct` [drivers](/docs/config/kscan) supports these options, while `zmk,kscan-gpio-demux` driver does not.
 :::
 
 ### Global Options

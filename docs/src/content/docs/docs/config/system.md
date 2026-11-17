@@ -6,7 +6,7 @@ sidebar:
 
 These are general settings that control how the keyboard behaves and which features it supports. Several of these settings come from Zephyr and are not specific to ZMK, but they are listed here because they are relevant to how a keyboard functions.
 
-See [Configuration Overview](index.md) for instructions on how to change these settings.
+See [Configuration Overview](/docs/config) for instructions on how to change these settings.
 
 ## Kconfig
 
@@ -24,7 +24,7 @@ Definition file: [zmk/app/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/
 :::note
 
 Because ZMK enables [the Zephyr setting](https://docs.zephyrproject.org/4.1.0/kconfig.html#CONFIG_BT_DEVICE_NAME_DYNAMIC) that allows for runtime modification of the device BT name,
-changing `CONFIG_ZMK_KEYBOARD_NAME` requires [clearing the stored settings](./settings.md#clearing-persisted-settings) on the controller in order to take effect.
+changing `CONFIG_ZMK_KEYBOARD_NAME` requires [clearing the stored settings](/docs/config/settings#clearing-persisted-settings) on the controller in order to take effect.
 
 :::
 
@@ -32,7 +32,7 @@ changing `CONFIG_ZMK_KEYBOARD_NAME` requires [clearing the stored settings](./se
 
 :::caution[Refreshing the HID descriptor]
 
-Making changes to any of the settings in this section modifies the HID report descriptor and requires it to be [refreshed](../features/bluetooth.md#refreshing-the-hid-descriptor).
+Making changes to any of the settings in this section modifies the HID report descriptor and requires it to be [refreshed](/docs/features/bluetooth#refreshing-the-hid-descriptor).
 
 :::
 

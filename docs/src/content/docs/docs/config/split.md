@@ -6,11 +6,11 @@ sidebar:
 
 These are settings that control how split keyboards behave.
 
-See [Configuration Overview](index.md) for instructions on how to change these settings.
+See [Configuration Overview](/docs/config) for instructions on how to change these settings.
 
 ## Kconfig
 
-Following [split keyboard](../features/split-keyboards.md) settings are defined in [zmk/app/src/split/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/app/src/split/Kconfig).
+Following [split keyboard](/docs/features/split-keyboards) settings are defined in [zmk/app/src/split/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/app/src/split/Kconfig).
 
 | Config                                       | Type | Description                                                              | Default |
 | -------------------------------------------- | ---- | ------------------------------------------------------------------------ | ------- |
@@ -20,7 +20,7 @@ Following [split keyboard](../features/split-keyboards.md) settings are defined 
 
 ### Bluetooth Splits
 
-Following bluetooth [split keyboard](../features/split-keyboards.md) settings are defined in [zmk/app/src/split/bluetooth/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/app/src/split/bluetooth/Kconfig).
+Following bluetooth [split keyboard](/docs/features/split-keyboards) settings are defined in [zmk/app/src/split/bluetooth/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/app/src/split/bluetooth/Kconfig).
 
 | Config                                                  | Type | Description                                                                | Default                                    |
 | ------------------------------------------------------- | ---- | -------------------------------------------------------------------------- | ------------------------------------------ |
@@ -38,7 +38,7 @@ Following bluetooth [split keyboard](../features/split-keyboards.md) settings ar
 
 #### Input Split
 
-The following setting only applies when using BLE split together with [input split devices](pointing.md#input-split), such as for pointing devices attached to split peripherals:
+The following setting only applies when using BLE split together with [input split devices](/docs/config/pointing#input-split), such as for pointing devices attached to split peripherals:
 
 | Config                                  | Type | Description                                                     | Default |
 | --------------------------------------- | ---- | --------------------------------------------------------------- | ------- |
@@ -56,7 +56,7 @@ Hardware UARTs have a few different modes/approaches to sending and receiving da
   - SAM0 (e.g. SAMD21)
   - STM32 (e.g. stm32f072)
 
-Following wired [split keyboard](../features/split-keyboards.md) settings are defined in [zmk/app/src/split/wired/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/app/src/split/wired/Kconfig).
+Following wired [split keyboard](/docs/features/split-keyboards) settings are defined in [zmk/app/src/split/wired/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/app/src/split/wired/Kconfig).
 
 | Config                                       | Type | Description                                                       | Default                                                       |
 | -------------------------------------------- | ---- | ----------------------------------------------------------------- | ------------------------------------------------------------- |
@@ -85,7 +85,7 @@ The following settings only apply when using wired split in polling mode:
 
 ### Wired Split
 
-Wired splits require a properly configured UART to function. If writing a shield, you may be able to use the standard UART already provided by the board, e.g. `&pro_micro_serial`. See [predefined nodes](../hardware-integration/pinctrl.mdx#predefined-nodes) for details on the UART node labels provided by various interconnects. If you are creating your own board, or using custom pins for the UART, see the documentation on [pin control](../hardware-integration/pinctrl.mdx#additional-examples) to configure the pins for your UART.
+Wired splits require a properly configured UART to function. If writing a shield, you may be able to use the standard UART already provided by the board, e.g. `&pro_micro_serial`. See [predefined nodes](/docs/hardware-integration/pinctrl#predefined-nodes) for details on the UART node labels provided by various interconnects. If you are creating your own board, or using custom pins for the UART, see the documentation on [pin control](/docs/hardware-integration/pinctrl#additional-examples) to configure the pins for your UART.
 
 Once you have a properly configured UART device, it needs to be assigned in a new node with a compatible value of `"zmk,wired-split"`. For example:
 

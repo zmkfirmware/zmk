@@ -13,7 +13,7 @@ Below are the list of behaviors that can be used to activate and deactivate laye
 Multiple layers can be active at the same time and activating a layer will not deactivate layers higher up in the "layer stack".
 
 Layer numbers start at 0 following the order they are defined in the keymap node, for example `&mo 3` would activate the 4th layer node defined in the keymap.
-See [Layers](../index.mdx#layers) for more information.
+See [Layers](/docs/keymaps#layers) for more information.
 :::
 
 ## Momentary Layer
@@ -35,7 +35,7 @@ Example:
 
 ## Layer-Tap
 
-The ["layer-tap" behavior](hold-tap.mdx#layer-tap) enables a layer when a key is held, and outputs a [key press](key-press.md) when the key is only tapped for a short time.
+The ["layer-tap" behavior](/docs/keymaps/behaviors/hold-tap#layer-tap) enables a layer when a key is held, and outputs a [key press](/docs/keymaps/behaviors/key-press) when the key is only tapped for a short time.
 See linked documentation for details.
 
 ## To Layer
@@ -102,7 +102,7 @@ For custom toggle, to, and momentary layer behaviors, this can be enabled by giv
 ## Conditional Layers
 
 The "conditional layers" feature enables a particular layer when all layers in a specified set are active.
-For more information, see [conditional layers](../conditional-layers.md).
+For more information, see [conditional layers](/docs/keymaps/conditional-layers).
 
 ## Defines to Refer to Layers
 

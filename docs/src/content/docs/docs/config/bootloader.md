@@ -6,7 +6,7 @@ sidebar:
 
 These are general settings that control the various bootloader integration features of ZMK.
 
-See [Configuration Overview](index.md) for instructions on how to change these settings.
+See [Configuration Overview](/docs/config) for instructions on how to change these settings.
 
 ## Kconfig
 
@@ -33,7 +33,7 @@ To ensure the BOOT button on keyboard and controllers using these SoCs works as 
 
 ### Bootmode Magic Value Mapper
 
-Some target SoCs may use the bootmode magic value mapper for [bootloader integration](docs/hardware-integration/bootloader/index.mdx). When doing so, the following configurations are used:
+Some target SoCs may use the bootmode magic value mapper for [bootloader integration](/docs/hardware-integration/bootloader). When doing so, the following configurations are used:
 
 | Config                                                           | Type | Description                                                                           | Default |
 | ---------------------------------------------------------------- | ---- | ------------------------------------------------------------------------------------- | ------- |
