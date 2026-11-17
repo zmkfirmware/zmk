@@ -5,19 +5,13 @@ sidebar:
 description: Lighting system that controls an array of single-color LEDs.
 ---
 
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
+import { Tabs, TabItem } from "@astrojs/starlight/components";
 
 Please see [lighting feature page](../../features/lighting.md#backlight) for an introduction on the feature.
 
-<Tabs
-  defaultValue="shieldpin"
-  queryString="part-type"
-  values={[
-  {label: 'Adding to a board', value: 'boardpin'}, {label: 'Adding to a shield', value: 'shieldpin'},
-]}>
+<Tabs>
 
-<TabItem value="boardpin">
+<TabItem label="Adding to a board">
 
 First, you must enable PWM by adding the following lines to your `Kconfig.defconfig` file:
 
@@ -100,7 +94,7 @@ Finally you need to add backlight to the `chosen` element of the root devicetree
 ```
 
 </TabItem>
-<TabItem value="shieldpin">
+<TabItem label="Adding to a shield">
 
 You must first add a `boards/` directory within your shield folder. For each board that supports the shield you must create a `<board>.defconfig` file and a `<board>.overlay` file inside the `boards/` folder.
 

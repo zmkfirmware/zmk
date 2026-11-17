@@ -18,7 +18,7 @@ For example: the `kyria` shield has a [`boards/nice_nano_nrf52840_zmk.overlay`](
 
 Using an SPI-based LED strip driver on the `&spi3` interface is the simplest option for nRF52-based boards.
 
-:::info
+:::note
 If possible, avoid using pins which are limited to low-frequency I/O for this purpose. The resulting interference may result in poor wireless performance. The list of low frequency I/O pins for the nRF52840 can be found at <https://docs.nordicsemi.com/bundle/ps_nrf52840/page/pin.html>.
 :::
 

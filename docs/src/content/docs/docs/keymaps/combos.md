@@ -32,7 +32,7 @@ Combos configured in your `.keymap` file, but are separate from the `keymap` nod
 - (advanced) you can specify `slow-release` if you want the combo binding to be released when all key-positions are released. The default is to release the combo as soon as any of the keys in the combo is released.
 - (advanced) you can specify a `require-prior-idle-ms` value much like for [hold-taps](behaviors/hold-tap.mdx#require-prior-idle-ms). If any non-modifier key is pressed within `require-prior-idle-ms` before a key in the combo, the combo will not trigger.
 
-:::info
+:::note
 
 Key positions are numbered like the keys in your keymap, starting at 0. So, if the first key in your keymap is `Q`, this key is in position `0`. The next key (possibly `W`) will have position 1, etcetera.
 

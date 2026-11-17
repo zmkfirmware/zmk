@@ -4,8 +4,7 @@ sidebar:
   label: Overview
 ---
 
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
+import { Tabs, TabItem } from "@astrojs/starlight/components";
 
 This section of the documentation describes steps necessary to get ZMK running on a keyboard, including basic keyboard functionality as well as additional features such as encoders.
 Please see pages in the sidebar for guides and reference that describe different aspects of this integration.
@@ -58,15 +57,9 @@ In ZMK, these have no shield, only a board.
 
 ## Organization Overview
 
-<Tabs
-queryString="keyboard-type"
-defaultValue="self-contained"
-values={[
-{label: 'Self-contained keyboards', value: 'self-contained'},
-{label: 'Composite keyboards', value: 'composite'},
-]}>
+<Tabs>
 
-<TabItem value="self-contained">
+<TabItem label="Self-contained keyboards">
 
 For a [self-contained keyboard](../hardware.mdx#onboard) that includes the microprocessor, all of the above architecture components are included in the Zephyr _board_ definition and no shield is defined.
 You can see an example for the [Planck V6](https://github.com/zmkfirmware/zmk/tree/main/app/boards/olkb/planck) board directory.
@@ -119,7 +112,7 @@ See also our [new board guide](new-board.md) for information on creating a ZMK-c
     For instance, a shared `<keyboard_name>.dtsi` file is used for split keyboards that contains devicetree definitions that are shared across keyboard parts.
 
 </TabItem>
-<TabItem value="composite">
+<TabItem label="Composite keyboards">
 
 Keyboards that require an add-on board to operate are [composite keyboards](../hardware.mdx#composite), where the ZMK integration pieces are placed in the _shield_ definition for that keyboard.
 This allows users to swap in different boards that use the same interconnect (e.g. Pro Micro RP2040, or nice!nano) and build a firmware the matches their actual combination of physical components.

@@ -24,7 +24,7 @@ which will double all the X/Y movement, or:
 
 which will make movements more granular by reducing the speed to one third.
 
-:::warning
+:::caution
 
 A maximum value of `16` should be used for the multiplier and divisor parameters to avoid overflows.
 

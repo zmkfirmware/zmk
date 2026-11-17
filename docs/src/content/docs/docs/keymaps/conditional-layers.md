@@ -42,12 +42,12 @@ Since higher-numbered layers are processed first, a `then-layer` should generall
 number than its associated `if-layers` so the `then-layer` can be accessed when active.
 :::
 
-:::info
+:::note
 Activating a `then-layer` in one conditional layer configuration can trigger the `if-layers`
 condition in another configuration, possibly repeatedly.
 :::
 
-:::warning
+:::caution
 When configured as a `then-layer`, a layer's activation status is entirely controlled by the
 conditional layers feature. Even if the layer is activated for another reason (such as a
 [momentary layer](behaviors/layers.md#momentary-layer) behavior), it will be immediately

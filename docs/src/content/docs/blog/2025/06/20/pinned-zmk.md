@@ -34,7 +34,7 @@ To ensure that you still update your ZMK version regularly and get the latest an
 
 ## How To Pin Your ZMK Version
 
-:::info
+:::note
 If you created your ZMK config on or after `2025-07-03`, then you are already pinned to what was the most recent ZMK version at the time of creation.
 :::
 

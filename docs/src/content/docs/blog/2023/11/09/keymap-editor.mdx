@@ -5,7 +5,9 @@ authors: caksoylar
 tags: [keyboards, firmware, community]
 ---
 
-import ThemedImage from "@theme/ThemedImage";
+import ThemedImage from "@components/content/ThemedImage.astro";
+import editorScreenshotLight from "./assets/2023-11-09-keymap-editor/editor-screenshot-light.png";
+import editorScreenshotDark from "./assets/2023-11-09-keymap-editor/editor-screenshot-dark.png";
 
 This blog post is the first in a series of posts where we highlight projects within the ZMK ecosystem that we think are cool and that the users might benefit from knowing about them. We are starting the series with a big one, [Keymap Editor](http://nickcoutsos.github.io/keymap-editor) by [Nick Coutsos](https://github.com/nickcoutsos)!
 
@@ -14,11 +16,8 @@ This blog post is the first in a series of posts where we highlight projects wit
 <ThemedImage
   alt="Shows a screenshot of the Keymap Editor application featuring a graphical layout of the Corne Keyboard with a keymap loaded from the nickcoutsos/keymap-editor-demo-crkbd GitHub repository."
   sources={{
-    light:
-      require("./assets/2023-11-09-keymap-editor/editor-screenshot-light.png")
-        .default,
-    dark: require("./assets/2023-11-09-keymap-editor/editor-screenshot-dark.png")
-      .default,
+    light: editorScreenshotLight,
+    dark: editorScreenshotDark,
   }}
 />
 
