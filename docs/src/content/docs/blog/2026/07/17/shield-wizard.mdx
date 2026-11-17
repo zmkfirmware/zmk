@@ -5,7 +5,10 @@ authors: nmunnich
 tags: [keyboards, firmware, community]
 ---
 
-import ThemedImage from "@theme/ThemedImage";
+import ThemedImage from "@components/content/ThemedImage.astro";
+import shieldWizard from "./assets/2027-07-17-shield-wizard/shield-wizard.png";
+import shieldWizardDark from "./assets/2027-07-17-shield-wizard/shield-wizard-dark.png";
+import earlyShieldWizard from "./assets/2027-07-17-shield-wizard/early-shield-wizard.png";
 
 This blog continues our series of posts where we highlight projects within the ZMK ecosystem
 that we think are interesting and that users might benefit from knowing about.
@@ -24,10 +27,8 @@ As usual, in the rest of the post we leave it to [Genteure] to introduce and exp
 <ThemedImage
   alt="Screenshot of Shield Wizard for ZMK"
   sources={{
-    light: require("./assets/2027-07-17-shield-wizard/shield-wizard.png")
-      .default,
-    dark: require("./assets/2027-07-17-shield-wizard/shield-wizard-dark.png")
-      .default,
+    light: shieldWizard,
+    dark: shieldWizardDark,
   }}
 />
 
@@ -70,10 +71,7 @@ So I started experimenting with a web based graphical editor for ZMK, and Shield
 
 <figure style={{ maxWidth: "560px", margin: "1.5rem auto" }}>
   <img
-    src={
-      require("./assets/2027-07-17-shield-wizard/early-shield-wizard.png")
-        .default
-    }
+    src={earlyShieldWizard.src}
     alt="First version of Shield Wizard for ZMK"
   />
   <figcaption>_Screenshot of the first iteration of Shield Wizard_</figcaption>

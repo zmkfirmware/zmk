@@ -17,7 +17,7 @@ They will not present as keyboard devices when connected over USB and will not a
 
 By convention, for a keyboard split into two "halves" the left half is set as the central and the right as a peripheral.
 
-:::info[Battery life impact]
+:::note[Battery life impact]
 For BLE-based split keyboards, the central uses significantly more power than the peripherals because its radio needs to periodically wake up to check for incoming transmissions.
 You can refer to the [power profiler](/power-profiler) to see battery life estimates for different roles.
 :::
@@ -37,7 +37,7 @@ For the currently used BLE-based transport, split communication increases the av
 
 ZMK supports two transports for connecting split parts: Bluetooth and full-duplex wired UART. Only one transport can be active at a time, so designs involving some portions connected via Bluetooth and others via full-duplex wired are _not_ supported.
 
-:::warning[Hot Plugging Cables]
+:::caution[Hot Plugging Cables]
 
 Many popular cables, in particular, TRRS/TRS cables, can cause irreparable damage to controllers if they are inserted or removed when power is already present on them. Whether or not you are using the wired split functionality or not, _never_ insert or remove such a cable when a controller is powered by USB _or_ battery.
 
@@ -90,7 +90,7 @@ In practice, this means that your split keyboard parts will automatically pair a
 However, if this process somehow went wrong or you used controllers in a different split keyboard configuration before, you will need to explicitly clear the stored bond information so that the parts can pair properly.
 For this, please follow [the specified procedure](../troubleshooting/connection-issues.mdx#split-keyboard-parts-unable-to-pair) in the troubleshooting section.
 
-:::warning
+:::caution
 If the central keyboard part is either advertising for a pairing or waiting for disconnected peripherals, it will consume more power and drain batteries faster.
 :::
 

@@ -88,7 +88,7 @@ board:
 
 Add a file to your board's folder called `<your-board>_zmk_defconfig`. This file will be used to set Kconfig flags specific to the ZMK variant.
 
-:::warning
+:::caution
 Make sure you know what each Kconfig flag does before you enable it. Some flags may be incompatible with certain hardware, or have other adverse effects.
 :::
 

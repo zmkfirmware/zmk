@@ -8,7 +8,7 @@ ZMK supports physical pointing devices, as well as [mouse emulation behaviors](.
 
 To enable the pointer functionality, you must set `CONFIG_ZMK_POINTING=y` in your config. See the [pointer configuration](../config/pointing.md) for the full details.
 
-:::warning
+:::caution
 
 When enabling the feature, changes are made to the HID report descriptor which some hosts may not pick up automatically over BLE. Be sure to [remove and re-pair to your hosts](bluetooth.md#refreshing-the-hid-descriptor) once you enable the feature.
 

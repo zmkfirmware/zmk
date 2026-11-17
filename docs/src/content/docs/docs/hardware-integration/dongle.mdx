@@ -4,9 +4,8 @@ sidebar:
   label: Keyboard Dongle
 ---
 
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
-import ReadMore from "../../src/components/ReadMore";
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+import ReadMore from "@components/content/ReadMore.astro";
 
 A bluetooth dongle can be added to any wireless keyboard running ZMK. The result is a split keyboard with the dongle as "central". There are a number of advantages to adding a dongle, but also some disadvantages:
 
@@ -154,7 +153,7 @@ For physical layouts, look for `#include <layouts/<layout_name>.dtsi>` or a devi
 
 Some older shields may not have a physical layout defined and use a matrix transform directly in the `chosen` node. The dongle shield should match the same approach as the other parts of the keyboard.
 
-:::warning
+:::caution
 
 It is very important that all keyboard parts have the exact same physical layouts and matrix transforms with the same devicetree node names.
 For keyboards with multiple physical layouts, make sure to include all of them in the dongle shield, even if you only use one of them.
@@ -170,17 +169,9 @@ There are three commonly found possibilities for physical layouts:
 Use the following tabs to see how to copy the physical layout and matrix transform for each of these cases.
 
 <Tabs
-    groupId="layout-locations"
-    queryString
-    defaultValue="layouts"
-    values={[
-      { label: "Layouts File", value: "layouts" },
-      { label: "Base File", value: "base" },
-      { label: "Imported", value: "imported" },
-      { label: "No Physical Layout", value: "none" },
-    ]}
-  >
-<TabItem value="layouts">
+  syncKey="layout-locations"
+>
+<TabItem label="Layouts File">
 
 If your keyboard has a dedicated physical layout file, usually named `<name>-layouts.dtsi`, copy the file into your dongle shield's folder.
 Import the `dtsi` file in your dongle shield's overlay, assign the matrix transform to it, and select it in the `chosen` node just like the other parts of the keyboard.
@@ -220,7 +211,7 @@ If the `kscan` property is set on the physical layout node, remove it so the don
 ```
 
 </TabItem>
-<TabItem value="base">
+<TabItem label="Base File">
 If your keyboard has a physical layout defined in the same file as the matrix transform and chosen node, copy the physical layout node into your dongle shield's overlay.
 
 Similar to the previous case with a dedicated physical layout file, make sure the matrix transform is assigned to it, and select it in the `chosen` node just like the other parts of the keyboard.
@@ -263,7 +254,7 @@ If the `kscan` property is set on the physical layout node, remove it so the don
 ```
 
 </TabItem>
-<TabItem value="imported">
+<TabItem label="Imported">
 
 If the keyboard's physical layout is imported from ZMK's shared layouts, include the layout at the top of your dongle shield's overlay file, then assign the matrix transform to it and select it in the `chosen` node just like the other parts of the keyboard.
 
@@ -285,7 +276,7 @@ As an example of importing shared layouts, [`boards/shields/corne/corne.dtsi`](h
 ```
 
 </TabItem>
-<TabItem value="none">
+<TabItem label="No Physical Layout">
 
 If you see `chosen` `zmk,matrix-transform` like the following, then your keyboard does not have a physical layout defined.
 
@@ -331,7 +322,7 @@ If you are building locally, you can append these flags to the end of the [build
 
 You can then flash the firmware to your device as detailed in our [user setup](../user-setup.mdx#install-the-firmware) and [split keyboard](../features/split-keyboards.md#building-and-flashing-firmware) pages.
 
-:::warning
+:::caution
 Before flashing your new firmware, you need to flash [`settings_reset` firmware](../troubleshooting/connection-issues.mdx#building-a-reset-firmware) on all devices to clear any previous bonding information.
 Flashing standard ZMK firmware on a device will not clear any previous settings.
 :::

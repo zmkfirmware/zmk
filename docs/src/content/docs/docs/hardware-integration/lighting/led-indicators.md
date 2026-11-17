@@ -22,7 +22,7 @@ To connect these indicator states to LEDs on a keyboard, you must do two things 
 
 The most common setup is for LEDs to be driven directly from a GPIO pin. The examples on this page show how to controls these using the `gpio-leds` or `pwm-leds` drivers, but you can also use any other [LED driver](https://docs.zephyrproject.org/4.1.0/hardware/peripherals/led.html) from Zephyr.
 
-:::warning
+:::caution
 LED strip drivers (e.g. WS2812 LEDs) are not currently supported. More work is needed to support the separate API and avoid conflicts with the underglow system.
 :::
 

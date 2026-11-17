@@ -2,38 +2,15 @@
 title: New Keyboard Shield
 ---
 
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
-import InterconnectTabs from "@site/src/components/interconnect-tabs";
-import Metadata from "@site/src/data/hardware-metadata.json";
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+import InterconnectTabs from "@components/hardware/InterconnectTabs.astro";
+import SyncedTabs from "@components/content/SyncedTabs.astro";
+import Metadata from "@data/hardware-metadata.json";
 
 export const SplitTabs = (props) => (
     <Tabs
-    groupId="keyboard-type"
-    queryString
-    defaultValue="unibody"
-    values={[
-      { label: "Unibody Keyboard", value: "unibody" },
-      { label: "Split Keyboard", value: "split" }
-    ]}
-  >
-    {/* eslint-disable-next-line */}
-    {props.children}
-  </Tabs>
-
-);
-
-export const SplitInvisTabs = (props) => (
-    <Tabs
-    groupId="keyboard-type"
-    queryString
-    defaultValue="unibody"
-    className="secrettabs"
-    values={[
-      { label: "Unibody Keyboard", value: "unibody" },
-      { label: "Split Keyboard", value: "split" }
-    ]}
-  >
+      syncKey="keyboard-type"
+    >
     {/* eslint-disable-next-line */}
     {props.children}
   </Tabs>
@@ -59,7 +36,7 @@ Many of the above files will differ depending on whether your keyboard is a unib
 After adding ZMK support for a basic shield using this guide, check the sidebar for guides on adding any additional features (such as encoders) that your keyboard has.
 It may be helpful to review the upstream [shields documentation](https://docs.zephyrproject.org/4.1.0/hardware/porting/shields.html#shields) to get a proper understanding of the underlying system before continuing.
 
-:::info
+:::note
 When writing your shield, please be aware of [licensing](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository):
 
 - If you reference code or other items that are under a copyleft license (e.g. GNU GPLv2, used by QMK) as a reference, you must license your shield under a compatible copyleft license.
@@ -115,14 +92,17 @@ There are two required [Kconfig](https://docs.zephyrproject.org/4.1.0/build/kcon
 
 All file names are case sensitive.
 
-<SplitTabs></SplitTabs>
+<SplitTabs>
+  <TabItem label="Unibody Keyboard"></TabItem>
+  <TabItem label="Split Keyboard"></TabItem>
+</SplitTabs>
 
 ### Kconfig.shield
 
 The `Kconfig.shield` file defines the shield name used to build your keyboard.
 
-<SplitInvisTabs>
-<TabItem value="unibody">
+<SyncedTabs syncKey="keyboard-type">
+<TabItem label="Unibody Keyboard">
 
 ```kconfig title="boards/shields/<keyboard_name>/Kconfig.shield"
 # No whitespace after the comma or in your keyboard name!
@@ -134,7 +114,7 @@ This will set the `SHIELD_MY_KEYBOARD` flag to `y` whenever `my_keyboard` is use
 The `SHIELD_MY_KEYBOARD` flag will be used in `Kconfig.defconfig` to set other properties about your shield, so make sure that they match.
 
 </TabItem>
-<TabItem value="split">
+<TabItem label="Split Keyboard">
 
 Split keyboards have multiple shield names defined, one for each part.
 For example, if your keyboard consists of two halves named `my_keyboard_left` and `my_keyboard_right`, it would look like this:
@@ -177,7 +157,7 @@ config SHIELD_MY_KEYBOARD_NUMPAD
 </details>
 
 </TabItem>
-</SplitInvisTabs>
+</SyncedTabs>
 
 ### Kconfig.defconfig
 
@@ -186,8 +166,8 @@ One main item that usually has a new default value set here is the `ZMK_KEYBOARD
 
 The updated new default values should always be wrapped inside a conditional on the shield config name defined in the `Kconfig.shield` file.
 
-<SplitInvisTabs>
-<TabItem value="unibody">
+<SyncedTabs syncKey="keyboard-type">
+<TabItem label="Unibody Keyboard">
 
 ```kconfig title="boards/shields/<keyboard_name>/Kconfig.defconfig"
 if SHIELD_MY_KEYBOARD
@@ -200,7 +180,7 @@ endif
 ```
 
 </TabItem>
-<TabItem value="split">
+<TabItem label="Split Keyboard">
 
 For split keyboards, a central side (usually the left) is specified via the configuration in this file.
 For that side, the keyboard name is assigned and the central config is set.
@@ -269,7 +249,7 @@ endif
 </details>
 
 </TabItem>
-</SplitInvisTabs>
+</SyncedTabs>
 
 ### User Configuration Files
 
@@ -277,16 +257,16 @@ In addition to the `Kconfig.shield` and `Kconfig.defconfig` files, many shields 
 This file exists to provide "suggestions" of [configuration settings](../config/index.md) for a user to select, such as enabling deep sleep.
 Note that the name should match the shield/part name defined in the [Kconfig.shield file](#kconfigshield).
 
-:::warning
+:::caution
 This file can also be used to set configuration options.
 However, if a flag is set in this file, **the user can no longer change it**.
 Though sometimes necessary, this method of setting configuration options is discouraged.
 The case for which this is necessary is due to be eliminated in the future, making this method redundant.
 :::
 
-<SplitInvisTabs>
-<TabItem value="unibody"></TabItem>
-<TabItem value="split">
+<SyncedTabs syncKey="keyboard-type">
+<TabItem label="Unibody Keyboard"></TabItem>
+<TabItem label="Split Keyboard">
 
 Split keyboards can have multiple `.conf` files, one for each part. For example:
 
@@ -301,11 +281,14 @@ The shared configuration in `my_keyboard.conf` is only applied when you are buil
 :::
 
 </TabItem>
-</SplitInvisTabs>
+</SyncedTabs>
 
 ## Shield Overlays
 
-<SplitTabs></SplitTabs>
+<SplitTabs>
+  <TabItem label="Unibody Keyboard"></TabItem>
+  <TabItem label="Split Keyboard"></TabItem>
+</SplitTabs>
 
 Shield overlay files contain a devicetree description that is merged with the primary board devicetree description during the firmware building process.
 There are three main things that need to be defined in this file:
@@ -314,13 +297,13 @@ There are three main things that need to be defined in this file:
 - Your matrix transform, which acts as a "bridge" between the kscan and the keymap
 - Your physical layout, which aggregates the above and (optionally) defines physical key positions so that the keyboard can be used with [ZMK Studio](../features/studio.md).
 
-<SplitInvisTabs>
-<TabItem value="unibody">
+<SyncedTabs syncKey="keyboard-type">
+<TabItem label="Unibody Keyboard">
 
 A unibody keyboard will have a single overlay file named `my_keyboard.overlay`, where `my_keyboard` is the shield name defined in the [Kconfig.shield file](#kconfigshield).
 
 </TabItem>
-<TabItem value="split">
+<TabItem label="Split Keyboard">
 
 A split keyboard will have an overlay file defined for each split part.
 For example, if the keyboard is split into a left and a right half, these can be named:
@@ -334,7 +317,7 @@ Split keyboards often share some of their devicetree description.
 The standard approach is to have a core `my_keyboard.dtsi` (devicetree include) file, which is included into each of the shield overlays.
 
 </TabItem>
-</SplitInvisTabs>
+</SyncedTabs>
 
 ### Kscan
 
@@ -349,7 +332,7 @@ An example is `&gpio1 7` for the `P1.07` pin that the nice!nano exposes in the m
 The [Keyboard Scan configuration documentation](../config/kscan.md) has the full details on configuring the kscan driver.
 
 <SplitTabs>
-<TabItem value="unibody">
+<TabItem label="Unibody Keyboard">
 
 For a simple 3x3 macropad matrix, the kscan might look something like:
 
@@ -376,7 +359,7 @@ For a simple 3x3 macropad matrix, the kscan might look something like:
 ```
 
 </TabItem>
-<TabItem value="split">
+<TabItem label="Split Keyboard">
 
 For split keyboards you should define your kscan in `my_keyboard.dtsi`.
 If your `row-gpios` or your `col-gpios` (or both) are identical between the parts, then they should also be defined in `my_keyboard.dtsi`.
@@ -439,7 +422,7 @@ Then, the "key position" triggered is the index of the `RC(row, column)` in the 
 This key position will in turn have a behavior binding associated with it in the keymap.
 
 <SplitTabs>
-<TabItem value="unibody">
+<TabItem label="Unibody Keyboard">
 
 The `my_keyboard.overlay` must include a matrix transform that defines this mapping from row/column values to key positions.
 Add `#include <dt-bindings/zmk/matrix_transform.h>` to the top of the file.
@@ -467,7 +450,7 @@ Here is an example of a matrix transform for the previous 3x3 macropad:
 ```
 
 </TabItem>
-<TabItem value="split">
+<TabItem label="Split Keyboard">
 
 Split keyboards should define their matrix transform in the shared `my_keyboard.dtsi`. Add `#include <dt-bindings/zmk/matrix_transform.h>` to the top of the file.
 
@@ -523,8 +506,8 @@ Also see the [matrix transform section](../config/layout.md#matrix-transform) in
 Your keyboard will need to have a physical layout defined.
 Physical layouts organize the matrix transform, kscan and optionally the physical description of key positions in a single entity.
 
-<Tabs groupId="physical-layouts" queryString defaultValue="basic">
-  <TabItem value="basic" label="Basic">
+<Tabs syncKey="physical-layouts">
+  <TabItem label="Basic">
 
 If you are not planning to add support for [ZMK Studio](../features/studio.md), you can add a `zmk,physical-layout`-compatible node for each physical layout your keyboard supports:
 
@@ -542,7 +525,7 @@ If you are not planning to add support for [ZMK Studio](../features/studio.md), 
 These nodes should be placed in `my_keyboard.overlay` for unibody keyboards and the shared `my_keyboard.dtsi` for splits.
 
   </TabItem>
-  <TabItem value="studio" label="With ZMK Studio Support">
+  <TabItem label="With ZMK Studio Support">
 
 If you are planning to add support for [ZMK Studio](../features/studio.md), you should follow the [physical layouts documentation](physical-layouts.md) to create a new file `my_keyboard-layouts.dtsi` which includes the physical layout definitions.
 Once you have finished defining your physical layouts, import the `my_keyboard-layouts.dtsi` file at the top of your `my_keyboard.overlay` file (unibody) or `my_keyboard.dtsi` file (split).
@@ -587,8 +570,8 @@ If all of your physical layouts use the same `kscan` node under the hood, you ca
 ### Wired Split
 
 <SplitTabs>
-<TabItem value="unibody">This is only required for wired split keyboards.</TabItem>
-<TabItem value="split">
+<TabItem label="Unibody Keyboard">This is only required for wired split keyboards.</TabItem>
+<TabItem label="Split Keyboard">
 
 If testing the experimental [wired split](../features/split-keyboards.md) support, you should assign a [predefined](./pinctrl.mdx#predefined-nodes) or [pinctrl configured](./pinctrl.mdx) UART to the `device` property of a new node with `compatible` value of `"zmk,wired-split"`:
 

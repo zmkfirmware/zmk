@@ -4,8 +4,7 @@ sidebar:
   label: New Behavior Guide
 ---
 
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
+import { Tabs, TabItem } from "@astrojs/starlight/components";
 
 :::danger
 Before reading this section, it is **vital** that you read through our [clean room policy](./contributing/clean-room.md).
@@ -16,7 +15,7 @@ Before reading this section, it is **vital** that you read through our [clean ro
 [Behaviors](../keymaps/behaviors/index.mdx) refer to the actions that are invoked when a key is pressed or released.
 This guide outlines how to create a [ZMK module](../development/module-creation.md) that contains a new [behavior](../keymaps/behaviors/index.mdx).
 
-:::info
+:::note
 If an out-of-tree behavior's use-case is deemed widespread enough to be merged into upstream ZMK, a new pull request may be issued instead.
 While this page describes practices that maximize compatibility between module-focused development and pull-request-based workflows, we also note specific modifications required for the latter to work properly.
 :::
@@ -35,7 +34,7 @@ The general process for developing behaviors is:
 1. [Document behavior functionality](#documenting-behavior-functionality)
 1. [Provide licensing information](#licensing-information)
 
-:::info
+:::note
 Before developing new behaviors, developers should have a working knowledge of the Embedded Linux Devicetree.
 The following resources are provided for those seeking further understanding:
 
@@ -136,7 +135,6 @@ properties:
   keep-mods:
     type: int
     required: false
-
 ```
 
 It can be seen that the `.yaml` files used for new behaviors' devicetree bindings consist of the following fields:
@@ -164,7 +162,7 @@ Choose between `zero_param.yaml`, `one_param.yaml`, or `two_param.yaml` dependin
 | `one_param.yaml`  | `&kp A`                |
 | `two_param.yaml`  | `&mt LSHFT Z`          |
 
-:::info
+:::note
 Some behaviors, like the [Bluetooth behavior](../keymaps/behaviors/bluetooth.md), use `two_param.yaml` despite their keymap usage _appearing_ to only use one extra parameter, e.g., `&bt BT_NXT` or `&bt BT_PRV`.
 Expanding their C preprocessor definitions reveals the following definitions: `#define BT_NXT BT_NXT_CMD 0` and `#define BT_PRV BT_PRV_CMD 0`, respecting the use of `two_param.yaml`.
 This is useful for creating behaviors that may have a primary "command", followed by a secondary parameter.
@@ -188,13 +186,8 @@ The latter includes keypresses, hold-taps, or tap-dances.
 
 The code templates below show the differences between these categories, along with the essential components of a behavior source file.
 
-<Tabs
-defaultValue="single"
-values={[
-{label: 'Behavior template with single instantiation', value: "single"},
-{label: 'Behavior template with multiple instantiation', value: "multiple"},
-]}>
-<TabItem value="single">
+<Tabs>
+<TabItem label="Behavior template with single instantiation">
 
 ```c title="src/behaviors/behavior_<name_of_behavior>.c"
 /*
@@ -265,7 +258,7 @@ BEHAVIOR_DT_INST_DEFINE(0,                                                // Ins
 
 </TabItem>
 
-<TabItem value="multiple">
+<TabItem label="Behavior template with multiple instantiation">
 
 ```c title="src/behaviors/behavior_<name_of_behavior>.c"
 /*
@@ -387,7 +380,7 @@ config ZMK_BEHAVIOR_<NAME_OF_BEHAVIOR>_PROPERTY3
 endif #ZMK_BEHAVIOR_<NAME_OF_BEHAVIOR>
 ```
 
-:::info
+:::note
 For an overview on Kconfig files, see [Configuration](../config/index.md#kconfig-files).
 
 For more examples of behavior-specific Kconfig settings, see [Behavior Configuration](../config/behaviors.md).
@@ -423,7 +416,7 @@ Other common ways of enabling/blocking the inclusion of sources via `CMakeLists.
 | Locality is **only** on the peripheral part of a split keyboard | `if (CONFIG_ZMK_SPLIT AND (NOT CONFIG_ZMK_SPLIT_ROLE_CENTRAL))`                                                                                   |
 | Kconfig Requirement must be met                                 | Use `target_sources_ifdef(CONFIG_<Configuration Requirement> app PRIVATE <name_of_behavior>.c)` instead of `target_sources(<name_of_behavior>.c)` |
 
-:::info
+:::note
 If submitting a pull request to upstream ZMK, the `target_sources` invocation would go inside `zmk/app/CMakeLists.txt` instead.
 :::
 
@@ -468,7 +461,7 @@ The format of a behavior's `.dtsi` file is identical to declaring an instance of
 However, a major difference is that the value `/omit-if-no-ref/` should be placed adjacent to the label and name of the behavior, as highlighted in the example.
 This enables the behavior to only be compiled if it is used in the keymap.
 
-:::warning
+:::caution
 
 If your behavior has its [`locality`](#zmk-api-struct) property set to anything other than `BEHAVIOR_LOCALITY_CENTRAL`, then the name of the node must be at most 8 characters long.
 Otherwise, it will fail to be invoked on the peripheral half of a split keyboard.
@@ -484,7 +477,7 @@ In the above example, `grave_escape` is too long, so it would need to be shorten
 
 After creating the `.dtsi` from above, you may `#include <behaviors/new_behavior_instance.dtsi>` at the top of your keymap to access the new behavior definition.
 
-:::info
+:::note
 If submitting a pull request to upstream ZMK, this `#include` statement would go inside `zmk/app/dts/behaviors.dtsi`, instead of the keymap.
 :::
 
@@ -495,7 +488,7 @@ If submitting a pull request to upstream ZMK, this `#include` statement would go
 This section elaborates on the contents of behavior sources that interact with ZMK directly.
 We will review the components from the [behavior source templates](#behavior-source-files-c) in the order they appear and introduce new concepts that are commonly used in the development process.
 
-:::info
+:::note
 Developing drivers for behaviors in ZMK makes extensive use of the Zephyr Devicetree API and Device Driver Model.
 Links to the Zephyr Project Documentation for both of these concepts can be found below:
 
@@ -504,7 +497,7 @@ Links to the Zephyr Project Documentation for both of these concepts can be foun
 
 :::
 
-:::warning
+:::caution
 If submitting a pull request, any `.c` files should be formatted according to `clang-format` to ensure that automated checks run smoothly.
 :::
 
@@ -673,7 +666,7 @@ The API struct's metadata-specific fields are shown below.
 
 `BEHAVIOR_DT_INST_DEFINE` is a special ZMK macro which uses Zephyr's `DEVICE_DT_INST_DEFINE` macro to define the driver instance, before adding it to a list of ZMK behaviors so that can be found by the function `zmk_behavior_get_binding()`.
 
-:::info
+:::note
 For more information on this function, refer to [Zephyr's documentation on the Device Driver Model](https://docs.zephyrproject.org/4.1.0/kernel/drivers/index.html#c.DEVICE_DT_INST_DEFINE).
 :::
 
@@ -806,7 +799,7 @@ Some examples of events that are the most relevant to behavior development can b
 | `layer_state_changed.h`    | [Layer events' state (bitmask)](#layers), layer index, and timestamps                             |
 | `position_state_changed.h` | Position events' state (on/off), source, position, and timestamps                                 |
 
-:::info
+:::note
 See the [`events` directory](https://github.com/zmkfirmware/zmk/tree/main/app/include/zmk/events) for other examples of events.
 For more information on how to interact with events and the event manager, see [Events](./events.md).
 :::
@@ -845,7 +838,7 @@ For pull requests, behaviors should be tested thoroughly on both virtual testing
 Zephyr currently does not support logging over Bluetooth, so any use of the serial monitor for hardware testing must be done over hardware UART or USB virtual UART.
 :::
 
-:::info
+:::note
 
 - See [Tests](local-toolchain/tests.md) for more information on how to create virtual test sets.
 - For hardware-based testing, see [USB Logging](usb-logging.mdx).
@@ -863,7 +856,7 @@ Consider the following prompts when writing documentation for new behaviors:
 
 Including visual aids alongside written documentation for additional clarity may be helpful.
 
-:::info
+:::note
 If submitting a pull request, see [Documentation](contributing/documentation.md) for more information on writing, testing, and formatting ZMK documentation.
 :::
 
@@ -882,7 +875,7 @@ To qualify a codebase as open source, authors must provide a license that in add
 - The source code may be freely modified, which may result in the creation of derivative works under the conditions of the included license
 - The license must not discriminate against any person, group of persons, or specific fields of endeavor
 
-:::info
+:::note
 For more information, consider looking at the following resources:
 
 - [GitHub Open Source Guides](https://opensource.guide/legal/)
@@ -899,13 +892,8 @@ If the author's intent is to contribute their work to ZMK in these manners, espe
 
 [SPDX copyright headers](https://spdx.dev/learn/handling-license-info/) for each of the files outlined in this document can be copied and pasted from the tabs below.
 
-<Tabs
-defaultValue="yaml"
-values={[
-{label: 'Devicetree Bindings (.yaml) and CMakeLists.txt', value: 'yaml'},
-{label: 'Drivers (.c) and predefined use-cases (.dtsi)', value: 'c'},
-]}>
-<TabItem value="yaml">
+<Tabs>
+<TabItem label="Devicetree Bindings (.yaml) and CMakeLists.txt">
 
 ```yaml
 // highlight-next-line
@@ -914,7 +902,7 @@ values={[
 ```
 
 </TabItem>
-<TabItem value="c">
+<TabItem label="Drivers (.c) and predefined use-cases (.dtsi)">
 
 ```c
 /*
@@ -928,7 +916,7 @@ values={[
 </TabItem>
 </Tabs>
 
-:::warning
+:::caution
 Remember to change the copyright year (`XXXX`) to the current year when adding the copyright headers to your newly created files.
 This also applies to the **`LICENSE`** file at the repository's root.
 :::

@@ -4,8 +4,7 @@ sidebar:
   label: Hold-Tap
 ---
 
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
+import { Tabs, TabItem } from "@astrojs/starlight/components";
 
 ## Summary
 
@@ -87,17 +86,9 @@ Note that you can also [define a custom hold-tap](#custom-hold-tap-examples) and
 To see what specific configuration options do, please see the [configuration options](#custom-hold-tap-configuration).
 The below examples are intended for you to copy-paste as desired, and then tune with the configuration options.
 
-<Tabs
-queryString="examples"
-defaultValue="mlt"
-values={[
-{label: 'Mod/Layer-tap', value: 'mlt'},
-{label: 'Homerow Mods', value: 'home_row_mods'},
-{label: 'Autoshift', value: 'autoshift'},
-{label: 'Tog-Tap, Mo-Hold Layers', value: 'mo_tog'},
-]}>
+<Tabs>
 
-<TabItem value="mlt">
+<TabItem label="Mod/Layer-tap">
 
 The default configuration of mod-tap and layer-tap can be found below:
 
@@ -142,7 +133,7 @@ Name and label them something else, e.g. `my_mt: my_mod_tap`, to avoid this.
 You'll then be able to use your new behavior with `&my_mt`.
 
 </TabItem>
-<TabItem value="home_row_mods">
+<TabItem label="Homerow Mods">
 
 The most popular form of home-row mods is known as "timeless home-row mods", configured to minimize the dependency on timing.
 Timeless home-row mods define both a "left hand" and a "right hand" behavior.
@@ -194,7 +185,7 @@ Depending on your typing behavior, you may wish to adjust this configuration. Fo
 
 </TabItem>
 
-<TabItem value="autoshift">
+<TabItem label="Autoshift">
 
 A popular method of implementing Autoshift in ZMK involves a C-preprocessor macro, commonly defined as `AS(keycode)`. This macro applies the `LSHIFT` modifier to the specified `keycode` when `AS(keycode)` is held, and simply performs a [keypress](key-press.md), `&kp keycode`, when the `AS(keycode)` binding is tapped. This simplifies the use of Autoshift in a keymap, as the complete hold-tap bindings for each desired Autoshift key, as in `&as LS(<keycode 1>) <keycode 1> &as LS(<keycode 2>) <keycode 2> ... &as LS(<keycode n>) <keycode n>`, can be quite cumbersome to use when applied to a large portion of the keymap.
 
@@ -229,7 +220,7 @@ A popular method of implementing Autoshift in ZMK involves a C-preprocessor macr
 
 </TabItem>
 
-<TabItem value="mo_tog">
+<TabItem label="Tog-Tap, Mo-Hold Layers">
 
 This hold-tap example implements a [momentary-layer](layers.md#momentary-layer) when the keybind is held and a [toggle-layer](layers.md#toggle-layer) when it is tapped. Similar to the Autoshift and Sticky Hold use-cases, a `MO_TOG(layer)` macro is defined such that the `&mo` and `&tog` behaviors can target a single layer.
 
@@ -290,7 +281,7 @@ For instance, a hold-tap with node label `caps` and `bindings = <&kp>, <&caps_wo
 &caps CAPS 0
 ```
 
-:::info
+:::note
 You cannot use behaviors that expect more than one parameter such as [`&bt`](bluetooth.md) and [`&rgb_ug`](underglow.md) with hold-taps, due to the limitations of the [devicetree keymap format](../../config/index.md#devicetree-files).
 One workaround is to create a [macro](macros.md) that invokes those behaviors and use the macro as the hold or tap action.
 :::
@@ -436,7 +427,7 @@ If enabled, the hold behavior will immediately be held on hold-tap press, and wi
 };
 ```
 
-:::warning[Interactions with combos]
+:::caution[Interactions with combos]
 If the key position that has the hold-tap assigned is _also_ used in any combos, the `hold-while-undecided` behavior isn't immediate with key-down, but waits until all those combo timeouts have expired.
 :::
 
@@ -452,7 +443,7 @@ For example, if the hold is `&kp LGUI` and the tap is `&sk LGUI`, then with `hol
 };
 ```
 
-:::info[Alt/Win/Cmd behavior]
+:::note[Alt/Win/Cmd behavior]
 In some applications/desktop environments, pressing Alt keycodes by itself will have its own behavior like activate a menu and Gui keycodes will bring up the start menu or an application launcher.
 :::
 

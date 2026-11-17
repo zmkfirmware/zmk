@@ -4,8 +4,7 @@ sidebar:
   label: Modules
 ---
 
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
+import { Tabs, TabItem } from "@astrojs/starlight/components";
 
 ZMK makes use of [Zephyr modules](https://docs.zephyrproject.org/4.1.0/develop/modules.html) to include additional source code or configuration files into its build. You can think of them as similar to plugins or themes. The most common uses of this feature are:
 
@@ -36,14 +35,8 @@ For more information on `west.yml`, see [West Manifests](https://docs.zephyrproj
 
 #### Examples
 
-<Tabs
-defaultValue="zmk"
-values={[
-{label: 'Default', value: 'zmk'},
-{label: 'Module A', value: 'ma'},
-{label: 'Modules A + B', value: 'mab'},
-]}>
-<TabItem value="zmk">
+<Tabs>
+<TabItem label="Default">
 
 ```yaml
 manifest:
@@ -60,7 +53,7 @@ manifest:
 ```
 
 </TabItem>
-<TabItem value="ma">
+<TabItem label="Module A">
 
 ```yaml
 manifest:
@@ -82,7 +75,7 @@ manifest:
 ```
 
 </TabItem>
-<TabItem value="mab">
+<TabItem label="Modules A + B">
 
 ```yaml
 manifest:
@@ -146,13 +139,8 @@ When [using GitHub Actions to build ZMK](../user-setup.mdx), once you have obtai
 
 #### Example
 
-<Tabs
-defaultValue="zmk"
-values={[
-{label: 'Default', value: 'zmk'},
-{label: 'Alternative', value: 'alt'},
-]}>
-<TabItem value="zmk">
+<Tabs>
+<TabItem label="Default">
 
 ```yaml
 manifest:
@@ -169,7 +157,7 @@ manifest:
 ```
 
 </TabItem>
-<TabItem value="alt">
+<TabItem label="Alternative">
 
 ```yaml
 manifest:

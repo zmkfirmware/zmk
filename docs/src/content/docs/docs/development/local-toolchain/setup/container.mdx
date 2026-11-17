@@ -4,8 +4,7 @@ sidebar:
   label: Container
 ---
 
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
+import { Tabs, TabItem } from "@astrojs/starlight/components";
 
 ## Source Code
 
@@ -19,15 +18,10 @@ git clone https://github.com/zmkfirmware/zmk.git
 
 ## Installing Development Tools
 
-<Tabs groupId="container"
-      queryString
-      defaultValue="vsCode"
-      values={[
-        {label: 'VS Code', value: 'vsCode'},
-        {label: 'Dev Container CLI', value: 'cli'},
-        {label: 'Podman', value: 'podman'}
-      ]}>
-  <TabItem value="vsCode">
+<Tabs
+  syncKey="container-tool"
+>
+  <TabItem label="VS Code">
     :::note
     This approach is documented for
     [VS Code](https://github.com/microsoft/vscode) not
@@ -40,17 +34,17 @@ git clone https://github.com/zmkfirmware/zmk.git
     3. Install the [Remote - Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers).
 
   </TabItem>
-  <TabItem value="cli">
+  <TabItem label="Dev Container CLI">
     1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop)
        for your operating system.
     2. Install the [Dev Container CLI](https://github.com/devcontainers/cli).
   </TabItem>
-  <TabItem value="podman">
+  <TabItem label="Podman">
     1. Install Podman for your operating system:
         - [Podman CLI](https://podman.io/docs/installation)
         - [Podman Desktop](https://podman-desktop.io/docs/installation)
 
-    :::warning
+    :::caution
     Please follow the installation instructions carefully. If you do not have
     a working **Podman machine**, executing the commands below won't be
     possible.
@@ -65,15 +59,9 @@ To build from a `zmk-config` or with additional modules, it is necessary to
 first make them available by creating volumes.
 
 <Tabs
-  groupId="container"
-  queryString
-  defaultValue="vsCode"
-  values={[
-    { label: "Docker", value: "vsCode" },
-    { label: "Podman", value: "podman" },
-  ]}
+  syncKey="container-engine"
 >
-  <TabItem value="vsCode">
+  <TabItem label="Docker">
     When setting up the container, either using
     [VS Code](https://code.visualstudio.com/) or the
     [Dev Container CLI](https://github.com/devcontainers/cli), the volumes will
@@ -92,7 +80,7 @@ first make them available by creating volumes.
     ```
 
   </TabItem>
-  <TabItem value="podman">
+  <TabItem label="Podman">
     #### Zmk-Config
     ```sh
     podman volume create --driver local -o o=bind -o type=none \
@@ -119,15 +107,9 @@ When changing the configuration or modules directory, new volumes have to be
 created and mounted. Accordingly, you first have to remove the old ones.
 
 <Tabs
-  groupId="container"
-  queryString
-  defaultValue="vsCode"
-  values={[
-    { label: "Docker", value: "vsCode" },
-    { label: "Podman", value: "podman" },
-  ]}
+  syncKey="container-engine"
 >
-  <TabItem value="vsCode">
+  <TabItem label="Docker">
 
     ```sh
     docker ps                    # List containers
@@ -139,7 +121,7 @@ created and mounted. Accordingly, you first have to remove the old ones.
     ```
 
   </TabItem>
-  <TabItem value="podman">
+  <TabItem label="Podman">
 
     ```sh
     podman ps                    # List containers
@@ -156,15 +138,10 @@ created and mounted. Accordingly, you first have to remove the old ones.
 
 ## Initialize Container
 
-<Tabs groupId="container"
-      queryString
-      defaultValue="vsCode"
-      values={[
-        {label: 'VS Code', value: 'vsCode'},
-        {label: 'Dev Container CLI', value: 'cli'},
-        {label: 'Podman', value: 'podman'}
-      ]}>
-  <TabItem value="vsCode">
+<Tabs
+  syncKey="container-tool"
+>
+  <TabItem label="VS Code">
     Open the `zmk` checkout directory in VS Code. The repository includes a
     configuration for containerized development. Therefore, an alert will pop
     up:
@@ -184,7 +161,7 @@ created and mounted. Accordingly, you first have to remove the old ones.
     much faster!**
 
   </TabItem>
-  <TabItem value="cli">
+  <TabItem label="Dev Container CLI">
     First, make sure that the
     [Dev Container CLI](https://github.com/devcontainers/cli) is installed by
     running:
@@ -215,7 +192,7 @@ created and mounted. Accordingly, you first have to remove the old ones.
     ```
 
   </TabItem>
-  <TabItem value="podman">
+  <TabItem label="Podman">
     First, make sure that Podman is installed by running:
 
     ```sh
