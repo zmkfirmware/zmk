@@ -1,4 +1,8 @@
-import {
+/**
+ * Copyright (c) 2026 The ZMK Contributors
+ * SPDX-License-Identifier: MIT
+ */
+import type {
   Board,
   HardwareMetadata,
   Interconnect,
@@ -16,7 +20,11 @@ export interface GroupedMetadata {
   interconnects: Record<string, InterconnectDetails>;
 }
 
-function groupedBoard(agg: GroupedMetadata, board: Board) {
+function groupedBoard(
+  agg: GroupedMetadata,
+  board: Board,
+  unclassified: string[]
+) {
   if (board.features?.includes("keys")) {
     agg.onboard.push(board);
   } else if (board.exposes) {
@@ -29,7 +37,7 @@ function groupedBoard(agg: GroupedMetadata, board: Board) {
       agg.interconnects[element] = ic;
     });
   } else {
-    console.error("Board without keys or interconnect");
+    unclassified.push(board.id);
   }
 
   return agg;
@@ -58,11 +66,12 @@ function groupedInterconnect(agg: GroupedMetadata, item: Interconnect) {
 }
 
 export function groupedMetadata(items: HardwareMetadata[]) {
-  return items.reduce<GroupedMetadata>(
+  const unclassified: string[] = [];
+  const grouped = items.reduce<GroupedMetadata>(
     (agg, hm) => {
       switch (hm.type) {
         case "board":
-          return groupedBoard(agg, hm);
+          return groupedBoard(agg, hm, unclassified);
         case "shield":
           return groupedShield(agg, hm);
         case "interconnect":
@@ -71,4 +80,12 @@ export function groupedMetadata(items: HardwareMetadata[]) {
     },
     { onboard: [] as Board[], interconnects: {} }
   );
+
+  if (unclassified.length > 0) {
+    console.warn(
+      `Boards without keys or interconnect: ${unclassified.join(", ")}`
+    );
+  }
+
+  return grouped;
 }

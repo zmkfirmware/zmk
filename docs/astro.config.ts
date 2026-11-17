@@ -5,11 +5,16 @@ import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
 import starlight from "@astrojs/starlight";
 import type { StarlightPlugin } from "@astrojs/starlight/types";
+import type { AstroIntegration } from "astro";
 import { defineConfig } from "astro/config";
 import starlightBlog from "starlight-blog";
 import mermaid from "astro-mermaid";
 import starlightLinksValidator from "starlight-links-validator";
 
+import {
+  copyHardwareMetadataToDist,
+  generateHardwareMetadata,
+} from "./scripts/generate-hardware-metadata.mjs";
 import { versionInfoIntegration } from "./scripts/version-info-integration.ts";
 import { blogAuthors } from "./src/data/blog-authors";
 import { sidebar } from "./src/data/sidebar";
@@ -18,6 +23,18 @@ const readGrammar = (name: string) =>
   JSON.parse(
     readFileSync(new URL(`./src/grammars/${name}`, import.meta.url), "utf8")
   );
+
+// Generate the hardware metadata before Astro loads content collections.
+await generateHardwareMetadata();
+
+const hardwareMetadata: AstroIntegration = {
+  name: "zmk-hardware-metadata",
+  hooks: {
+    "astro:build:done": async ({ dir }) => {
+      await copyHardwareMetadataToDist(fileURLToPath(dir));
+    },
+  },
+};
 
 const blogPrefix = "blog";
 
@@ -148,5 +165,6 @@ export default defineConfig({
       ],
     }),
     sitemap(),
+    hardwareMetadata,
   ],
 });
