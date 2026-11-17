@@ -1,6 +1,7 @@
 ---
 title: Lighting Configuration
-sidebar_label: Lighting
+sidebar:
+  label: Lighting
 ---
 
 See the [Lighting feature page](../features/lighting.md) for an overview of the available lighting systems in ZMK.

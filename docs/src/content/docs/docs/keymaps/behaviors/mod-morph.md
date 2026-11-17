@@ -1,6 +1,7 @@
 ---
 title: Mod-Morph Behavior
-sidebar_label: Mod-Morph
+sidebar:
+  label: Mod-Morph
 ---
 
 ## Summary

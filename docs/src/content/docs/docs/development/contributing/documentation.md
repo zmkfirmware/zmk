@@ -1,6 +1,7 @@
 ---
 title: Documentation
-sidebar_label: Documentation
+sidebar:
+  label: Documentation
 ---
 
 :::danger

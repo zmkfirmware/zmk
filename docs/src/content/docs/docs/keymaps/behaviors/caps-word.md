@@ -1,6 +1,7 @@
 ---
 title: Caps Word Behavior
-sidebar_label: Caps Word
+sidebar:
+  label: Caps Word
 ---
 
 ## Summary

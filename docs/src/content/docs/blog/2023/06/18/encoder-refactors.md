@@ -1,4 +1,5 @@
 ---
+date: 2023-06-18
 title: "Major Encoder Refactor"
 authors: petejohanson
 tags: [firmware, zephyr, sensors, encoders]
@@ -8,7 +9,7 @@ Today, we merged a significant change to the low level sensor code that is used 
 this paves the way for completing the work on supporting split peripheral sensors/encoders, and other future sensors
 like pointing devices.
 
-<!-- truncate -->
+<!-- excerpt -->
 
 As part of the work, backwards compatibility for existing shields has been retained, but only for a grace period to allow out-of-tree shields to move to the new approach for encoders.
 

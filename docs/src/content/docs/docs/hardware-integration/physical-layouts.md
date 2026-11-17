@@ -1,6 +1,7 @@
 ---
 title: Physical Layouts
-toc_max_heading_level: 4
+tableOfContents:
+  maxHeadingLevel: 4
 ---
 
 A physical layout is a devicetree entity that aggregates all details about a certain possible keyboard layout.

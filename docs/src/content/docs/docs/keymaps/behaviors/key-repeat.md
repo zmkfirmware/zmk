@@ -1,6 +1,7 @@
 ---
 title: Key Repeat Behavior
-sidebar_label: Key Repeat
+sidebar:
+  label: Key Repeat
 ---
 
 ## Summary

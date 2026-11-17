@@ -1,6 +1,7 @@
 ---
 title: Output Selection Behavior
-sidebar_label: Output Selection
+sidebar:
+  label: Output Selection
 ---
 
 ## Summary

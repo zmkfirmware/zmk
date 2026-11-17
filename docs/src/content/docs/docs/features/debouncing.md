@@ -1,6 +1,7 @@
 ---
 title: Debouncing
-sidebar_label: Debouncing
+sidebar:
+  label: Debouncing
 ---
 
 To prevent contact bounce (also known as chatter) and noise spikes from causing

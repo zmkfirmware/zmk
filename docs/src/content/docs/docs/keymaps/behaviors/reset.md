@@ -1,6 +1,7 @@
 ---
 title: Reset Behaviors
-sidebar_label: Reset
+sidebar:
+  label: Reset
 ---
 
 ## Summary

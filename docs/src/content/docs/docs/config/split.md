@@ -1,6 +1,7 @@
 ---
 title: Split Configuration
-sidebar_label: Split
+sidebar:
+  label: Split
 ---
 
 These are settings that control how split keyboards behave.

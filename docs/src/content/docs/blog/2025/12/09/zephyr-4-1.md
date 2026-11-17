@@ -1,4 +1,5 @@
 ---
+date: 2025-12-09
 title: "Zephyr 4.1 Update"
 authors: nmunnich
 tags: [firmware, zephyr, core]
@@ -6,7 +7,7 @@ tags: [firmware, zephyr, core]
 
 We're happy to announce that after a long wait, ZMK's `main` branch is now running [Zephyr 4.1](https://docs.zephyrproject.org/latest/releases/release-notes-4.1.html)!
 
-<!-- truncate -->
+<!-- excerpt -->
 
 :::note
 

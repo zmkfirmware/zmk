@@ -1,6 +1,7 @@
 ---
 title: Tests
-sidebar_label: Tests
+sidebar:
+  label: Tests
 ---
 
 - Running tests requires [native posix support](posix-board.md).

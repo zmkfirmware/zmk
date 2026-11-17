@@ -1,6 +1,7 @@
 ---
 title: Configuring Shift Registers
-sidebar_label: Shift Registers
+sidebar:
+  label: Shift Registers
 ---
 
 Shift registers are the recommended method of adding additional GPIO pins to MCUs and boards, when a standard matrix results in an insufficient number of keys. They are recommended because they simultaneously have very low power consumption and are quite cheap. This page serves as a (brief) introduction to shift registers, how to use them in your design, and how to configure ZMK to use them correctly.

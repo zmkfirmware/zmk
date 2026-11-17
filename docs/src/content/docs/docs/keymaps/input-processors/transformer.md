@@ -1,6 +1,7 @@
 ---
 title: Transformer Input Processor
-sidebar_label: Transformer
+sidebar:
+  label: Transformer
 ---
 
 ## Overview

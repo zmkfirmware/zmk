@@ -1,6 +1,7 @@
 ---
 title: Keymap Configuration
-sidebar_label: Keymap
+sidebar:
+  label: Keymap
 ---
 
 See [Configuration Overview](index.md) for instructions on how to change these settings.

@@ -1,6 +1,7 @@
 ---
 title: Devicetree Overview
-sidebar_label: Devicetree Overview
+sidebar:
+  label: Devicetree Overview
 ---
 
 ZMK makes heavy usage of a type of [tree data structure](<https://en.wikipedia.org/wiki/Tree_(abstract_data_type)>) known as _devicetree_.

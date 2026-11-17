@@ -1,6 +1,7 @@
 ---
 title: Input Processor Usage
-sidebar_label: Usage
+sidebar:
+  label: Usage
 ---
 
 Input processors are used by assigning them to a given [input listener](../../features/pointing.md#input-listeners). A base set of processors is assigned to a listener, and then overrides can be set that are only active when certain [layers](../index.mdx#layers) are active. The examples in the following assume you are adding processors to the `&trackpad` device which is set up with a `&trackpad_listener`.

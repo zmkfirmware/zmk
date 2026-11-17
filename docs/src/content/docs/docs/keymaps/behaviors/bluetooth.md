@@ -1,6 +1,7 @@
 ---
 title: Bluetooth Behavior
-sidebar_label: Bluetooth
+sidebar:
+  label: Bluetooth
 ---
 
 ## Summary

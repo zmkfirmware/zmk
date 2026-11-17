@@ -1,6 +1,7 @@
 ---
 title: Soft Off Behavior
-sidebar_label: Soft Off
+sidebar:
+  label: Soft Off
 ---
 
 ## Summary

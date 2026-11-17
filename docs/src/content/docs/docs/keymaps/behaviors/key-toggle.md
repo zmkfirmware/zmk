@@ -1,6 +1,7 @@
 ---
 title: Key Toggle Behavior
-sidebar_label: Key Toggle
+sidebar:
+  label: Key Toggle
 ---
 
 ## Summary

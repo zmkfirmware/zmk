@@ -1,6 +1,7 @@
 ---
 title: ZMK Events
-sidebar_label: ZMK Events
+sidebar:
+  label: ZMK Events
 ---
 
 ZMK makes use of events to decouple individual components such as behaviors and peripherals from the core functionality. For this purpose, ZMK has implemented its own event manager. This page is a (brief) overview of the functionality and methods exposed by the event manager, documenting its API. Its purpose is to aid module developers and contributors, such as for the development of [new behaviors](./new-behavior.mdx) or [new features](./module-creation.md). There is no value in reading this page as an end-user.

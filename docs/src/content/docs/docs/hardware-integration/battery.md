@@ -1,6 +1,7 @@
 ---
 title: Battery Sensing
-sidebar_label: Battery Sensing
+sidebar:
+  label: Battery Sensing
 ---
 
 If your keyboard is using one of the [boards supported in ZMK](../hardware.mdx) it will already be configured to [sense and report battery levels](../features/battery.md).

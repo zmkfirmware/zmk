@@ -1,6 +1,7 @@
 ---
 title: Scaler Input Processor
-sidebar_label: Scaler
+sidebar:
+  label: Scaler
 ---
 
 ## Overview

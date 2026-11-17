@@ -1,6 +1,7 @@
 ---
 title: Temporary Layer Input Processor
-sidebar_label: Temporary Layer
+sidebar:
+  label: Temporary Layer
 ---
 
 ## Overview

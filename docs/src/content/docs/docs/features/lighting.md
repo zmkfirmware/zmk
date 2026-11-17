@@ -1,6 +1,7 @@
 ---
 title: Lighting
-sidebar_label: Lighting
+sidebar:
+  label: Lighting
 ---
 
 ZMK supports two distinct systems in order to control lighting hardware integrated into keyboards.

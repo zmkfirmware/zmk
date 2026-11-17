@@ -1,6 +1,7 @@
 ---
 title: System Configuration
-sidebar_label: System
+sidebar:
+  label: System
 ---
 
 These are general settings that control how the keyboard behaves and which features it supports. Several of these settings come from Zephyr and are not specific to ZMK, but they are listed here because they are relevant to how a keyboard functions.

@@ -1,6 +1,7 @@
 ---
 title: Sticky Key Behavior
-sidebar_label: Sticky Key
+sidebar:
+  label: Sticky Key
 ---
 
 ## Summary
