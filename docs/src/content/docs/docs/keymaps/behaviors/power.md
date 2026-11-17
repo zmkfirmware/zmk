@@ -1,6 +1,7 @@
 ---
 title: Power Management Behaviors
-sidebar_label: Power Management
+sidebar:
+  label: Power Management
 ---
 
 ## Summary

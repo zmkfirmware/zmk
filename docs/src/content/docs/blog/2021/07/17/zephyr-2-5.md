@@ -1,4 +1,5 @@
 ---
+date: 2021-07-17
 title: "Zephyr 2.5 Update"
 authors: petejohanson
 tags: [firmware, zephyr, core]
@@ -6,7 +7,7 @@ tags: [firmware, zephyr, core]
 
 I'm happy to announce that we have completed the [work](https://github.com/zmkfirmware/zmk/pull/736/) to upgrade ZMK to [Zephyr 2.5](https://docs.zephyrproject.org/2.5.0/releases/release-notes-2.5.html)!
 
-<!-- truncate -->
+<!-- excerpt -->
 
 A big part of this work was some _major_ refactors and improvements by [innovaker] to our [zmk-docker](https://github.com/zmkfirmware/zmk-docker/) Docker image and GH Actions automation.
 

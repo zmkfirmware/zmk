@@ -1,4 +1,5 @@
 ---
+date: 2024-02-09
 title: "Zephyr 3.5 Update"
 authors: petejohanson
 tags: [firmware, zephyr, core]
@@ -6,7 +7,7 @@ tags: [firmware, zephyr, core]
 
 I'm happy to announce that we have completed the [work](https://github.com/zmkfirmware/zmk/pull/1995) to upgrade ZMK to [Zephyr 3.5](https://docs.zephyrproject.org/3.5.0/releases/release-notes-3.5.html)!
 
-<!-- truncate -->
+<!-- excerpt -->
 
 [petejohanson] did the upgrade work to adjust ZMK for the Zephyr changes:
 

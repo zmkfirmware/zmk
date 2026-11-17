@@ -1,6 +1,7 @@
 ---
 title: Input Processor Overview
-sidebar_label: Overview
+sidebar:
+  label: Overview
 ---
 
 ## Input Processors Overview

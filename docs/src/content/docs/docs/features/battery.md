@@ -1,6 +1,7 @@
 ---
 title: Battery Level
-sidebar_label: Battery Level
+sidebar:
+  label: Battery Level
 ---
 
 If your keyboard has a battery sensor, ZMK will report its battery level to the connected bluetooth host and show it on the keyboard's display, if it has one.

@@ -1,6 +1,7 @@
 ---
 title: FAQs
-sidebar_label: FAQs
+sidebar:
+  label: FAQs
 ---
 
 ### Why Zephyr™?

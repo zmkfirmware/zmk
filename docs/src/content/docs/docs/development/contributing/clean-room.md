@@ -1,6 +1,7 @@
 ---
 title: Clean Room Implementation
-sidebar_label: Clean Room
+sidebar:
+  label: Clean Room
 ---
 
 :::danger

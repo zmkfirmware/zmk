@@ -1,6 +1,7 @@
 ---
 title: EC11 Encoders
-sidebar_label: Encoders
+sidebar:
+  label: Encoders
 ---
 
 EC11 encoder support can be added to your board or shield by adding the appropriate lines to your board/shield's configuration (.conf), devicetree (.dtsi/.overlay), and keymap (.keymap) files.

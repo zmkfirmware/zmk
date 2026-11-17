@@ -1,6 +1,7 @@
 ---
 title: ZMK Studio Unlock Behavior
-sidebar_label: ZMK Studio Unlock
+sidebar:
+  label: ZMK Studio Unlock
 ---
 
 ## Summary

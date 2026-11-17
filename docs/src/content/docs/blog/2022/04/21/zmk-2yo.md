@@ -1,4 +1,5 @@
 ---
+date: 2022-04-21
 title: "ZMK's Second Birthday"
 authors: petejohanson
 tags: [keyboards, firmware, oss]
@@ -6,7 +7,7 @@ tags: [keyboards, firmware, oss]
 
 Two years ago, today, I minted the first ever commit for ZMK:
 
-<!-- truncate -->
+<!-- excerpt -->
 
 ```
 commit 85c8be89dea8f7a00e8efb06d38e2b32f3459935

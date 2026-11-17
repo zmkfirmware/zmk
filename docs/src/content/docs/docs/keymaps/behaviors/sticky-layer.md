@@ -1,6 +1,7 @@
 ---
 title: Sticky Layer Behavior
-sidebar_label: Sticky Layer
+sidebar:
+  label: Sticky Layer
 ---
 
 ## Summary

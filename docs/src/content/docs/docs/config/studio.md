@@ -1,6 +1,7 @@
 ---
 title: ZMK Studio Configuration
-sidebar_label: ZMK Studio
+sidebar:
+  label: ZMK Studio
 ---
 
 The following settings affect the ZMK Studio portions of ZMK. See the [ZMK Studio feature](../features/studio.md) for more information on enabling and building with ZMK Studio enabled.

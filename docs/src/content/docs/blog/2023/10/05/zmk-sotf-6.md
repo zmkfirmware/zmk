@@ -1,4 +1,5 @@
 ---
+date: 2023-10-05
 title: "ZMK State Of The Firmware #6"
 authors: caksoylar
 tags: [SOTF, keyboards, firmware, oss, ble]
@@ -8,7 +9,7 @@ Welcome to the sixth ZMK "State Of The Firmware" (SOTF)!
 
 This update will cover all the major activity since [SOTF #5](/blog/2022/04/10/zmk-sotf-5). That was over a year ago (again!), so there are many new exciting features and plenty of improvements to cover!
 
-<!-- truncate -->
+<!-- excerpt -->
 
 ## Recent Activity
 

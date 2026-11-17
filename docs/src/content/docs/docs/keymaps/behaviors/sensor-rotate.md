@@ -1,6 +1,7 @@
 ---
 title: Sensor Rotation
-sidebar_label: Sensor Rotation
+sidebar:
+  label: Sensor Rotation
 ---
 
 ## Summary

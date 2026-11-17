@@ -1,6 +1,7 @@
 ---
 title: Power Management Configuration
-sidebar_label: Power Management
+sidebar:
+  label: Power Management
 ---
 
 See [Configuration Overview](index.md) for instructions on how to

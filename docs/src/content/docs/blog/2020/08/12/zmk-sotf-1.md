@@ -1,4 +1,5 @@
 ---
+date: 2020-08-12
 title: "ZMK State Of The Firmware #1"
 authors: petejohanson
 tags: [SOTF, keyboards, firmware, oss, ble]
@@ -8,7 +9,7 @@ Welcome to the first ZMK "State Of The Firmware"!
 
 With interest and Discord activity growing, it seemed important to lay out the progress made recently, current major bugs/showstoppers, and planned next steps.
 
-<!-- truncate -->
+<!-- excerpt -->
 
 ## Recent Activity
 

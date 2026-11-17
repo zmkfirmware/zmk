@@ -1,6 +1,7 @@
 ---
 title: Macro Behavior
-sidebar_label: Macros
+sidebar:
+  label: Macros
 ---
 
 ## Summary

@@ -1,6 +1,7 @@
 ---
 title: Bluetooth Configuration
-sidebar_label: Bluetooth
+sidebar:
+  label: Bluetooth
 ---
 
 See the [bluetooth feature page](../features/bluetooth.md) for more details on the general Bluetooth functionality in ZMK.

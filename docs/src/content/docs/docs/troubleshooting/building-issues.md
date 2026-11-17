@@ -1,6 +1,7 @@
 ---
 title: Building Issues
-sidebar_label: Building Issues
+sidebar:
+  label: Building Issues
 description: Troubleshooting issues when compiling ZMK firmware.
 ---
 

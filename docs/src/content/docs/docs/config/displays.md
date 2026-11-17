@@ -1,6 +1,7 @@
 ---
 title: Display Configuration
-sidebar_label: Displays
+sidebar:
+  label: Displays
 ---
 
 See the [displays feature page](../features/displays.md) for more details.

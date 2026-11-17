@@ -1,6 +1,7 @@
 ---
 title: Layout Configuration
-sidebar_label: Layout
+sidebar:
+  label: Layout
 ---
 
 See [Configuration Overview](index.md) for instructions on how to change these settings.

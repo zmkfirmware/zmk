@@ -1,6 +1,7 @@
 ---
 title: Layer Behaviors
-sidebar_label: Layers
+sidebar:
+  label: Layers
 ---
 
 ## Summary

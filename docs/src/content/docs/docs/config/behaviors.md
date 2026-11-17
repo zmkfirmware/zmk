@@ -1,6 +1,7 @@
 ---
 title: Behavior Configuration
-sidebar_label: Behaviors
+sidebar:
+  label: Behaviors
 ---
 
 Some behaviors have properties to adjust how they behave. These can also be used as templates to create custom behaviors when none of the built-in behaviors do what you want.

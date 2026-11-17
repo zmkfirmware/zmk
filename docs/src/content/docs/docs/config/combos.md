@@ -1,6 +1,7 @@
 ---
 title: Combo Configuration
-sidebar_label: Combos
+sidebar:
+  label: Combos
 ---
 
 See the [Combos informational page](../keymaps/combos.md) for more details and examples.

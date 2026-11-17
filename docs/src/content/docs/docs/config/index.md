@@ -1,6 +1,7 @@
 ---
 title: Configuration Overview
-sidebar_label: Overview
+sidebar:
+  label: Overview
 ---
 
 ZMK has many configuration settings that can be changed to change the behavior of your keyboard. They are set in either Kconfig or Devicetree files.

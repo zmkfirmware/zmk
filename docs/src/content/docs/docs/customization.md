@@ -1,6 +1,7 @@
 ---
 title: Customizing ZMK/zmk-config folders
-sidebar_label: Customizing ZMK
+sidebar:
+  label: Customizing ZMK
 ---
 
 After verifying you can successfully flash the default firmware, you will probably want to begin customizing your keymap and other keyboard options.

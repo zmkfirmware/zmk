@@ -1,6 +1,7 @@
 ---
 title: RGB Underglow
-sidebar_label: RGB Underglow
+sidebar:
+  label: RGB Underglow
 description: Lighting system that controls strips of RGB LEDs.
 ---
 

@@ -1,4 +1,5 @@
 ---
+date: 2025-03-20
 title: Contributor Sync February 2025
 authors: nmunnich
 tags: [sync, keyboards, firmware, oss, ble]
@@ -6,7 +7,7 @@ tags: [sync, keyboards, firmware, oss, ble]
 
 On the 26th of February some of the ZMK contributors got together for a contributor sync. In the interest of transparency, it was decided that meeting notes from the sync would be published on the ZMK webpage.
 
-<!-- truncate -->
+<!-- excerpt -->
 
 The following contributors were able to attend the sync:
 
