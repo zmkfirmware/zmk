@@ -10,6 +10,7 @@ import mermaid from "astro-mermaid";
 import starlightLinksValidator from "starlight-links-validator";
 
 import { blogAuthors } from "./blog-authors.mjs";
+import { sidebar } from "./src/lib/sidebar.mjs";
 
 const readGrammar = (name) =>
   JSON.parse(
@@ -80,6 +81,7 @@ export default defineConfig({
         baseUrl: "https://github.com/zmkfirmware/zmk/blob/main/docs/",
       },
       routeMiddleware: "./src/routeData.ts",
+      sidebar,
       expressiveCode: {
         themes: ["github-light", "github-dark-dimmed"],
         useStarlightUiThemeColors: true,
