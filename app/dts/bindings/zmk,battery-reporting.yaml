@@ -1,0 +1,27 @@
+# Copyright (c) 2025 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: |
+  Descriptions of each split battery of this keyboard.
+
+compatible: "zmk,battery-reporting"
+
+child-binding:
+  description: "Battery on a split part of the keyboard"
+  properties:
+    display-name:
+      type: string
+      required: false
+      description: |
+        A human-readable name for this battery. Defaults to readable form of CPF.
+    cpf:
+      type: int
+      required: false
+      description: |
+        Characteristic Presentation Format descriptor
+        for battery reporting
+    hidden:
+      type: boolean
+      required: false
+      description: |
+        Indicates if the battery charge level should be reported
