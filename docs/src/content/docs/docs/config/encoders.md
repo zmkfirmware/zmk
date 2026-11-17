@@ -36,7 +36,7 @@ For shields/boards that export a `sensors` node configuration label, both global
 
 To override the general settings, update them on the exported `sensors` node, e.g.:
 
-```
+```dts
 &sensors {
     triggers-per-rotation = <18>;
 };
@@ -44,7 +44,7 @@ To override the general settings, update them on the exported `sensors` node, e.
 
 Per sensor overrides can be added with ordered nested nodes with the correct overrides, e.g.:
 
-```
+```dts
 &sensors {
     left_config {
         triggers-per-rotation = <18>;

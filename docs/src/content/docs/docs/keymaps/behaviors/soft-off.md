@@ -18,7 +18,7 @@ For more information, see the [soft off section](/docs/features/low-power-states
 
 Example:
 
-```
+```dts
 &soft_off
 ```
 
@@ -28,7 +28,7 @@ Example:
 
 By default, the keyboard will be turned off as soon as the key bound to the behavior is released, even if the key is only tapped briefly. If you would prefer that the key need be held a certain amount of time before releasing, you can set the `hold-time-ms` to a non-zero value in your keymap:
 
-```
+```dts
 &soft_off {
     hold-time-ms = <5000>; // Only turn off it the key is held for 5 seconds or longer.
 };

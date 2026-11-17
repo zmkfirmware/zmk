@@ -172,7 +172,7 @@ Then, an additional `chosen` node (near the top of the file) will mark the CDC A
 Previously, to get ZMK to build a UF2 image to flash to a given board required adding a `CMakeLists.txt` file that added a custom post build command.
 Now, the only thing necessary to have Zephyr build a UF2 is to add the following to your `<board>_defconfig` file:
 
-```ini
+```kconfig
 CONFIG_BUILD_OUTPUT_UF2=y
 ```
 

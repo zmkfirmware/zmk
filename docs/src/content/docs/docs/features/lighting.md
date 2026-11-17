@@ -64,7 +64,7 @@ Here you can see the RGB underglow feature in action using WS2812 LEDs.
 To enable RGB underglow on your board or shield, simply set the `CONFIG_ZMK_RGB_UNDERGLOW` configuration in the `.conf` file for your board or shield.
 For example:
 
-```ini
+```kconfig
 CONFIG_ZMK_RGB_UNDERGLOW=y
 ```
 
@@ -106,7 +106,7 @@ Unlike [RGB underglow](#rgb-underglow), backlight can only control single color 
 
 To enable backlight on your board or shield, add the following line to your `.conf` file of your user config directory as such:
 
-```ini
+```kconfig
 CONFIG_ZMK_BACKLIGHT=y
 ```
 

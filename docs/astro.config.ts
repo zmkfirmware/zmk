@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 import react from "@astrojs/react";
@@ -5,9 +6,15 @@ import sitemap from "@astrojs/sitemap";
 import starlight from "@astrojs/starlight";
 import { defineConfig } from "astro/config";
 import starlightBlog from "starlight-blog";
+import mermaid from "astro-mermaid";
 import starlightLinksValidator from "starlight-links-validator";
 
 import { blogAuthors } from "./src/data/blog-authors";
+
+const readGrammar = (name: string) =>
+  JSON.parse(
+    readFileSync(new URL(`./src/grammars/${name}`, import.meta.url), "utf8")
+  );
 
 export default defineConfig({
   site: "https://zmk.dev",
@@ -28,6 +35,7 @@ export default defineConfig({
   },
   integrations: [
     react(),
+    mermaid(),
     starlight({
       title: "ZMK Firmware",
       description: "Modern, open source keyboard firmware",
@@ -49,6 +57,12 @@ export default defineConfig({
       expressiveCode: {
         themes: ["github-light", "github-dark-dimmed"],
         useStarlightUiThemeColors: true,
+        shiki: {
+          langs: [
+            readGrammar("dts.tmLanguage.json"),
+            readGrammar("kconfig.tmLanguage.json"),
+          ],
+        },
       },
       head: [
         {
