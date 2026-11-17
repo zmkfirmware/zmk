@@ -346,6 +346,18 @@ config ZMK_RGB_UNDERGLOW_AUTO_OFF_USB
     bool "Turn off RGB underglow when USB is disconnected"
     depends on USB_DEVICE_STACK
 
+config ZMK_RGB_UNDERGLOW_FADE_OFF
+    bool "Fade RGB underglow when turning off"
+    default n
+    help
+      Fade the displayed colors to black before disabling external LED power.
+
+config ZMK_RGB_UNDERGLOW_FADE_OFF_MS
+    int "RGB underglow fade-out duration in milliseconds"
+    default 1500
+    range 25 10000
+    depends on ZMK_RGB_UNDERGLOW_FADE_OFF
+
 endif # ZMK_RGB_UNDERGLOW
 
 menuconfig ZMK_BACKLIGHT
