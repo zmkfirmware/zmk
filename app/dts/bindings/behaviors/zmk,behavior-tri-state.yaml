@@ -1,0 +1,27 @@
+# Copyright (c) 2022 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Tri-State Behavior
+
+compatible: "zmk,behavior-tri-state"
+
+include: zero_param.yaml
+
+properties:
+  bindings:
+    type: phandle-array
+    required: true
+  ignored-key-positions:
+    type: array
+    required: false
+    default: []
+  ignored-layers:
+    type: array
+    required: false
+    default: []
+  timeout-ms:
+    type: int
+    default: -1
+  tap-ms:
+    type: int
+    default: 5

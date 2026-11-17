@@ -74,6 +74,7 @@ module.exports = {
             "keymaps/behaviors/key-toggle",
             "keymaps/behaviors/sticky-key",
             "keymaps/behaviors/sticky-layer",
+            "keymaps/behaviors/tri-state",
             "keymaps/behaviors/tap-dance",
             "keymaps/behaviors/caps-word",
             "keymaps/behaviors/key-repeat",
