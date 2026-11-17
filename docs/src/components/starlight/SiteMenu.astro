@@ -1,0 +1,109 @@
+---
+/**
+ * Copyright (c) 2026 The ZMK Contributors
+ * SPDX-License-Identifier: MIT
+ */
+// Drawer-only site section rendered above the docs sidebar by PageFrame.astro.
+import { Icon } from "@astrojs/starlight/components";
+
+import { versionNavbarItems } from "virtual:zmk/version-info";
+import NavLinks from "./NavLinks.astro";
+
+interface Props {
+  /** Normalised pathname used for active state. */
+  pathname: string;
+  /** Whether the menu starts expanded. */
+  defaultExpanded: boolean;
+}
+
+const { pathname, defaultExpanded } = Astro.props;
+const externalHint = "(opens in a new tab)";
+---
+
+<div class="site-menu md:sl-hidden">
+  <details class="site-menu-details nav-expansion" open={defaultExpanded}>
+    <summary>
+      <span>Site menu</span>
+      <Icon name="down-caret" class="caret" />
+    </summary>
+    <div class="site-menu-panel">
+      <NavLinks variant="drawer" pathname={pathname} />
+
+      <div class="site-nav-group site-nav-group--divided">
+        <span class="site-nav-heading">Version</span>
+        {versionNavbarItems.map((item) => (
+          <a
+            href={item.href}
+            class="site-nav-link"
+            aria-current={item.current ? "true" : undefined}
+          >
+            <span>{item.label}</span>
+            {item.current && (
+              <>
+                <Icon name="approve-check" class="site-menu-check" />
+                <span class="sr-only"> (current version)</span>
+              </>
+            )}
+          </a>
+        ))}
+      </div>
+
+      <div class="site-nav-group site-nav-group--divided">
+        <a
+          href="https://zmk.studio/"
+          class="site-nav-link"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <span>ZMK Studio</span>
+          <Icon name="external" class="external-icon" />{" "}
+          <span class="sr-only">{externalHint}</span>
+        </a>
+        <a
+          href="https://github.com/zmkfirmware/zmk"
+          class="site-nav-link"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <span>GitHub</span>
+          <Icon name="external" class="external-icon" />{" "}
+          <span class="sr-only">{externalHint}</span>
+        </a>
+      </div>
+    </div>
+  </details>
+</div>
+
+<style>
+  @layer starlight.core {
+    .site-menu-details > summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      padding: 0.4rem 0.5rem;
+      border-radius: var(--zmk-radius-control);
+      color: var(--sl-color-white);
+      font-size: var(--sl-text-lg);
+      font-weight: 600;
+      line-height: 1.4;
+    }
+    .site-menu-details > summary:hover {
+      background-color: var(--sl-color-gray-6);
+    }
+
+    .site-menu-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      padding-top: 0.25rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--sl-color-gray-6);
+    }
+
+    .site-menu-check {
+      margin-inline-start: auto;
+      flex: none;
+    }
+  }
+</style>
