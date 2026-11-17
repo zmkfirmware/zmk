@@ -23,7 +23,6 @@ If `CONFIG_EC11` is enabled, exactly one of the following options must be set to
 
 | Config                              | Type | Description                                     |
 | ----------------------------------- | ---- | ----------------------------------------------- |
-| `CONFIG_EC11_TRIGGER_NONE`          | bool | No trigger (encoders are disabled)              |
 | `CONFIG_EC11_TRIGGER_GLOBAL_THREAD` | bool | Process encoder interrupts on the global thread |
 | `CONFIG_EC11_TRIGGER_OWN_THREAD`    | bool | Process encoder interrupts on their own thread  |
 
