@@ -22,6 +22,33 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 static enum usb_dc_status_code usb_status = USB_DC_UNKNOWN;
 static bool is_configured;
 
+#define SUSPEND_TIMEOUT_ACTIVE (CONFIG_ZMK_USB_SUSPEND_DISCONNECT_TIMEOUT_MS > 0)
+
+#if SUSPEND_TIMEOUT_ACTIVE
+
+static void usb_suspend_timeout_fn(struct k_timer *timer);
+static K_TIMER_DEFINE(usb_suspend_timer, usb_suspend_timeout_fn, NULL);
+
+static void usb_suspend_timeout_fn(struct k_timer *timer) {
+    // If we are still in SUSPEND after the timeout, the cable was
+    // likely unplugged (no VBUS detection).  Treat as disconnect so
+    // the endpoint falls back to BLE.
+    if (usb_status == USB_DC_SUSPEND) {
+        usb_status = USB_DC_DISCONNECTED;
+        is_configured = false;
+        k_work_submit(&usb_status_notifier_work);
+    }
+}
+
+static inline void suspend_timeout_start(void) {
+    k_timer_start(&usb_suspend_timer, K_MSEC(CONFIG_ZMK_USB_SUSPEND_DISCONNECT_TIMEOUT_MS),
+                  K_NO_WAIT);
+}
+
+static inline void suspend_timeout_cancel(void) { k_timer_stop(&usb_suspend_timer); }
+
+#endif
+
 static void raise_usb_status_changed_event(struct k_work *_work) {
     raise_zmk_usb_conn_state_changed(
         (struct zmk_usb_conn_state_changed){.conn_state = zmk_usb_get_conn_state()});
@@ -66,6 +93,15 @@ void usb_status_cb(enum usb_dc_status_code status, const uint8_t *params) {
         zmk_usb_hid_set_protocol(HID_PROTOCOL_REPORT);
     }
 #endif
+
+#if SUSPEND_TIMEOUT_ACTIVE
+    if (status == USB_DC_SUSPEND) {
+        suspend_timeout_start();
+    } else {
+        suspend_timeout_cancel();
+    }
+#endif
+
     usb_status = status;
     if (zmk_usb_get_conn_state() == ZMK_USB_CONN_HID) {
         is_configured |= usb_status == USB_DC_CONFIGURED;
