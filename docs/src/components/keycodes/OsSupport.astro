@@ -1,0 +1,26 @@
+---
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: CC-BY-NC-SA-4.0
+ */
+
+import FootnoteRefs from "./FootnoteRefs.astro";
+import OsSupportIcon from "./OsSupportIcon.astro";
+
+interface FootnoteItem {
+  id: string;
+  anchor: string;
+  symbol: number | string;
+}
+
+interface Props {
+  value: boolean | null | undefined;
+  footnotes?: FootnoteItem[];
+}
+
+const { value, footnotes = [] } = Astro.props;
+---
+
+<OsSupportIcon value={value} />
+{footnotes.length > 0 && <FootnoteRefs footnotes={footnotes} />}
