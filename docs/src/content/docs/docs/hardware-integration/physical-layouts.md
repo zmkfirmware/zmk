@@ -170,7 +170,7 @@ If necessary, you can also define multiple kscan instances.
 
 When switching between layouts using [ZMK Studio](../features/studio.md), an attempt is made to automatically infer bindings for the keys in the new layout from the old layout. Keys with the same physical key properties are given the same binding. This approach has some limitations, so for more accurate transference of bindings a position map is used.
 
-:::warning
+:::caution
 
 Keys whose positions can neither be inferred from the default layout nor have bindings in the position map cannot be assigned to.
 

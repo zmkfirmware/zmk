@@ -5,19 +5,12 @@ sidebar:
 description: Troubleshooting common hardware issues.
 ---
 
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
+import { Tabs, TabItem } from "@astrojs/starlight/components";
 
 export const TesterTabs = (props) => (
     <Tabs
-    groupId="testers"
-    queryString
-    defaultValue="promicro"
-    values={[
-      { label: "Pro Micro Compatible Board", value: "promicro" },
-      { label: "Seeed Studio XIAO Compatible Board", value: "xiao" },
-    ]}
-  >
+      syncKey="testers"
+    >
     {/* eslint-disable-next-line */}
     {props.children}
   </Tabs>
@@ -26,22 +19,15 @@ export const TesterTabs = (props) => (
 
 export const PinTabs = (props) => (
     <Tabs
-    groupId="pin-approaches"
-    queryString
-    defaultValue="shield"
-    values={[
-      { label: "Tester Shield", value: "shield" },
-      { label: "Multimeter", value: "multimeter" },
-      { label: "Visual Inspection", value: "visual" },
-    ]}
-  >
+      syncKey="pin-approaches"
+    >
     {/* eslint-disable-next-line */}
     {props.children}
   </Tabs>
 
 );
 
-:::warning
+:::caution
 This page contains _general and non-comprehensive advice_ for troubleshooting hardware issues.
 ZMK is a _firmware_ project, not hardware.
 Your first move should always be to reach out to the product's vendor or manufacturer.
@@ -58,12 +44,12 @@ Problems with your electrical net can manifest in a number of ways. The most com
 There are three general approaches we recommend for identifying potential issues with the electrical net (pins & connections between components) of your device.
 
 <PinTabs>
-<TabItem value="shield">
+<TabItem label="Tester Shield">
 ZMK's main repository currently has "tester" shields for [Pro Micro](https://cdn.sparkfun.com/assets/9/c/3/c/4/523a1765757b7f5c6e8b4567.png) and [Seeed Studio XIAO](https://files.seeedstudio.com/wiki/Seeeduino-XIAO/img/Seeeduino-XIAO-pinout-1.jpg) compatible boards. These will help you test your GPIO pins, but cannot be used to troubleshoot power pins.
 #### Acquiring tester firmware
 
 <TesterTabs>
-<TabItem value="promicro">
+<TabItem label="Pro Micro Compatible Board">
 Find the `build.yaml` file in your `zmk-config` folder and add an additional `tester_pro_micro` build for your board:
 
 ```yml title="build.yaml"
@@ -82,7 +68,7 @@ The pinout of the pro micro interconnect is shown below:
 ![Pro Micro Interconnect pinout](../assets/interconnects/pro_micro/pinout.png)
 
 </TabItem>
-<TabItem value="xiao">
+<TabItem label="Seeed Studio XIAO Compatible Board">
 Find the `build.yaml` file in your `zmk-config` folder and add an additional `tester_xiao` build for your board:
 
 ```yml title="build.yaml"
@@ -115,7 +101,7 @@ After flashing, open a text editor of your choice. Shorting a GPIO pin to ground
 Once you have identified _which_ pins have issues, if any, it is recommended that you resort to visual inspection or trial and error with this shield/a multimeter to identify where the faulty connection is.
 
 </TabItem>
-<TabItem value="multimeter">
+<TabItem label="Multimeter">
 A multimeter is the most reliable tool for troubleshooting hardware issues. If you're not familiar with how to use one or just need a refresher, consider reading through SparkFun's [*How to Use a Multimeter*](https://learn.sparkfun.com/tutorials/how-to-use-a-multimeter) tutorial.
 
 Here is a checklist for you to use while probing your device with the multimeter:
@@ -142,7 +128,7 @@ To check if the joint marked in red is faulty, measure [the forward voltage drop
 :::
 
 </TabItem>
-<TabItem value="visual">
+<TabItem label="Visual Inspection">
 Visual inspection is generally less reliable, but a lot easier than either of the other approaches. Generally, you want to be looking for solder bridges, exposed copper, broken PCB traces, lifted pads, and similar artifacts.
 
 For through-hole soldering specifically, the below infographic can be quite helpful.

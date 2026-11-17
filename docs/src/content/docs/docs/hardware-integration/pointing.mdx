@@ -4,8 +4,7 @@ tableOfContents:
   maxHeadingLevel: 2
 ---
 
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
+import { Tabs, TabItem } from "@astrojs/starlight/components";
 
 ZMK's pointing device support builds upon the Zephyr [input API](https://docs.zephyrproject.org/4.1.0/services/input/index.html) to offer pointing/mouse functionality with various hardware.
 A limited number of input drivers are available in the Zephyr version currently used by ZMK, but additional drivers can be found in [external modules](../features/modules.mdx) for a variety of hardware.
@@ -15,14 +14,7 @@ The configuration details will thus vary depending on if you are adding a pointi
 
 export const SplitTabs = (props) => (
   <Tabs
-    groupId="part-type"
-    queryString
-    defaultValue="unibody"
-    values={[
-      { label: "Unibody", value: "unibody" },
-      { label: "Split Central", value: "central" },
-      { label: "Split Peripheral", value: "peripheral" },
-    ]}
+    syncKey="part-type"
   >
 
     {/* eslint-disable-next-line */}
@@ -41,17 +33,17 @@ See the documentation on [pin control](./pinctrl.mdx) if you need to configure t
 This node should always be set up in the `.overlay`/`.dts` file for the keyboard side that has the device attached to it.
 
 <SplitTabs>
-  <TabItem value="unibody">
+  <TabItem label="Unibody">
 
 For example, if setting up an [SPI device](https://github.com/zmkfirmware/zephyr/blob/v4.1.0%2Bzmk-fixes/dts/bindings/spi/spi-device.yaml), a node like following would be added to the `.overlay`/`.dts` file for the keyboard, like `<keyboard>.overlay`:
 
   </TabItem>
-  <TabItem value="central">
+  <TabItem label="Split Central">
 
 For example, if setting up an [SPI device](https://github.com/zmkfirmware/zephyr/blob/v4.1.0%2Bzmk-fixes/dts/bindings/spi/spi-device.yaml) on a central part, a node like following would be added to the `.overlay`/`.dts` file for the central part of the keyboard, like `<central>.overlay`:
 
   </TabItem>
-  <TabItem value="peripheral">
+  <TabItem label="Split Peripheral">
 
 For example, if setting up an [SPI device](https://github.com/zmkfirmware/zephyr/blob/v4.1.0%2Bzmk-fixes/dts/bindings/spi/spi-device.yaml) on one of the peripheral parts, a node like following would be added to the `.overlay`/`.dts` file for that peripheral part, like `<peripheral>.overlay`:
 
@@ -87,7 +79,7 @@ See [input listener configuration](../config/pointing.md#input-listener) for the
 If your pointing device is on a split peripheral part, you also need to define and use an input split device on all keyboard parts.
 
 <SplitTabs>
-  <TabItem value="unibody">
+  <TabItem label="Unibody">
 
 To add a listener for the above device, add to your `.overlay`/`.dts` file for the keyboard a node like the following:
 
@@ -101,7 +93,7 @@ To add a listener for the above device, add to your `.overlay`/`.dts` file for t
 ```
 
   </TabItem>
-  <TabItem value="central">
+  <TabItem label="Split Central">
 
 ### Shared Configuration
 
@@ -157,7 +149,7 @@ Finally, we include the shared file in all peripherals so that the listener node
 ```
 
   </TabItem>
-  <TabItem value="peripheral">
+  <TabItem label="Split Peripheral">
 
 ### Shared Configuration
 
@@ -268,7 +260,7 @@ If your keyboard hardware includes a pointing device by default, you can enable 
 You can do that in your [`Kconfig.defconfig` file](new-shield.mdx#kconfigdefconfig), where you can also enable the config for the communication protocol (e.g. [SPI](https://docs.zephyrproject.org/4.1.0/kconfig.html#CONFIG_SPI), [I2C](https://docs.zephyrproject.org/4.1.0/hardware/peripherals/i2c.html#configuration-options)) used by the pointing device:
 
 <SplitTabs>
-  <TabItem value="unibody">
+  <TabItem label="Unibody">
 
 ```kconfig title="Kconfig.defconfig"
 if SHIELD_MY_KEYBOARD
@@ -286,7 +278,7 @@ endif
 ```
 
   </TabItem>
-  <TabItem value="central">
+  <TabItem label="Split Central">
 
 ```kconfig title="Kconfig.defconfig"
 if SHIELD_MY_KEYBOARD_<CENTRAL>
@@ -304,7 +296,7 @@ endif
 ```
 
   </TabItem>
-  <TabItem value="peripheral">
+  <TabItem label="Split Peripheral">
 
 ```kconfig title="Kconfig.defconfig"
 if SHIELD_MY_KEYBOARD_<CENTRAL> || SHIELD_MY_KEYBOARD_<PERIPHERAL>

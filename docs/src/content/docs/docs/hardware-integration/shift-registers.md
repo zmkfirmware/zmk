@@ -16,7 +16,7 @@ To understand how shift registers work, we recommend reading through ["How does 
 
 The shift register output pins should act as MCU outputs in your design. All MCU inputs should remain connected directly to MCU/board pins. This is to allow the inputs to trigger "interrupts" on the MCU/board, upon which it will begin scanning the keys. Using a shift register for MCU inputs is also possible, but requires you to use a PISO shift register and will harm your battery life. Note that a [direct kscan](../config/kscan.md#direct-gpio-driver) keyboard does not have any MCU output pins, but a diodeless keyboard is still possible by making use of a single row pin and using the [matrix kscan](../config/kscan.md#matrix-driver) driver.
 
-:::info
+:::note
 In a diode matrix, MCU output pins are those connected to the [anodes of your diodes](https://learn.sparkfun.com/tutorials/diodes/all#ideal-diodes). You most likely will need to rearrange your matrix to maximize the use of shift register output pins, in order to reduce the total number of GPIO pins connected to your MCU. For example, a 9 column 5 row `col2row` matrix could be rearranged to use 16 columns and 3 rows.
 :::
 

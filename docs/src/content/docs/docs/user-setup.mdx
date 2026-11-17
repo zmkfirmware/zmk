@@ -4,20 +4,10 @@ sidebar:
   label: Installing ZMK
 ---
 
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
+import { Tabs, TabItem } from "@astrojs/starlight/components";
 
 export const OsTabs = (props) => (
-  <Tabs
-    groupId="operating-system"
-    queryString
-    defaultValue="linux"
-    values={[
-      { label: "Linux", value: "linux" },
-      { label: "Windows", value: "win" },
-      { label: "macOS", value: "mac" },
-    ]}
-  >
+  <Tabs syncKey="operating-system">
     {/* eslint-disable-next-line */}
     {props.children}
   </Tabs>
@@ -29,7 +19,7 @@ core ZMK Firmware source repository.
 
 In addition to this, most users will not need to install any complicated toolchains or tools to build ZMK. GitHub Actions is used instead to automatically build the user's configured firmware for them.
 
-:::info[Something Isn't Working?]
+:::note[Something Isn't Working?]
 
 If you run into any issues when following these instructions, please [file an issue on GitHub](https://github.com/zmkfirmware/zmk-cli/issues) or [join us on Discord](https://zmk.dev/community/discord/invite) and let us know what went wrong so we can improve ZMK CLI and this guide.
 
@@ -106,7 +96,7 @@ ZMK CLI can also be installed with other Python package managers such as [pipx](
 </details>
 
 <OsTabs>
-<TabItem value="linux">
+<TabItem label="Linux">
 
 Open a terminal and run the following command:
 
@@ -138,7 +128,7 @@ To add $HOME/.local/bin to your PATH, either restart your shell or run:
 ```
 
 </TabItem>
-<TabItem value="win">
+<TabItem label="Windows">
 
 Open a terminal and run the following command:
 
@@ -158,7 +148,7 @@ Successfully installed
 ```
 
 </TabItem>
-<TabItem value="mac">
+<TabItem label="macOS">
 
 Open a terminal and run the following command:
 
@@ -324,7 +314,7 @@ git push
 
 The text after `-m` is the "commit message", which gives a name to the commit. This is your first commit, so we're calling it "initial commit" here, but you can name it whatever you like. When you make more commits later, it's a good idea to use the commit message to write a description of the changes you made.
 
-:::warning
+:::caution
 
 If the `git push` command asks you for a username and password, enter your GitHub username, but **do not enter your password**. Instead, paste your access token where it asks for the password. (Go back to the [GitHub account setup instructions](#set-up-a-github-account) if you need to create a token.)
 
@@ -349,7 +339,7 @@ a link to download the `firmware` upload:
 
 ![](./assets/user-setup/firmware-archive.png)
 
-:::info[Fixing build errors]
+:::note[Fixing build errors]
 
 If you see a red X instead of a link to download the firmware, the build failed, likely due to an error in your repo. See the [troubleshooting page](./troubleshooting/building-issues.md) for help fixing the error. After making changes, [commit and push](#commit-and-push-to-github) again and GitHub will start a new build.
 
@@ -368,7 +358,7 @@ storage device. Once the flash is complete, the controller should unmount the US
 flashed firmware. It is recommended that you test your keyboard works over USB first to rule out hardware issues, before trying to
 connect to it wirelessly.
 
-:::warning[Split keyboards]
+:::caution[Split keyboards]
 
 For split keyboards, only the central half (typically the left side) will send keyboard outputs over USB or advertise to other devices
 over bluetooth. Peripheral half will only send keystrokes to the central once they are paired and connected. For this reason it is

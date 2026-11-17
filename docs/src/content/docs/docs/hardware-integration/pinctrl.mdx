@@ -4,10 +4,9 @@ sidebar:
   label: Pin Control
 ---
 
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
-import InterconnectTabs from "@site/src/components/interconnect-tabs";
-import Metadata from "@site/src/data/hardware-metadata.json";
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+import InterconnectTabs from "@components/hardware/InterconnectTabs.astro";
+import Metadata from "@data/hardware-metadata.json";
 
 This page exists to provide a guide to [Pin Control](https://docs.zephyrproject.org/4.1.0/hardware/pinctrl/index.html#pin-control) for ZMK users and designers. Refer to [Zephyr's page on Pin Control](https://docs.zephyrproject.org/4.1.0/hardware/pinctrl/index.html#pin-control) for elaboration and more details on any of the points raised here.
 
@@ -86,7 +85,7 @@ The corresponding file for the RP2040 (`rpi_pico/rp2040.dtsi`), however, does no
 
 If you are configuring pin control for a [shield](#boards-shields-and-modules), then this file may already be imported by the board's definition, in which case you shouldn't re-include it here.
 
-:::info
+:::note
 Some MCUs/SoCs may have their headers located in a Zephyr HAL module. See for example the [Atmel HAL module](https://github.com/zephyrproject-rtos/hal_atmel/tree/master/include/dt-bindings/pinctrl).
 :::
 
@@ -107,14 +106,9 @@ Child nodes are (generally, there are [exceptions](https://docs.zephyrproject.or
 Below are some examples of SPI child nodes for the nRF52840 and the RP2040. Further examples are contained within the comments of the respecting `pinctrl.yaml` files.
 
 <Tabs
-groupId="controller-type"
-queryString
-defaultValue="nrf52840"
-values={[
-{label: 'nRF52840', value: 'nrf52840'},
-{label: 'RP2040', value: 'rp2040'},
-]}>
-<TabItem value="nrf52840">
+  syncKey="controller-type"
+>
+<TabItem label="nRF52840">
 ```dts title="<board>-pinctrl.dtsi"
 &pinctrl {
     /* configuration for spi0 device, default state */
@@ -158,7 +152,7 @@ Note that bias options are mutually exclusive.
 
 There is an additional child node for the "sleep" state, configuring the pins for low power. More on states will be explained later.
 </TabItem>
-<TabItem value="rp2040">
+<TabItem label="RP2040">
 ```dts title="<board>-pinctrl.dtsi"
 &pinctrl {
     /* configuration for spi0 device, default state */
@@ -218,14 +212,9 @@ You'll want to identify the correct node for you to be changing. The nRF52840 ha
 Adjust the node like so:
 
 <Tabs
-groupId="controller-type"
-queryString
-defaultValue="nrf52840"
-values={[
-{label: 'nRF52840', value: 'nrf52840'},
-{label: 'RP2040', value: 'rp2040'},
-]}>
-<TabItem value="nrf52840">
+  syncKey="controller-type"
+>
+<TabItem label="nRF52840">
 ```dts title="<board>.dts"
 &spi0 {
     compatible = "nordic,nrf-spim";
@@ -235,7 +224,7 @@ values={[
 };
 ```
 </TabItem>
-<TabItem value="rp2040">
+<TabItem label="RP2040">
 ```dts title="<board>.dts"
 &spi0 {
     pinctrl-0 = <&spi0_default>;
