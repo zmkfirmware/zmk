@@ -12,6 +12,7 @@ import starlightLinksValidator from "starlight-links-validator";
 
 import { versionInfoIntegration } from "./scripts/version-info-integration.ts";
 import { blogAuthors } from "./src/data/blog-authors";
+import { sidebar } from "./src/data/sidebar";
 
 const readGrammar = (name: string) =>
   JSON.parse(
@@ -83,6 +84,7 @@ export default defineConfig({
         baseUrl: "https://github.com/zmkfirmware/zmk/blob/main/docs/",
       },
       routeMiddleware: "./src/routeData.ts",
+      sidebar,
       expressiveCode: {
         themes: ["github-light", "github-dark-dimmed"],
         useStarlightUiThemeColors: true,
