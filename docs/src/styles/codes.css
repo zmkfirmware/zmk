@@ -5,37 +5,24 @@
  */
 
 :root {
-  --codes-os-fg: black;
-  --codes-os-windows-bg: #caedfd;
-  --codes-os-linux-bg: #fff2ca;
-  --codes-os-android-bg: #d8eed9;
-  --codes-os-macos-bg: #ececec;
-  --codes-os-ios-bg: #ffffff;
-}
-
-html[data-theme="dark"] {
-  --codes-os-fg: #f5f6f7;
-  --codes-os-windows-bg: #032535;
-  --codes-os-linux-bg: #332600;
-  --codes-os-android-bg: #112712;
-  --codes-os-macos-bg: #121212;
-  --codes-os-ios-bg: #000000;
+  --codes-os-fg: var(--sl-color-text);
+  --codes-os-windows-bg: var(--sl-color-blue-low);
+  --codes-os-linux-bg: var(--sl-color-orange-low);
+  --codes-os-android-bg: var(--sl-color-green-low);
+  --codes-os-macos-bg: var(--sl-color-gray-6);
+  --codes-os-ios-bg: var(--sl-color-bg);
 }
 
 .codes.os.legend {
   position: sticky;
   z-index: 1;
-  top: var(--ifm-navbar-height);
+  top: var(--sl-nav-height);
   width: 100%;
   padding-top: 0.5em;
   padding-bottom: 0.5em;
-  background: var(--ifm-background-color);
+  background: var(--sl-color-bg);
   display: flex;
   justify-content: space-between;
-}
-
-html[data-theme="light"] .codes.os.legend {
-  background: white;
 }
 
 .codes.os.legend .os {
@@ -43,7 +30,7 @@ html[data-theme="light"] .codes.os.legend {
   margin-left: 0.2em;
   margin-right: 0.2em;
   padding: 0.1em;
-  border: 1px var(--ifm-table-border-color) solid;
+  border: 1px var(--sl-color-hairline) solid;
   border-radius: 0.5em;
   text-align: center;
 }
@@ -57,6 +44,11 @@ html[data-theme="light"] .codes.os.legend {
   font-weight: normal;
 }
 
+.codes.os.legend,
+.codes table {
+  font-size: var(--sl-text-sm);
+}
+
 .codes .name {
   cursor: copy;
 }
@@ -66,24 +58,38 @@ html[data-theme="light"] .codes.os.legend {
 }
 
 .codes .name:active {
-  color: var(--ifm-font-color-base-inverse);
-  background: var(--ifm-font-color-base);
+  color: var(--sl-color-bg);
+  background: var(--sl-color-text);
 }
 
-.codes.os.legend,
-.codes table {
-  font-size: 0.8em;
+.codes .name:focus-visible {
+  outline: 2px solid var(--sl-color-accent);
+  outline-offset: 2px;
 }
 
 .codes table {
   display: table;
-  font-size: 0.8em;
+  width: 100%;
   margin-bottom: 0;
+  border-collapse: collapse;
 }
 
 .codes th,
 .codes td {
   padding: 0.2rem;
+  border-bottom: 1px solid var(--sl-color-hairline);
+}
+
+/* Starlight removes the outer inline padding.
+ * Keep the compact table cells evenly padded. */
+.codes th:first-child,
+.codes td:first-child {
+  padding-inline-start: 0.2rem;
+}
+
+.codes th:last-child,
+.codes td:last-child {
+  padding-inline-end: 0.2rem;
 }
 
 .codes td {
@@ -146,7 +152,12 @@ html[data-theme="light"] .codes.os.legend {
 }
 
 .codes td.documentation a {
+  color: var(--sl-color-text-accent);
   cursor: help;
+}
+
+.codes .icon {
+  vertical-align: middle;
 }
 
 .codes .os {
@@ -187,7 +198,7 @@ html[data-theme="light"] .codes.os.legend {
   margin-top: 0;
   margin-bottom: 0.5rem;
   padding: 0.2rem 0.5rem 0.2rem 0.5rem;
-  border: var(--ifm-table-border-width) dashed var(--ifm-table-border-color);
+  border: 1px dashed var(--sl-color-hairline);
   border-top: 0;
   font-size: 0.8em;
 }
@@ -202,11 +213,9 @@ html[data-theme="light"] .codes.os.legend {
   content: ":";
 }
 
-.codes .footnotes .anchor {
-  display: block;
-  position: relative;
-  top: calc(var(--ifm-navbar-height) * -1 - 6em);
-  visibility: hidden;
+.codes .footnotes,
+.codes .footnote {
+  scroll-margin-top: calc(var(--sl-nav-height) + 1rem);
 }
 
 .codes .footnote {
@@ -234,5 +243,49 @@ html[data-theme="light"] .codes.os.legend {
 }
 
 .codes .footnoteRefs a {
-  color: black;
+  color: var(--sl-color-text-accent);
+}
+
+/* react-toastify alternative */
+.codes-toast {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  max-width: min(28rem, calc(100vw - 2rem));
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--sl-color-hairline);
+  border-radius: 0.5rem;
+  background: var(--sl-color-bg-nav);
+  color: var(--sl-color-text);
+  box-shadow: var(--sl-shadow-lg);
+  font-size: var(--sl-text-sm);
+  opacity: 0;
+  transform: translateY(0.5rem);
+  transition:
+    opacity 150ms ease,
+    transform 150ms ease;
+  pointer-events: none;
+}
+
+.codes-toast.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.codes-toast code {
+  padding: 0.05rem 0.25rem;
+  border-radius: 0.25rem;
+  background: var(--sl-color-bg-inline-code);
+  font-family: var(--sl-font-mono, var(--__sl-font-mono));
+  font-size: var(--sl-text-code-sm);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .codes-toast {
+    transition: none;
+  }
 }
