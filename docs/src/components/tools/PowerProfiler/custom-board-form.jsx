@@ -89,11 +89,11 @@ function CustomBoardForm({
 }
 
 CustomBoardForm.propTypes = {
-  bindPsuType: PropTypes.Object,
-  bindOutputV: PropTypes.Object,
-  bindEfficiency: PropTypes.Object,
-  bindQuiescentMicroA: PropTypes.Object,
-  bindOtherQuiescentMicroA: PropTypes.Object,
+  bindPsuType: PropTypes.object,
+  bindOutputV: PropTypes.object,
+  bindEfficiency: PropTypes.object,
+  bindQuiescentMicroA: PropTypes.object,
+  bindOtherQuiescentMicroA: PropTypes.object,
 };
 
 export default CustomBoardForm;
