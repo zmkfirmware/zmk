@@ -1,4 +1,6 @@
 [build]
+  command = "pnpm build"
+  publish = "dist"
   ignore = "bash ./netlify-ignore-command.sh"
 
 [[redirects]]
