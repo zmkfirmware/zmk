@@ -1,0 +1,222 @@
+/*
+ * Global chrome shared by the header, the mobile drawer, and the page heading.
+ * Loaded through Starlight's `customCss` option so these rules sit outside the
+ * Starlight cascade layers and can override component styles and utilities.
+ *
+ * Keep a rule here when more than one component needs it; leave single-component
+ * rules in that component's `<style>` block. Because this file is unlayered, it
+ * beats every layered Starlight rule, including the `sl-*` utilities. Do not set
+ * `display` on elements that use those utilities for responsive visibility.
+ */
+
+/* Controls share one radius; panels and popovers share another. */
+:root {
+  --zmk-radius-control: 0.3rem;
+  --zmk-radius-panel: 0.4rem;
+}
+
+/* ------------------------------------------------------------------ */
+/* Navigation primitives                                              */
+/* ------------------------------------------------------------------ */
+
+.site-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.35rem 0.55rem;
+  border-radius: var(--zmk-radius-control);
+  color: var(--sl-color-gray-2);
+  font-size: var(--sl-text-sm);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.site-nav-link:hover,
+.site-nav-link:focus-visible {
+  color: var(--sl-color-white);
+  background-color: var(--sl-color-gray-6);
+}
+
+.site-nav-link[aria-current],
+.site-nav-link[aria-current]:hover,
+.site-nav-link[aria-current]:focus-visible {
+  color: var(--sl-color-text-invert);
+  background-color: var(--sl-color-text-accent);
+  font-weight: 600;
+}
+
+/* Shared behaviour for the header dropdowns and the drawer menu. */
+.nav-expansion {
+  position: relative;
+}
+
+.nav-expansion > summary {
+  list-style: none;
+  user-select: none;
+  cursor: pointer;
+}
+
+.nav-expansion > summary::-webkit-details-marker {
+  display: none;
+}
+
+.nav-expansion > summary::marker {
+  content: "";
+}
+
+.nav-expansion[open] > .header-dropdown-panel {
+  display: flex;
+}
+
+.nav-expansion[open] .caret {
+  transform: rotate(180deg);
+}
+
+/* Scoped to our own disclosures: Starlight also uses a "caret" class for
+ * the TOC and sidebar toggles. */
+.nav-expansion .caret {
+  flex: none;
+  font-size: 1.1em;
+  transition: transform 0.15s ease;
+}
+
+.nav-collapsed > summary .caret {
+  font-size: 1.5rem;
+}
+
+.site-menu-details > summary .caret {
+  font-size: 1.25rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-expansion .caret {
+    transition: none;
+  }
+}
+
+.site-nav-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.site-nav-group--divided {
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--sl-color-gray-6);
+}
+
+.site-nav-heading {
+  padding: 0.35rem 0.6rem 0.15rem;
+  color: var(--sl-color-gray-3);
+  font-size: var(--sl-text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.header-dropdown-panel {
+  position: absolute;
+  z-index: var(--sl-z-index-navbar);
+  top: calc(100% + 0.5rem);
+  display: none;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-width: 14rem;
+  padding: 0.5rem;
+  background-color: var(--sl-color-bg-nav);
+  border: 1px solid var(--sl-color-gray-5);
+  border-radius: var(--zmk-radius-panel);
+  box-shadow: var(--sl-shadow-md);
+}
+
+.external-icon {
+  flex: none;
+  font-size: 0.9em;
+}
+
+/* Drawer links are one step larger than the inline header links. */
+.sidebar-pane .site-nav-link {
+  padding: 0.45rem 0.5rem;
+  font-size: var(--sl-text-base);
+  line-height: 1.4;
+}
+
+.header :is(a, button, summary, select) {
+  cursor: pointer;
+}
+
+.header :is(a, button, summary, select):focus-visible,
+.site-nav-link:focus-visible,
+.nav-expansion > summary:focus-visible {
+  outline: 2px solid var(--sl-color-accent);
+  outline-offset: 2px;
+}
+
+/* ------------------------------------------------------------------ */
+/* Starlight internals we override                                    */
+/* ------------------------------------------------------------------ */
+
+/* Brand */
+.site-title {
+  font-size: 1.25rem;
+  color: var(--sl-color-white);
+}
+
+.site-title img {
+  height: 2rem;
+  width: auto;
+}
+
+@media (width < 50rem) {
+  .site-title {
+    font-size: 1rem;
+  }
+}
+
+/* Drawer footer: the GitHub link already lives in the Site menu. */
+#starlight__sidebar .mobile-preferences .social-icons {
+  display: none;
+}
+
+/* Search: icon-only below the desktop breakpoint. */
+@media (width < 72rem) {
+  site-search button[data-open-modal] {
+    width: 2.5rem;
+    padding: 0;
+    border: 0;
+    border-radius: var(--zmk-radius-panel);
+    background-color: transparent;
+    justify-content: center;
+    font-size: var(--sl-text-xl);
+  }
+
+  site-search button[data-open-modal] > span,
+  site-search button[data-open-modal] > kbd {
+    display: none;
+  }
+}
+
+/* The field grows to 18rem and lets the row absorb a tight desktop header
+ * by shrinking first, down to a still usable minimum. */
+@media (min-width: 72rem) {
+  site-search button[data-open-modal] {
+    flex: 1 1 18rem;
+    width: auto;
+    min-width: 10rem;
+    max-width: 18rem;
+  }
+}
+
+@media (min-width: 80rem) {
+  site-search button[data-open-modal] {
+    max-width: 22rem;
+  }
+}
+
+/* Page heading: a tighter title band without a divider before the body. */
+.content-panel:has(> .sl-container > h1#_top) {
+  padding-block: 0.75rem 0.5rem;
+}
+
+.content-panel:has(> .sl-container > h1#_top) + .content-panel {
+  border-top: 0;
+}

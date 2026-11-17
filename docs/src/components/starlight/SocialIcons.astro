@@ -1,0 +1,40 @@
+---
+// Based on @astrojs/starlight 0.42.8 "components/SocialIcons.astro".
+// ZMK change: add rel=noreferrer and target=_blank
+// Re-diff against upstream when upgrading Starlight.
+import config from "virtual:starlight/user-config";
+import { Icon } from "@astrojs/starlight/components";
+import type { StarlightIcon } from "@astrojs/starlight/types";
+
+interface SocialLink {
+  label: string;
+  href: string;
+  icon: StarlightIcon;
+}
+
+const links = (config.social || []) as SocialLink[];
+---
+
+{links.length > 0 && (
+  <>
+    {links.map(({ label, href, icon }) => (
+      <a {href} rel="noreferrer me" target="_blank" class="sl-flex">
+        <span class="sr-only">{label}</span>
+        <Icon name={icon} /> <span class="sr-only">(opens in a new tab)</span>
+      </a>
+    ))}
+  </>
+)}
+
+<style>
+  @layer starlight.core {
+    a {
+      color: var(--sl-color-text-accent);
+      padding: 0.5em;
+      margin: -0.5em;
+    }
+    a:hover {
+      color: var(--sl-color-white);
+    }
+  }
+</style>

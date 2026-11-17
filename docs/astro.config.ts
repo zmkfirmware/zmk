@@ -4,17 +4,44 @@ import { fileURLToPath } from "node:url";
 import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
 import starlight from "@astrojs/starlight";
+import type { StarlightPlugin } from "@astrojs/starlight/types";
 import { defineConfig } from "astro/config";
 import starlightBlog from "starlight-blog";
 import mermaid from "astro-mermaid";
 import starlightLinksValidator from "starlight-links-validator";
 
+import { versionInfoIntegration } from "./scripts/version-info-integration.ts";
 import { blogAuthors } from "./src/data/blog-authors";
 
 const readGrammar = (name: string) =>
   JSON.parse(
     readFileSync(new URL(`./src/grammars/${name}`, import.meta.url), "utf8")
   );
+
+const blogPrefix = "blog";
+
+// starlight-blog adds an RSS link to Starlight's social icons when the blog feed is enabled.
+// Keep the feed itself and its <link rel="alternate"> in the page head,
+// but remove the social icon the plugin injects.
+// This runs after `starlightBlog` below.
+const removeBlogRssSocial: StarlightPlugin = {
+  name: "zmk-remove-blog-rss-social",
+  hooks: {
+    "config:setup"({ astroConfig, config, updateConfig }) {
+      if (!astroConfig.site) return;
+
+      const rssHref = new URL(`/${blogPrefix}/rss.xml`, astroConfig.site).href;
+      const social = config.social ?? [];
+      const withoutBlogRss = social.filter(
+        (link) => !(link.icon === "rss" && link.href === rssHref)
+      );
+
+      if (withoutBlogRss.length !== social.length) {
+        updateConfig({ social: withoutBlogRss });
+      }
+    },
+  },
+};
 
 export default defineConfig({
   site: "https://zmk.dev",
@@ -36,6 +63,7 @@ export default defineConfig({
   integrations: [
     react(),
     mermaid(),
+    versionInfoIntegration,
     starlight({
       title: "ZMK Firmware",
       description: "Modern, open source keyboard firmware",
@@ -54,6 +82,7 @@ export default defineConfig({
       editLink: {
         baseUrl: "https://github.com/zmkfirmware/zmk/blob/main/docs/",
       },
+      routeMiddleware: "./src/routeData.ts",
       expressiveCode: {
         themes: ["github-light", "github-dark-dimmed"],
         useStarlightUiThemeColors: true,
@@ -63,6 +92,14 @@ export default defineConfig({
             readGrammar("kconfig.tmLanguage.json"),
           ],
         },
+      },
+      customCss: ["./src/styles/site.css"],
+      components: {
+        Header: "./src/components/starlight/Header.astro",
+        Footer: "./src/components/starlight/Footer.astro",
+        PageFrame: "./src/components/starlight/PageFrame.astro",
+        PageTitle: "./src/components/starlight/PageTitle.astro",
+        SocialIcons: "./src/components/starlight/SocialIcons.astro",
       },
       head: [
         {
@@ -81,7 +118,7 @@ export default defineConfig({
       plugins: [
         starlightBlog({
           title: "Blog",
-          prefix: "blog",
+          prefix: blogPrefix,
           postCount: 10,
           recentPostCount: 100,
           navigation: "none",
@@ -91,6 +128,7 @@ export default defineConfig({
           },
           rss: true,
         }),
+        removeBlogRssSocial,
         starlightLinksValidator({
           exclude: [
             // Validator doesn't know about the custom pages
