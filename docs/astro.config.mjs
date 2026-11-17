@@ -16,6 +16,31 @@ const readGrammar = (name) =>
     readFileSync(new URL(`./src/grammars/${name}`, import.meta.url), "utf8")
   );
 
+const blogPrefix = "blog";
+
+// starlight-blog adds an RSS link to Starlight's social icons when the blog feed is enabled.
+// Keep the feed itself and its <link rel="alternate"> in the page head,
+// but remove the social icon the plugin injects.
+// This runs after `starlightBlog` below.
+const removeBlogRssSocial = {
+  name: "zmk-remove-blog-rss-social",
+  hooks: {
+    "config:setup"({ astroConfig, config, updateConfig }) {
+      if (!astroConfig.site) return;
+
+      const rssHref = new URL(`/${blogPrefix}/rss.xml`, astroConfig.site).href;
+      const social = config.social ?? [];
+      const withoutBlogRss = social.filter(
+        (link) => !(link.icon === "rss" && link.href === rssHref)
+      );
+
+      if (withoutBlogRss.length !== social.length) {
+        updateConfig({ social: withoutBlogRss });
+      }
+    },
+  },
+};
+
 export default defineConfig({
   site: "https://zmk.dev",
   trailingSlash: "never",
@@ -54,6 +79,7 @@ export default defineConfig({
       editLink: {
         baseUrl: "https://github.com/zmkfirmware/zmk/blob/main/docs/",
       },
+      routeMiddleware: "./src/routeData.ts",
       expressiveCode: {
         themes: ["github-light", "github-dark-dimmed"],
         useStarlightUiThemeColors: true,
@@ -63,6 +89,10 @@ export default defineConfig({
             readGrammar("kconfig.tmLanguage.json"),
           ],
         },
+      },
+      components: {
+        Header: "./src/components/starlight/Header.astro",
+        Footer: "./src/components/starlight/Footer.astro",
       },
       head: [
         {
@@ -81,7 +111,7 @@ export default defineConfig({
       plugins: [
         starlightBlog({
           title: "Blog",
-          prefix: "blog",
+          prefix: blogPrefix,
           postCount: 10,
           recentPostCount: 100,
           navigation: "none",
@@ -91,6 +121,7 @@ export default defineConfig({
           },
           rss: true,
         }),
+        removeBlogRssSocial,
         starlightLinksValidator({
           exclude: [
             // Validator doesn't know about the custom pages
