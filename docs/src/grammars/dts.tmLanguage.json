@@ -1,0 +1,556 @@
+{
+  "name": "dts",
+  "aliases": [
+    "devicetree",
+    "dtso",
+    "dtsi",
+    "overlay"
+  ],
+  "scopeName": "source.dts",
+  "patterns": [
+    {
+      "include": "#comment"
+    },
+    {
+      "include": "#block-comment"
+    },
+    {
+      "include": "#preprocessor-include"
+    },
+    {
+      "include": "#preprocessor-define"
+    },
+    {
+      "include": "#compiler-directive"
+    },
+    {
+      "include": "#root-node"
+    },
+    {
+      "include": "#property"
+    },
+    {
+      "include": "#preprocessor"
+    },
+    {
+      "include": "#node"
+    },
+    {
+      "include": "#label"
+    },
+    {
+      "include": "#node-ref"
+    }
+  ],
+  "repository": {
+    "preprocessor-include": {
+      "match": "^\\s*(#\\s*include)\\s+(<.*?>|\".*?\")",
+      "captures": {
+        "1": {
+          "name": "keyword.control.preprocessor"
+        },
+        "2": {
+          "name": "meta.preprocessor.include.c"
+        }
+      }
+    },
+    "preprocessor-define": {
+      "begin": "^\\s*(#\\s*define)\\s+(\\w+)(\\(.*?\\))?",
+      "beginCaptures": {
+        "1": {
+          "name": "keyword.control.preprocessor"
+        },
+        "2": {
+          "name": "entity.name.function.preprocessor"
+        },
+        "3": {
+          "name": "entity.name.function.preprocessor"
+        }
+      },
+      "name": "entity.name.function.preprocessor",
+      "end": "(?<!\\\\)\\n",
+      "patterns": [
+        {
+          "include": "#string"
+        },
+        {
+          "include": "#comment"
+        },
+        {
+          "include": "#block-comment"
+        },
+        {
+          "include": "#number"
+        },
+        {
+          "include": "#expression"
+        }
+      ]
+    },
+    "preprocessor": {
+      "begin": "^\\s*#\\s*\\w+\\b",
+      "beginCaptures": {
+        "0": {
+          "name": "keyword.control.preprocessor"
+        }
+      },
+      "name": "entity.name.function.preprocessor",
+      "end": "(?<!\\\\)\\n",
+      "patterns": [
+        {
+          "include": "#string"
+        },
+        {
+          "include": "#comment"
+        },
+        {
+          "include": "#block-comment"
+        },
+        {
+          "include": "#number"
+        },
+        {
+          "include": "#expression"
+        }
+      ]
+    },
+    "root-node": {
+      "begin": "(/)\\s+{",
+      "end": "}",
+      "beginCaptures": {
+        "1": {
+          "name": "variable.language"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#node-contents"
+        }
+      ]
+    },
+    "comment": {
+      "match": "//.*",
+      "name": "comment.line.double-slash"
+    },
+    "block-comment": {
+      "begin": "/\\*",
+      "end": "\\*/",
+      "name": "comment.block"
+    },
+    "compiler-directive": {
+      "begin": "/.*?/",
+      "end": ";",
+      "beginCaptures": {
+        "0": {
+          "name": "entity.name.tag"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#ref"
+        },
+        {
+          "include": "#node-name"
+        },
+        {
+          "include": "#block-comment"
+        }
+      ]
+    },
+    "label": {
+      "match": "([\\w\\-]+)\\s*:",
+      "name": "entity.name.type"
+    },
+    "node-string-property": {
+      "match": "([\\w,\\.+?#\\-]+)\\s*(=)\\s*(\".*?\")",
+      "captures": {
+        "1": {
+          "name": "variable.property.nodestring"
+        },
+        "2": {
+          "name": "keyword.operator"
+        },
+        "3": {
+          "name": "constant.language"
+        }
+      },
+      "patterns": [
+        {
+          "match": "\".*?\"",
+          "name": "constant.language"
+        }
+      ]
+    },
+    "node-ref-property": {
+      "match": "([\\w,\\.+?#\\-]+)\\s*(=)\\s*(&)([\\w\\-]+)",
+      "captures": {
+        "1": {
+          "name": "variable.property.nodestring"
+        },
+        "2": {
+          "name": "keyword.operator"
+        },
+        "3": {
+          "name": "keyword.operator"
+        },
+        "4": {
+          "name": "support.class.node-ref-prop"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#ref"
+        }
+      ]
+    },
+    "cpus-node": {
+      "begin": "(cpus)\\s+{",
+      "end": "}",
+      "beginCaptures": {
+        "1": {
+          "name": "support.class.cpus-node"
+        }
+      },
+      "patterns": [
+        {
+          "begin": "(cpu)(?:(@)([\\da-fA-F]+))?\\s+{",
+          "end": "}",
+          "beginCaptures": {
+            "1": {
+              "name": "support.class.cpu"
+            },
+            "2": {
+              "name": "keyword.operator"
+            },
+            "3": {
+              "name": "constant.numeric"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#node-contents"
+            }
+          ]
+        },
+        {
+          "include": "#preprocessor-include"
+        },
+        {
+          "include": "#preprocessor-define"
+        },
+        {
+          "include": "#properties"
+        },
+        {
+          "include": "#node"
+        },
+        {
+          "include": "#block-comment"
+        },
+        {
+          "include": "#comment"
+        }
+      ]
+    },
+    "node-name": {
+      "match": "([\\w\\-,+\\.]+)(?:(@)\\s*([\\da-fA-F]+))?",
+      "captures": {
+        "1": {
+          "name": "support.class.node-name"
+        },
+        "2": {
+          "name": "keyword.operator"
+        },
+        "3": {
+          "name": "constant.numeric"
+        }
+      }
+    },
+    "node-block": {
+      "begin": "{",
+      "end": "}",
+      "patterns": [
+        {
+          "include": "#node-contents"
+        }
+      ]
+    },
+    "node": {
+      "patterns": [
+        {
+          "include": "#node-name"
+        },
+        {
+          "include": "#node-block"
+        }
+      ]
+    },
+    "node-contents": {
+      "patterns": [
+        {
+          "include": "#preprocessor-include"
+        },
+        {
+          "include": "#preprocessor-define"
+        },
+        {
+          "include": "#comment"
+        },
+        {
+          "include": "#block-comment"
+        },
+        {
+          "include": "#compiler-directive"
+        },
+        {
+          "include": "#node-ref"
+        },
+        {
+          "include": "#label"
+        },
+        {
+          "include": "#properties"
+        },
+        {
+          "include": "#node"
+        }
+      ]
+    },
+    "node-ref": {
+      "begin": "(&)([\\w-]+|{[\\w/@-]+})\\s*{",
+      "end": "}",
+      "beginCaptures": {
+        "1": {
+          "name": "keyword.operator"
+        },
+        "2": {
+          "name": "support.class.node-ref"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#node-contents"
+        }
+      ]
+    },
+    "properties": {
+      "patterns": [
+        {
+          "include": "#reserved-properties"
+        },
+        {
+          "include": "#property"
+        },
+        {
+          "include": "#flag-property"
+        }
+      ]
+    },
+    "property": {
+      "begin": "([\\w,\\.+?#-]+)\\s*(=)\\s*",
+      "end": "[;}]",
+      "beginCaptures": {
+        "1": {
+          "name": "variable.property"
+        },
+        "2": {
+          "name": "keyword.operator"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#property-value"
+        },
+        {
+          "include": "#block-comment"
+        }
+      ]
+    },
+    "flag-property": {
+      "match": "([\\w,\\.+?#\\-]+)(?=\\s*;)",
+      "name": "variable.flagproperty"
+    },
+    "reserved-properties": {
+      "patterns": [
+        {
+          "begin": "(compatible|status)\\s*(=)\\s*",
+          "end": "[;}]",
+          "beginCaptures": {
+            "1": {
+              "name": "variable.property"
+            },
+            "2": {
+              "name": "keyword.operator"
+            }
+          },
+          "patterns": [
+            {
+              "match": "\"[\\w,\\.+\\-]+?\"",
+              "name": "constant.language"
+            },
+            {
+              "match": ","
+            }
+          ]
+        },
+        {
+          "begin": "(status)\\s*(=)\\s*",
+          "end": "[;}]",
+          "beginCaptures": {
+            "1": {
+              "name": "variable.property"
+            },
+            "2": {
+              "name": "keyword.operator"
+            }
+          },
+          "patterns": [
+            {
+              "match": "\".*\"",
+              "name": "constant.language"
+            }
+          ]
+        }
+      ]
+    },
+    "property-value": {
+      "patterns": [
+        {
+          "include": "#clamped-value"
+        },
+        {
+          "include": "#string"
+        },
+        {
+          "include": "#uint8-array"
+        },
+        {
+          "include": "#block-comment"
+        },
+        {
+          "include": "#comment"
+        },
+        {
+          "include": "#ref"
+        },
+        {
+          "match": ","
+        }
+      ]
+    },
+    "number": {
+      "match": "(0x[\\da-fA-F]+|\\d+)",
+      "name": "constant.numeric"
+    },
+    "clamped-value": {
+      "begin": "<",
+      "end": ">",
+      "patterns": [
+        {
+          "include": "#ref"
+        },
+        {
+          "include": "#paren-expr"
+        },
+        {
+          "include": "#number"
+        },
+        {
+          "match": "\\w+",
+          "name": "entity.name.tag"
+        },
+        {
+          "include": "#block-comment"
+        },
+        {
+          "match": ";",
+          "name": "invalid.illegal"
+        }
+      ]
+    },
+    "ref": {
+      "match": "(&)(?:([\\w\\-]+)|\\{([\\w/@-]+)\\})",
+      "captures": {
+        "1": {
+          "name": "keyword.operator"
+        },
+        "2": {
+          "name": "support.class.ref"
+        },
+        "3": {
+          "name": "support.class.ref"
+        }
+      }
+    },
+    "string": {
+      "match": "\".*?\"",
+      "name": "string.quoted.double"
+    },
+    "uint8-array": {
+      "begin": "\\[",
+      "end": "\\]",
+      "patterns": [
+        {
+          "match": "[\\da-fA-F]{2}",
+          "name": "constant.numeric"
+        },
+        {
+          "include": "#block-comment"
+        }
+      ]
+    },
+    "expression": {
+      "patterns": [
+        {
+          "include": "#expr-op"
+        },
+        {
+          "include": "#number"
+        },
+        {
+          "include": "#paren-expr"
+        },
+        {
+          "include": "#expr-constant"
+        }
+      ]
+    },
+    "expr-operator": {
+      "match": "(?:(0x[\\da-fA-F]+|\\d+)|(\\w+))\\s*([+\\-*/&|^~!<>]|<<|>>|[!=<>]=|\\|\\|)\\s*(?:(0x[\\da-fA-F]+|\\d+)|(\\w+))",
+      "captures": {
+        "1": {
+          "name": "constant.numeric"
+        },
+        "2": {
+          "name": "variable.parameter"
+        },
+        "3": {
+          "name": "keyword.operator"
+        },
+        "4": {
+          "name": "constant.numeric"
+        },
+        "5": {
+          "name": "variable.parameter"
+        }
+      }
+    },
+    "expr-op": {
+      "match": "([+\\-*/&|^~!<>]|<<|>>|[!=<>]=|\\|\\|)",
+      "name": "keyword.operator"
+    },
+    "expr-constant": {
+      "match": "\\w+",
+      "name": "entity.name.tag"
+    },
+    "paren-expr": {
+      "begin": "\\(",
+      "end": "\\)",
+      "patterns": [
+        {
+          "include": "#expression"
+        }
+      ]
+    }
+  }
+}

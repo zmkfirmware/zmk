@@ -94,7 +94,7 @@ Make sure you know what each Kconfig flag does before you enable it. Some flags 
 
 These flags are typically a subset of the following:
 
-```yaml title="<your-board>_zmk_defconfig"
+```kconfig title="<your-board>_zmk_defconfig"
 # SPDX-License-Identifier: <your license>
 
 # Enable MPU

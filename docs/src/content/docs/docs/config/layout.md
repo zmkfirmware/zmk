@@ -134,7 +134,7 @@ Consider a keyboard with a [duplex matrix](https://wiki.ai03.com/books/pcb-desig
 Since a charlieplex driver will never align with a keyboard directly due to the un-addressable positions, a matrix transform should be used to map the pairs to the layout of the keys.
 Note that the entire addressable space does not need to be mapped.
 
-```devicetree
+```dts
 / {
     chosen {
         zmk,kscan = &kscan0;

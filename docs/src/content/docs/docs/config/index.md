@@ -73,7 +73,7 @@ Kconfig is used to configure global settings such as the keyboard name and enabl
 
 Kconfig files look like this:
 
-```ini
+```kconfig
 CONFIG_ZMK_SLEEP=y
 CONFIG_EC11=y
 CONFIG_EC11_TRIGGER_GLOBAL_THREAD=y

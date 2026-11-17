@@ -19,7 +19,7 @@ The mouse functionality will not work over BLE until that is done.
 
 To use any of the behaviors documented here, the ZMK mouse feature must be enabled explicitly via a config option:
 
-```ini
+```kconfig
 CONFIG_ZMK_POINTING=y
 ```
 
