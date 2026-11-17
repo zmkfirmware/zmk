@@ -6,7 +6,7 @@ sidebar:
 
 Some behaviors have properties to adjust how they behave. These can also be used as templates to create custom behaviors when none of the built-in behaviors do what you want.
 
-See [Configuration Overview](index.md) for instructions on how to change these settings.
+See [Configuration Overview](/docs/config) for instructions on how to change these settings.
 
 See the [zmk/app/dts/behaviors/](https://github.com/zmkfirmware/zmk/tree/main/app/dts/behaviors) folder for all default behaviors.
 
@@ -24,13 +24,13 @@ Definition file: [zmk/app/dts/bindings/behaviors/behavior-metadata.yaml](https:/
 
 | Property       | Type   | Description                                                                      | Default |
 | -------------- | ------ | -------------------------------------------------------------------------------- | ------- |
-| `display-name` | string | Name of the layer, for use with a display or [ZMK Studio](../features/studio.md) |         |
+| `display-name` | string | Name of the layer, for use with a display or [ZMK Studio](/docs/features/studio) |         |
 
 ## Caps Word
 
 Creates a custom behavior that behaves similar to a caps lock but deactivates when any key not in a continue list is pressed.
 
-See the [caps word behavior](../keymaps/behaviors/caps-word.md) documentation for more details and examples.
+See the [caps word behavior](/docs/keymaps/behaviors/caps-word) documentation for more details and examples.
 
 ### Devicetree
 
@@ -52,13 +52,13 @@ You can use the following nodes to tweak the default behaviors:
 
 | Node         | Behavior                                       |
 | ------------ | ---------------------------------------------- |
-| `&caps_word` | [Caps Word](../keymaps/behaviors/caps-word.md) |
+| `&caps_word` | [Caps Word](/docs/keymaps/behaviors/caps-word) |
 
 ## Hold-Tap
 
 Creates a custom behavior that triggers one behavior when a key is held or a different one when the key is tapped.
 
-See the [hold-tap behavior](../keymaps/behaviors/hold-tap.mdx) documentation for more details and examples.
+See the [hold-tap behavior](/docs/keymaps/behaviors/hold-tap) documentation for more details and examples.
 
 ### Kconfig
 
@@ -96,7 +96,7 @@ The `flavor` property may be one of:
 - `"tap-preferred"`
 - `"tap-unless-interrupted"`
 
-See the [hold-tap behavior documentation](../keymaps/behaviors/hold-tap.mdx) for an explanation of each flavor.
+See the [hold-tap behavior documentation](/docs/keymaps/behaviors/hold-tap) for an explanation of each flavor.
 
 `hold-trigger-key-positions` is an array of zero-based key position indices.
 
@@ -104,14 +104,14 @@ You can use the following nodes to tweak the default behaviors:
 
 | Node  | Behavior                                              |
 | ----- | ----------------------------------------------------- |
-| `&lt` | [Layer-tap](../keymaps/behaviors/layers.md#layer-tap) |
-| `&mt` | [Mod-tap](../keymaps/behaviors/hold-tap.mdx#mod-tap)  |
+| `&lt` | [Layer-tap](/docs/keymaps/behaviors/layers#layer-tap) |
+| `&mt` | [Mod-tap](/docs/keymaps/behaviors/hold-tap#mod-tap)   |
 
 ## Key Repeat
 
 Creates a custom behavior that repeats the whatever key code was last sent.
 
-See the [key repeat behavior](../keymaps/behaviors/key-repeat.md) documentation for more details and examples.
+See the [key repeat behavior](/docs/keymaps/behaviors/key-repeat) documentation for more details and examples.
 
 ### Devicetree
 
@@ -130,13 +130,13 @@ You can use the following nodes to tweak the default behaviors:
 
 | Node          | Behavior                                         |
 | ------------- | ------------------------------------------------ |
-| `&key_repeat` | [Key repeat](../keymaps/behaviors/key-repeat.md) |
+| `&key_repeat` | [Key repeat](/docs/keymaps/behaviors/key-repeat) |
 
 ## Key Toggle
 
 Creates a custom behavior that toggles a key code on, off, or switches between the two states.
 
-See the [key toggle behavior](../keymaps/behaviors/key-toggle.md) documentation for more details and examples.
+See the [key toggle behavior](/docs/keymaps/behaviors/key-toggle) documentation for more details and examples.
 
 ### Devicetree
 
@@ -153,13 +153,13 @@ You can use the following node to tweak the default behavior:
 
 | Node  | Behavior                                         |
 | ----- | ------------------------------------------------ |
-| `&kt` | [Key toggle](../keymaps/behaviors/key-toggle.md) |
+| `&kt` | [Key toggle](/docs/keymaps/behaviors/key-toggle) |
 
 ## Momentary Layer
 
 Creates a custom behavior that toggles a layer on when pressed, and off when released.
 
-See the [momentary layer behavior](../keymaps/behaviors/layers.md#momentary-layer) documentation for more details and examples.
+See the [momentary layer behavior](/docs/keymaps/behaviors/layers#momentary-layer) documentation for more details and examples.
 
 ### Devicetree
 
@@ -176,13 +176,13 @@ You can use the following node to tweak the default behavior:
 
 | Node  | Behavior                                                          |
 | ----- | ----------------------------------------------------------------- |
-| `&mo` | [Momentary Layer](../keymaps/behaviors/layers.md#momentary-layer) |
+| `&mo` | [Momentary Layer](/docs/keymaps/behaviors/layers#momentary-layer) |
 
 ## Layer Toggle
 
 Creates a custom behavior that toggles a layer on, off, or switches between the two states.
 
-See the [layer toggle behavior](../keymaps/behaviors/layers.md#toggle-layer) documentation for more details and examples.
+See the [layer toggle behavior](/docs/keymaps/behaviors/layers#toggle-layer) documentation for more details and examples.
 
 ### Devicetree
 
@@ -200,13 +200,13 @@ You can use the following node to tweak the default behavior:
 
 | Node   | Behavior                                                    |
 | ------ | ----------------------------------------------------------- |
-| `&tog` | [Layer toggle](../keymaps/behaviors/layers.md#toggle-layer) |
+| `&tog` | [Layer toggle](/docs/keymaps/behaviors/layers#toggle-layer) |
 
 ## To Layer
 
 Creates a custom behavior that toggles a layer on and toggles all other layers off, barring the default layer.
 
-See the [to layer behavior](../keymaps/behaviors/layers.md#to-layer) documentation for more details and examples.
+See the [to layer behavior](/docs/keymaps/behaviors/layers#to-layer) documentation for more details and examples.
 
 ### Devicetree
 
@@ -223,13 +223,13 @@ You can use the following node to tweak the default behavior:
 
 | Node  | Behavior                                            |
 | ----- | --------------------------------------------------- |
-| `&to` | [To Layer](../keymaps/behaviors/layers.md#to-layer) |
+| `&to` | [To Layer](/docs/keymaps/behaviors/layers#to-layer) |
 
 ## Macro
 
 Creates a custom behavior which triggers a sequence of other behaviors.
 
-See the [macro behavior](../keymaps/behaviors/macros.md) documentation for more details and examples.
+See the [macro behavior](/docs/keymaps/behaviors/macros) documentation for more details and examples.
 
 ### Kconfig
 
@@ -277,7 +277,7 @@ The following macro-specific behaviors can be added at any point in the `binding
 
 Creates a custom behavior that triggers one of two behaviors depending on whether certain modifiers are held.
 
-See the [mod-morph behavior](../keymaps/behaviors/mod-morph.md) documentation for more details and examples.
+See the [mod-morph behavior](/docs/keymaps/behaviors/mod-morph) documentation for more details and examples.
 
 ### Devicetree
 
@@ -297,14 +297,14 @@ You can use the following nodes to tweak the default behaviors:
 
 | Node     | Behavior                                          |
 | -------- | ------------------------------------------------- |
-| `&gresc` | [Grave escape](../keymaps/behaviors/mod-morph.md) |
+| `&gresc` | [Grave escape](/docs/keymaps/behaviors/mod-morph) |
 
 ## Sensor Rotation
 
 Creates a custom behavior which sends a tap of other behaviors when a sensor is rotated.
 Has two variants: with `compatible = "zmk,behavior-sensor-rotate"` it accepts no parameters when used, whereas with `compatible = "zmk,behavior-sensor-rotate-var"` it accepts two parameters.
 
-See the [sensor rotation behavior](../keymaps/behaviors/sensor-rotate.md) documentation for more details and examples.
+See the [sensor rotation behavior](/docs/keymaps/behaviors/sensor-rotate) documentation for more details and examples.
 
 ### Devicetree
 
@@ -335,7 +335,7 @@ With `compatible = "zmk,behavior-sensor-rotate-var"`, this behavior forwards the
 
 Creates a custom behavior that triggers a behavior and keeps it pressed it until another key is pressed and released.
 
-See the [sticky key behavior](../keymaps/behaviors/sticky-key.md) and [sticky layer behavior](../keymaps/behaviors/sticky-layer.md) documentation for more details and examples.
+See the [sticky key behavior](/docs/keymaps/behaviors/sticky-key) and [sticky layer behavior](/docs/keymaps/behaviors/sticky-layer) documentation for more details and examples.
 
 ### Kconfig
 
@@ -364,14 +364,14 @@ You can use the following nodes to tweak the default behaviors:
 
 | Node  | Behavior                                             |
 | ----- | ---------------------------------------------------- |
-| `&sk` | [Sticky key](../keymaps/behaviors/sticky-key.md)     |
-| `&sl` | [Sticky layer](../keymaps/behaviors/sticky-layer.md) |
+| `&sk` | [Sticky key](/docs/keymaps/behaviors/sticky-key)     |
+| `&sl` | [Sticky layer](/docs/keymaps/behaviors/sticky-layer) |
 
 ## Tap Dance
 
 Creates a custom behavior that triggers a different behavior corresponding to the number of times the key is tapped.
 
-See the [tap dance behavior](../keymaps/behaviors/tap-dance.mdx) documentation for more details and examples.
+See the [tap dance behavior](/docs/keymaps/behaviors/tap-dance) documentation for more details and examples.
 
 ### Kconfig
 
@@ -393,7 +393,7 @@ Applies to: `compatible = "zmk,behavior-tap-dance"`
 
 ## Two Axis Input
 
-This behavior is part of the core [pointing devices](../features/pointing.md) feature, and is used to generate X/Y and scroll input events. It is the underlying behavior used for the mouse [move](../keymaps/behaviors/mouse-emulation.md#mouse-move) and [scroll](../keymaps/behaviors/mouse-emulation.md#mouse-scroll) behaviors.
+This behavior is part of the core [pointing devices](/docs/features/pointing) feature, and is used to generate X/Y and scroll input events. It is the underlying behavior used for the mouse [move](/docs/keymaps/behaviors/mouse-emulation#mouse-move) and [scroll](/docs/keymaps/behaviors/mouse-emulation#mouse-scroll) behaviors.
 
 ### Devicetree
 

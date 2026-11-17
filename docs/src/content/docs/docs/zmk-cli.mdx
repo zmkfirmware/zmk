@@ -6,7 +6,7 @@ sidebar:
 
 ZMK CLI is a command line tool which helps with setting up a ZMK config repo and automates some common tasks such as adding new keyboards to your repository.
 
-See the [ZMK installation guide](user-setup.mdx#prerequisites) for instructions on installing ZMK CLI.
+See the [ZMK installation guide](/docs/user-setup#prerequisites) for instructions on installing ZMK CLI.
 
 The instructions below contain commands that need to be run in a terminal program. On most operating systems, the program is simply named "Terminal".
 
@@ -26,7 +26,7 @@ All ZMK CLI commands start with `zmk`. Run `zmk --help` for general usage instru
 
 ### Initialize a Repository
 
-The `zmk init` command walks you through creating a GitHub repository, then clones it to your computer so you can edit it. See the [ZMK installation guide](user-setup.mdx#config-repo-setup) for more details on this command.
+The `zmk init` command walks you through creating a GitHub repository, then clones it to your computer so you can edit it. See the [ZMK installation guide](/docs/user-setup#config-repo-setup) for more details on this command.
 
 ### Keyboard Management
 
@@ -52,11 +52,11 @@ Run `zmk keyboard list` to print a list of supported keyboard hardware.
 
 If ZMK doesn't support your keyboard yet, you can run `zmk keyboard new` to create a new keyboard from a template.
 
-This won't walk you through all of the details of adding support for a new keyboard, but it will generate most of the boilerplate for you. See the [New Keyboard Shield](hardware-integration/new-shield.mdx) guide for how to finish writing the keyboard files.
+This won't walk you through all of the details of adding support for a new keyboard, but it will generate most of the boilerplate for you. See the [New Keyboard Shield](/docs/hardware-integration/new-shield) guide for how to finish writing the keyboard files.
 
 ### Module Management
 
-[Modules](features/modules.mdx) can add support for new keyboards, behaviors, and other features to ZMK. Use the `zmk module` command to install modules into your repo:
+[Modules](/docs/features/modules) can add support for new keyboards, behaviors, and other features to ZMK. Use the `zmk module` command to install modules into your repo:
 
 ```sh
 zmk module add        # Add a module

@@ -4,9 +4,9 @@ sidebar:
   label: Battery Level
 ---
 
-See the [battery level feature page](../features/battery.md) for more details on configuring a battery sensor.
+See the [battery level feature page](/docs/features/battery) for more details on configuring a battery sensor.
 
-See [Configuration Overview](index.md) for instructions on how to change these settings.
+See [Configuration Overview](/docs/config) for instructions on how to change these settings.
 
 ### Kconfig
 
@@ -31,7 +31,7 @@ On macOS the BLE battery reporting packets can cause the computer to wakeup from
 
 ### Peripheral Battery Monitoring
 
-You can [configure ZMK to allow support for peripheral battery monitoring over BLE](split.md) (e.g. when having a split keyboard with two independent and wirelessly connected sides).
+You can [configure ZMK to allow support for peripheral battery monitoring over BLE](/docs/config/split) (e.g. when having a split keyboard with two independent and wirelessly connected sides).
 If you want to report the battery levels of both sides of a split keyboard, you should have both `CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_PROXY` and `CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING` set to `y`.
 
 :::note[Displaying both battery levels on your host]

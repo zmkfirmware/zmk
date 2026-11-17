@@ -45,8 +45,8 @@ Here is a table describing the command for each define:
 - Parameter#1: Command, e.g `EP_ON`
 
 :::note[External power state persistence]
-The on/off state that is set by the `&ext_power` behavior will be [saved to flash storage](../../config/settings.md) and hence persist across restarts and firmware flashes.
-However it will only be saved after [`CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE`](../../config/system.md#general) milliseconds in order to reduce potential wear on the flash memory.
+The on/off state that is set by the `&ext_power` behavior will be [saved to flash storage](/docs/config/settings) and hence persist across restarts and firmware flashes.
+However it will only be saved after [`CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE`](/docs/config/system#general) milliseconds in order to reduce potential wear on the flash memory.
 :::
 
 ### Examples
@@ -71,4 +71,4 @@ However it will only be saved after [`CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE`](../../
 
 ## Split Keyboards
 
-Power management behaviors are [global](../../features/split-keyboards.md#global-locality-behaviors): This means that when triggered, they affects both the central and peripheral side of split keyboards.
+Power management behaviors are [global](/docs/features/split-keyboards#global-locality-behaviors): This means that when triggered, they affects both the central and peripheral side of split keyboards.

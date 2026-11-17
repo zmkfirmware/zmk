@@ -34,6 +34,7 @@
     "react-dom": "^19.2.0",
     "sharp": "^0.35.5",
     "starlight-blog": "^0.30.2",
+    "starlight-links-validator": "^0.27.0",
     "tree-sitter-devicetree": "^0.12.1",
     "web-tree-sitter": "^0.24.3"
   },

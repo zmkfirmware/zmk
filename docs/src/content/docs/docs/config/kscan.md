@@ -4,7 +4,7 @@ sidebar:
   label: Keyboard Scan
 ---
 
-See [Configuration Overview](index.md) for instructions on how to change these settings.
+See [Configuration Overview](/docs/config) for instructions on how to change these settings.
 
 ## Common
 
@@ -22,16 +22,16 @@ Definition files:
 | `CONFIG_ZMK_KSCAN_DEBOUNCE_PRESS_MS`   | int  | Global debounce time for key press in milliseconds   | -1      |
 | `CONFIG_ZMK_KSCAN_DEBOUNCE_RELEASE_MS` | int  | Global debounce time for key release in milliseconds | -1      |
 
-If the debounce press/release values are set to any value other than `-1`, they override the `debounce-press-ms` and `debounce-release-ms` devicetree properties for all keyboard scan drivers which support them. See the [debouncing documentation](../features/debouncing.md) for more details.
+If the debounce press/release values are set to any value other than `-1`, they override the `debounce-press-ms` and `debounce-release-ms` devicetree properties for all keyboard scan drivers which support them. See the [debouncing documentation](/docs/features/debouncing) for more details.
 
 ### Devicetree
 
 Applies to: [`/chosen` node](https://docs.zephyrproject.org/4.1.0/build/dts/intro-syntax-structure.html#aliases-and-chosen-nodes)
 
-| Property               | Type | Description                                                            |
-| ---------------------- | ---- | ---------------------------------------------------------------------- |
-| `zmk,kscan`            | path | The node for the keyboard scan driver to use                           |
-| `zmk,matrix-transform` | path | The node for the [matrix transform](layout.md#matrix-transform) to use |
+| Property               | Type | Description                                                                      |
+| ---------------------- | ---- | -------------------------------------------------------------------------------- |
+| `zmk,kscan`            | path | The node for the keyboard scan driver to use                                     |
+| `zmk,matrix-transform` | path | The node for the [matrix transform](/docs/config/layout#matrix-transform) to use |
 
 ## Demux Driver
 
@@ -95,7 +95,7 @@ Assuming the switches connect each GPIO pin to the ground, the [GPIO flags](http
     };
 ```
 
-A direct pin defined in the `input-gpios` property is considered a column when used in a [matrix transform](layout.md#matrix-transform); e.g. the 5th pin on the list can be referred to using `RC(0,4)`.
+A direct pin defined in the `input-gpios` property is considered a column when used in a [matrix transform](/docs/config/layout#matrix-transform); e.g. the 5th pin on the list can be referred to using `RC(0,4)`.
 
 By default, a switch will drain current through the internal pull up/down resistor whenever it is pressed. This is not ideal for a toggle switch, where the switch may be left in the "pressed" state for a long time. Enabling `toggle-mode` will make the driver enable and disable the internal pull up/down resistor as needed when the switch is toggled to minimise power draw. For `toggle-mode` to work correctly each pole of the switch needs a dedicated GPIO pin.
 
@@ -201,7 +201,7 @@ Definition file: [zmk/app/module/dts/bindings/kscan/zmk,kscan-gpio-charlieplex.y
 | `poll-period-ms`          | int        | Time between reads in milliseconds when no key is pressed and `interrupt-gpois` is not set. | 10      |
 | `wakeup-source`           | bool       | Mark this kscan instance as able to wake the keyboard                                       | n       |
 
-Define the transform with a [matrix transform](layout.md#matrix-transform). The row is always the driven pin, and the column always the receiving pin (input to the controller).
+Define the transform with a [matrix transform](/docs/config/layout#matrix-transform). The row is always the driven pin, and the column always the receiving pin (input to the controller).
 For example, in `RC(5,0)` power flows from the 6th pin in `gpios` to the 1st pin in `gpios`.
 Exclude all positions where the row and column are the same as these pairs will never be triggered, since no pin can be both input and output at the same time.
 

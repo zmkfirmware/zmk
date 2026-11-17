@@ -149,7 +149,7 @@ Many issues can be resolved by reworking the affected solder joints (Look up a t
 Once you have done so, you will need to adjust the `kscan` of your keyboard slightly. The recommended approach to doing so is via your `zmk-config`:
 
 1. Search through the files defining your board/shield for the definition of the keyboard's `kscan`. This is typically a `.dts`, `.dtsi`, or an `.overlay` file.
-2. Add a [phandle](https://docs.zephyrproject.org/latest/build/dts/phandles.html) to your `.keymap` pointing at your `kscan`, copying in the property of your `kscan` where the broken GPIO pin appears. Depending on your `kscan` driver this could be `input-gpios`, `row-gpios`, etc. If you are using a [split keyboard](../features/split-keyboards.md) and the issue is only affecting one part, you'll need to create separate keymap files for each part (`keyboard_left.keymap` and `keyboard_right.keymap`, for example), removing the shared one, and only edit the affected one.
+2. Add a [phandle](https://docs.zephyrproject.org/latest/build/dts/phandles.html) to your `.keymap` pointing at your `kscan`, copying in the property of your `kscan` where the broken GPIO pin appears. Depending on your `kscan` driver this could be `input-gpios`, `row-gpios`, etc. If you are using a [split keyboard](/docs/features/split-keyboards) and the issue is only affecting one part, you'll need to create separate keymap files for each part (`keyboard_left.keymap` and `keyboard_right.keymap`, for example), removing the shared one, and only edit the affected one.
 3. Edit the node to replace the old GPIO key with the new. For example:
 
 ```dts
@@ -162,7 +162,7 @@ Once you have done so, you will need to adjust the `kscan` of your keyboard slig
 };
 ```
 
-could have the pin `&pro_micro 6` (D6 in the [Pro Micro pinout](../hardware-integration/new-shield.mdx#shield-overlays)) replaced with `&gpio0 8` (P0.08 for nRF MCUs).
+could have the pin `&pro_micro 6` (D6 in the [Pro Micro pinout](/docs/hardware-integration/new-shield#shield-overlays)) replaced with `&gpio0 8` (P0.08 for nRF MCUs).
 
 ```dts title="<my_keyboard>.keymap"
 &kscan0 {
@@ -186,8 +186,8 @@ Under ideal conditions, a Bluetooth connection can be stable at even a 100 meter
 
 - Solid material near an antenna or between the two communicating antennas (metal is _particularly_ bad)
 - Interference from other nearby 2.4GHz connections
-- The antenna makes use of malfunctioning hardware such as a [faulty oscillator](connection-issues.mdx#mitigating-a-faulty-oscillator)
-- Not enough [power being provided to the antenna](connection-issues.mdx#unreliableweak-connection)
+- The antenna makes use of malfunctioning hardware such as a [faulty oscillator](/docs/troubleshooting/connection-issues#mitigating-a-faulty-oscillator)
+- Not enough [power being provided to the antenna](/docs/troubleshooting/connection-issues#unreliableweak-connection)
 - A missing external antenna for motherboard-integrated or PCIe wireless adapters
 - Interference from [USB 3 devices](https://www.bluetoothandusb3.com/the-explanation)
 - Keyboard design flaws, including
@@ -202,7 +202,7 @@ Troubleshooting wireless connectivity issues caused by hardware can only really 
 
 A good initial approach is:
 
-1. Make sure you have firmware flashed to your device that has BLE enabled, with at least one [Bluetooth profile](../features/bluetooth.md#profiles) free and no uncleared profiles previously paired to the host device.
+1. Make sure you have firmware flashed to your device that has BLE enabled, with at least one [Bluetooth profile](/docs/features/bluetooth#profiles) free and no uncleared profiles previously paired to the host device.
 2. Select the free profile.
 3. Remove as many physical objects between your ZMK device and a host device as possible.
 4. Switch off as many other nearby wireless devices as possible.

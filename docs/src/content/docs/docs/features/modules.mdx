@@ -25,7 +25,7 @@ The shift to using modules for keyboards is a relatively recent one, and not all
 
 ### GitHub Actions
 
-When [using GitHub Actions to build ZMK](../user-setup.mdx), adding modules is as simple as modifying the `west.yml` found in your `zmk-config`'s `config` directory. The recommended way of doing so is:
+When [using GitHub Actions to build ZMK](/docs/user-setup), adding modules is as simple as modifying the `west.yml` found in your `zmk-config`'s `config` directory. The recommended way of doing so is:
 
 1. Find the URL base (the parent URL) for the module and add it as an entry to the [remotes](https://docs.zephyrproject.org/4.1.0/develop/west/manifest.html#remotes).
 2. Add the module as an entry to the [projects](https://docs.zephyrproject.org/4.1.0/develop/west/manifest.html#projects).
@@ -107,7 +107,7 @@ manifest:
 
 ### Building Locally
 
-To add a module to your build when building locally, you will need to clone/copy said module into your local file tree. You can then build using the module as described in [Building with External Modules](../development/local-toolchain/build-flash.mdx#building-with-external-modules).
+To add a module to your build when building locally, you will need to clone/copy said module into your local file tree. You can then build using the module as described in [Building with External Modules](/docs/development/local-toolchain/build-flash#building-with-external-modules).
 
 ## Beta Testing
 
@@ -135,7 +135,7 @@ branch and create the pull request.
 
 ### GitHub Actions
 
-When [using GitHub Actions to build ZMK](../user-setup.mdx), once you have obtained the correct URL, you'll need to modify the `west.yml` file similarly to [Building With Modules](#building-with-modules). Add the remote for the branch like in said section. The difference is that you will need to change the selected remote and revision (or branch) for the `zmk` project.
+When [using GitHub Actions to build ZMK](/docs/user-setup), once you have obtained the correct URL, you'll need to modify the `west.yml` file similarly to [Building With Modules](#building-with-modules). Add the remote for the branch like in said section. The difference is that you will need to change the selected remote and revision (or branch) for the `zmk` project.
 
 #### Example
 
@@ -180,8 +180,8 @@ manifest:
 
 ### Building Locally
 
-When building from a pull request locally, you'll need to [perform the local user setup](../development/local-toolchain/setup/index.md), but using the repository of the pull request rather than the official ZMK repository. You can then [build and flash](../development/local-toolchain/build-flash.mdx) as usual.
+When building from a pull request locally, you'll need to [perform the local user setup](/docs/development/local-toolchain/setup), but using the repository of the pull request rather than the official ZMK repository. You can then [build and flash](/docs/development/local-toolchain/build-flash) as usual.
 
 ## Creating a ZMK Module
 
-Please see the dedicated page [here](../development/module-creation.md) for information on creating modules.
+Please see the dedicated page [here](/docs/development/module-creation) for information on creating modules.

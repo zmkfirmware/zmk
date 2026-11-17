@@ -6,7 +6,7 @@ sidebar:
 
 ## Idle
 
-In the idle state, peripherals such as displays and lighting are disabled, but the keyboard remains connected to Bluetooth so it can immediately respond when you press a key. Idle state is entered automatically after a timeout period that is [30 seconds by default](../config/power.md#low-power-states).
+In the idle state, peripherals such as displays and lighting are disabled, but the keyboard remains connected to Bluetooth so it can immediately respond when you press a key. Idle state is entered automatically after a timeout period that is [30 seconds by default](/docs/config/power#low-power-states).
 
 ## Deep Sleep
 
@@ -15,13 +15,13 @@ In the deep sleep state, the keyboard enters a software power-off state. Among o
 - Disconnects the keyboard from all Bluetooth connections
 - Disables any peripherals such as displays and lighting
 - If possible, disables external power output
-- Clears the contents of RAM, including any unsaved [Studio](studio.md) changes
+- Clears the contents of RAM, including any unsaved [Studio](/docs/features/studio) changes
 
 This state uses very little power, but it may take a few seconds to reconnect after waking. A [wakeup source](#wakeup-sources) is required to wake from deep sleep.
 
 ### Config
 
-Deep sleep must be enabled via its corresponding [config](../config/power.md#low-power-states).
+Deep sleep must be enabled via its corresponding [config](/docs/config/power#low-power-states).
 
 ### Wakeup Sources
 
@@ -52,7 +52,7 @@ The feature is intended as an alternative to using a hardware switch to physical
 A device can be put in the soft off state by:
 
 - Triggering a hardware-defined dedicated GPIO pin, if one exists;
-- Triggering the [soft off behavior](../keymaps/behaviors/soft-off.md) from the keymap.
+- Triggering the [soft off behavior](/docs/keymaps/behaviors/soft-off) from the keymap.
 
 Once in the soft off state, the device can only be woken up by:
 
@@ -63,16 +63,16 @@ The GPIO pin used to wake from sleep can be a hardware-defined one, such as for 
 
 ### Config
 
-Soft off must be enabled via [its corresponding config](../config/power.md#low-power-states) before it can be used.
+Soft off must be enabled via [its corresponding config](/docs/config/power#low-power-states) before it can be used.
 
 ### Using Soft Off
 
 If your keyboard has hardware designed to take advantage of soft off, refer to your keyboard's documentation.
 
-For keyboards which do not have such hardware, using soft off is as simple as placing the [soft off behavior](../keymaps/behaviors/soft-off.md) in your keymap and then invoking it.
+For keyboards which do not have such hardware, using soft off is as simple as placing the [soft off behavior](/docs/keymaps/behaviors/soft-off) in your keymap and then invoking it.
 
 You can then wake up the keyboard by pressing the reset button once, and repeating this for each side for split keyboards.
 
 ### Adding Soft Off to a Keyboard
 
-Please refer to the [corresponding page under hardware integration](../hardware-integration/soft-off-setup.mdx) for details.
+Please refer to the [corresponding page under hardware integration](/docs/hardware-integration/soft-off-setup) for details.

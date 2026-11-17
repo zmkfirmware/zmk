@@ -10,7 +10,7 @@ Mouse emulation behaviors send mouse events, including mouse button presses, cur
 
 :::caution[Refreshing the HID descriptor]
 
-Enabling or disabling the mouse emulation feature modifies the HID report descriptor and requires it to be [refreshed](../../features/bluetooth.md#refreshing-the-hid-descriptor).
+Enabling or disabling the mouse emulation feature modifies the HID report descriptor and requires it to be [refreshed](/docs/features/bluetooth#refreshing-the-hid-descriptor).
 The mouse functionality will not work over BLE until that is done.
 
 :::
@@ -79,7 +79,7 @@ This example will send press of the fourth mouse button when the binding is trig
 
 ### Input Processors
 
-If you want to apply any [input processors](../input-processors/index.md#input-processors-overview) to `&mkp` you can do so by referencing `&mkp_input_listener`, e.g.:
+If you want to apply any [input processors](/docs/keymaps/input-processors#input-processors-overview) to `&mkp` you can do so by referencing `&mkp_input_listener`, e.g.:
 
 ```dts
 &mkp_input_listener {
@@ -123,7 +123,7 @@ The following will send a left mouse movement event to the host when pressed/hel
 
 ### Input Processors
 
-If you want to apply any [input processors](../input-processors/index.md#input-processors-overview) to `&mmv` you can do so by referencing `&mmv_input_listener`, e.g.:
+If you want to apply any [input processors](/docs/keymaps/input-processors#input-processors-overview) to `&mmv` you can do so by referencing `&mmv_input_listener`, e.g.:
 
 ```dts
 &mmv_input_listener {
@@ -167,13 +167,13 @@ The following will send a scroll left event to the host when pressed/held:
 
 :::note
 
-If you enabled [smooth scrolling](../../config/pointing.md#kconfig) then you will want to use the same `MOVE_UP`, `MOVE_DOWN`, etc values instead of the smaller `SCRL_*` parameters for more sensible scroll speeds.
+If you enabled [smooth scrolling](/docs/config/pointing#kconfig) then you will want to use the same `MOVE_UP`, `MOVE_DOWN`, etc values instead of the smaller `SCRL_*` parameters for more sensible scroll speeds.
 
 :::
 
 ### Input Processors
 
-If you want to apply any [input processors](../input-processors/index.md#input-processors-overview) to `&msc` you can do so by referencing `&msc_input_listener`, e.g.:
+If you want to apply any [input processors](/docs/keymaps/input-processors#input-processors-overview) to `&msc` you can do so by referencing `&msc_input_listener`, e.g.:
 
 ```dts
 &msc_input_listener {
@@ -183,7 +183,7 @@ If you want to apply any [input processors](../input-processors/index.md#input-p
 
 ## Advanced Configuration
 
-Both `&mmv` and `&msc` are instances of the `"zmk,behavior-input-two-axis"` behavior and can be modified using the [two axis input behavior](../../config/behaviors.md#two-axis-input) configuration properties. The default settings are as follows:
+Both `&mmv` and `&msc` are instances of the `"zmk,behavior-input-two-axis"` behavior and can be modified using the [two axis input behavior](/docs/config/behaviors#two-axis-input) configuration properties. The default settings are as follows:
 
 ### Mouse Move
 

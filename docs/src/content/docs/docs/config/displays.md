@@ -4,9 +4,9 @@ sidebar:
   label: Displays
 ---
 
-See the [displays feature page](../features/displays.md) for more details.
+See the [displays feature page](/docs/features/displays) for more details.
 
-See [Configuration Overview](index.md) for instructions on how to change these settings.
+See [Configuration Overview](/docs/config) for instructions on how to change these settings.
 
 ## Kconfig
 

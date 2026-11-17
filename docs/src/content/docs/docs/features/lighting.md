@@ -68,7 +68,7 @@ For example:
 CONFIG_ZMK_RGB_UNDERGLOW=y
 ```
 
-See [Configuration Overview](../config/index.md) for more instructions on how to use Kconfig.
+See [Configuration Overview](/docs/config) for more instructions on how to use Kconfig.
 
 If your board or shield does not have RGB underglow configured, refer to the [Adding RGB Underglow Support to a Keyboard](#adding-rgb-underglow-support-to-a-keyboard) section.
 
@@ -76,7 +76,7 @@ If your board or shield does not have RGB underglow configured, refer to the [Ad
 
 The number of LEDs specified in the default configuration for your board or shield may not match the number you have installed. For example, the `corne` shield specifies only 10 LEDs per side while supporting up to 27. On a split keyboard, a good sign of this mismatch is if the lit LEDs on each half are symmetrical.
 
-The `chain-length` property of the `led_strip` node controls the number of underglow LEDs. If it is incorrect for your build, [you can change this property](../config/index.md#changing-devicetree-properties) in your `<keyboard>.keymap` file by adding a stanza like this one outside of any other node (i.e. above or below the `/` node):
+The `chain-length` property of the `led_strip` node controls the number of underglow LEDs. If it is incorrect for your build, [you can change this property](/docs/config#changing-devicetree-properties) in your `<keyboard>.keymap` file by adding a stanza like this one outside of any other node (i.e. above or below the `/` node):
 
 ```dts
 &led_strip {
@@ -88,11 +88,11 @@ For split keyboards, set `chain-length` to the number of LEDs installed on each 
 
 ### Configuring RGB Underglow
 
-See [RGB underglow configuration](../config/lighting.md#rgb-underglow).
+See [RGB underglow configuration](/docs/config/lighting#rgb-underglow).
 
 ### Adding RGB Underglow Support to a Keyboard
 
-See [RGB underglow hardware integration page](../hardware-integration/lighting/underglow.md) on adding underglow support to a ZMK keyboard.
+See [RGB underglow hardware integration page](/docs/hardware-integration/lighting/underglow) on adding underglow support to a ZMK keyboard.
 
 ## Backlight
 
@@ -115,8 +115,8 @@ If your board or shield does not have backlight configured, refer to [Adding Bac
 ### Configuring Backlight
 
 There are various Kconfig options used to configure the backlight feature.
-See [backlight configuration](../config/lighting.md#backlight) for details.
+See [backlight configuration](/docs/config/lighting#backlight) for details.
 
 ### Adding Backlight to a Board or a Shield
 
-See [backlight hardware integration page](../hardware-integration/lighting/backlight.mdx) for information on adding backlight support to a ZMK keyboard.
+See [backlight hardware integration page](/docs/hardware-integration/lighting/backlight) for information on adding backlight support to a ZMK keyboard.

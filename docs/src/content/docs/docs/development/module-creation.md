@@ -4,7 +4,7 @@ sidebar:
   label: ZMK Module Creation
 ---
 
-[ZMK modules](../features/modules.mdx) are the recommended method of adding content to ZMK, whenever it is possible. This page will guide you through creating a module for ZMK. Distinction is made between modules used for different purposes:
+[ZMK modules](/docs/features/modules) are the recommended method of adding content to ZMK, whenever it is possible. This page will guide you through creating a module for ZMK. Distinction is made between modules used for different purposes:
 
 - Modules containing one or more keyboard-related definitions (boards, shields, interconnects, etc.)
 - Modules containing behaviors & features
@@ -95,7 +95,7 @@ manifest:
       import: west.yml
 ```
 
-See the [modules feature page](../features/modules.mdx) for additional information on using west manifest files.
+See the [modules feature page](/docs/features/modules) for additional information on using west manifest files.
 
 ### Informational Files
 

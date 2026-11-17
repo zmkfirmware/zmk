@@ -4,9 +4,9 @@ sidebar:
   label: Encoders
 ---
 
-See the [Encoders informational page](../features/encoders.md) for more details, including instructions for adding encoder support to a board.
+See the [Encoders informational page](/docs/features/encoders) for more details, including instructions for adding encoder support to a board.
 
-See [Configuration Overview](index.md) for instructions on how to change these settings.
+See [Configuration Overview](/docs/config) for instructions on how to change these settings.
 
 ## EC11 Encoders
 

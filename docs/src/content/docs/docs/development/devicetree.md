@@ -231,7 +231,7 @@ Essentially, each layer in a keymap consists of an array of phandles pointing to
 
 ## Devicetree Preprocessing
 
-Much of the complexity in `dts` files comes from preprocessing. The resulting devicetree after all preprocessing has finished [can be inspected](../troubleshooting/building-issues.md#devicetree-related-issues) for both GitHub Actions and local builds. For reasons that will make more sense later, your keymap and most of your customisations will be found near the bottom of the file.
+Much of the complexity in `dts` files comes from preprocessing. The resulting devicetree after all preprocessing has finished [can be inspected](/docs/troubleshooting/building-issues#devicetree-related-issues) for both GitHub Actions and local builds. For reasons that will make more sense later, your keymap and most of your customisations will be found near the bottom of the file.
 
 Preprocessing comes from two sources:
 
@@ -253,15 +253,15 @@ The C preprocessor is used to import some nodes and other preprocessor definitio
 
 which are found at the top of the running example import the default behavior node definitions for ZMK, along with a list of preprocessor definitions. The parameters `Z`, `M`, and `K` (passed to the `&kp` phandle in the running example) are actually C preprocessor defines. For example, during preprocessing references to `Z` get turned into the number `0x07001D`, which is the number that gets passed to the ZMK host device (e.g. your computer) for it to then re-interpret as the letter "z".
 
-The C preprocessor often gets leveraged by ZMK power users to reduce repetition in their keymap files. An example of this is the [macro-behavior convenience macro](../keymaps/behaviors/macros.md#convenience-c-macro). ZMK designers will also come across the `RC` macro used for matrix transformations, and make use of convenience defines such as `GPIO_ACTIVE_HIGH`.
+The C preprocessor often gets leveraged by ZMK power users to reduce repetition in their keymap files. An example of this is the [macro-behavior convenience macro](/docs/keymaps/behaviors/macros#convenience-c-macro). ZMK designers will also come across the `RC` macro used for matrix transformations, and make use of convenience defines such as `GPIO_ACTIVE_HIGH`.
 
 ### Devicetree Processing
 
 A devicetree is almost always constructed from multiple files. These files are generally speaking:
 
 - `.dtsi` files, which exist exclusively to be included via the C preprocessor (their contents get "pasted" at the location of the `#include` command) and are not used by the build sytem otherwise.
-- A `.dts` file, which forms the "base" of the devicetree. A single one of these is always present when a devicetree is constructed. For ZMK, the `.dts` file contains the sections of the devicetree describing the [_board_](hardware-integration/index.mdx#what-is-a-board). This includes importing a number of `.dtsi` files describing the specific SoC that the board uses.
-- Any number of `.overlay` files. These files can come from various sources, such as [shields](hardware-integration/index.mdx#what-is-a-shield) or [snippets](https://docs.zephyrproject.org/4.1.0/build/snippets/index.html). An overlay is applied to a `.dts` file by appending its contents to the end of the `.dts` file, i.e. it is placed at the bottom of the file. Multiple overlays are applied by doing so repeatedly in a particular order. Without going into the details of the exact order in which overlays are applied, it is enough to know that if you specify e.g. `shield: corne_left nice_view_adapter nice_view` in your `build.yaml`, then the overlays are applied left to right.
+- A `.dts` file, which forms the "base" of the devicetree. A single one of these is always present when a devicetree is constructed. For ZMK, the `.dts` file contains the sections of the devicetree describing the [_board_](/docs/hardware-integration#what-is-a-board). This includes importing a number of `.dtsi` files describing the specific SoC that the board uses.
+- Any number of `.overlay` files. These files can come from various sources, such as [shields](/docs/hardware-integration#what-is-a-shield) or [snippets](https://docs.zephyrproject.org/4.1.0/build/snippets/index.html). An overlay is applied to a `.dts` file by appending its contents to the end of the `.dts` file, i.e. it is placed at the bottom of the file. Multiple overlays are applied by doing so repeatedly in a particular order. Without going into the details of the exact order in which overlays are applied, it is enough to know that if you specify e.g. `shield: corne_left nice_view_adapter nice_view` in your `build.yaml`, then the overlays are applied left to right.
 - A single `.keymap` file. This file being included is ZMK-specific, and is treated as the "final" `.overlay` file, appended after all other overlays.
 
 #### Merging and overwriting nodes

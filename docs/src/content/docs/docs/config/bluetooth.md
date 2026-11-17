@@ -4,9 +4,9 @@ sidebar:
   label: Bluetooth
 ---
 
-See the [bluetooth feature page](../features/bluetooth.md) for more details on the general Bluetooth functionality in ZMK.
+See the [bluetooth feature page](/docs/features/bluetooth) for more details on the general Bluetooth functionality in ZMK.
 
-See [Configuration Overview](index.md) for instructions on how to change these settings.
+See [Configuration Overview](/docs/config) for instructions on how to change these settings.
 
 ## Kconfig
 
