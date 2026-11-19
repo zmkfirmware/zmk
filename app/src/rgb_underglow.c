@@ -58,6 +58,8 @@ struct rgb_underglow_state {
     uint8_t current_effect;
     uint16_t animation_step;
     bool on;
+    bool rgb_state_before_sleeping;
+    bool valid;
 };
 
 static const struct device *led_strip;
@@ -221,6 +223,18 @@ static int rgb_settings_set(const char *name, size_t len, settings_read_cb read_
 
         rc = read_cb(cb_arg, &state, sizeof(state));
         if (rc >= 0) {
+            // settings save was ran earlier
+            if (state.valid) {
+                // on wake up or reset, restore state.on from rgb_state_before_sleeping only when it
+                // was last active
+                if (state.rgb_state_before_sleeping) {
+                    state.on = true;
+                }
+            } else {
+                // first boot after settings reset or fresh kb, use
+                // `CONFIG_ZMK_RGB_UNDERGLOW_ON_START` config for initial RGB state
+                state.on = IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_ON_START);
+            }
             if (state.on) {
                 k_timer_start(&underglow_tick, K_NO_WAIT, K_MSEC(50));
             }
@@ -237,6 +251,7 @@ static int rgb_settings_set(const char *name, size_t len, settings_read_cb read_
 SETTINGS_STATIC_HANDLER_DEFINE(rgb_underglow, "rgb/underglow", NULL, rgb_settings_set, NULL, NULL);
 
 static void zmk_rgb_underglow_save_state_work(struct k_work *_work) {
+    state.valid = true;
     settings_save_one("rgb/underglow/state", &state, sizeof(state));
 }
 
@@ -271,11 +286,13 @@ static int zmk_rgb_underglow_init(void) {
 
 #if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB)
     state.on = zmk_usb_is_powered();
-#endif
-
+    // only start inside init if auto_off_usb is configured
+    // with CONFIG_ZMK_RGB_UNDERGLOW_ON_START=y, if this was outside, the rgb will wake up every
+    // time on reset despite the rgb last state being off
     if (state.on) {
         k_timer_start(&underglow_tick, K_NO_WAIT, K_MSEC(50));
     }
+#endif
 
     return 0;
 }
@@ -480,6 +497,8 @@ static int rgb_underglow_auto_state(bool target_wake_state) {
     sleep_state.is_awake = target_wake_state;
 
     if (sleep_state.is_awake) {
+        // this only works if waking up from idle, otherwise this sleep_state obj is lost and wake
+        // up uses settings read from flash instead
         if (sleep_state.rgb_state_before_sleeping) {
             return zmk_rgb_underglow_on();
         } else {
@@ -487,6 +506,9 @@ static int rgb_underglow_auto_state(bool target_wake_state) {
         }
     } else {
         sleep_state.rgb_state_before_sleeping = state.on;
+        // persist rgb_state_before_sleeping in settings flash
+        state.rgb_state_before_sleeping = state.on;
+        state.valid = true;
         return zmk_rgb_underglow_off();
     }
 }
