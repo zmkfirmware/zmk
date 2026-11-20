@@ -1,0 +1,47 @@
+---
+import { getCollection } from "astro:content";
+import { CardGrid, LinkCard } from "@astrojs/starlight/components";
+
+// Starlight throws when `Astro.locals.starlightRoute` is read outside of a
+// Starlight page. Fall back to rendering nothing in that case.
+let currentId: string | undefined;
+try {
+  currentId = Astro.locals.starlightRoute.entry.id;
+} catch {
+  currentId = undefined;
+}
+
+const entries = currentId ? await getCollection("docs") : [];
+const prefix = currentId ? `${currentId}/` : "";
+
+const children = entries
+  .filter((entry) => {
+    if (!currentId || entry.id === currentId) return false;
+    if (!entry.id.startsWith(prefix)) return false;
+
+    const childId = entry.id.slice(prefix.length);
+    // Only direct children: do not include nested pages, index pages, or
+    // underscored internal entries.
+    return (
+      Boolean(childId) && !childId.includes("/") && !childId.startsWith("_")
+    );
+  })
+  .sort((a, b) => a.data.title.localeCompare(b.data.title));
+---
+
+{/*
+  If the current route cannot be determined (for example, when this component is
+  used outside a Starlight page), there are no children to list, so render
+  nothing.
+*/}
+{currentId && children.length > 0 && (
+  <CardGrid>
+    {children.map((child) => (
+      <LinkCard
+        title={child.data.title}
+        description={child.data.description}
+        href={`/${child.id}`}
+      />
+    ))}
+  </CardGrid>
+)}

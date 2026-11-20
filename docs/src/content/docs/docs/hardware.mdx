@@ -1,0 +1,36 @@
+---
+title: Supported Hardware
+sidebar:
+  label: Supported Hardware
+---
+
+With the solid technical foundation of Zephyr™ RTOS, ZMK can support a wide variety of hardware targets,
+including but not limited to Nordic nRF52, Raspberry Pi RP2040/RP2350, most ST STM32 MCUs, and Microchip SAMD21.
+ZMK has the potential to run on any hardware supported by Zephyr™, such as those on
+the [Zephyr™ supported boards](https://docs.zephyrproject.org/4.1.0/boards/index.html) page, though you may need to do some additional work to configure them for ZMK.
+
+The boards and shields that have been tested and pre-configured by the ZMK contributors are listed in the
+[Hardware Catalog](/catalog/hardware), along with their features, build instructions, and documentation.
+
+Community and vendor made ZMK modules can provide additional hardware support, although they're not listed in the hardware catalog yet.
+
+Designing a new keyboard? Check out the [Hardware Integration](/docs/hardware-integration) section
+for more information on how to configure ZMK to run on your custom hardware.
+
+:::note[Boards, Board Variants, and Shields]
+
+ZMK uses the Zephyr concepts of "boards" and "shields" to refer to different parts of a keyboard build that are then combined during a firmware build.
+Please see the [explainer on boards & shields](/docs/hardware-integration#boards--shields) for more details.
+
+Zephyr boards come with minimal configuration. ZMK board variants add the necessary configuration to make the board usable out of the box with ZMK.
+
+:::
+
+## Other Hardware
+
+In addition to the basic keyboard functionality, there is also support for additional keyboard hardware such as encoders, RGB underglow, backlight and displays.
+Please see pages under the "Features" header in the sidebar for details.
+
+ZMK doesn't support boards with AVR 8-bit processors, such as the ATmega32U4, because Zephyr™ only
+supports 32-bit and 64-bit platforms. As a result, controllers like the SparkFun Pro Micro, Elite-C,
+and Arduino Uno Rev3 are **NOT** supported by ZMK.
