@@ -141,6 +141,8 @@ export default defineConfig({
             // Validator doesn't know about the custom pages
             "/power-profiler",
             "/keymap-upgrader",
+            "/catalog/hardware",
+            "/catalog/hardware/**",
             // Validator doesn't know about the hash, because it's from custom HTML, not markdown
             "/docs/hardware#composite",
             "/docs/hardware#onboard",
