@@ -1,0 +1,7 @@
+allowBuilds:
+  tree-sitter: true
+  tree-sitter-devicetree: true
+minimumReleaseAgeExclude:
+  - '@astrojs/starlight@0.42.8'
+patchedDependencies:
+  '@astrojs/starlight@0.42.8': patches/@astrojs__starlight@0.42.8.patch

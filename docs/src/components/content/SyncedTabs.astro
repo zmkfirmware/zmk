@@ -1,0 +1,30 @@
+---
+import { Tabs } from "@astrojs/starlight/components";
+
+interface Props {
+  /**
+   * The Starlight tab sync key. The visible tabs that control this content
+   * must use the same key.
+   */
+  syncKey: string;
+}
+
+const { syncKey } = Astro.props;
+---
+
+{/*
+  A Tabs group whose tab list is hidden. Use it for content that follows the
+  selection of another, visible Tabs group with the same sync key.
+*/}
+<div class="hidden-tabs">
+  <Tabs syncKey={syncKey}>
+    <slot />
+  </Tabs>
+</div>
+
+<style>
+  /* Hide only this group's tab list, not nested tab groups inside its panels. */
+  .hidden-tabs > :global(starlight-tabs) > :global(.tablist-wrapper) {
+    display: none;
+  }
+</style>

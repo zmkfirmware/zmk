@@ -1,0 +1,171 @@
+---
+import { Icon } from "@astrojs/starlight/components";
+
+import { isPath, navItems } from "../../lib/nav";
+
+interface Props {
+  /** Which presentation to render. */
+  variant: "desktop" | "dropdown" | "drawer";
+  /** Normalised pathname used for active state. */
+  pathname: string;
+}
+
+const { variant, pathname } = Astro.props;
+---
+
+{variant === "desktop" && (
+  <nav class="nav-main sl-hidden lg:sl-flex" aria-label="Main navigation">
+    {navItems.map((item) =>
+      item.children ? (
+        <details class="site-nav-tools nav-expansion" data-header-dropdown>
+          <summary
+            class="site-nav-link"
+            aria-current={item.isActive(pathname) ? "true" : undefined}
+          >
+            {item.label}
+            <Icon name="down-caret" class="caret" />
+          </summary>
+          <div class="header-dropdown-panel">
+            {item.children.map((child) => (
+              <a
+                href={child.href}
+                class="site-nav-link"
+                aria-current={isPath(pathname, child.href) ? "page" : undefined}
+              >
+                {child.label}
+              </a>
+            ))}
+          </div>
+        </details>
+      ) : (
+        <a
+          href={item.href}
+          class="site-nav-link"
+          aria-current={item.isActive(pathname) ? "page" : undefined}
+        >
+          {item.label}
+        </a>
+      )
+    )}
+  </nav>
+)}
+
+{variant === "dropdown" && (
+  <details
+    class="nav-collapsed nav-expansion sl-hidden md:sl-block lg:sl-hidden"
+    data-header-dropdown
+  >
+    <summary
+      aria-label="Site navigation"
+      aria-controls="site-nav-panel"
+      title="Site navigation"
+    >
+      <Icon name="down-caret" class="caret" />
+    </summary>
+    <nav
+      id="site-nav-panel"
+      class="header-dropdown-panel nav-collapsed-panel"
+      aria-label="Site navigation"
+    >
+      {navItems.map((item) =>
+        item.children ? (
+          <div class="site-nav-group">
+            <span class="site-nav-heading">{item.label}</span>
+            {item.children.map((child) => (
+              <a
+                href={child.href}
+                class="site-nav-link"
+                aria-current={isPath(pathname, child.href) ? "page" : undefined}
+              >
+                {child.label}
+              </a>
+            ))}
+          </div>
+        ) : (
+          <a
+            href={item.href}
+            class="site-nav-link"
+            aria-current={item.isActive(pathname) ? "page" : undefined}
+          >
+            {item.label}
+          </a>
+        )
+      )}
+    </nav>
+  </details>
+)}
+
+{variant === "drawer" && (
+  <nav class="nav-drawer" aria-label="Main navigation">
+    {navItems.map((item) =>
+      item.children ? (
+        <div class="site-nav-group">
+          <span class="site-nav-heading">{item.label}</span>
+          {item.children.map((child) => (
+            <a
+              href={child.href}
+              class="site-nav-link"
+              aria-current={isPath(pathname, child.href) ? "page" : undefined}
+            >
+              {child.label}
+            </a>
+          ))}
+        </div>
+      ) : (
+        <a
+          href={item.href}
+          class="site-nav-link"
+          aria-current={item.isActive(pathname) ? "page" : undefined}
+        >
+          {item.label}
+        </a>
+      )
+    )}
+  </nav>
+)}
+
+<style>
+  @layer starlight.core {
+    .nav-main {
+      align-items: center;
+      gap: 0.125rem;
+      min-width: 0;
+    }
+
+    .nav-collapsed > summary {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.5rem;
+      height: 2.5rem;
+      border: 1px solid var(--sl-color-gray-5);
+      border-radius: var(--zmk-radius-panel);
+      background-color: var(--sl-color-black);
+      color: var(--sl-color-gray-1);
+      transition:
+        background-color 0.15s ease,
+        border-color 0.15s ease,
+        color 0.15s ease;
+    }
+    .nav-collapsed > summary:hover {
+      color: var(--sl-color-white);
+      background-color: var(--sl-color-gray-6);
+      border-color: var(--sl-color-gray-4);
+    }
+    .nav-collapsed[open] > summary {
+      color: var(--sl-color-text-accent);
+      background-color: var(--sl-color-accent-low);
+      border-color: var(--sl-color-accent);
+    }
+    .nav-collapsed-panel {
+      inset-inline-start: 0;
+      min-width: 14rem;
+    }
+
+    .nav-drawer {
+      display: flex;
+      flex-direction: column;
+      gap: 0.125rem;
+    }
+  }
+</style>

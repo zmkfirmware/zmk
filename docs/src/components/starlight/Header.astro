@@ -1,0 +1,220 @@
+---
+// Based on @astrojs/starlight 0.42.8 "components/Header.astro".
+import config from "virtual:starlight/user-config";
+
+import { Icon } from "@astrojs/starlight/components";
+import LanguageSelect from "@astrojs/starlight/components/LanguageSelect.astro";
+import Search from "@astrojs/starlight/components/Search.astro";
+import SiteTitle from "@astrojs/starlight/components/SiteTitle.astro";
+import ThemeSelect from "@astrojs/starlight/components/ThemeSelect.astro";
+
+import {
+  versionDropdownLabel,
+  versionNavbarItems,
+} from "virtual:zmk/version-info";
+import { normalizePathname } from "../../lib/nav";
+import NavLinks from "./NavLinks.astro";
+import SocialIcons from "./SocialIcons.astro";
+
+/**
+ * Render the `Search` component if Pagefind is enabled or the default search component has been overridden.
+ */
+const shouldRenderSearch =
+  config.pagefind ||
+  config.components.Search !== "@astrojs/starlight/components/Search.astro";
+
+const pathname = normalizePathname(Astro.url.pathname);
+const externalHint = "(opens in a new tab)";
+---
+
+<div class="header">
+  <div class="header-start">
+    <div class="title-wrapper sl-flex">
+      <SiteTitle />
+    </div>
+    <NavLinks variant="dropdown" pathname={pathname} />
+    <NavLinks variant="desktop" pathname={pathname} />
+  </div>
+  <div class="header-end print:hidden">
+    {shouldRenderSearch && <Search />}
+    <div class="header-actions sl-hidden md:sl-flex">
+      <details class="version-dropdown nav-expansion" data-header-dropdown>
+        <summary aria-controls="version-panel" class="site-nav-link">
+          <span>{versionDropdownLabel}</span>
+          <Icon name="down-caret" class="caret" />
+        </summary>
+        <div id="version-panel" class="header-dropdown-panel version-panel">
+          {versionNavbarItems.map((item) => (
+            <a
+              href={item.href}
+              class="version-item"
+              aria-current={item.current ? "true" : undefined}
+            >
+              <span class="version-label">{item.label}</span>
+              {item.current && (
+                <Icon name="approve-check" class="version-check" />
+              )}
+            </a>
+          ))}
+        </div>
+      </details>
+      <a
+        class="site-nav-link"
+        href="https://zmk.studio/"
+        target="_blank"
+        rel="noreferrer"
+      >
+        <span>ZMK Studio</span>
+        <Icon name="external" class="external-icon" />{" "}
+        <span class="sr-only">{externalHint}</span>
+      </a>
+      <div class="social-icons">
+        <SocialIcons />
+      </div>
+      <ThemeSelect />
+      <LanguageSelect />
+    </div>
+  </div>
+</div>
+
+<style>
+  @layer starlight.core {
+    .header {
+      display: flex;
+      gap: var(--sl-nav-gap);
+      justify-content: space-between;
+      align-items: center;
+      height: 100%;
+      min-width: 0;
+    }
+
+    .header-start {
+      display: flex;
+      flex: none;
+      align-items: center;
+      gap: 0.5rem;
+      min-width: 0;
+    }
+
+    .title-wrapper {
+      /* Prevent long titles overflowing and covering the search and menu buttons on narrow viewports. */
+      overflow: clip;
+      /* Avoid clipping focus ring around link inside title wrapper. */
+      padding: 0.25rem;
+      margin: -0.25rem;
+      min-width: 0;
+    }
+
+    .header-end {
+      display: flex;
+      flex: 1 1 auto;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0.75rem;
+      min-width: 0;
+    }
+
+    /* Keep the search field as the only shrinkable item in the row. */
+    .header-actions {
+      flex: none;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .social-icons {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .social-icons::after {
+      content: "";
+      height: 2rem;
+      border-inline-end: 1px solid var(--sl-color-gray-5);
+    }
+
+    .version-panel {
+      inset-inline-end: 0;
+      inset-inline-start: auto;
+      min-width: 15rem;
+    }
+
+    .version-item {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      column-gap: 0.5rem;
+      padding: 0.45rem 0.6rem;
+      border-radius: var(--zmk-radius-control);
+      color: var(--sl-color-gray-2);
+      text-decoration: none;
+    }
+    .version-item:hover,
+    .version-item:focus-visible {
+      color: var(--sl-color-white);
+      background-color: var(--sl-color-gray-6);
+    }
+    .version-item[aria-current] {
+      color: var(--sl-color-white);
+    }
+    .version-label {
+      font-size: var(--sl-text-sm);
+    }
+    .version-check {
+      grid-column: 2;
+      align-self: center;
+      color: var(--sl-color-text-accent);
+    }
+
+    .header-actions :global(starlight-theme-select),
+    .header-actions :global(starlight-lang-select) {
+      display: flex;
+      align-items: center;
+    }
+  }
+</style>
+
+<script>
+  const header = document.querySelector<HTMLElement>(".page > .header");
+  const dropdowns = [
+    ...(header?.querySelectorAll<HTMLDetailsElement>(
+      "details[data-header-dropdown]"
+    ) ?? []),
+  ];
+
+  const closeDropdowns = (except?: HTMLDetailsElement) => {
+    dropdowns.forEach((details) => {
+      if (details !== except) details.open = false;
+    });
+  };
+
+  dropdowns.forEach((details) => {
+    details.addEventListener("toggle", () => {
+      if (details.open) closeDropdowns(details);
+    });
+
+    details.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", () => {
+        details.open = false;
+      });
+    });
+  });
+
+  document.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof Node)) return;
+
+    dropdowns.forEach((details) => {
+      if (details.open && !details.contains(target)) details.open = false;
+    });
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") return;
+
+    const openDropdown = dropdowns.find((details) => details.open);
+    if (!openDropdown) return;
+
+    openDropdown.open = false;
+    openDropdown.querySelector<HTMLElement>("summary")?.focus();
+    event.stopPropagation();
+  });
+</script>
