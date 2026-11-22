@@ -28,18 +28,23 @@
 
 #define ZMK_SPLIT_CENTRAL_PERIPHERAL_COUNT MAX(BLE_PERIPHERAL_COUNT, WIRED_PERIPHERAL_COUNT)
 
-#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
-#include <zmk/hid_indicators_types.h>
-#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
-
 int zmk_split_central_invoke_behavior(uint8_t source, struct zmk_behavior_binding *binding,
                                       struct zmk_behavior_binding_event event, bool state);
 
-#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_CENTRAL_STATE_SYNC)
 
-int zmk_split_central_update_hid_indicator(zmk_hid_indicators_t indicators);
+#include <zmk/split/transport/types.h>
 
-#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
+int zmk_split_central_get_available_source_ids(uint8_t *source_ids);
+int zmk_split_central_send_command(uint8_t source, struct zmk_split_transport_central_command cmd);
+
+/**
+ * @brief Mark all enabled central state domains as changed for a peripheral, so the full state is
+ * sent to it again. Call when the peripheral becomes reachable.
+ */
+void zmk_split_central_state_sync_resync(uint8_t source);
+
+#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_CENTRAL_STATE_SYNC)
 
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING)
 

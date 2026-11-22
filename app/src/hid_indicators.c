@@ -12,7 +12,6 @@
 #include <zmk/hid_indicators.h>
 #include <zmk/events/hid_indicators_changed.h>
 #include <zmk/events/endpoint_changed.h>
-#include <zmk/split/central.h>
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -31,10 +30,6 @@ static void raise_led_changed_event(struct k_work *_work) {
     const zmk_hid_indicators_t indicators = zmk_hid_indicators_get_current_profile();
 
     raise_zmk_hid_indicators_changed((struct zmk_hid_indicators_changed){.indicators = indicators});
-
-#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS) && IS_ENABLED(CONFIG_ZMK_SPLIT)
-    zmk_split_central_update_hid_indicator(indicators);
-#endif
 }
 
 static K_WORK_DEFINE(led_changed_work, raise_led_changed_event);

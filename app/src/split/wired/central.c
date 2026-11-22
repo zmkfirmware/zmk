@@ -24,6 +24,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/behavior.h>
 #include <zmk/sensors.h>
 #include <zmk/split/transport/central.h>
+#include <zmk/split/central.h>
 #include <zmk/event_manager.h>
 #include <zmk/events/position_state_changed.h>
 #include <zmk/events/sensor_event.h>
@@ -183,9 +184,13 @@ static ssize_t get_payload_data_size(const struct zmk_split_transport_central_co
         return sizeof(cmd->data.invoke_behavior);
     case ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_PHYSICAL_LAYOUT:
         return sizeof(cmd->data.set_physical_layout);
-    case ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_HID_INDICATORS:
-        return sizeof(cmd->data.set_hid_indicators);
     default:
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_CENTRAL_STATE_SYNC)
+        if ((uint8_t)(cmd->type - ZMK_SPLIT_TRANSPORT_STATE_SYNC_CMD_TYPE_FIRST) <
+            ZMK_SPLIT_TRANSPORT_STATE_SYNC_CMD_COUNT) {
+            return ZMK_SPLIT_TRANSPORT_STATE_SYNC_DATA_SIZE;
+        }
+#endif
         return -ENOTSUP;
     }
 }
@@ -390,6 +395,9 @@ static int split_central_wired_get_available_source_ids(uint8_t *sources) {
 
 static int split_central_wired_set_enabled(bool enabled) {
     if (enabled) {
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_CENTRAL_STATE_SYNC)
+        zmk_split_central_state_sync_resync(0);
+#endif
         begin_rx();
 #if IS_HALF_DUPLEX_MODE
         k_work_schedule(&rx_done_work, K_MSEC(CONFIG_ZMK_SPLIT_WIRED_HALF_DUPLEX_RX_TIMEOUT));
@@ -454,8 +462,16 @@ ZMK_SPLIT_TRANSPORT_CENTRAL_REGISTER(wired_central, &central_api, CONFIG_ZMK_SPL
 #if HAS_DETECT_GPIO
 
 static void notify_transport_status(void) {
+    struct zmk_split_transport_status status = split_central_wired_get_status();
+
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_CENTRAL_STATE_SYNC)
+    if (status.connections != ZMK_SPLIT_TRANSPORT_CONNECTIONS_STATUS_DISCONNECTED) {
+        zmk_split_central_state_sync_resync(0);
+    }
+#endif
+
     if (transport_status_cb) {
-        transport_status_cb(&wired_central, split_central_wired_get_status());
+        transport_status_cb(&wired_central, status);
     }
 }
 

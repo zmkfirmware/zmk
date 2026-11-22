@@ -1,0 +1,9 @@
+central <dbg> zmk: send_work_cb: central state: send type 3 to 0
+peripheral 0 <dbg> zmk: security_changed: Security changed: FD:9E:B2:48:47:39 (random) level 2
+peripheral 0 <dbg> zmk: zmk_split_transport_peripheral_command_handler:
+peripheral 0 <dbg> zmk: handle_hid_indicators: Raising HID indicators changed event: 0
+peripheral 0 <dbg> zmk: disconnected: Disconnected from FD:9E:B2:48:47:39 (random) (reason 0x08)
+peripheral 0 <dbg> zmk: security_changed: Security changed: FD:9E:B2:48:47:39 (random) level 2
+central <dbg> zmk: send_work_cb: central state: send type 3 to 0
+peripheral 0 <dbg> zmk: zmk_split_transport_peripheral_command_handler:
+peripheral 0 <dbg> zmk: handle_hid_indicators: Raising HID indicators changed event: 0

@@ -7,6 +7,9 @@ config ZMK_SPLIT_WIRED_PRIORITY
     default 0
 
 config ZMK_SPLIT_WIRED_CMD_BUFFER_ITEMS
+    # An item fits a 41-byte behavior invocation; a central state resync adds a burst of one
+    # 30-byte command per state type on top of the regular commands.
+    default 12 if ZMK_SPLIT_PERIPHERAL_CENTRAL_STATE_SYNC
     default 4
 
 config ZMK_SPLIT_WIRED_EVENT_BUFFER_ITEMS

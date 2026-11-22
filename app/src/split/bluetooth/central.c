@@ -24,6 +24,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/behavior.h>
 #include <zmk/sensors.h>
 #include <zmk/split/transport/central.h>
+#include <zmk/split/central.h>
 #include <zmk/split/bluetooth/uuid.h>
 #include <zmk/split/bluetooth/service.h>
 #include <zmk/event_manager.h>
@@ -56,10 +57,13 @@ struct peripheral_slot {
     struct bt_gatt_subscribe_params batt_lvl_subscribe_params;
     struct bt_gatt_read_params batt_lvl_read_params;
 #endif /* IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING) */
-#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
-    uint16_t update_hid_indicators;
-#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
     uint16_t selected_physical_layout_handle;
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_CENTRAL_STATE_SYNC)
+    uint16_t central_state_sync_handle;
+    atomic_t central_state_sync_pending;
+    struct zmk_split_transport_central_command
+        central_state_sync_cmds[ZMK_SPLIT_TRANSPORT_STATE_SYNC_CMD_COUNT];
+#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_CENTRAL_STATE_SYNC)
     uint8_t position_state[POSITION_STATE_DATA_LEN];
     uint8_t changed_positions[POSITION_STATE_DATA_LEN];
 };
@@ -216,9 +220,10 @@ int release_peripheral_slot(int index) {
     slot->subscribe_params.value_handle = 0;
     slot->run_behavior_handle = 0;
     slot->selected_physical_layout_handle = 0;
-#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
-    slot->update_hid_indicators = 0;
-#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_CENTRAL_STATE_SYNC)
+    slot->central_state_sync_handle = 0;
+    atomic_clear(&slot->central_state_sync_pending);
+#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_CENTRAL_STATE_SYNC)
 
     return 0;
 }
@@ -614,12 +619,13 @@ static uint8_t split_central_chrc_discovery_func(struct bt_conn *conn,
             LOG_DBG("Found select physical layout handle");
             slot->selected_physical_layout_handle = bt_gatt_attr_value_handle(attr);
             k_work_submit(&update_peripherals_selected_layouts_work);
-#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_CENTRAL_STATE_SYNC)
         } else if (!bt_uuid_cmp(((struct bt_gatt_chrc *)attr->user_data)->uuid,
-                                BT_UUID_DECLARE_128(ZMK_SPLIT_BT_UPDATE_HID_INDICATORS_UUID))) {
-            LOG_DBG("Found update HID indicators handle");
-            slot->update_hid_indicators = bt_gatt_attr_value_handle(attr);
-#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
+                                BT_UUID_DECLARE_128(ZMK_SPLIT_BT_STATE_SYNC_UUID))) {
+            LOG_DBG("Found central state handle");
+            slot->central_state_sync_handle = bt_gatt_attr_value_handle(attr);
+            zmk_split_central_state_sync_resync(peripheral_slot_index_for_conn(conn));
+#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_CENTRAL_STATE_SYNC)
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING)
         } else if (!bt_uuid_cmp(((struct bt_gatt_chrc *)attr->user_data)->uuid,
                                 BT_UUID_BAS_BATTERY_LEVEL)) {
@@ -692,9 +698,9 @@ static uint8_t split_central_chrc_discovery_func(struct bt_conn *conn,
     subscribed = subscribed && slot->sensor_subscribe_params.value_handle;
 #endif /* ZMK_KEYMAP_HAS_SENSORS */
 
-#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
-    subscribed = subscribed && slot->update_hid_indicators;
-#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_CENTRAL_STATE_SYNC)
+    subscribed = subscribed && slot->central_state_sync_handle;
+#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_CENTRAL_STATE_SYNC)
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING)
     subscribed = subscribed && slot->batt_lvl_subscribe_params.value_handle;
 #endif /* IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING) */
@@ -983,8 +989,19 @@ static void split_central_disconnected(struct bt_conn *conn, uint8_t reason) {
     start_scanning();
 }
 
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_CENTRAL_STATE_SYNC)
+static void split_central_state_sync_kick(void);
+#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_CENTRAL_STATE_SYNC)
+
 static void split_central_security_changed(struct bt_conn *conn, bt_security_t level,
                                            enum bt_security_err err) {
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_CENTRAL_STATE_SYNC)
+    // The resync on discovery already queued the state; its writes wait for encryption.
+    if (err == BT_SECURITY_ERR_SUCCESS && level >= BT_SECURITY_L2) {
+        split_central_state_sync_kick();
+    }
+#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_CENTRAL_STATE_SYNC)
+
     struct peripheral_slot *slot = peripheral_slot_for_conn(conn);
     if (!slot || !slot->selected_physical_layout_handle) {
         return;
@@ -1071,28 +1088,6 @@ void split_central_split_run_callback(struct k_work *work) {
                 &peripherals[payload_wrapper.source],
                 payload_wrapper.cmd.data.set_physical_layout.layout_idx);
             break;
-#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
-        case ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_HID_INDICATORS:
-            LOG_WRN("do the indicators dance");
-            if (peripherals[payload_wrapper.source].update_hid_indicators == 0) {
-                // It appears that sometimes the peripheral is considered connected
-                // before the GATT characteristics have been discovered. If this is
-                // the case, the update_hid_indicators handle will not yet be set.
-                LOG_WRN("NO HANDLE TO SET ON PERIPHERAL");
-                break;
-            }
-
-            int err = bt_gatt_write_without_response(
-                peripherals[payload_wrapper.source].conn,
-                peripherals[payload_wrapper.source].update_hid_indicators,
-                &payload_wrapper.cmd.data.set_hid_indicators.indicators,
-                sizeof(payload_wrapper.cmd.data.set_hid_indicators.indicators), true);
-
-            if (err) {
-                LOG_ERR("Failed to write HID indicator characteristic (err %d)", err);
-            }
-            break;
-#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
         default:
             LOG_WRN("Unsupported wrapped central command type %d", payload_wrapper.cmd.type);
             return;
@@ -1101,6 +1096,91 @@ void split_central_split_run_callback(struct k_work *work) {
 }
 
 K_WORK_DEFINE(split_central_split_run_work, split_central_split_run_callback);
+
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_CENTRAL_STATE_SYNC)
+
+static struct k_spinlock central_state_sync_lock;
+
+static void split_central_state_sync_write_callback(struct k_work *work);
+
+static K_WORK_DELAYABLE_DEFINE(split_central_state_sync_write_work,
+                               split_central_state_sync_write_callback);
+
+static void split_central_state_sync_kick(void) {
+    k_work_schedule_for_queue(&split_central_split_run_q, &split_central_state_sync_write_work,
+                              K_NO_WAIT);
+}
+
+static void split_central_state_sync_write_slot(int i, struct peripheral_slot *slot,
+                                                struct bt_conn *conn) {
+    for (int bit = 0; bit < ZMK_SPLIT_TRANSPORT_STATE_SYNC_CMD_COUNT; bit++) {
+        if (!atomic_test_and_clear_bit(&slot->central_state_sync_pending, bit)) {
+            continue;
+        }
+
+        struct zmk_split_transport_central_command cmd;
+        K_SPINLOCK(&central_state_sync_lock) { cmd = slot->central_state_sync_cmds[bit]; }
+
+        uint8_t buf[1 + ZMK_SPLIT_TRANSPORT_STATE_SYNC_DATA_SIZE] = {cmd.type};
+        memcpy(&buf[1], &cmd.data, ZMK_SPLIT_TRANSPORT_STATE_SYNC_DATA_SIZE);
+
+        int err = bt_gatt_write_without_response(conn, slot->central_state_sync_handle, buf,
+                                                 sizeof(buf), false);
+        if (err < 0) {
+            LOG_WRN("Failed to write central state type %d to peripheral %d (err %d)", cmd.type, i,
+                    err);
+            atomic_set_bit(&slot->central_state_sync_pending, bit);
+            // The state sync already counts the value as sent, so retry here.
+            k_work_schedule_for_queue(
+                &split_central_split_run_q, &split_central_state_sync_write_work,
+                K_MSEC(CONFIG_ZMK_SPLIT_PERIPHERAL_CENTRAL_STATE_SYNC_COALESCE_MS));
+        }
+    }
+}
+
+static void split_central_state_sync_write_callback(struct k_work *work) {
+    for (int i = 0; i < ZMK_SPLIT_BLE_PERIPHERAL_COUNT; i++) {
+        struct peripheral_slot *slot = &peripherals[i];
+        // Read once and hold a reference: releasing the slot clears conn and drops its reference.
+        struct bt_conn *conn = slot->conn;
+        conn = conn ? bt_conn_ref(conn) : NULL;
+        if (!conn) {
+            continue;
+        }
+
+        // Stays pending until the characteristic is discovered and the link is encrypted.
+        if (slot->state == PERIPHERAL_SLOT_STATE_CONNECTED && slot->central_state_sync_handle &&
+            bt_conn_get_security(conn) >= BT_SECURITY_L2) {
+            split_central_state_sync_write_slot(i, slot, conn);
+        }
+
+        bt_conn_unref(conn);
+    }
+}
+
+// Central state skips the shared run queue: its oldest entry is dropped on overflow, which may be
+// a behavior invocation, and only the latest value of each kind matters.
+static int split_central_bt_queue_state_sync(uint8_t source,
+                                             struct zmk_split_transport_central_command cmd) {
+    uint8_t bit = cmd.type - ZMK_SPLIT_TRANSPORT_STATE_SYNC_CMD_TYPE_FIRST;
+    if (bit >= ZMK_SPLIT_TRANSPORT_STATE_SYNC_CMD_COUNT) {
+        return -ENOTSUP;
+    }
+
+    struct peripheral_slot *slot = &peripherals[source];
+    if (slot->state != PERIPHERAL_SLOT_STATE_CONNECTED) {
+        return -ENOTCONN;
+    }
+
+    K_SPINLOCK(&central_state_sync_lock) { slot->central_state_sync_cmds[bit] = cmd; }
+    atomic_set_bit(&slot->central_state_sync_pending, bit);
+
+    split_central_state_sync_kick();
+
+    return 0;
+}
+
+#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_CENTRAL_STATE_SYNC)
 
 static int split_bt_invoke_behavior_payload(struct central_cmd_wrapper payload_wrapper) {
     LOG_DBG("");
@@ -1174,7 +1254,6 @@ static int split_central_bt_send_command(uint8_t source,
     }
 
     switch (cmd.type) {
-    case ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_HID_INDICATORS:
     case ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_PHYSICAL_LAYOUT:
     case ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_INVOKE_BEHAVIOR: {
         struct central_cmd_wrapper wrapper = {.source = source, .cmd = cmd};
@@ -1183,7 +1262,11 @@ static int split_central_bt_send_command(uint8_t source,
     case ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_POLL_EVENTS:
         return -ENOTSUP;
     default:
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_CENTRAL_STATE_SYNC)
+        return split_central_bt_queue_state_sync(source, cmd);
+#else
         return -ENOTSUP;
+#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_CENTRAL_STATE_SYNC)
     }
 
     return 0;

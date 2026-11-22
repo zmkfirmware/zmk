@@ -11,11 +11,31 @@ See [Configuration Overview](index.md) for instructions on how to change these s
 
 Following [split keyboard](../features/split-keyboards.md) settings are defined in [zmk/app/src/split/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/app/src/split/Kconfig).
 
-| Config                                       | Type | Description                                                              | Default |
-| -------------------------------------------- | ---- | ------------------------------------------------------------------------ | ------- |
-| `CONFIG_ZMK_SPLIT`                           | bool | Enable split keyboard support                                            | n       |
-| `CONFIG_ZMK_SPLIT_ROLE_CENTRAL`              | bool | `y` for central device, `n` for peripheral                               | n       |
-| `CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS` | bool | Enable split keyboard support for passing indicator state to peripherals | n       |
+| Config                          | Type | Description                                | Default |
+| ------------------------------- | ---- | ------------------------------------------ | ------- |
+| `CONFIG_ZMK_SPLIT`              | bool | Enable split keyboard support              | n       |
+| `CONFIG_ZMK_SPLIT_ROLE_CENTRAL` | bool | `y` for central device, `n` for peripheral | n       |
+
+### Central State on Peripherals
+
+Some state only exists on the central. The following settings send it to the peripheral(s), where it is available through the same functions and events as on the central.
+
+| Config                                                       | Type | Description                                                                                             | Default |
+| ------------------------------------------------------------ | ---- | ------------------------------------------------------------------------------------------------------- | ------- |
+| `CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS`                 | bool | Mirror the HID indicators (e.g. Caps Lock) of the active endpoint, requires `CONFIG_ZMK_HID_INDICATORS` | n       |
+| `CONFIG_ZMK_SPLIT_PERIPHERAL_CENTRAL_STATE_SYNC_COALESCE_MS` | int  | Time to collect central state changes before sending them to the peripherals                            | 50      |
+
+Enable the same settings on the central and on the peripherals. A peripheral ignores state it was not built for and logs a warning.
+
+State is only sent when it changes. Changes within `CONFIG_ZMK_SPLIT_PERIPHERAL_CENTRAL_STATE_SYNC_COALESCE_MS` are sent together, with only the latest value of each kind, and the full state is sent again whenever a peripheral connects. On wired splits, the first state can be lost when both halves power up together and the peripheral's UART is not ready yet, and splits without `detect-gpios` cannot tell when a peripheral restarts. In both cases the central still considers its last values sent, so each value only reaches the peripheral the next time it changes.
+
+When a Bluetooth peripheral loses the connection to the central, its central state returns to the state after boot, as if nothing had been received, and the events are raised for the values that change. Wired peripherals cannot detect a lost central and keep the last received state. In builds with both transports, switching from Bluetooth to wired disconnects Bluetooth, which also resets the peripheral's state; if that reset happens after the central's resync over wired, the values stay at their boot state until they change.
+
+The following functions and events are available on the peripheral:
+
+| Config                                       | Functions                                | Events                       |
+| -------------------------------------------- | ---------------------------------------- | ---------------------------- |
+| `CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS` | `zmk_hid_indicators_get_current_profile` | `zmk_hid_indicators_changed` |
 
 ### Bluetooth Splits
 

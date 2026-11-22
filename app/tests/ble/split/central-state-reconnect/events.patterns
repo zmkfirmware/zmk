@@ -1,0 +1,2 @@
+s/^d_00: @[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9][0-9][0-9][0-9]  .{19}(.*central state: send type.*)/central \1/p
+s/^d_02: @[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9][0-9][0-9][0-9]  .{19}(.*(security_changed|disconnected|command_handler|Raising HID indicators).*)/peripheral 0 \1/p

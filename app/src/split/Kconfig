@@ -25,10 +25,23 @@ config ZMK_SPLIT_WIRED
     select CRC
 
 config ZMK_SPLIT_PERIPHERAL_HID_INDICATORS
-    bool "Peripheral HID Indicators"
+    bool "Mirror the HID indicators on the split peripheral(s)"
     depends on ZMK_HID_INDICATORS
     help
       Enable propagating the HID (LED) Indicator state to the split peripheral(s).
+      Enable on both halves.
+
+config ZMK_SPLIT_PERIPHERAL_CENTRAL_STATE_SYNC
+    def_bool ZMK_SPLIT_PERIPHERAL_HID_INDICATORS
+
+config ZMK_SPLIT_PERIPHERAL_CENTRAL_STATE_SYNC_COALESCE_MS
+    int "Delay to coalesce central state changes before sending them to peripherals"
+    depends on ZMK_SPLIT_PERIPHERAL_CENTRAL_STATE_SYNC && ZMK_SPLIT_ROLE_CENTRAL
+    range 1 1000
+    default 50
+    help
+      After a change, the central waits this long before sending, so changes within
+      the window go to the peripheral(s) together, with only the latest value of each kind.
 
 endif # ZMK_SPLIT
 

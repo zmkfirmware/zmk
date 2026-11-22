@@ -85,7 +85,15 @@ static void publish_commands_work(struct k_work *work);
 K_WORK_DEFINE(publish_commands, publish_commands_work);
 
 static void process_tx_cb(void);
-K_MSGQ_DEFINE(cmd_msg_queue, sizeof(struct zmk_split_transport_central_command), 3, 4);
+// 3 slots for regular commands, plus a central state resync, which arrives as a burst of one
+// command per type.
+#define CMD_MSG_QUEUE_SIZE                                                                         \
+    (3 + (IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_CENTRAL_STATE_SYNC)                               \
+              ? ZMK_SPLIT_TRANSPORT_STATE_SYNC_CMD_COUNT                                           \
+              : 0))
+
+K_MSGQ_DEFINE(cmd_msg_queue, sizeof(struct zmk_split_transport_central_command), CMD_MSG_QUEUE_SIZE,
+              4);
 
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_WIRED_UART_MODE_ASYNC)
 
@@ -422,7 +430,7 @@ static void notify_transport_status(void) {
 
 static void process_tx_cb(void) {
     while (ring_buf_size_get(&chosen_rx_buf) > MSG_EXTRA_SIZE) {
-        struct command_envelope env;
+        struct command_envelope env = {0};
         int item_err = zmk_split_wired_get_item(&chosen_rx_buf, (uint8_t *)&env,
                                                 sizeof(struct command_envelope));
         switch (item_err) {
