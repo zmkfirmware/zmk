@@ -1,0 +1,4 @@
+peripheral 0 <dbg> zmk: handle_ble_profile: ble profile 0 connected 0 bonded 0
+peripheral 0 <dbg> zmk: handle_ble_profile: ble profile 0 connected 1 bonded 1
+peripheral 0 <dbg> zmk: handle_ble_profile: ble profile 0 connected 0 bonded 1
+peripheral 0 <dbg> zmk: handle_ble_profile: ble profile 0 connected 1 bonded 1

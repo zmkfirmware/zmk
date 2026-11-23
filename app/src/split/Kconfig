@@ -24,6 +24,13 @@ config ZMK_SPLIT_WIRED
     select RING_BUFFER
     select CRC
 
+config ZMK_SPLIT_PERIPHERAL_CENTRAL_BATTERY
+    bool "Expose the central battery level on the split peripheral(s)"
+    depends on ZMK_BATTERY_REPORTING || !ZMK_SPLIT_ROLE_CENTRAL
+    help
+      Send the central's battery level and whether it is powered over USB to the split
+      peripheral(s). Enable on both halves.
+
 config ZMK_SPLIT_PERIPHERAL_HID_INDICATORS
     bool "Mirror the HID indicators on the split peripheral(s)"
     depends on ZMK_HID_INDICATORS
@@ -31,8 +38,25 @@ config ZMK_SPLIT_PERIPHERAL_HID_INDICATORS
       Enable propagating the HID (LED) Indicator state to the split peripheral(s).
       Enable on both halves.
 
+config ZMK_SPLIT_PERIPHERAL_BLE_PROFILE
+    bool "Mirror the active BLE profile on the split peripheral(s)"
+    depends on ZMK_BLE || !ZMK_SPLIT_ROLE_CENTRAL
+    help
+      Send the index of the active BLE profile and whether it is connected and bonded
+      to the split peripheral(s). Enable on both halves.
+
+config ZMK_SPLIT_PERIPHERAL_LAYER_STATE
+    bool "Mirror the layer state on the split peripheral(s)"
+    select UTF8 if ZMK_SPLIT_ROLE_CENTRAL
+    help
+      Send the active layers and the name of the highest active layer to the split
+      peripheral(s), so layer widgets work there. Enable on both halves.
+
 config ZMK_SPLIT_PERIPHERAL_CENTRAL_STATE_SYNC
-    def_bool ZMK_SPLIT_PERIPHERAL_HID_INDICATORS
+    def_bool ZMK_SPLIT_PERIPHERAL_HID_INDICATORS || \
+             ZMK_SPLIT_PERIPHERAL_LAYER_STATE || \
+             ZMK_SPLIT_PERIPHERAL_BLE_PROFILE || \
+             ZMK_SPLIT_PERIPHERAL_CENTRAL_BATTERY
 
 config ZMK_SPLIT_PERIPHERAL_CENTRAL_STATE_SYNC_COALESCE_MS
     int "Delay to coalesce central state changes before sending them to peripherals"

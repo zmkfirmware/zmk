@@ -115,6 +115,7 @@ static struct zmk_split_transport_central_command
 static atomic_t state_sync_pending;
 
 static void split_svc_state_sync_callback(struct k_work *work) {
+    // Ascending type order handles a layer name before the layer state that refers to it.
     for (int bit = 0; bit < ZMK_SPLIT_TRANSPORT_STATE_SYNC_CMD_COUNT; bit++) {
         if (!atomic_test_and_clear_bit(&state_sync_pending, bit)) {
             continue;

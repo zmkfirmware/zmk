@@ -66,11 +66,21 @@ enum zmk_split_transport_central_command_type {
     ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_INVOKE_BEHAVIOR,
     ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_PHYSICAL_LAYOUT,
     ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_HID_INDICATORS,
+    ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_LAYER_NAME,
+    ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_LAYER_STATE,
+    ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_BLE_PROFILE,
+    ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_CENTRAL_BATTERY,
 } __packed;
 
 // State sync commands always carry this many bytes of data, with the unused tail zeroed. With the
 // type byte they fill one BLE write at the minimum ATT MTU: 23 minus the 3-byte ATT write header.
 #define ZMK_SPLIT_TRANSPORT_STATE_SYNC_DATA_SIZE (23 - 3 - 1)
+
+// layer_id plus a NUL-terminated UTF-8 name fill the whole state sync payload.
+#define ZMK_SPLIT_TRANSPORT_LAYER_NAME_LEN (ZMK_SPLIT_TRANSPORT_STATE_SYNC_DATA_SIZE - 1)
+
+#define ZMK_SPLIT_TRANSPORT_BLE_PROFILE_FLAG_CONNECTED BIT(0)
+#define ZMK_SPLIT_TRANSPORT_BLE_PROFILE_FLAG_BONDED BIT(1)
 
 struct zmk_split_transport_central_command {
     enum zmk_split_transport_central_command_type type;
@@ -91,10 +101,40 @@ struct zmk_split_transport_central_command {
         struct {
             zmk_hid_indicators_t indicators;
         } set_hid_indicators;
+
+        struct {
+            uint8_t layer_id;
+            char name[ZMK_SPLIT_TRANSPORT_LAYER_NAME_LEN];
+        } set_layer_name;
+
+        struct {
+            uint32_t state;
+            uint8_t default_layer;
+            uint8_t highest_index;
+            uint8_t highest_id;
+        } set_layer_state;
+
+        struct {
+            uint8_t index;
+            uint8_t flags;
+        } set_ble_profile;
+
+        struct {
+            uint8_t state_of_charge;
+            uint8_t usb_powered;
+        } set_central_battery;
     } data;
 } __packed;
 
 BUILD_ASSERT(SIZEOF_FIELD(struct zmk_split_transport_central_command, data.set_hid_indicators) <=
+             ZMK_SPLIT_TRANSPORT_STATE_SYNC_DATA_SIZE);
+BUILD_ASSERT(SIZEOF_FIELD(struct zmk_split_transport_central_command, data.set_layer_name) <=
+             ZMK_SPLIT_TRANSPORT_STATE_SYNC_DATA_SIZE);
+BUILD_ASSERT(SIZEOF_FIELD(struct zmk_split_transport_central_command, data.set_layer_state) <=
+             ZMK_SPLIT_TRANSPORT_STATE_SYNC_DATA_SIZE);
+BUILD_ASSERT(SIZEOF_FIELD(struct zmk_split_transport_central_command, data.set_ble_profile) <=
+             ZMK_SPLIT_TRANSPORT_STATE_SYNC_DATA_SIZE);
+BUILD_ASSERT(SIZEOF_FIELD(struct zmk_split_transport_central_command, data.set_central_battery) <=
              ZMK_SPLIT_TRANSPORT_STATE_SYNC_DATA_SIZE);
 // {.type = ...} zero-initializes the first union member; as it spans the whole union, the payload
 // is fully zeroed, which the zeroed tail and the last-sent memcmp of state sync rely on.
@@ -104,5 +144,5 @@ BUILD_ASSERT(SIZEOF_FIELD(struct zmk_split_transport_central_command, data) ==
 #define ZMK_SPLIT_TRANSPORT_STATE_SYNC_CMD_TYPE_FIRST                                              \
     ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_HID_INDICATORS
 #define ZMK_SPLIT_TRANSPORT_STATE_SYNC_CMD_COUNT                                                   \
-    (ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_HID_INDICATORS -                                     \
+    (ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_CENTRAL_BATTERY -                                    \
      ZMK_SPLIT_TRANSPORT_STATE_SYNC_CMD_TYPE_FIRST + 1)

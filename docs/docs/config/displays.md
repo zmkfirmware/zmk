@@ -26,6 +26,9 @@ Definition files:
 | `CONFIG_ZMK_WIDGET_OUTPUT_STATUS`                  | bool | Enable a widget to show the current output (USB/BLE)           | y            |
 | `CONFIG_ZMK_WIDGET_WPM_STATUS`                     | bool | Enable a widget to show words per minute                       | n            |
 
+On split peripherals, `CONFIG_ZMK_WIDGET_LAYER_STATUS` requires [`CONFIG_ZMK_SPLIT_PERIPHERAL_LAYER_STATE`](split.md#central-state-on-peripherals) on both halves.
+Custom widgets on split peripherals can show the central's battery level with [`CONFIG_ZMK_SPLIT_PERIPHERAL_CENTRAL_BATTERY`](split.md#central-state-on-peripherals).
+
 Note that `CONFIG_ZMK_DISPLAY_INVERT` setting might not work as expected with custom status screens that utilize images.
 
 If `CONFIG_ZMK_DISPLAY` is enabled, exactly zero or one of the following options must be set to `y`. The first option is used if none are set.
