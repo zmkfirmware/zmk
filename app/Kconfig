@@ -707,6 +707,29 @@ config ZMK_KEYMAP_SENSORS_DEFAULT_TRIGGERS_PER_ROTATION
 
 endif # ZMK_KEYMAP_SENSORS
 
+config ZMK_WATCHDOG
+    bool "Enable support for watchdog timer"
+    select WATCHDOG
+    help
+      Enable hardware watchdog for ZMK. This will reset the keyboard if the
+      application crashes within the timeout range specified by the minimum
+      and maximum timeout intervals
+
+if ZMK_WATCHDOG
+
+config ZMK_WATCHDOG_TIMEOUT
+    int "Watchdog timeout in milliseconds"
+    default 5000
+    help
+      Watchdog timeout that will be set. If the firmware does not service
+      the watchdog within this timeout, the keyboard will reset.
+
+config ZMK_WATCHDOG_INIT_PRIORITY
+    int "Watchdog Init Priority"
+    default 0
+
+endif # ZMK_WATCHDOG
+
 module = ZMK
 module-str = zmk
 source "subsys/logging/Kconfig.template.log_config"
