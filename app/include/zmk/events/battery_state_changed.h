@@ -23,3 +23,11 @@ struct zmk_peripheral_battery_state_changed {
 };
 
 ZMK_EVENT_DECLARE(zmk_peripheral_battery_state_changed);
+
+// Raised on split peripherals, see CONFIG_ZMK_SPLIT_PERIPHERAL_CENTRAL_BATTERY.
+struct zmk_central_battery_state_changed {
+    uint8_t state_of_charge;
+    bool usb_powered;
+};
+
+ZMK_EVENT_DECLARE(zmk_central_battery_state_changed);

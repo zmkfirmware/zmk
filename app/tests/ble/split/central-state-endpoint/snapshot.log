@@ -1,0 +1,4 @@
+peripheral 0 <dbg> zmk: handle_endpoint: endpoint 0:0, preferred 2:0
+peripheral 0 <dbg> zmk: handle_endpoint: endpoint 2:0, preferred 2:0
+peripheral 0 <dbg> zmk: handle_endpoint: endpoint 0:0, preferred 2:0
+peripheral 0 <dbg> zmk: handle_endpoint: endpoint 2:0, preferred 2:0

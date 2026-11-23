@@ -28,10 +28,6 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #include "peripheral.h"
 
-#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
-#include <zmk/events/hid_indicators_changed.h>
-#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
-
 #include <zmk/events/sensor_event.h>
 #include <zmk/sensors.h>
 
@@ -75,34 +71,6 @@ static void split_svc_pos_state_ccc(const struct bt_gatt_attr *attr, uint16_t va
     LOG_DBG("value %d", value);
 }
 
-#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
-
-static zmk_hid_indicators_t hid_indicators = 0;
-
-static void split_svc_update_indicators_callback(struct k_work *work) {
-    LOG_DBG("Raising HID indicators changed event: %x", hid_indicators);
-    raise_zmk_hid_indicators_changed(
-        (struct zmk_hid_indicators_changed){.indicators = hid_indicators});
-}
-
-static K_WORK_DEFINE(split_svc_update_indicators_work, split_svc_update_indicators_callback);
-
-static ssize_t split_svc_update_indicators(struct bt_conn *conn, const struct bt_gatt_attr *attr,
-                                           const void *buf, uint16_t len, uint16_t offset,
-                                           uint8_t flags) {
-    if (offset + len > sizeof(zmk_hid_indicators_t)) {
-        return BT_GATT_ERR(BT_ATT_ERR_INVALID_OFFSET);
-    }
-
-    memcpy((uint8_t *)&hid_indicators + offset, buf, len);
-
-    k_work_submit(&split_svc_update_indicators_work);
-
-    return len;
-}
-
-#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
-
 static uint8_t selected_phys_layout = 0;
 
 static void split_svc_select_phys_layout_callback(struct k_work *work) {
@@ -138,6 +106,60 @@ static ssize_t split_svc_get_selected_phys_layout(struct bt_conn *conn,
 
     return bt_gatt_attr_read(conn, attrs, buf, len, offset, &selected, sizeof(selected));
 }
+
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_CENTRAL_STATE_SYNC)
+
+static struct k_spinlock state_sync_lock;
+static struct zmk_split_transport_central_command
+    state_sync_cmds[ZMK_SPLIT_TRANSPORT_STATE_SYNC_CMD_COUNT];
+static atomic_t state_sync_pending;
+
+static void split_svc_state_sync_callback(struct k_work *work) {
+    // Ascending type order handles a layer name before the layer state that refers to it.
+    for (int bit = 0; bit < ZMK_SPLIT_TRANSPORT_STATE_SYNC_CMD_COUNT; bit++) {
+        if (!atomic_test_and_clear_bit(&state_sync_pending, bit)) {
+            continue;
+        }
+
+        struct zmk_split_transport_central_command cmd;
+        K_SPINLOCK(&state_sync_lock) { cmd = state_sync_cmds[bit]; }
+
+        zmk_split_transport_peripheral_command_handler(zmk_split_transport_peripheral_bt(), cmd);
+    }
+}
+
+static K_WORK_DEFINE(split_svc_state_sync_work, split_svc_state_sync_callback);
+
+static ssize_t split_svc_state_sync(struct bt_conn *conn, const struct bt_gatt_attr *attr,
+                                    const void *buf, uint16_t len, uint16_t offset, uint8_t flags) {
+    const uint8_t *data = buf;
+
+    // The fixed size also rejects writes from firmware with another layout for this UUID, such as
+    // one-byte HID indicator writes.
+    if (offset != 0 || len != 1 + ZMK_SPLIT_TRANSPORT_STATE_SYNC_DATA_SIZE) {
+        LOG_WRN("Ignoring central state write with offset %d, length %d", offset, len);
+        return BT_GATT_ERR(BT_ATT_ERR_INVALID_ATTRIBUTE_LEN);
+    }
+
+    uint8_t bit = data[0] - ZMK_SPLIT_TRANSPORT_STATE_SYNC_CMD_TYPE_FIRST;
+    if (bit >= ZMK_SPLIT_TRANSPORT_STATE_SYNC_CMD_COUNT) {
+        LOG_WRN("Ignoring central state write with unknown type %d", data[0]);
+        return BT_GATT_ERR(BT_ATT_ERR_VALUE_NOT_ALLOWED);
+    }
+
+    struct zmk_split_transport_central_command cmd = {.type = data[0]};
+    memcpy(&cmd.data, data + 1, ZMK_SPLIT_TRANSPORT_STATE_SYNC_DATA_SIZE);
+
+    // Latest value per type; the work item raises the events outside the BT RX context.
+    K_SPINLOCK(&state_sync_lock) { state_sync_cmds[bit] = cmd; }
+    atomic_set_bit(&state_sync_pending, bit);
+
+    k_work_submit(&split_svc_state_sync_work);
+
+    return len;
+}
+
+#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_CENTRAL_STATE_SYNC)
 
 #if IS_ENABLED(CONFIG_ZMK_INPUT_SPLIT)
 
@@ -196,11 +218,11 @@ BT_GATT_SERVICE_DEFINE(
     BT_GATT_CCC(split_svc_sensor_state_ccc, BT_GATT_PERM_READ_ENCRYPT | BT_GATT_PERM_WRITE_ENCRYPT),
 #endif /* ZMK_KEYMAP_HAS_SENSORS */
     DT_FOREACH_STATUS_OKAY(zmk_input_split, INPUT_SPLIT_CHARS)
-#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
-        BT_GATT_CHARACTERISTIC(BT_UUID_DECLARE_128(ZMK_SPLIT_BT_UPDATE_HID_INDICATORS_UUID),
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_CENTRAL_STATE_SYNC)
+        BT_GATT_CHARACTERISTIC(BT_UUID_DECLARE_128(ZMK_SPLIT_BT_STATE_SYNC_UUID),
                                BT_GATT_CHRC_WRITE_WITHOUT_RESP, BT_GATT_PERM_WRITE_ENCRYPT, NULL,
-                               split_svc_update_indicators, NULL),
-#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
+                               split_svc_state_sync, NULL),
+#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_CENTRAL_STATE_SYNC)
     BT_GATT_CHARACTERISTIC(BT_UUID_DECLARE_128(ZMK_SPLIT_BT_SELECT_PHYS_LAYOUT_UUID),
                            BT_GATT_CHRC_WRITE | BT_GATT_CHRC_READ,
                            BT_GATT_PERM_WRITE_ENCRYPT | BT_GATT_PERM_READ_ENCRYPT,

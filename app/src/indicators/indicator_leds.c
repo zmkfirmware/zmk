@@ -15,11 +15,13 @@
 #include <zmk/endpoints.h>
 #include <zmk/event_manager.h>
 #include <zmk/hid_indicators.h>
+#if IS_ENABLED(CONFIG_USB_DEVICE_STACK)
 #include <zmk/usb.h>
+#include <zmk/events/usb_conn_state_changed.h>
+#endif
 #include <zmk/events/activity_state_changed.h>
 #include <zmk/events/endpoint_changed.h>
 #include <zmk/events/hid_indicators_changed.h>
-#include <zmk/events/usb_conn_state_changed.h>
 
 #include <zephyr/logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
@@ -113,7 +115,11 @@ static int update_device(const struct device *dev) {
 
     data->activity_state = zmk_activity_get_state();
     data->indicators = zmk_hid_indicators_get_current_profile();
+#if IS_ENABLED(CONFIG_USB_DEVICE_STACK)
     data->usb_powered = zmk_usb_is_powered();
+#else
+    data->usb_powered = false;
+#endif
     data->endpoint_connected = zmk_endpoint_is_connected();
 
     for (int i = 0; i < config->indicators_len; i++) {
@@ -154,7 +160,9 @@ static int indicator_led_init(const struct device *dev) { return update_device(d
 ZMK_LISTENER(indicator_led, indicator_led_event_listener);
 ZMK_SUBSCRIPTION(indicator_led, zmk_activity_state_changed);
 ZMK_SUBSCRIPTION(indicator_led, zmk_hid_indicators_changed);
+#if IS_ENABLED(CONFIG_USB_DEVICE_STACK)
 ZMK_SUBSCRIPTION(indicator_led, zmk_usb_conn_state_changed);
+#endif
 ZMK_SUBSCRIPTION(indicator_led, zmk_endpoint_changed);
 
 #if IS_ENABLED(CONFIG_PM_DEVICE)

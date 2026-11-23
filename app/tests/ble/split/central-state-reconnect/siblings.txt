@@ -1,0 +1,2 @@
+./tests_ble_split_central-state-reconnect_peripheral.exe -d=2
+./bs_device_2G4_burst_interf -d=3 -type=WN80 -centerfreq=2440 -power=30 -timestart 5000000 -timeend 12000000

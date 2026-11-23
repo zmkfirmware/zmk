@@ -1,0 +1,3 @@
+./ble_test_central.exe -d=2 -wait_on_start=3000 -write_hid_indicators_on_discovery
+./tests_ble_split_multiple-peripherals-hid-indicators_peripheral1.exe -d=3
+./tests_ble_split_multiple-peripherals-hid-indicators_peripheral2.exe -d=4

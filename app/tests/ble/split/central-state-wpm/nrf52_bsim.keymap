@@ -1,0 +1,32 @@
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/kscan_mock.h>
+
+// The mock waits an event's delay both before the first event and after each event, so the five
+// key releases land around 10.5 s: mid-way between the WPM updates at 10 s, which resets the WPM
+// count, and at 11 s. The following updates then give 60, 30, 20, 15, 12 and 0 WPM.
+&kscan {
+    /delete-property/ exit-after;
+    events =
+    <ZMK_MOCK_PRESS(0,0,5250)
+    ZMK_MOCK_RELEASE(0,0,10)
+    ZMK_MOCK_PRESS(0,0,10)
+    ZMK_MOCK_RELEASE(0,0,10)
+    ZMK_MOCK_PRESS(0,0,10)
+    ZMK_MOCK_RELEASE(0,0,10)
+    ZMK_MOCK_PRESS(0,0,10)
+    ZMK_MOCK_RELEASE(0,0,10)
+    ZMK_MOCK_PRESS(0,0,10)
+    ZMK_MOCK_RELEASE(0,0,10)>;
+};
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+            &kp A &kp B
+            &kp C &kp D>;
+        };
+    };
+};

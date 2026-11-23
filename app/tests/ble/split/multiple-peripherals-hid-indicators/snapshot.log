@@ -1,0 +1,4 @@
+peripheral 0 <dbg> zmk: handle_hid_indicators: Raising HID indicators changed event: 0
+peripheral 1 <dbg> zmk: handle_hid_indicators: Raising HID indicators changed event: 0
+peripheral 1 <dbg> zmk: handle_hid_indicators: Raising HID indicators changed event: 7
+peripheral 0 <dbg> zmk: handle_hid_indicators: Raising HID indicators changed event: 7

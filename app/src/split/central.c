@@ -9,7 +9,6 @@
 #include <zmk/stdlib.h>
 #include <zmk/split/transport/central.h>
 #include <zmk/split/central.h>
-#include <zmk/hid_indicators_types.h>
 #include <zmk/pointing/input_split.h>
 
 #include <zephyr/logging/log.h>
@@ -110,45 +109,26 @@ int zmk_split_central_invoke_behavior(uint8_t source, struct zmk_behavior_bindin
     return active_transport->api->send_command(source, command);
 };
 
-#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_CENTRAL_STATE_SYNC)
 
-int zmk_split_central_update_hid_indicator(zmk_hid_indicators_t indicators) {
+int zmk_split_central_get_available_source_ids(uint8_t *source_ids) {
     if (!active_transport || !active_transport->api ||
-        !active_transport->api->get_available_source_ids || !active_transport->api->send_command) {
+        !active_transport->api->get_available_source_ids) {
         return -ENODEV;
     }
 
-    uint8_t source_ids[ZMK_SPLIT_CENTRAL_PERIPHERAL_COUNT];
-
-    int ret = active_transport->api->get_available_source_ids(source_ids);
-
-    if (ret < 0) {
-        return ret;
-    }
-
-    struct zmk_split_transport_central_command command =
-        (struct zmk_split_transport_central_command){
-            .type = ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_HID_INDICATORS,
-            .data =
-                {
-                    .set_hid_indicators =
-                        {
-                            .indicators = indicators,
-                        },
-                },
-        };
-
-    for (size_t i = 0; i < ret; i++) {
-        ret = active_transport->api->send_command(source_ids[i], command);
-        if (ret < 0) {
-            return ret;
-        }
-    }
-
-    return 0;
+    return active_transport->api->get_available_source_ids(source_ids);
 }
 
-#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
+int zmk_split_central_send_command(uint8_t source, struct zmk_split_transport_central_command cmd) {
+    if (!active_transport || !active_transport->api || !active_transport->api->send_command) {
+        return -ENODEV;
+    }
+
+    return active_transport->api->send_command(source, cmd);
+}
+
+#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_CENTRAL_STATE_SYNC)
 
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING)
 

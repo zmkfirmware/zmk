@@ -11,11 +11,49 @@ See [Configuration Overview](index.md) for instructions on how to change these s
 
 Following [split keyboard](../features/split-keyboards.md) settings are defined in [zmk/app/src/split/Kconfig](https://github.com/zmkfirmware/zmk/blob/main/app/src/split/Kconfig).
 
-| Config                                       | Type | Description                                                              | Default |
-| -------------------------------------------- | ---- | ------------------------------------------------------------------------ | ------- |
-| `CONFIG_ZMK_SPLIT`                           | bool | Enable split keyboard support                                            | n       |
-| `CONFIG_ZMK_SPLIT_ROLE_CENTRAL`              | bool | `y` for central device, `n` for peripheral                               | n       |
-| `CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS` | bool | Enable split keyboard support for passing indicator state to peripherals | n       |
+| Config                          | Type | Description                                | Default |
+| ------------------------------- | ---- | ------------------------------------------ | ------- |
+| `CONFIG_ZMK_SPLIT`              | bool | Enable split keyboard support              | n       |
+| `CONFIG_ZMK_SPLIT_ROLE_CENTRAL` | bool | `y` for central device, `n` for peripheral | n       |
+
+### Central State on Peripherals
+
+Some state only exists on the central, e.g. the active layers. The following settings send it to the peripheral(s), where it is available through the same functions and events as on the central, except for the modifiers and the central battery, so that the built-in display widgets and custom ones work there as well.
+
+| Config                                                       | Type | Description                                                                                            | Default |
+| ------------------------------------------------------------ | ---- | ------------------------------------------------------------------------------------------------------ | ------- |
+| `CONFIG_ZMK_SPLIT_PERIPHERAL_ENDPOINT`                       | bool | Mirror the selected and the preferred endpoint                                                         | n       |
+| `CONFIG_ZMK_SPLIT_PERIPHERAL_CENTRAL_BATTERY`                | bool | Expose the central battery level and whether the central is powered over USB                           | n       |
+| `CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS`                 | bool | Mirror the HID indicators (e.g. Caps Lock) of the active endpoint, selects `CONFIG_ZMK_HID_INDICATORS` | n       |
+| `CONFIG_ZMK_SPLIT_PERIPHERAL_MODIFIERS`                      | bool | Mirror the explicitly pressed modifiers                                                                | n       |
+| `CONFIG_ZMK_SPLIT_PERIPHERAL_WPM`                            | bool | Mirror the words per minute, selects `CONFIG_ZMK_WPM`                                                  | n       |
+| `CONFIG_ZMK_SPLIT_PERIPHERAL_BLE_PROFILE`                    | bool | Mirror the active BLE profile index and whether it is connected and bonded                             | n       |
+| `CONFIG_ZMK_SPLIT_PERIPHERAL_LAYER_STATE`                    | bool | Mirror the active layers and the name of the highest active layer                                      | n       |
+| `CONFIG_ZMK_SPLIT_PERIPHERAL_CENTRAL_STATE_SYNC_COALESCE_MS` | int  | Time to collect central state changes before sending them to the peripherals                           | 50      |
+
+Enable the same settings on the central and on the peripherals. A peripheral ignores state it was not built for and logs a warning.
+
+State is only sent when it changes. Changes within `CONFIG_ZMK_SPLIT_PERIPHERAL_CENTRAL_STATE_SYNC_COALESCE_MS` are sent together, with only the latest value of each kind, and the full state is sent again whenever a peripheral connects. On wired splits, the first state can be lost when both halves power up together and the peripheral's UART is not ready yet, and splits without `detect-gpios` cannot tell when a peripheral restarts. In both cases the central still considers its last values sent, so each value only reaches the peripheral the next time it changes. For example, a peripheral that restarted shows the endpoint as not connected, which keeps indicator LEDs off, until the central's endpoint changes.
+
+When a Bluetooth peripheral loses the connection to the central, its central state returns to the state after boot, as if nothing had been received, and the events are raised for the values that change. The central battery level becomes unknown again without an event, so `zmk_split_peripheral_get_central_battery_level` returns `-ENODATA`. Wired peripherals cannot detect a lost central and keep the last received state. In builds with both transports, switching from Bluetooth to wired disconnects Bluetooth, which also resets the peripheral's state; if that reset happens after the central's resync over wired, the values stay at their boot state until they change.
+
+The following functions and events are available on the peripheral:
+
+| Config                                        | Functions                                                                                                                      | Events                                                         |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------- |
+| `CONFIG_ZMK_SPLIT_PERIPHERAL_ENDPOINT`        | `zmk_endpoint_get_selected`, `zmk_endpoint_get_preferred`, `zmk_endpoint_get_preferred_transport`, `zmk_endpoint_is_connected` | `zmk_endpoint_changed`                                         |
+| `CONFIG_ZMK_SPLIT_PERIPHERAL_CENTRAL_BATTERY` | `zmk_split_peripheral_get_central_battery_level`                                                                               | `zmk_central_battery_state_changed`                            |
+| `CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS`  | `zmk_hid_indicators_get_current_profile`                                                                                       | `zmk_hid_indicators_changed`                                   |
+| `CONFIG_ZMK_SPLIT_PERIPHERAL_MODIFIERS`       | `zmk_hid_get_explicit_mods`                                                                                                    | `zmk_modifiers_state_changed`                                  |
+| `CONFIG_ZMK_SPLIT_PERIPHERAL_WPM`             | `zmk_wpm_get_state`                                                                                                            | `zmk_wpm_state_changed`                                        |
+| `CONFIG_ZMK_SPLIT_PERIPHERAL_BLE_PROFILE`     | `zmk_ble_active_profile_index`, `zmk_ble_active_profile_is_connected`, `zmk_ble_active_profile_is_open`                        | `zmk_ble_active_profile_changed`, with `profile` set to `NULL` |
+| `CONFIG_ZMK_SPLIT_PERIPHERAL_LAYER_STATE`     | `zmk_keymap_highest_layer_active`, `zmk_keymap_layer_active`, `zmk_keymap_layer_index_to_id`, `zmk_keymap_layer_name`          | `zmk_layer_state_changed`                                      |
+
+With `CONFIG_ZMK_SPLIT_PERIPHERAL_MODIFIERS`, key presses that do not change the modifiers send nothing. The central never raises `zmk_modifiers_state_changed`: widgets there listen to `zmk_keycode_state_changed` and read `zmk_hid_get_explicit_mods`, while on peripherals the sync raises `zmk_modifiers_state_changed` for the pressed and the released modifiers. `CONFIG_ZMK_SPLIT_PERIPHERAL_WPM` sends at most one update per second while typing, when the value changes.
+
+With `CONFIG_ZMK_SPLIT_PERIPHERAL_ENDPOINT`, the peripheral starts as not connected until the central reports its endpoint, and a Bluetooth peripheral returns to not connected while it has lost the central. Changing only the preferred transport, while the selected endpoint stays the same, raises no event on the central, so the peripheral sees it on the next endpoint or profile change. Functions that depend on the central's own endpoint configuration, such as `zmk_endpoint_instance_to_index` and `ZMK_ENDPOINT_COUNT`, the helpers `zmk_endpoint_instance_eq` and `zmk_endpoint_instance_to_str`, and those that change the endpoint or send reports are not available on peripherals.
+
+Only the name of the highest active layer is sent, truncated to 17 bytes without splitting a UTF-8 character. `zmk_keymap_layer_index_to_id` only maps the highest active layer; the others are assumed to be in keymap order. A layer renamed at runtime, e.g. with ZMK Studio, gets its new name on peripherals with the next layer change.
 
 ### Bluetooth Splits
 

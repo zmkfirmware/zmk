@@ -14,6 +14,7 @@
 
 struct zmk_ble_active_profile_changed {
     uint8_t index;
+    // NULL on split peripherals, see CONFIG_ZMK_SPLIT_PERIPHERAL_BLE_PROFILE.
     struct zmk_ble_profile *profile;
 };
 

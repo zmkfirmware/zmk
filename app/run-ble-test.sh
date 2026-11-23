@@ -117,7 +117,13 @@ do
   ${line} -s=${exe_name} | tee -a "${start_dir}/build/$testcase/output.log" > "${output_dev}" &
 done
 
-./bs_2G4_phy_v1 -s=${exe_name} -D=$(( 2 + sibling_counts )) -sim_length=50e6 > "${output_dev}" 2>&1
+# Optional extra arguments for the phy, e.g. a modem that models interference
+phy_args=""
+if [ -f "${start_dir}/${testcase}/phy_args.txt" ]; then
+  phy_args=$(cat "${start_dir}/${testcase}/phy_args.txt")
+fi
+
+./bs_2G4_phy_v1 -s=${exe_name} -D=$(( 2 + sibling_counts )) -sim_length=50e6 ${phy_args} > "${output_dev}" 2>&1
 
 popd > /dev/null 2>&1
 

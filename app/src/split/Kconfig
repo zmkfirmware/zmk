@@ -24,11 +24,70 @@ config ZMK_SPLIT_WIRED
     select RING_BUFFER
     select CRC
 
+config ZMK_SPLIT_PERIPHERAL_ENDPOINT
+    bool "Mirror the selected endpoint on the split peripheral(s)"
+    help
+      Send the selected and the preferred endpoint to the split peripheral(s), so
+      indicator LEDs and the output status widget work there. Enable on both halves.
+
+config ZMK_SPLIT_PERIPHERAL_CENTRAL_BATTERY
+    bool "Expose the central battery level on the split peripheral(s)"
+    depends on ZMK_BATTERY_REPORTING || !ZMK_SPLIT_ROLE_CENTRAL
+    help
+      Send the central's battery level and whether it is powered over USB to the split
+      peripheral(s). Enable on both halves.
+
 config ZMK_SPLIT_PERIPHERAL_HID_INDICATORS
-    bool "Peripheral HID Indicators"
-    depends on ZMK_HID_INDICATORS
+    bool "Mirror the HID indicators on the split peripheral(s)"
+    select ZMK_HID_INDICATORS
     help
       Enable propagating the HID (LED) Indicator state to the split peripheral(s).
+      Enable on both halves.
+
+config ZMK_SPLIT_PERIPHERAL_MODIFIERS
+    bool "Mirror the explicit modifiers on the split peripheral(s)"
+    help
+      Send the explicitly pressed modifiers to the split peripheral(s). Only modifier
+      changes are sent, not every key press. Enable on both halves.
+
+config ZMK_SPLIT_PERIPHERAL_WPM
+    bool "Mirror the WPM on the split peripheral(s)"
+    select ZMK_WPM
+    help
+      Send the words per minute calculated on the central to the split peripheral(s), so
+      the WPM widget works there. Enable on both halves.
+
+config ZMK_SPLIT_PERIPHERAL_BLE_PROFILE
+    bool "Mirror the active BLE profile on the split peripheral(s)"
+    depends on ZMK_BLE || !ZMK_SPLIT_ROLE_CENTRAL
+    help
+      Send the index of the active BLE profile and whether it is connected and bonded
+      to the split peripheral(s). Enable on both halves.
+
+config ZMK_SPLIT_PERIPHERAL_LAYER_STATE
+    bool "Mirror the layer state on the split peripheral(s)"
+    select UTF8 if ZMK_SPLIT_ROLE_CENTRAL
+    help
+      Send the active layers and the name of the highest active layer to the split
+      peripheral(s), so layer widgets work there. Enable on both halves.
+
+config ZMK_SPLIT_PERIPHERAL_CENTRAL_STATE_SYNC
+    def_bool ZMK_SPLIT_PERIPHERAL_HID_INDICATORS || \
+             ZMK_SPLIT_PERIPHERAL_LAYER_STATE || \
+             ZMK_SPLIT_PERIPHERAL_BLE_PROFILE || \
+             ZMK_SPLIT_PERIPHERAL_CENTRAL_BATTERY || \
+             ZMK_SPLIT_PERIPHERAL_ENDPOINT || \
+             ZMK_SPLIT_PERIPHERAL_MODIFIERS || \
+             ZMK_SPLIT_PERIPHERAL_WPM
+
+config ZMK_SPLIT_PERIPHERAL_CENTRAL_STATE_SYNC_COALESCE_MS
+    int "Delay to coalesce central state changes before sending them to peripherals"
+    depends on ZMK_SPLIT_PERIPHERAL_CENTRAL_STATE_SYNC && ZMK_SPLIT_ROLE_CENTRAL
+    range 1 1000
+    default 50
+    help
+      After a change, the central waits this long before sending, so changes within
+      the window go to the peripheral(s) together, with only the latest value of each kind.
 
 endif # ZMK_SPLIT
 

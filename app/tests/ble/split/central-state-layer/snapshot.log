@@ -1,0 +1,3 @@
+peripheral 0 <dbg> zmk: handle_layer_state: layer state 00000000 highest 0/0, name 'base'
+peripheral 0 <dbg> zmk: handle_layer_state: layer state 00000002 highest 1/1, name 'lower-layer-ÄÖ'
+peripheral 0 <dbg> zmk: handle_layer_state: layer state 00000000 highest 0/0, name 'base'

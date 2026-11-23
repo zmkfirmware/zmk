@@ -1,0 +1,2 @@
+./ble_test_central.exe -d=2 -wait_on_start=1300 -disconnect_and_reconnect
+./tests_ble_split_central-state-ble-profile_peripheral.exe -d=3
