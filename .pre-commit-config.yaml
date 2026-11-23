@@ -1,4 +1,9 @@
 fail_fast: false
+exclude: |
+  (?x)^(
+      docs/pnpm-lock\.yaml|
+      docs/pnpm-workspace\.yaml
+  )$
 repos:
   - repo: https://github.com/Lucas-C/pre-commit-hooks
     rev: v1.5.1
