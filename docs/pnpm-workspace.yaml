@@ -1,4 +1,5 @@
 allowBuilds:
   tree-sitter: true
   tree-sitter-devicetree: true
-  core-js: false
+minimumReleaseAgeExclude:
+  - '@astrojs/starlight@0.42.8'

@@ -37,6 +37,6 @@ jobs:
       - name: Build
         run: pnpm build
         working-directory: docs
-      - name: TypeScript check
-        run: pnpm typecheck
+      - name: Astro check
+        run: pnpm check
         working-directory: docs
