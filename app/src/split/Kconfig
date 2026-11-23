@@ -24,6 +24,12 @@ config ZMK_SPLIT_WIRED
     select RING_BUFFER
     select CRC
 
+config ZMK_SPLIT_PERIPHERAL_ENDPOINT
+    bool "Mirror the selected endpoint on the split peripheral(s)"
+    help
+      Send the selected and the preferred endpoint to the split peripheral(s), so
+      indicator LEDs and the output status widget work there. Enable on both halves.
+
 config ZMK_SPLIT_PERIPHERAL_CENTRAL_BATTERY
     bool "Expose the central battery level on the split peripheral(s)"
     depends on ZMK_BATTERY_REPORTING || !ZMK_SPLIT_ROLE_CENTRAL
@@ -33,7 +39,7 @@ config ZMK_SPLIT_PERIPHERAL_CENTRAL_BATTERY
 
 config ZMK_SPLIT_PERIPHERAL_HID_INDICATORS
     bool "Mirror the HID indicators on the split peripheral(s)"
-    depends on ZMK_HID_INDICATORS
+    select ZMK_HID_INDICATORS
     help
       Enable propagating the HID (LED) Indicator state to the split peripheral(s).
       Enable on both halves.
@@ -56,7 +62,8 @@ config ZMK_SPLIT_PERIPHERAL_CENTRAL_STATE_SYNC
     def_bool ZMK_SPLIT_PERIPHERAL_HID_INDICATORS || \
              ZMK_SPLIT_PERIPHERAL_LAYER_STATE || \
              ZMK_SPLIT_PERIPHERAL_BLE_PROFILE || \
-             ZMK_SPLIT_PERIPHERAL_CENTRAL_BATTERY
+             ZMK_SPLIT_PERIPHERAL_CENTRAL_BATTERY || \
+             ZMK_SPLIT_PERIPHERAL_ENDPOINT
 
 config ZMK_SPLIT_PERIPHERAL_CENTRAL_STATE_SYNC_COALESCE_MS
     int "Delay to coalesce central state changes before sending them to peripherals"

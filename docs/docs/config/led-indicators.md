@@ -19,6 +19,8 @@ Definition files:
 
 `CONFIG_ZMK_INDICATOR_LEDS_INIT_PRIORITY` must be set to a larger value than `CONFIG_LED_INIT_PRIORITY`.
 
+On split peripherals, indicator LEDs require [`CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS` and `CONFIG_ZMK_SPLIT_PERIPHERAL_ENDPOINT`](split.md#central-state-on-peripherals) on both halves.
+
 ## Indicator LED Driver
 
 This driver maps HID indicator states to [LED API](https://docs.zephyrproject.org/4.1.0/hardware/peripherals/led.html) devices.

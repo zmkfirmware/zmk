@@ -90,6 +90,7 @@ else()
   target_sources_ifdef(CONFIG_ZMK_SPLIT_PERIPHERAL_LAYER_STATE app PRIVATE src/events/layer_state_changed.c)
   target_sources_ifdef(CONFIG_ZMK_SPLIT_PERIPHERAL_BLE_PROFILE app PRIVATE src/events/ble_active_profile_changed.c)
   target_sources_ifdef(CONFIG_ZMK_SPLIT_PERIPHERAL_CENTRAL_BATTERY app PRIVATE src/events/central_battery_state_changed.c)
+  target_sources_ifdef(CONFIG_ZMK_SPLIT_PERIPHERAL_ENDPOINT app PRIVATE src/events/endpoint_changed.c)
 endif()
 
 target_sources_ifdef(CONFIG_ZMK_RGB_UNDERGLOW app PRIVATE src/behaviors/behavior_rgb_underglow.c)

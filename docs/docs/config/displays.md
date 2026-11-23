@@ -29,6 +29,8 @@ Definition files:
 On split peripherals, `CONFIG_ZMK_WIDGET_LAYER_STATUS` requires [`CONFIG_ZMK_SPLIT_PERIPHERAL_LAYER_STATE`](split.md#central-state-on-peripherals) on both halves.
 Custom widgets on split peripherals can show the central's battery level with [`CONFIG_ZMK_SPLIT_PERIPHERAL_CENTRAL_BATTERY`](split.md#central-state-on-peripherals).
 
+`CONFIG_ZMK_WIDGET_OUTPUT_STATUS` can be enabled on split peripherals with [`CONFIG_ZMK_SPLIT_PERIPHERAL_ENDPOINT`](split.md#central-state-on-peripherals) and `CONFIG_ZMK_SPLIT_PERIPHERAL_BLE_PROFILE` on both halves. It is not enabled there by default: the built-in status screen places it at the same position as the peripheral status widget, so use it in a custom status screen.
+
 Note that `CONFIG_ZMK_DISPLAY_INVERT` setting might not work as expected with custom status screens that utilize images.
 
 If `CONFIG_ZMK_DISPLAY` is enabled, exactly zero or one of the following options must be set to `y`. The first option is used if none are set.

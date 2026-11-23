@@ -5,6 +5,8 @@ config ZMK_INDICATOR_LEDS
     bool
     default y
     depends on DT_HAS_ZMK_INDICATOR_LEDS_ENABLED
+    depends on !ZMK_SPLIT || ZMK_SPLIT_ROLE_CENTRAL || \
+               (ZMK_SPLIT_PERIPHERAL_HID_INDICATORS && ZMK_SPLIT_PERIPHERAL_ENDPOINT)
     select LED
     select ZMK_HID_INDICATORS
 

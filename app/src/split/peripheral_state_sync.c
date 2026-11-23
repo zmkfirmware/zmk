@@ -33,6 +33,11 @@
 #include <zmk/events/battery_state_changed.h>
 #endif
 
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_ENDPOINT)
+#include <zmk/endpoints.h>
+#include <zmk/events/endpoint_changed.h>
+#endif
+
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 // The type of a state sync payload, such as PAYLOAD_TYPE(set_endpoint).
@@ -227,6 +232,67 @@ static void handle_central_battery(const struct zmk_split_transport_central_comm
 
 #endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_CENTRAL_BATTERY)
 
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_ENDPOINT)
+
+// Not connected until the central reports otherwise.
+static struct {
+    bool known;
+    PAYLOAD_TYPE(set_endpoint) payload;
+} endpoint;
+
+static struct zmk_endpoint_instance endpoint_instance(uint8_t transport, uint8_t ble_profile) {
+    struct zmk_endpoint_instance instance = {.transport = transport};
+    if (instance.transport == ZMK_TRANSPORT_BLE) {
+        instance.ble.profile_index = ble_profile;
+    }
+
+    return instance;
+}
+
+enum zmk_transport zmk_endpoint_get_preferred_transport(void) {
+    return endpoint.payload.preferred_transport;
+}
+
+struct zmk_endpoint_instance zmk_endpoint_get_preferred(void) {
+    return endpoint_instance(endpoint.payload.preferred_transport,
+                             endpoint.payload.preferred_ble_profile);
+}
+
+struct zmk_endpoint_instance zmk_endpoint_get_selected(void) {
+    return endpoint_instance(endpoint.payload.selected_transport,
+                             endpoint.payload.selected_ble_profile);
+}
+
+bool zmk_endpoint_is_connected(void) {
+    return endpoint.payload.selected_transport != ZMK_TRANSPORT_NONE;
+}
+
+static void handle_endpoint(const struct zmk_split_transport_central_command *cmd) {
+    if (endpoint.known &&
+        memcmp(&endpoint.payload, &cmd->data.set_endpoint, sizeof(endpoint.payload)) == 0) {
+        return;
+    }
+
+    bool selected_changed =
+        !endpoint.known ||
+        endpoint.payload.selected_transport != cmd->data.set_endpoint.selected_transport ||
+        endpoint.payload.selected_ble_profile != cmd->data.set_endpoint.selected_ble_profile;
+
+    endpoint.known = true;
+    endpoint.payload = cmd->data.set_endpoint;
+    LOG_DBG("endpoint %d:%d, preferred %d:%d", endpoint.payload.selected_transport,
+            endpoint.payload.selected_ble_profile, endpoint.payload.preferred_transport,
+            endpoint.payload.preferred_ble_profile);
+
+    // As on the central, the event reports a change of the selected endpoint only.
+    if (selected_changed) {
+        raise_zmk_endpoint_changed(
+            (struct zmk_endpoint_changed){.endpoint = zmk_endpoint_get_selected()});
+    }
+}
+
+#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_ENDPOINT)
+
 int zmk_split_peripheral_state_sync_handle(const struct zmk_split_transport_central_command *cmd) {
     switch (cmd->type) {
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
@@ -252,6 +318,11 @@ int zmk_split_peripheral_state_sync_handle(const struct zmk_split_transport_cent
         handle_central_battery(cmd);
         break;
 #endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_CENTRAL_BATTERY)
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_ENDPOINT)
+    case ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_ENDPOINT:
+        handle_endpoint(cmd);
+        break;
+#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_ENDPOINT)
     default:
         return -ENOTSUP;
     }
@@ -296,6 +367,12 @@ static void reset_work_cb(struct k_work *work) {
     // The level is unknown again; the event has no way to say so, so none is raised.
     central_battery.known = false;
 #endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_CENTRAL_BATTERY)
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_ENDPOINT)
+    if (endpoint.known) {
+        handle_endpoint(&boot_state);
+        endpoint.known = false;
+    }
+#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_ENDPOINT)
 }
 
 static K_WORK_DEFINE(reset_work, reset_work_cb);

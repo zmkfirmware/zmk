@@ -24,9 +24,17 @@
 #include <zmk/events/layer_state_changed.h>
 #endif
 
+// The BLE profile domain and the preferred endpoint both follow the active profile.
+#define SUBSCRIBE_BLE_ACTIVE_PROFILE_CHANGED                                                       \
+    (IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_BLE_PROFILE) ||                                        \
+     (IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_ENDPOINT) && IS_ENABLED(CONFIG_ZMK_BLE)))
+
+#if SUBSCRIBE_BLE_ACTIVE_PROFILE_CHANGED
+#include <zmk/events/ble_active_profile_changed.h>
+#endif
+
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_BLE_PROFILE)
 #include <zmk/ble.h>
-#include <zmk/events/ble_active_profile_changed.h>
 #endif
 
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_CENTRAL_BATTERY)
@@ -36,6 +44,11 @@
 #include <zmk/usb.h>
 #include <zmk/events/usb_conn_state_changed.h>
 #endif
+#endif
+
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_ENDPOINT)
+#include <zmk/endpoints.h>
+#include <zmk/events/endpoint_changed.h>
 #endif
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
@@ -142,6 +155,27 @@ static int build_cmd(struct zmk_split_transport_central_command *cmd) {
                 cmd->data.set_central_battery.usb_powered);
         return 0;
 #endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_CENTRAL_BATTERY)
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_ENDPOINT)
+    case ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_ENDPOINT: {
+        struct zmk_endpoint_instance selected = zmk_endpoint_get_selected();
+        struct zmk_endpoint_instance preferred = zmk_endpoint_get_preferred();
+
+        // cmd arrives zeroed, so profile indexes stay 0 for transports other than BLE and equal
+        // endpoints give equal payloads, which the peripheral compares byte by byte.
+        cmd->data.set_endpoint.selected_transport = selected.transport;
+        cmd->data.set_endpoint.preferred_transport = preferred.transport;
+        if (selected.transport == ZMK_TRANSPORT_BLE) {
+            cmd->data.set_endpoint.selected_ble_profile = selected.ble.profile_index;
+        }
+        if (preferred.transport == ZMK_TRANSPORT_BLE) {
+            cmd->data.set_endpoint.preferred_ble_profile = preferred.ble.profile_index;
+        }
+        LOG_DBG("endpoint %d:%d, preferred %d:%d", selected.transport,
+                cmd->data.set_endpoint.selected_ble_profile, preferred.transport,
+                cmd->data.set_endpoint.preferred_ble_profile);
+        return 0;
+    }
+#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_ENDPOINT)
     default:
         return -ENOTSUP;
     }
@@ -236,6 +270,18 @@ static int state_sync_listener(const zmk_event_t *eh) {
 #endif
 #endif
 
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_ENDPOINT)
+    if (as_zmk_endpoint_changed(eh)) {
+        cmds |= CMD_BIT(ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_ENDPOINT);
+    }
+#if IS_ENABLED(CONFIG_ZMK_BLE)
+    // The preferred endpoint follows the active profile even when the selected one stays.
+    if (as_zmk_ble_active_profile_changed(eh)) {
+        cmds |= CMD_BIT(ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_ENDPOINT);
+    }
+#endif
+#endif
+
     if (cmds) {
         mark_dirty(cmds);
     }
@@ -253,7 +299,7 @@ ZMK_SUBSCRIPTION(split_central_state_sync, zmk_hid_indicators_changed);
 ZMK_SUBSCRIPTION(split_central_state_sync, zmk_layer_state_changed);
 #endif
 
-#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_BLE_PROFILE)
+#if SUBSCRIBE_BLE_ACTIVE_PROFILE_CHANGED
 ZMK_SUBSCRIPTION(split_central_state_sync, zmk_ble_active_profile_changed);
 #endif
 
@@ -262,4 +308,8 @@ ZMK_SUBSCRIPTION(split_central_state_sync, zmk_battery_state_changed);
 #if IS_ENABLED(CONFIG_USB_DEVICE_STACK)
 ZMK_SUBSCRIPTION(split_central_state_sync, zmk_usb_conn_state_changed);
 #endif
+#endif
+
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_ENDPOINT)
+ZMK_SUBSCRIPTION(split_central_state_sync, zmk_endpoint_changed);
 #endif
