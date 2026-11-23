@@ -15,22 +15,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: bahmutov/npm-install@v1
+      - uses: pnpm/setup@v3
         with:
           working-directory: docs
+          node-version-file: .nvmrc
+          cache: true
+          require-lockfile: true
       - name: ESLint
-        run: npm run lint
+        run: pnpm lint
         working-directory: docs
   typecheck:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: bahmutov/npm-install@v1
+      - uses: pnpm/setup@v3
         with:
           working-directory: docs
+          node-version-file: .nvmrc
+          cache: true
+          require-lockfile: true
       - name: Build
-        run: npm run build
+        run: pnpm build
         working-directory: docs
       - name: TypeScript check
-        run: npm run typecheck
+        run: pnpm typecheck
         working-directory: docs

@@ -1,0 +1,4 @@
+allowBuilds:
+  tree-sitter: true
+  tree-sitter-devicetree: true
+  core-js: false
