@@ -8,6 +8,7 @@
 #include <zephyr/device.h>
 #include <zephyr/devicetree.h>
 #include <zephyr/settings/settings.h>
+#include <zephyr/dfu/mcuboot.h>
 
 #include <zephyr/logging/log.h>
 LOG_MODULE_REGISTER(zmk, CONFIG_ZMK_LOG_LEVEL);
@@ -40,6 +41,10 @@ int main(void) {
 #endif
 
 #endif /* CONFIG_ZMK_DISPLAY */
+#ifdef CONFIG_MCUBOOT_IMG_MANAGER
+    /* Mark image as confirmed */
+    boot_write_img_confirmed();
+#endif /* CONFIG_BOOTLOADER_MCUBOOT */
 
     return 0;
 }
