@@ -1,0 +1,7 @@
+peripheral 0 <dbg> zmk: handle_wpm: wpm 0
+peripheral 0 <dbg> zmk: handle_wpm: wpm 60
+peripheral 0 <dbg> zmk: handle_wpm: wpm 30
+peripheral 0 <dbg> zmk: handle_wpm: wpm 20
+peripheral 0 <dbg> zmk: handle_wpm: wpm 15
+peripheral 0 <dbg> zmk: handle_wpm: wpm 12
+peripheral 0 <dbg> zmk: handle_wpm: wpm 0

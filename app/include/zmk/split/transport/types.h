@@ -71,6 +71,8 @@ enum zmk_split_transport_central_command_type {
     ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_BLE_PROFILE,
     ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_CENTRAL_BATTERY,
     ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_ENDPOINT,
+    ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_MODIFIERS,
+    ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_WPM,
 } __packed;
 
 // State sync commands always carry this many bytes of data, with the unused tail zeroed. With the
@@ -131,6 +133,14 @@ struct zmk_split_transport_central_command {
             uint8_t preferred_transport;
             uint8_t preferred_ble_profile;
         } set_endpoint;
+
+        struct {
+            uint8_t explicit_mods;
+        } set_modifiers;
+
+        struct {
+            uint8_t wpm;
+        } set_wpm;
     } data;
 } __packed;
 
@@ -146,6 +156,10 @@ BUILD_ASSERT(SIZEOF_FIELD(struct zmk_split_transport_central_command, data.set_c
              ZMK_SPLIT_TRANSPORT_STATE_SYNC_DATA_SIZE);
 BUILD_ASSERT(SIZEOF_FIELD(struct zmk_split_transport_central_command, data.set_endpoint) <=
              ZMK_SPLIT_TRANSPORT_STATE_SYNC_DATA_SIZE);
+BUILD_ASSERT(SIZEOF_FIELD(struct zmk_split_transport_central_command, data.set_modifiers) <=
+             ZMK_SPLIT_TRANSPORT_STATE_SYNC_DATA_SIZE);
+BUILD_ASSERT(SIZEOF_FIELD(struct zmk_split_transport_central_command, data.set_wpm) <=
+             ZMK_SPLIT_TRANSPORT_STATE_SYNC_DATA_SIZE);
 // {.type = ...} zero-initializes the first union member; as it spans the whole union, the payload
 // is fully zeroed, which the zeroed tail and the last-sent memcmp of state sync rely on.
 BUILD_ASSERT(SIZEOF_FIELD(struct zmk_split_transport_central_command, data) ==
@@ -154,5 +168,5 @@ BUILD_ASSERT(SIZEOF_FIELD(struct zmk_split_transport_central_command, data) ==
 #define ZMK_SPLIT_TRANSPORT_STATE_SYNC_CMD_TYPE_FIRST                                              \
     ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_HID_INDICATORS
 #define ZMK_SPLIT_TRANSPORT_STATE_SYNC_CMD_COUNT                                                   \
-    (ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_ENDPOINT -                                           \
+    (ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_WPM -                                                \
      ZMK_SPLIT_TRANSPORT_STATE_SYNC_CMD_TYPE_FIRST + 1)

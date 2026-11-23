@@ -51,6 +51,16 @@
 #include <zmk/events/endpoint_changed.h>
 #endif
 
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_MODIFIERS)
+#include <zmk/hid.h>
+#include <zmk/events/keycode_state_changed.h>
+#endif
+
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_WPM)
+#include <zmk/wpm.h>
+#include <zmk/events/wpm_state_changed.h>
+#endif
+
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #define CMD_BIT(_type) BIT((_type) - ZMK_SPLIT_TRANSPORT_STATE_SYNC_CMD_TYPE_FIRST)
@@ -176,6 +186,18 @@ static int build_cmd(struct zmk_split_transport_central_command *cmd) {
         return 0;
     }
 #endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_ENDPOINT)
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_MODIFIERS)
+    case ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_MODIFIERS:
+        cmd->data.set_modifiers.explicit_mods = zmk_hid_get_explicit_mods();
+        LOG_DBG("explicit mods %02x", cmd->data.set_modifiers.explicit_mods);
+        return 0;
+#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_MODIFIERS)
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_WPM)
+    case ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_WPM:
+        cmd->data.set_wpm.wpm = zmk_wpm_get_state();
+        LOG_DBG("wpm %d", cmd->data.set_wpm.wpm);
+        return 0;
+#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_WPM)
     default:
         return -ENOTSUP;
     }
@@ -282,6 +304,20 @@ static int state_sync_listener(const zmk_event_t *eh) {
 #endif
 #endif
 
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_MODIFIERS)
+    // The explicit modifiers are read when sending, after the HID listener has updated them, and
+    // plain keys are dropped there as unchanged.
+    if (as_zmk_keycode_state_changed(eh)) {
+        cmds |= CMD_BIT(ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_MODIFIERS);
+    }
+#endif
+
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_WPM)
+    if (as_zmk_wpm_state_changed(eh)) {
+        cmds |= CMD_BIT(ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_WPM);
+    }
+#endif
+
     if (cmds) {
         mark_dirty(cmds);
     }
@@ -312,4 +348,12 @@ ZMK_SUBSCRIPTION(split_central_state_sync, zmk_usb_conn_state_changed);
 
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_ENDPOINT)
 ZMK_SUBSCRIPTION(split_central_state_sync, zmk_endpoint_changed);
+#endif
+
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_MODIFIERS)
+ZMK_SUBSCRIPTION(split_central_state_sync, zmk_keycode_state_changed);
+#endif
+
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_WPM)
+ZMK_SUBSCRIPTION(split_central_state_sync, zmk_wpm_state_changed);
 #endif

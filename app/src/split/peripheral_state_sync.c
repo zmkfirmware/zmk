@@ -38,6 +38,16 @@
 #include <zmk/events/endpoint_changed.h>
 #endif
 
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_MODIFIERS)
+#include <zmk/hid.h>
+#include <zmk/events/modifiers_state_changed.h>
+#endif
+
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_WPM)
+#include <zmk/wpm.h>
+#include <zmk/events/wpm_state_changed.h>
+#endif
+
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 // The type of a state sync payload, such as PAYLOAD_TYPE(set_endpoint).
@@ -293,6 +303,65 @@ static void handle_endpoint(const struct zmk_split_transport_central_command *cm
 
 #endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_ENDPOINT)
 
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_MODIFIERS)
+
+static struct {
+    bool known;
+    zmk_mod_flags_t explicit_mods;
+} modifiers;
+
+zmk_mod_flags_t zmk_hid_get_explicit_mods(void) { return modifiers.explicit_mods; }
+
+static void handle_modifiers(const struct zmk_split_transport_central_command *cmd) {
+    zmk_mod_flags_t mods = cmd->data.set_modifiers.explicit_mods;
+    zmk_mod_flags_t old_mods = modifiers.explicit_mods;
+
+    if (modifiers.known && mods == old_mods) {
+        return;
+    }
+
+    modifiers.known = true;
+    modifiers.explicit_mods = mods;
+    LOG_DBG("explicit mods %02x", mods);
+
+    zmk_mod_flags_t pressed = mods & ~old_mods;
+    zmk_mod_flags_t released = old_mods & ~mods;
+
+    if (pressed) {
+        raise_zmk_modifiers_state_changed(
+            (struct zmk_modifiers_state_changed){.modifiers = pressed, .state = true});
+    }
+    if (released) {
+        raise_zmk_modifiers_state_changed(
+            (struct zmk_modifiers_state_changed){.modifiers = released, .state = false});
+    }
+}
+
+#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_MODIFIERS)
+
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_WPM)
+
+static struct {
+    bool known;
+    uint8_t wpm;
+} wpm;
+
+int zmk_wpm_get_state(void) { return wpm.wpm; }
+
+static void handle_wpm(const struct zmk_split_transport_central_command *cmd) {
+    if (wpm.known && wpm.wpm == cmd->data.set_wpm.wpm) {
+        return;
+    }
+
+    wpm.known = true;
+    wpm.wpm = cmd->data.set_wpm.wpm;
+    LOG_DBG("wpm %d", wpm.wpm);
+
+    raise_zmk_wpm_state_changed((struct zmk_wpm_state_changed){.state = wpm.wpm});
+}
+
+#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_WPM)
+
 int zmk_split_peripheral_state_sync_handle(const struct zmk_split_transport_central_command *cmd) {
     switch (cmd->type) {
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
@@ -323,6 +392,16 @@ int zmk_split_peripheral_state_sync_handle(const struct zmk_split_transport_cent
         handle_endpoint(cmd);
         break;
 #endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_ENDPOINT)
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_MODIFIERS)
+    case ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_MODIFIERS:
+        handle_modifiers(cmd);
+        break;
+#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_MODIFIERS)
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_WPM)
+    case ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_WPM:
+        handle_wpm(cmd);
+        break;
+#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_WPM)
     default:
         return -ENOTSUP;
     }
@@ -373,6 +452,18 @@ static void reset_work_cb(struct k_work *work) {
         endpoint.known = false;
     }
 #endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_ENDPOINT)
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_MODIFIERS)
+    if (modifiers.known) {
+        handle_modifiers(&boot_state);
+        modifiers.known = false;
+    }
+#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_MODIFIERS)
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_WPM)
+    if (wpm.known) {
+        handle_wpm(&boot_state);
+        wpm.known = false;
+    }
+#endif // IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_WPM)
 }
 
 static K_WORK_DEFINE(reset_work, reset_work_cb);

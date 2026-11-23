@@ -44,6 +44,19 @@ config ZMK_SPLIT_PERIPHERAL_HID_INDICATORS
       Enable propagating the HID (LED) Indicator state to the split peripheral(s).
       Enable on both halves.
 
+config ZMK_SPLIT_PERIPHERAL_MODIFIERS
+    bool "Mirror the explicit modifiers on the split peripheral(s)"
+    help
+      Send the explicitly pressed modifiers to the split peripheral(s). Only modifier
+      changes are sent, not every key press. Enable on both halves.
+
+config ZMK_SPLIT_PERIPHERAL_WPM
+    bool "Mirror the WPM on the split peripheral(s)"
+    select ZMK_WPM
+    help
+      Send the words per minute calculated on the central to the split peripheral(s), so
+      the WPM widget works there. Enable on both halves.
+
 config ZMK_SPLIT_PERIPHERAL_BLE_PROFILE
     bool "Mirror the active BLE profile on the split peripheral(s)"
     depends on ZMK_BLE || !ZMK_SPLIT_ROLE_CENTRAL
@@ -63,7 +76,9 @@ config ZMK_SPLIT_PERIPHERAL_CENTRAL_STATE_SYNC
              ZMK_SPLIT_PERIPHERAL_LAYER_STATE || \
              ZMK_SPLIT_PERIPHERAL_BLE_PROFILE || \
              ZMK_SPLIT_PERIPHERAL_CENTRAL_BATTERY || \
-             ZMK_SPLIT_PERIPHERAL_ENDPOINT
+             ZMK_SPLIT_PERIPHERAL_ENDPOINT || \
+             ZMK_SPLIT_PERIPHERAL_MODIFIERS || \
+             ZMK_SPLIT_PERIPHERAL_WPM
 
 config ZMK_SPLIT_PERIPHERAL_CENTRAL_STATE_SYNC_COALESCE_MS
     int "Delay to coalesce central state changes before sending them to peripherals"

@@ -1,0 +1,6 @@
+peripheral 0 <dbg> zmk: zmk_split_transport_peripheral_command_handler:
+peripheral 0 <dbg> zmk: handle_modifiers: explicit mods 00
+peripheral 0 <dbg> zmk: zmk_split_transport_peripheral_command_handler:
+peripheral 0 <dbg> zmk: handle_modifiers: explicit mods 02
+peripheral 0 <dbg> zmk: zmk_split_transport_peripheral_command_handler:
+peripheral 0 <dbg> zmk: handle_modifiers: explicit mods 00

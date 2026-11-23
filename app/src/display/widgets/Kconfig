@@ -33,7 +33,7 @@ config ZMK_WIDGET_PERIPHERAL_STATUS
 
 config ZMK_WIDGET_WPM_STATUS
     bool "Widget for displaying typed words per minute"
-    depends on !ZMK_SPLIT || ZMK_SPLIT_ROLE_CENTRAL
+    depends on !ZMK_SPLIT || ZMK_SPLIT_ROLE_CENTRAL || ZMK_SPLIT_PERIPHERAL_WPM
     select LV_USE_LABEL
     select ZMK_WPM
 
