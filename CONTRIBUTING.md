@@ -75,22 +75,21 @@ documentation to areas not currently covered are greatly appreciated.
 
 ### Contributing
 
-- The documentation site can be found in the main ZMK repo, in the
-  [docs/](https://github.com/zmkfirmware/zmk/tree/main/docs) subdirectory.
-- The documentation is maintained using [Docusaurus V2](https://v2.docusaurus.io/docs/).
-- To get started, from the `docs/` directory, run `npm ci` and then `npm start`.
+- The documentation site can be found in the main ZMK repo, in the [docs/](https://github.com/zmkfirmware/zmk/tree/main/docs) subdirectory.
+- The documentation is maintained using [Astro](https://astro.build) and [Starlight](https://starlight.astro.build).
+- To get started, from the `docs/` directory, run `pnpm install` and then `pnpm dev`.
 - Enhancements should be submitted as pull requests to the `main` branch of ZMK.
 
 ### Formatting
 
-ZMK uses `prettier` to format documentation files. You can run prettier with `npm run prettier:format`.
+ZMK uses `prettier` to format documentation files. You can run prettier with `pnpm prettier:format`.
 You can setup git to run prettier automatically when you commit by installing the pre-commit hooks: `pip3 install pre-commit`, `pre-commit install`.
 
 ### Linting
 
 This repository utilizes ESLint for code linting to ensure consistent code style and identify potential errors or bugs early in the development process.
 
-You can run ESLint with `npm run lint` to verify your changes.
+You can run ESLint with `pnpm lint` to verify your changes.
 
 ## Code Contributions
 

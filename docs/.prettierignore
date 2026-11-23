@@ -1,6 +1,10 @@
+dist
+.astro
 node_modules
-build
-.docusaurus
-*.mustache
-hardware-metadata.json
+pnpm-lock.yaml
+pnpm-workspace.yaml
 src/hardware-metadata.d.ts
+src/data/hardware-metadata.json
+src/data/interconnects/*/design_guideline.mdx
+
+src/grammars/*.tmLanguage.json

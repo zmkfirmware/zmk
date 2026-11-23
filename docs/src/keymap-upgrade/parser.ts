@@ -1,28 +1,19 @@
 import Parser from "web-tree-sitter";
-
-const TREE_SITTER_WASM_URL = new URL(
-  "/node_modules/web-tree-sitter/tree-sitter.wasm",
-  import.meta.url
-);
-
-const TREE_SITTER_DEVICETREE_WASM_URL = new URL(
-  "/node_modules/tree-sitter-devicetree/tree-sitter-devicetree.wasm",
-  import.meta.url
-);
+import treeSitterWasmUrl from "web-tree-sitter/tree-sitter.wasm?url";
+import devicetreeWasmUrl from "tree-sitter-devicetree/tree-sitter-devicetree.wasm?url";
 
 export let Devicetree: Parser.Language;
 
 export async function initParser() {
   await Parser.init({
     locateFile: (path: string, prefix: string) => {
-      // When locating tree-sitter.wasm, use a path that Webpack can map to the correct URL.
-      if (path == "tree-sitter.wasm") {
-        return TREE_SITTER_WASM_URL.href;
+      if (path === "tree-sitter.wasm") {
+        return treeSitterWasmUrl;
       }
       return prefix + path;
     },
   });
-  Devicetree = await Parser.Language.load(TREE_SITTER_DEVICETREE_WASM_URL.href);
+  Devicetree = await Parser.Language.load(devicetreeWasmUrl);
 }
 
 export function createParser() {
