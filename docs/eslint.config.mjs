@@ -1,26 +1,34 @@
+import js from "@eslint/js";
 import { defineConfig, globalIgnores } from "eslint/config";
+import astro from "eslint-plugin-astro";
+import react from "eslint-plugin-react";
 import globals from "globals";
-import jseslint from "@eslint/js";
 import tseslint from "typescript-eslint";
-import pluginReact from "eslint-plugin-react";
-import * as mdx from "eslint-plugin-mdx";
 
 export default defineConfig([
-  globalIgnores([
-    ".cache-loader/",
-    ".docusaurus/",
-    "build/",
-    "src/hardware-metadata.d.ts",
-  ]),
-  { files: ["**/*.{js,jsx,ts,tsx,md,mdx}"] },
-  jseslint.configs.recommended,
-  tseslint.configs.strict,
-  mdx.flat,
-  pluginReact.configs.flat.recommended,
-  pluginReact.configs.flat["jsx-runtime"],
+  globalIgnores(["dist/", ".astro/", "node_modules/", "src/env.d.ts"]),
+  { files: ["**/*.{js,mjs,jsx,ts,tsx,astro}"] },
+  js.configs.recommended,
+  ...tseslint.configs.strict,
+  ...astro.configs.recommended,
   {
+    ...react.configs.flat.recommended,
+    files: ["**/*.{jsx,tsx}"],
+  },
+  {
+    ...react.configs.flat["jsx-runtime"],
+    files: ["**/*.{jsx,tsx}"],
+  },
+  {
+    files: ["**/*.{js,mjs,jsx,ts,tsx,astro}"],
     languageOptions: {
-      globals: { ...globals.browser, ...globals.commonjs, ...globals.node },
+      globals: {
+        ...globals.browser,
+        ...globals.commonjs,
+        ...globals.node,
+        URL: "readonly",
+        process: "readonly",
+      },
     },
     rules: {
       "react/no-unescaped-entities": "off",

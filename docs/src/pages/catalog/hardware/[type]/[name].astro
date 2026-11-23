@@ -1,0 +1,251 @@
+---
+import { getCollection, render } from "astro:content";
+import { Icon } from "@astrojs/starlight/components";
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+
+import HardwareBuild from "@components/catalog/hardware/HardwareBuild.astro";
+import HardwareDetails from "@components/catalog/hardware/HardwareDetails.astro";
+import {
+  HARDWARE_CATEGORY_LABELS,
+  hardwareRelatedEntries,
+  hardwareSourceUrl,
+  isHardwareDeviceEntry,
+  type HardwareDeviceEntry,
+} from "@/lib/hardware-catalog";
+
+export async function getStaticPaths() {
+  const entries = await getCollection("hardware");
+  const devices = entries.filter(isHardwareDeviceEntry);
+
+  return devices.map((entry) => ({
+    params: { type: entry.data.type, name: entry.data.slug },
+    props: {
+      entry,
+      related: hardwareRelatedEntries(entry, devices),
+    },
+  }));
+}
+
+interface Props {
+  /** Catalog entry for this route: page title, lead, and all rendered metadata. */
+  entry: HardwareDeviceEntry;
+  /** Other entries from the same metadata directory, such as shield revisions. */
+  related: HardwareDeviceEntry[];
+}
+
+const { entry, related } = Astro.props;
+const { data } = entry;
+
+let sourceLabel = data.url;
+
+try {
+  sourceLabel = new URL(data.url).hostname;
+} catch {
+  // Keep the raw URL when it cannot be parsed.
+}
+
+const categoryLabel = HARDWARE_CATEGORY_LABELS[data.category];
+const categoryHref = `/catalog/hardware?type=${data.category}`;
+
+const rendered = entry.body?.trim() ? await render(entry) : undefined;
+const Content = rendered?.Content;
+const headings = rendered?.headings ?? [];
+
+const readmeUrl = data.readmePath
+  ? hardwareSourceUrl(data.readmePath)
+  : undefined;
+
+const pageHeadings = Content
+  ? [{ depth: 2, slug: "documentation", text: "Documentation" }, ...headings]
+  : headings;
+---
+
+<StarlightPage
+  frontmatter={{
+    title: data.name,
+    description: data.description,
+  }}
+  headings={pageHeadings}
+  hasSidebar={false}
+>
+  <div class="hardware-page">
+    <div class="hardware-topbar">
+      <nav class="hardware-context" aria-label="Breadcrumb">
+        <a href="/catalog/hardware">Hardware Catalog</a>
+        <span class="hardware-context-separator" aria-hidden="true">
+          /
+        </span>
+        <a href={categoryHref}>{categoryLabel}</a>
+      </nav>
+
+      {data.url && (
+        <a
+          class="hardware-action"
+          href={data.url}
+          target="_blank"
+          rel="noreferrer"
+          title={data.url}
+        >
+          {sourceLabel}
+          <Icon name="external" />
+        </a>
+      )}
+    </div>
+
+    {data.description && <p class="hardware-lead">{data.description}</p>}
+
+    <HardwareDetails {entry} {related} />
+
+    <HardwareBuild {entry} />
+
+    {Content && (
+      <section class="hardware-readme" aria-labelledby="documentation">
+        <div class="hardware-readme-head">
+          <h2 id="documentation">Documentation</h2>
+          {readmeUrl && (
+            <a
+              class="hardware-readme-source"
+              href={readmeUrl}
+              target="_blank"
+              rel="noreferrer"
+            >
+              View Source
+            </a>
+          )}
+        </div>
+        <div class="hardware-readme-body">
+          <Content />
+        </div>
+      </section>
+    )}
+  </div>
+</StarlightPage>
+
+<style>
+  .hardware-page {
+    padding-block-start: 0.25rem;
+  }
+
+  .hardware-topbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.35rem 1.5rem;
+    margin-block: 0 1.25rem;
+  }
+
+  .hardware-context {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem;
+    margin: 0;
+    color: var(--sl-color-gray-3);
+    font-size: var(--sl-text-sm);
+  }
+
+  .hardware-context a {
+    color: var(--sl-color-text-accent);
+    text-decoration: none;
+  }
+
+  .hardware-context a:hover {
+    text-decoration: underline;
+  }
+
+  .hardware-context-separator {
+    color: var(--sl-color-gray-4);
+  }
+
+  .hardware-lead {
+    max-width: 60ch;
+    margin-block: 0 1rem;
+    color: var(--sl-color-gray-2);
+    font-size: var(--sl-text-lg);
+    line-height: 1.5;
+  }
+
+  .hardware-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: var(--sl-color-text-accent);
+    font-size: var(--sl-text-sm);
+    text-decoration: none;
+    overflow-wrap: anywhere;
+  }
+
+  .hardware-action:hover {
+    text-decoration: underline;
+  }
+
+  .hardware-readme {
+    margin-block-start: 2.5rem;
+    padding-block-start: 2rem;
+    border-block-start: 1px solid var(--sl-color-hairline-light);
+  }
+
+  .hardware-readme-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.35rem 1rem;
+    margin-block-end: 1rem;
+  }
+
+  .hardware-readme-head h2 {
+    margin: 0;
+    color: var(--sl-color-gray-3);
+    font-size: var(--sl-text-2xs);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    line-height: 1.3;
+    text-transform: uppercase;
+  }
+
+  .hardware-readme-source {
+    margin: 0;
+    color: var(--sl-color-gray-3);
+    font-size: var(--sl-text-xs);
+    text-decoration: none;
+  }
+
+  .hardware-readme-source:hover {
+    color: var(--sl-color-text-accent);
+    text-decoration: underline;
+  }
+
+  .hardware-readme-body {
+    margin: 0;
+  }
+
+  .hardware-readme-body :global(h1) {
+    font-size: var(--sl-text-h2);
+  }
+
+  .hardware-readme-body :global(h2) {
+    font-size: var(--sl-text-h3);
+  }
+
+  .hardware-readme-body :global(h3) {
+    font-size: var(--sl-text-h4);
+  }
+
+  .hardware-readme-body :global(h4) {
+    font-size: var(--sl-text-h5);
+  }
+
+  .hardware-readme-body :global(h5),
+  .hardware-readme-body :global(h6) {
+    font-size: var(--sl-text-base);
+  }
+
+  @media (max-width: 30rem) {
+    .hardware-readme {
+      margin-block-start: 2rem;
+      padding-block-start: 1.5rem;
+    }
+  }
+</style>

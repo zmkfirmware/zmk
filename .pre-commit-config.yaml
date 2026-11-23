@@ -1,4 +1,13 @@
 fail_fast: false
+
+exclude: |
+  (?x)^(
+      docs/pnpm-lock\.yaml|
+      docs/pnpm-workspace\.yaml|
+      docs/patches/.*\.patch|
+      docs/src/grammars/.*\.tmLanguage\.json
+  )$
+
 repos:
   - repo: https://github.com/Lucas-C/pre-commit-hooks
     rev: v1.5.1
@@ -16,6 +25,9 @@ repos:
     rev: 787fb9f542b140ba0b2aced38e6a3e68021647a3
     hooks:
       - id: prettier
+        additional_dependencies:
+          - prettier@3.5.3
+          - prettier-plugin-astro@1.1.2
         exclude: |
           (?x)^(
               .git/COMMIT_EDITMSG|
