@@ -40,7 +40,27 @@ static const struct behavior_parameter_metadata metadata = {
 
 #endif
 
+struct behavior_mouse_key_press_data {
+    // Number of held bindings per button; only the 0->1 and 1->0 transitions are reported so that
+    // several bindings can hold the same button.
+    uint8_t counts[ZMK_HID_MOUSE_NUM_BUTTONS];
+};
+
 static void process_key_state(const struct device *dev, int32_t val, bool pressed) {
+    struct behavior_mouse_key_press_data *data = dev->data;
+
+    for (int i = 0; i < ZMK_HID_MOUSE_NUM_BUTTONS; i++) {
+        if ((val & BIT(i)) == 0) {
+            continue;
+        }
+
+        bool transition =
+            pressed ? data->counts[i]++ == 0 : data->counts[i] > 0 && --data->counts[i] == 0;
+        if (!transition) {
+            WRITE_BIT(val, i, 0);
+        }
+    }
+
     for (int i = 0; i < ZMK_HID_MOUSE_NUM_BUTTONS; i++) {
         if (val & BIT(i)) {
             WRITE_BIT(val, i, 0);
@@ -76,7 +96,8 @@ static const struct behavior_driver_api behavior_mouse_key_press_driver_api = {
 };
 
 #define MKP_INST(n)                                                                                \
-    BEHAVIOR_DT_INST_DEFINE(n, NULL, NULL, NULL, NULL, POST_KERNEL,                                \
+    static struct behavior_mouse_key_press_data behavior_mouse_key_press_data_##n = {};            \
+    BEHAVIOR_DT_INST_DEFINE(n, NULL, NULL, &behavior_mouse_key_press_data_##n, NULL, POST_KERNEL,  \
                             CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,                                   \
                             &behavior_mouse_key_press_driver_api);
 
