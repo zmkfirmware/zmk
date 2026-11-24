@@ -1,0 +1,40 @@
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/kscan_mock.h>
+#include <dt-bindings/zmk/pointing.h>
+#include <zephyr/dt-bindings/input/input-event-codes.h>
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+            &none &none
+            &none &none
+            >;
+        };
+    };
+
+    mock_input: mock_input {
+        compatible = "zmk,input-mock";
+        event-startup-delay = <100>;
+        event-period = <100>;
+        events
+            = <INPUT_EV_KEY INPUT_BTN_0 1 0>
+            , <INPUT_EV_KEY INPUT_BTN_0 0 1>
+            ;
+        exit-after;
+    };
+
+    test_input_listener: test_input_listener {
+        compatible = "zmk,input-listener";
+        device = <&mock_input>;
+    };
+};
+
+&kscan {
+    events = <>;
+
+    /delete-property/ exit-after;
+};
