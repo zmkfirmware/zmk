@@ -1,0 +1,2 @@
+s/.*keymap_apply_position_state/pos_state/p
+s/.*zmk_hid_mouse_button_//p

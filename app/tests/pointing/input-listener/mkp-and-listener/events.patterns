@@ -1,0 +1,1 @@
+s/.*zmk_hid_mouse_button_//p
