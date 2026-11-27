@@ -62,11 +62,11 @@ Corne54 还启用了 `CONFIG_ZMK_EXT_POWER` 和 `CONFIG_ZMK_LED_MATRIX_EXT_POWER
 
 网格按本侧扫描矩阵的行、列填写。数字是从零开始的逻辑灯号。直连灯带时，灯号就是灯珠在串联链中的位置。`LM_BREAK` 换行，`LM_PH` 表示没有按键的位置，`LM_NOLED` 表示有按键但没有灯。右半板使用自己的 `corne54_right.dts`，末行是 `27 24 25 26 LM_PH LM_PH`。按键触发了相邻灯时，先检查该侧网格；整条灯带都把红色显示成绿色时，先检查灯带节点的 `color-mapping`。
 
-| 手上的硬件 | 在控制器中怎么选 | 怎么映射 |
-| --- | --- | --- |
-| 可寻址 RGB 灯带 | `led-driver = "strip"`，`led-strip-device = <&led_strip>` | 按串联顺序编号，网格描述每个键下是哪颗灯。 |
-| 单个 Zephyr LED 驱动 | `led-driver = "matrix"`，`led-device` 指向驱动节点 | 对支持 `write_channels` 的驱动，可用 `channel-indexes` 按每灯 R、G、B 分别指定物理通道。使用逐灯 API 时，可用 `led-indexes` 指定物理灯号。 |
-| 多芯片或混合灯区 | 同样选 `"matrix"`，`led-device` 指向 `zmk,led-composite` 节点 | 为各子设备分配从 0 开始连续的 `channel-offset` 和 `channel-count`，再通过 `channel-indexes` 映射到逻辑灯。 |
+| 手上的硬件           | 在控制器中怎么选                                              | 怎么映射                                                                                                                                   |
+| -------------------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| 可寻址 RGB 灯带      | `led-driver = "strip"`，`led-strip-device = <&led_strip>`     | 按串联顺序编号，网格描述每个键下是哪颗灯。                                                                                                 |
+| 单个 Zephyr LED 驱动 | `led-driver = "matrix"`，`led-device` 指向驱动节点            | 对支持 `write_channels` 的驱动，可用 `channel-indexes` 按每灯 R、G、B 分别指定物理通道。使用逐灯 API 时，可用 `led-indexes` 指定物理灯号。 |
+| 多芯片或混合灯区     | 同样选 `"matrix"`，`led-device` 指向 `zmk,led-composite` 节点 | 为各子设备分配从 0 开始连续的 `channel-offset` 和 `channel-count`，再通过 `channel-indexes` 映射到逻辑灯。                                 |
 
 ### 3. 在 keymap 中控制灯效
 

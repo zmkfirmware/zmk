@@ -14,7 +14,7 @@
 | --- | --- |
 | LED Matrix | 将按键位置映射到 LED，使用 16 种主灯效渲染器，可按层改色、给独立灯区选预设，并显示电量、USB、蓝牙和 HID 锁定状态。[从 Corne54 开始配置](docs/docs/development/hardware-integration/lighting/led-matrix.mdx) |
 | 多种灯光硬件 | 可直接驱动 RGB 灯带或 Zephyr LED 设备，也可用 `led_composite` 把多块驱动芯片、单色 LED 和灯带编成同一组逻辑灯号。[后端、通道映射与供电参考](docs/docs/led-matrix-led-composite-reference.mdx) |
-| Studio 在线编辑 | 兼容本分支协议的客户端可读取灯效目录、调整预设和灯区，也可为带旋钮的键盘逐层设置顺、逆时针绑定。灯效持久化编辑需启用 LED Matrix 编辑器和 settings，旋钮编辑需启用 Studio 并在键盘上定义传感器。[Studio 配置](docs/docs/config/studio.md) |
+| Studio 在线编辑 | 兼容本分支协议的客户端可读取灯效目录、调整预设和灯区，也可为带旋钮的键盘逐层设置顺、逆时针绑定。灯效持久化编辑需启用 LED Matrix 编辑器和 settings，旋钮编辑需启用 Studio 并在键盘上定义传感器。[Studio 配置](docs/docs/config/studio.md) · [配套客户端](https://github.com/afayge/zmk-studio) |
 | 轨迹球与指针速度 | BlackBerry 轨迹球支持按滚动速度加速、切换速度档位、配置按压动作和四颗 PWM 灯。[接线及调校示例](docs/docs/hardware-integration/blackberry-trackball.mdx) |
 | BMK 键盘与显示 | 包含 Corne54 系列和 Numpad 等板型。支持的状态屏可显示 Num、Caps 和 Scroll Lock；BMK Numpad 还可在板上计算并将结果输入当前 USB 或蓝牙主机。[BMK 板型](app/boards/bmk) · [Numpad 计算器键位](app/boards/bmk/numpad/calculator/README.md) |
 

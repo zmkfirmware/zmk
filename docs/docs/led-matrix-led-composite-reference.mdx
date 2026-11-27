@@ -768,7 +768,7 @@ ZMK 共享低优先级工作队列。连续修改只保留最后一次保存，�
 
 ### 5.11 Studio 灯效设置
 
-本节中的界面操作需要支持本分支 Lighting RPC 的客户端。同时启用 Studio RPC、LED Matrix 和 `&lm` 行为的固件会向客户端报告基础灯效控制能力。设备解锁后，在 **Lighting** 页可调节开关、亮度、主预设、动画速度、手动色板和各独立灯区的预设。主预设、独立灯区和局部预设均可用 `display-name` 设置界面名称。色板选择影响使用 `LM_PALETTE` 的颜色。
+本节中的界面操作使用支持本分支 Lighting RPC 的 [afayge 定制版 ZMK Studio](https://github.com/afayge/zmk-studio)。同时启用 Studio RPC、LED Matrix 和 `&lm` 行为的固件会向客户端报告基础灯效控制能力。设备解锁后，在 **Lighting** 页可调节开关、亮度、主预设、动画速度、手动色板和各独立灯区的预设。主预设、独立灯区和局部预设均可用 `display-name` 设置界面名称。色板选择影响使用 `LM_PALETTE` 的颜色。
 
 `CONFIG_ZMK_LED_MATRIX_STUDIO_NOTIFICATIONS` 默认启用。设备解锁后，开关、亮度、预设、速度和颜色的设置变化会通知 Studio；仅含状态覆盖或切层提示的事件由键盘本地处理。关闭此选项可单独隔离灯效通知，Studio 仍可读取和修改灯效。
 
@@ -1057,19 +1057,19 @@ inherit 表示未显式设置时继承 `status-timeout-ms`。
 
 主预设支持下表的 16 种渲染器。Studio 的 **Animation** 按本侧固件能力列出可用项，**Style** 和 **Direction** 随所选动画变化。Devicetree 用 `effect-style` 选择样式（从 0 开始），用 `effect-direction` 选择 `"forward"` 或 `"reverse"`。省略时取样式 0 和正向。
 
-| ID | `renderer` | 样式（按编号排列） | 布局 / 方向 |
-| --- | --- | --- | --- |
-| 0–3 | `solid`、`breathe`、`spectrum`、`swirl` | 常亮、呼吸、整体色相循环、按灯号循环 | 主预设及独立灯区 |
-| 4–6 | `keypress`、`ripple`、`rain` | 按住与余辉、最后一次按键的波前、列雨 | 本侧网格 |
-| 7 | `starlight` | 星闪，具备网格时可见流星 | 主预设 |
-| 8 | `gradient` | 横向、纵向、横向阶梯、纵向阶梯 | 网格，可反向 |
-| 9 | `wave` | 横波、纵波、折线波、往返海浪、明暗带 | 网格，可反向 |
-| 10 | `radial` | 单中心、双中心、边缘喷泉 | 网格，可反向；喷泉反向时交换起始边 |
-| 11 | `rotary` | 风车、彩色螺旋、明暗螺旋、双灯标、彩色灯标 | 网格，可反向旋转 |
-| 12 | `particles` | 单色散点、彩色雨点、簇状绽放 | 网格 |
-| 13 | `chase` | 灯头和最多三级拖尾沿有序成员移动 | 主预设及独立灯区，可反向 |
-| 14 | `reactive` | 宽域、十字、方格波前、钢琴列、单色扩散、彩色扩散、常亮底涟漪 | 网格，最多同时保留最近 8 次敲击 |
-| 15 | `heatmap` | 按键和相邻上下左右格分别增加 40、12 点热度，上限 100，逐渐冷却 | 网格 |
+| ID  | `renderer`                              | 样式（按编号排列）                                             | 布局 / 方向                        |
+| --- | --------------------------------------- | -------------------------------------------------------------- | ---------------------------------- |
+| 0–3 | `solid`、`breathe`、`spectrum`、`swirl` | 常亮、呼吸、整体色相循环、按灯号循环                           | 主预设及独立灯区                   |
+| 4–6 | `keypress`、`ripple`、`rain`            | 按住与余辉、最后一次按键的波前、列雨                           | 本侧网格                           |
+| 7   | `starlight`                             | 星闪，具备网格时可见流星                                       | 主预设                             |
+| 8   | `gradient`                              | 横向、纵向、横向阶梯、纵向阶梯                                 | 网格，可反向                       |
+| 9   | `wave`                                  | 横波、纵波、折线波、往返海浪、明暗带                           | 网格，可反向                       |
+| 10  | `radial`                                | 单中心、双中心、边缘喷泉                                       | 网格，可反向；喷泉反向时交换起始边 |
+| 11  | `rotary`                                | 风车、彩色螺旋、明暗螺旋、双灯标、彩色灯标                     | 网格，可反向旋转                   |
+| 12  | `particles`                             | 单色散点、彩色雨点、簇状绽放                                   | 网格                               |
+| 13  | `chase`                                 | 灯头和最多三级拖尾沿有序成员移动                               | 主预设及独立灯区，可反向           |
+| 14  | `reactive`                              | 宽域、十字、方格波前、钢琴列、单色扩散、彩色扩散、常亮底涟漪   | 网格，最多同时保留最近 8 次敲击    |
+| 15  | `heatmap`                               | 按键和相邻上下左右格分别增加 40、12 点热度，上限 100，逐渐冷却 | 网格                               |
 
 例如，把以下属性放进现有主预设即可得到反向双中心色环。按键事件形变、冷却和动画速度都跟随有效 `period-ms`。静态渐变使用固定颜色时只更新首帧或设置变更帧，使用 `LM_RAINBOW` 时继续变色。色相循环类样式以所选颜色为起点，灰白基色取其亮度生成彩色，黑色保持熄灭。
 
@@ -1085,31 +1085,31 @@ period-ms = <1400>;
 
 以下名称来自 K2 HE ANSI RGB 演示和 Air60 HE 演示。Keychron 模式按设备定义中的英文名称列出。NuPhy 的对应项是 ZMK 对该名称的视觉近似，特别是百花、潮汐、钢琴和常亮涟漪，尚无实机帧序列对照。表中的数字是 `effect-style`。
 
-| Keychron K2 HE ANSI RGB | NuPhy Air60 HE 背光 | ZMK 配置 |
-| --- | --- | --- |
-| None | 背光开关 | `LM_OFF` |
-| Solid Color、Per Key RGB | 自定义 | `solid` 配单色或逐灯颜色 |
-| Breathing | 呼吸 | `breathe` |
-| Cycle All | 光谱 | `spectrum` |
-| — | 阶梯 | `gradient` 2 或 3 |
-| Cycle Left Right、Cycle Up Down | 波浪、上下波浪 | `wave` 0、1 |
-| Rainbow Moving Chevron | — | `wave` 2 |
-| — | 海浪、波带 | `wave` 3、4 |
-| Cycle Out In、Cycle Out In Dual | 潮汐 | `radial` 0、1，反向可向内收拢 |
-| — | 喷泉 | `radial` 2 |
-| Cycle Pinwheel、Cycle Spiral | 旋转 | `rotary` 0、1 |
-| Band Spiral Val | — | `rotary` 2 |
-| Dual Beacon、Rainbow Beacon | — | `rotary` 3、4 |
-| Pixel Rain、Jellybean Raindrops | 银河 | `particles` 0、1 |
-| — | 百花 | `particles` 2 |
-| — | 流光 | `chase` |
-| Digital Rain | 落雨 | `rain` |
-| Reactive Simple | 单点 | `keypress`，`keypress-range = <0>` |
-| Reactive Multiwide、Reactive Multinexus | — | `reactive` 0、1 |
-| — | 宫格、钢琴 | `reactive` 2、3 |
-| Solid Splash、Splash | 涟漪 | `reactive` 4、5；单个波前可选 `ripple` |
-| — | 常亮涟漪 | `reactive` 6 |
-| Typing Heatmap | — | `heatmap` |
+| Keychron K2 HE ANSI RGB                 | NuPhy Air60 HE 背光 | ZMK 配置                               |
+| --------------------------------------- | ------------------- | -------------------------------------- |
+| None                                    | 背光开关            | `LM_OFF`                               |
+| Solid Color、Per Key RGB                | 自定义              | `solid` 配单色或逐灯颜色               |
+| Breathing                               | 呼吸                | `breathe`                              |
+| Cycle All                               | 光谱                | `spectrum`                             |
+| —                                       | 阶梯                | `gradient` 2 或 3                      |
+| Cycle Left Right、Cycle Up Down         | 波浪、上下波浪      | `wave` 0、1                            |
+| Rainbow Moving Chevron                  | —                   | `wave` 2                               |
+| —                                       | 海浪、波带          | `wave` 3、4                            |
+| Cycle Out In、Cycle Out In Dual         | 潮汐                | `radial` 0、1，反向可向内收拢          |
+| —                                       | 喷泉                | `radial` 2                             |
+| Cycle Pinwheel、Cycle Spiral            | 旋转                | `rotary` 0、1                          |
+| Band Spiral Val                         | —                   | `rotary` 2                             |
+| Dual Beacon、Rainbow Beacon             | —                   | `rotary` 3、4                          |
+| Pixel Rain、Jellybean Raindrops         | 银河                | `particles` 0、1                       |
+| —                                       | 百花                | `particles` 2                          |
+| —                                       | 流光                | `chase`                                |
+| Digital Rain                            | 落雨                | `rain`                                 |
+| Reactive Simple                         | 单点                | `keypress`，`keypress-range = <0>`     |
+| Reactive Multiwide、Reactive Multinexus | —                   | `reactive` 0、1                        |
+| —                                       | 宫格、钢琴          | `reactive` 2、3                        |
+| Solid Splash、Splash                    | 涟漪                | `reactive` 4、5；单个波前可选 `ripple` |
+| —                                       | 常亮涟漪            | `reactive` 6                           |
+| Typing Heatmap                          | —                   | `heatmap`                              |
 
 Air60 HE 条形灯的「呼吸」「流光」「霓虹」「静态」依次对应独立灯区的 `breathe`、`chase`、`spectrum` 和 `solid`。Keychron 的 Mix RGB 属于分区时间线编排，本表覆盖单项灯效。[Keychron 设备定义](https://launcher.keychron.com/static/device/875826720/json/v3.json) · [NuPhy 演示](https://drive.nuphyio.com/?selectDevice=2/#/pressKey)
 
