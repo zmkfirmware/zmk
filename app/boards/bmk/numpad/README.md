@@ -1,10 +1,10 @@
 # BMK Numpad
 
-nRF52840 数字键盘，配有 IS31FL3737 LED 矩阵和 ST75256 液晶屏。
+An nRF52840 number pad with an IS31FL3737 LED matrix and an ST75256 LCD.
 
 ## Building numpad ZMK firmware
 
-此板的 LCD 依赖 ST75256 驱动。若本地 Zephyr 已包含 `drivers/display/display_st75256.c`，可直接构建。首次使用本分支的 west 工作区时，从仓库根目录将随板提供的驱动补丁应用到 Zephyr，再构建固件：
+The LCD requires the ST75256 driver. If your Zephyr checkout already contains `drivers/display/display_st75256.c`, go straight to the build command. On a fresh workspace, run these commands from the repository root to apply the bundled display driver first.
 
 ```sh
 git -C zephyr apply --check "$PWD/app/boards/bmk/numpad/st75256-zephyr.patch"
@@ -25,15 +25,8 @@ west build -s app -b numpad//zmk -d build/numpad-normal
 
 ## ZMK Studio (normal firmware)
 
-正常版默认启用 ZMK Studio，板级 DTS 和 Kconfig 已包含 USB CDC ACM 传输，
-不需要额外添加 `studio-rpc-usb-uart` snippet。USB HID 键盘功能继续保留。
+The normal firmware enables Studio by default. The board includes a USB CDC ACM transport alongside the USB HID keyboard, so the build does not need a separate `studio-rpc-usb-uart` snippet.
 
-使用 USB 数据线连接电脑；如当前输出为蓝牙，先按 **FN + 小数点** 切换到 USB。
-在 ZMK Studio 中选择该键盘的串口连接，然后按 **FN + 0** 解锁。Base、Media 和计算器模式均可使用；断开连接会重新锁定，空闲 600 秒也会锁定。
-FN + NLCK、FN + DEL、FN + Enter 保持原有功能。请保留 Fn 键和解锁键，
-以及计算器层、计算器 Fn 层的编号和专用绑定，避免在线改键后失去这些入口。
+Connect with a USB data cable. If Bluetooth is the active output, press **Fn + decimal point** to select USB. In Studio, select the keyboard's serial port and press **Fn + 0** to unlock it. The unlock key works in Base, Media, and calculator modes. The device locks on disconnect or after 600 seconds of inactivity. Keep the Fn and unlock bindings accessible when remapping. The calculator layer IDs and their dedicated bindings are needed for **Fn + Num Lock**, **Fn + Delete**, and **Fn + Enter**.
 
-背光诊断配置显式设置 `CONFIG_ZMK_STUDIO=n`，保持之前的诊断基线；
-隔离版仍关闭 settings、自动消隐与设备电源管理，不提供 Studio USB 串口。
-关闭 Studio 的固件中 FN + 0 不执行操作。刷入新固件不会清除已保存的设置；
-如以前使用 Studio 保存过键位，保存的映射可能覆盖新默认解锁键。
+The backlight diagnostic builds set `CONFIG_ZMK_STUDIO=n`. The isolated build also disables settings, automatic display blanking, and device power management. These builds have no Studio USB port and **Fn + 0** has no action. Flashing firmware preserves saved settings, so a keymap previously saved in Studio can override the factory unlock binding.

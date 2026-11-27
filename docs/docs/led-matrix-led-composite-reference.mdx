@@ -1,423 +1,48 @@
 ---
-title: LED Matrix / led_composite 参考手册
-description: ZMK 中 LED Matrix 与 led_composite 的独立详细技术参考文档。
+title: LED Matrix and led_composite reference
+description: Lighting effects, Devicetree properties, key bindings, runtime settings, and power management in this ZMK fork.
 ---
 
-# LED Matrix / led_composite 参考手册
+For a first build, follow the [Corne54 configuration guide](development/hardware-integration/lighting/led-matrix.mdx). This reference covers the controller, its hardware backends, and the configuration shared by the firmware and the companion Studio client.
 
-首次配置可以从 [Corne54 配置与构建指南](development/hardware-integration/lighting/led-matrix.mdx) 开始。本手册用于查阅本分支的 Kconfig 默认值、Devicetree 属性、灯效行为、状态覆盖和后端接口。
+## Lighting and hardware
 
----
+LED Matrix assigns a logical number to each LED. A main profile supplies the base colors. Independent groups have their own local profiles. Layer colors and status indicators can override the resulting colors on selected LEDs. The controller maps the completed frame to the hardware, applies brightness, and manages power and refresh timing.
 
-## 1. 功能概览
+| System        | Hardware interface          | Typical use                                                                                            |
+| ------------- | --------------------------- | ------------------------------------------------------------------------------------------------------ |
+| RGB underglow | Zephyr `led_strip`          | Run an effect on a strip of addressable LEDs.                                                          |
+| Backlight     | Zephyr LED or PWM driver    | Adjust the brightness of a single-color backlight.                                                     |
+| LED Matrix    | Zephyr `led` or `led_strip` | Address individual keys, locate effects on a grid, or combine independent zones and status indicators. |
 
-### 1.1 LED Matrix 是什么
+With `led-driver = "strip"`, the controller sends pixels through `led_strip_update_rgb()`. With `"matrix"`, it uses the target's LED API, which can expose channel writes, RGB colors, scalar brightness, or binary on/off. An IS31 controller or a `zmk,led-composite` device can serve as the matrix backend. A composite exposes one continuous channel space built from several devices.
 
-`LED Matrix` 是 ZMK 中的逻辑 RGB 渲染与控制层。它不是某一种具体 LED 芯片或某一种固定硬件拓扑的名字，而是一个位于“用户输入/状态”与“底层 LED backend”之间的中间层，负责：
+## Kconfig settings
 
-- 管理逻辑 LED 数量与逻辑布局。
-- 把 profile、layer color、independent LED group、Battery/USB/BLE/HID 状态叠加等多种渲染源统一裁决。
-- 将逻辑 RGB 输出映射到具体后端设备。
-- 协调亮度、速度、手动色相、状态超时、自动熄灭、电源管理、设置持久化等运行行为。
+Defaults below come from `app/Kconfig`, `app/Kconfig.defaults`, and the LED module's Kconfig. A board or user configuration can override them. Startup defaults apply until the firmware restores saved settings.
 
-从架构角度看，`LED Matrix` 更像是“渲染控制器”而不是“驱动”。
+| Option                                                                        | Default              | Behavior                                                                                                                                                      |
+| ----------------------------------------------------------------------------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `CONFIG_ZMK_LED_MATRIX`                                                       | `n`                  | Enable the controller. The chosen node selects the LED or LED strip API. HID indicators and the low-priority work queue are selected automatically.           |
+| `CONFIG_ZMK_LED_MATRIX_EXT_POWER`                                             | `n`                  | Coordinate a direct strip's external supply with rendering. Requires the strip backend, `CONFIG_ZMK_EXT_POWER`, and an enabled generic external power device. |
+| `CONFIG_ZMK_LED_MATRIX_AUTO_OFF_IDLE`                                         | `n`                  | Suspend base lighting on battery when idle. Resume on activity. USB power prevents this automatic suspension.                                                 |
+| `CONFIG_ZMK_LED_MATRIX_IDLE_STATUS_WAKE_TIMEOUT`                              | `1800000` ms         | Time after entering idle during which an automatic status event may light the LEDs. Zero closes the window immediately.                                       |
+| `CONFIG_ZMK_LED_MATRIX_BRT_STEP`                                              | `10`                 | Percentage points per brightness step.                                                                                                                        |
+| `CONFIG_ZMK_LED_MATRIX_BRT_START`                                             | `60`                 | Startup global brightness, in percent.                                                                                                                        |
+| `CONFIG_ZMK_LED_MATRIX_PROFILE_START`                                         | `0`                  | Startup main profile ID.                                                                                                                                      |
+| `CONFIG_ZMK_LED_MATRIX_SPD_LEVELS`                                            | `7`                  | Number of animation speed levels.                                                                                                                             |
+| `CONFIG_ZMK_LED_MATRIX_SPD_START`                                             | `min(4, SPD_LEVELS)` | Startup speed level.                                                                                                                                          |
+| `CONFIG_ZMK_LED_MATRIX_ON_START`                                              | `y`                  | Initial power switch state.                                                                                                                                   |
+| `CONFIG_ZMK_LED_MATRIX_EDITOR`                                                | Conditional          | Requires LED Matrix and `CONFIG_SETTINGS`. Defaults on with Studio RPC or on a split peripheral. Allows persistent editing and an empty starting catalog.     |
+| `CONFIG_ZMK_LED_MATRIX_CUSTOM_PRESETS`, `CONFIG_ZMK_LED_MATRIX_CUSTOM_GROUPS` | `4` each             | Reserve 1–16 editable slots of each kind with the editor enabled.                                                                                             |
+| `CONFIG_ZMK_LED_MATRIX_STUDIO_NOTIFICATIONS`                                  | `y` when available   | Notify an unlocked Studio client of lighting setting changes. Requires Studio RPC, LED Matrix and its behavior.                                               |
+| `CONFIG_ZMK_LED_COMPOSITE`                                                    | `y` when available   | Build the composite driver when `LED` and an enabled composite node are present. Selects `LED_STRIP` for strip children.                                      |
 
-### 1.2 它和 RGB underglow / Backlight 的区别
+The hidden options `CONFIG_ZMK_LED_MATRIX_USES_LED_API` and `CONFIG_ZMK_LED_MATRIX_USES_LED_STRIP_API` are derived from the chosen node's `led-driver`. Set the Devicetree property when changing backend. The controller shares ZMK's low-priority queue for rendering, final power transitions and debounced settings saves.
 
-`LED Matrix` 与 ZMK 中另外两个常见光效系统的区别如下：
+## Key bindings and colors
 
-| 功能            | 主要对象        | 控制粒度               | 核心 API                                     | 典型用途                                 |
-| --------------- | --------------- | ---------------------- | -------------------------------------------- | ---------------------------------------- |
-| `RGB underglow` | 可寻址 RGB 灯带 | 灯带/像素              | `led_strip`                                  | 环绕灯带、底光                           |
-| `Backlight`     | 单色并联 LED    | 全局亮度               | `led`/PWM                                    | 单色背光                                 |
-| `LED Matrix`    | 逻辑 RGB 矩阵   | 逻辑 LED、位置、状态源 | `led` 或 `led_strip`，由 controller 统一抽象 | 每键 RGB、状态区、分组独立光效、状态叠加 |
-
-`LED Matrix` 和 `RGB underglow` 最大的不同在于：前者内建了逻辑布局、状态叠加、行为命令、profile 切换、independent child profile 等更高层的语义，而不是只负责把 RGB 数据推给一串 LED。
-
-### 1.3 `led-driver = "matrix"` 与 `led-driver = "strip"`
-
-`zmk,led-matrix` 节点有一个必填属性 `led-driver`，目前只有两个枚举值：
-
-- `"matrix"`
-- `"strip"`
-
-它决定 `LED Matrix` 最终调用哪一类底层 backend：
-
-#### `led-driver = "matrix"`
-
-表示 `LED Matrix` 通过 Zephyr `led` API 输出。源码中的描述是：
-
-- `led_write_channels`
-- `set_color`
-- `set_brightness`
-- `on`
-- `off`
-
-在当前实现里，`LED Matrix` 优先依赖 `write_channels` 能力，因为 RGB 逻辑输出是按通道空间组织的。此模式下的后端可以是：
-
-- 真实矩阵 LED 控制器，例如 IS31 系列。
-- 自定义的 `zmk,led-composite` 聚合 backend。
-- 具备 `write_channels` 的 mock 设备。
-
-#### `led-driver = "strip"`
-
-表示 `LED Matrix` 直接通过 Zephyr `led_strip` API 输出。核心路径是：
-
-- `led_strip_update_rgb`
-
-此模式通常用于：
-
-- 实际灯带就是最终输出对象。
-- 不需要额外的 `led` API 聚合层。
-- 结合 `CONFIG_ZMK_LED_MATRIX_EXT_POWER` 对 strip 运行时进行电源控制。
-
-### 1.4 `led_composite` 是什么
-
-`led_composite` 不是渲染器，而是一个“扁平 RGB channel space 聚合 backend”。
-
-它的作用是把多个子 backend 组合成一个连续的通道空间，再让 `LED Matrix` 通过一个统一的 `led-device` 来写入这些通道。子 backend 可以混合：
-
-- `led-device`
-- `led-strip-device`
-
-其典型用途包括：
-
-- 一部分 LED 走矩阵驱动芯片，一部分 LED 走 LED strip。
-- 多个 LED backend 的通道空间需要合并为一个连续逻辑输出。
-- 统一受 `LED Matrix` 控制，并通过 `channel-indexes` 精确映射逻辑通道到物理通道。
-
----
-
-## 2. 源码组成与目录结构
-
-本节按照功能子系统而不是文件扩展名进行说明。
-
-### 2.1 LED Matrix 核心源码
-
-#### `app/src/led_matrix.c`
-
-这是 `LED Matrix` 的总入口与总装配文件，负责：
-
-- 选择 `/chosen` 中的 `zmk,led-matrix` 节点。
-- 解析 backend 类型与 DTS 配置。
-- 校验逻辑 LED 数量、输出通道数、映射表长度、状态区定义等。
-- 组合包含 `core.c`、`power.c`、`status.c`、`render.c`、`api.c` 的子实现。
-- 在初始化阶段检查 backend 是否 ready。
-
-可以把它理解为“controller 顶层胶水文件 + DTS 校验入口”。
-
-#### `app/src/led_matrix/core.c`
-
-负责静态配置与核心运行数据组织，重点包括：
-
-- display profile、independent group、layer color 等结构的展开与静态构建。
-- 从 DTS child node 生成内部配置结构。
-- profile 查找、independent profile 选择、layer color 目标 LED 处理。
-- 颜色表、独立组、layer color 映射表的静态存储。
-- 运行状态的规范化和配置合法性检查。
-
-这是“配置模型”最重的一部分。
-
-#### `app/src/led_matrix/render.c`
-
-负责渲染优先级与输出落地，主要职责：
-
-- 决定当前有效渲染源：
-  - `OFF`
-  - `PROFILE`
-  - `INDEPENDENT`
-  - `LAYER_COLOR`
-  - `STATUS_OVERLAY`
-- 执行 profile renderer，例如 `solid`、`breathe`、`spectrum`、`swirl`、`keypress`、`ripple`、`rain`、`starlight`。
-- 把逻辑 RGB 结果转换为 backend 输出数据。
-- 对 `matrix` backend 走 `led_write_channels()`。
-- 对 `strip` backend 走 `led_strip_update_rgb()`。
-
-这是“渲染决策 + 输出提交”的核心。
-
-#### `app/src/led_matrix/status.c`
-
-负责 Battery / USB / BLE / HID 状态快照、自动状态显示、瞬态/持久状态管理与超时行为，主要职责：
-
-- 维护 `snapshot`。
-- 处理 USB、BLE、Battery、HID 状态变更事件。
-- 根据 timeout 计算 transient overlay 是否显示。
-- 管理 persistent status 与 transient status 的并存关系。
-- 处理 `ble-pairing-hold` 和 BLE open transient 行为。
-
-这是“状态叠加层”。
-
-#### `app/src/led_matrix/power.c`
-
-负责 LED Matrix 的运行时电源与低功耗状态管理，主要包括：
-
-- runtime mode 判定。
-- idle auto-off 行为。
-- sleep suspend / wake 处理。
-- backend managed power 协调。
-- strip backend 的 ext power 协调。
-- clear-only 输出与 physical power gating 行为差异。
-
-这是“运行状态机 + 电源协同层”。
-
-#### `app/src/led_matrix/api.c`
-
-负责公开运行接口的实现，包括：
-
-- 初始化过程。
-- `zmk_led_matrix_on/off/toggle`
-- 亮度、速度、手动 hue、profile、independent profile 的 set/get/calc
-- 状态查询与手动状态显示。
-- settings 加载与保存相关入口。
-
-这是“public runtime API 实现层”。
-
-#### `app/src/led_matrix/internal.h`
-
-定义内部 runtime mode：
-
-- `LED_MATRIX_RUNTIME_MODE_OFF`
-- `LED_MATRIX_RUNTIME_MODE_ACTIVE`
-- `LED_MATRIX_RUNTIME_MODE_FORCE_SHOW_ONLY`
-- `LED_MATRIX_RUNTIME_MODE_AUTO_SUSPENDED`
-- `LED_MATRIX_RUNTIME_MODE_AUTO_SUSPENDED_FORCE_SHOW`
-- `LED_MATRIX_RUNTIME_MODE_SLEEP_SUSPENDED`
-
-以及几个内部判定函数声明。
-
-### 2.2 LED Matrix 头文件与事件
-
-#### `app/include/zmk/led_matrix.h`
-
-这是 `LED Matrix` 的 public API 头文件，定义：
-
-- `enum zmk_led_matrix_render_source`
-- `struct zmk_led_matrix_state`
-- `zmk_led_matrix_*` 系列运行接口
-
-任何需要在其他模块里调用 LED Matrix 运行接口的代码，都应从这里取声明。
-
-#### `app/include/zmk/events/led_matrix_state_changed.h`
-
-#### `app/src/events/led_matrix_state_changed.c`
-
-这两个文件提供 LED Matrix 状态变化事件定义与实现，用于系统内其他模块订阅 LED Matrix 状态变更。
-
-### 2.3 行为节点与行为实现
-
-#### `app/dts/behaviors/led_matrix.dtsi`
-
-定义 `&lm` 行为节点：
-
-- label: `lm`
-- node name: `led_mtx`
-- `compatible = "zmk,behavior-led-matrix"`
-- `#binding-cells = <2>`
-- `display-name = "LED Matrix"`
-
-这是 keymap 中使用 `&lm` 的根来源。
-
-#### `app/src/behaviors/behavior_led_matrix.c`
-
-负责：
-
-- 把 `LM_*` 命令转换为运行时 API 调用。
-- 在 `toggle`、`brightness step`、`speed step` 等命令上，把相对命令转换为当前状态相关的绝对参数。
-- 读取当前 `zmk,led-matrix` 节点中 profile 与 independent child 的数量，形成 metadata 上限。
-
-### 2.4 Devicetree binding
-
-#### `app/dts/bindings/zmk,led-matrix.yaml`
-
-这是 `zmk,led-matrix` 的主 binding，说明：
-
-- 顶层属性
-- 状态 LED 与颜色属性
-- 超时与状态策略属性
-- child node 模型
-- nested child profile 模型
-
-#### `app/dts/bindings/behaviors/zmk,behavior-led-matrix.yaml`
-
-这是 `&lm` 行为 binding，基于 `two_param.yaml`，说明它是一个双参数行为。
-
-### 2.5 led_composite 源码组成
-
-#### `app/module/drivers/led/led_composite.c`
-
-这是 `led_composite` 的驱动实现，负责：
-
-- DTS child node 展开。
-- child 类型判定。
-- strip buffer / pixel buffer 构建。
-- 子设备合法性与 readiness 校验。
-- 通道范围连续性校验。
-- 统一 `write_channels` 分发，并把 RGB 通道转换为 brightness/binary 标量 LED 输出。
-- strip fallback 路径。
-- managed power 与 hard-off 行为。
-
-#### `app/include/drivers/led/led_composite.h`
-
-这是 `led_composite` 的 public API 头文件，定义：
-
-- capability 宏
-- channel count 查询接口
-- capability 查询接口
-- 电源控制接口
-
-#### `app/module/dts/bindings/led/zmk,led-composite.yaml`
-
-定义 `zmk,led-composite` 顶层与 child node 的 DTS 结构。
-
----
-
-## 3. Kconfig 详细说明
-
-### 3.1 主开关与默认值来源
-
-本节信息来源固定为：
-
-- `app/Kconfig`
-- `app/Kconfig.defaults`
-- `app/module/drivers/led/Kconfig`
-
-### 3.2 LED Matrix Kconfig
-
-| 选项                                             | 类型   | 默认值              | 说明                                                |
-| ------------------------------------------------ | ------ | ------------------- | --------------------------------------------------- |
-| `CONFIG_ZMK_LED_MATRIX`                          | `bool` | `n`                 | 启用 LED Matrix 主子系统                            |
-| `CONFIG_ZMK_LED_MATRIX_EXT_POWER`                | `bool` | `n`                 | 对 strip backend 启用 LED Matrix 运行时外部电源协同 |
-| `CONFIG_ZMK_LED_MATRIX_AUTO_OFF_IDLE`            | `bool` | `n`                 | 在电池供电且系统 idle 时自动暂停 LED Matrix         |
-| `CONFIG_ZMK_LED_MATRIX_IDLE_STATUS_WAKE_TIMEOUT` | `int`  | `1800000`           | idle 后允许自动状态事件唤醒 LED Matrix 的时间窗口   |
-| `CONFIG_ZMK_LED_MATRIX_BRT_STEP`                 | `int`  | `10`                | 亮度步进百分比                                      |
-| `CONFIG_ZMK_LED_MATRIX_BRT_START`                | `int`  | `60`                | 启动默认亮度                                        |
-| `CONFIG_ZMK_LED_MATRIX_PROFILE_START`            | `int`  | `0`                 | 启动默认 display profile ID                         |
-| `CONFIG_ZMK_LED_MATRIX_SPD_LEVELS`               | `int`  | `7`                 | 效果速度档位总数                                    |
-| `CONFIG_ZMK_LED_MATRIX_SPD_START`                | `int`  | `4` 或 `SPD_LEVELS` | 默认速度档位                                        |
-| `CONFIG_ZMK_LED_MATRIX_ON_START`                 | `bool` | `y`                 | 启动时默认开关状态                                  |
-
-高级灯效编辑使用 `CONFIG_ZMK_LED_MATRIX_EDITOR`，依赖 LED Matrix 和 `CONFIG_SETTINGS`。满足依赖时，启用 Studio RPC 的控制器和分体副机默认开启编辑器。`CONFIG_ZMK_LED_MATRIX_CUSTOM_PRESETS` 和 `CONFIG_ZMK_LED_MATRIX_CUSTOM_GROUPS` 分别预留自定义主预设与灯区槽位，各默认 4 个，可设为 1–16 个。
-
-### 3.3 每个 Kconfig 项的含义
-
-#### `CONFIG_ZMK_LED_MATRIX`
-
-主开关。开启后会：
-
-- 根据 backend 类型自动 `select LED` 或 `select LED_STRIP`
-- 自动 `select ZMK_HID_INDICATORS`
-- 自动 `select ZMK_LOW_PRIORITY_WORK_QUEUE`
-
-这意味着 LED Matrix 不只是灯光渲染，还内建了 HID 状态感知与低优先级后台工作队列需求。
-渲染、电源收尾以及 settings debounce/save 都复用 ZMK 的低优先级工作队列；LED Matrix
-不会再为 settings 保存常驻一套独立线程、栈和 workqueue 对象。
-
-#### `CONFIG_ZMK_LED_MATRIX_EXT_POWER`
-
-只在满足以下条件时可用：
-
-- `CONFIG_ZMK_EXT_POWER`
-- `DT_HAS_ZMK_EXT_POWER_GENERIC_ENABLED`
-- 当前 `zmk,led-matrix` backend 是 `strip`
-
-它用于：
-
-- 在 LED Matrix actively rendering 时打开外部电源
-- 在 LED Matrix 停止输出时关闭外部电源
-
-注意它是 LED Matrix 对 strip backend 的直接 ext power 协调，不等同于 `led_composite` 的 shared ext power 机制。
-
-#### `CONFIG_ZMK_LED_MATRIX_AUTO_OFF_IDLE`
-
-启用后：
-
-- 电池供电时，系统进入 idle 后，LED Matrix 自动 suspended
-- 活动恢复时再恢复 LED Matrix 基础渲染
-- USB 供电会阻止这种 auto-off 逻辑
-- 已经 idle 时拔掉 USB，也会立即暂停基础灯效；USB / Battery 等状态提示仍按原有超时和
-  idle status wake 窗口短暂显示，提示结束后关闭输出电源，无需等待下一次按键。
-- 插回 USB 会解除自动挂起，但不会改变手动 `LM_OFF` 的开关状态，也不会解除 sleep 挂起。
-  USB 供电策略使用启动时初始化、随后由 USB 事件更新的状态快照。
-
-#### `CONFIG_ZMK_LED_MATRIX_IDLE_STATUS_WAKE_TIMEOUT`
-
-定义键盘进入 `ZMK_ACTIVITY_IDLE` 后，BLE / USB / Battery / HID / endpoint
-等自动状态事件仍允许临时显示 LED Matrix 状态的时间窗口。
-
-- 默认值是 `1800000` ms，也就是 30 分钟
-- 计时从收到 `ZMK_ACTIVITY_IDLE` 开始
-- 超过该窗口后，自动状态事件只更新内部状态快照，不再点亮或刷新 LED
-- 该限制不要求 `CONFIG_ZMK_LED_MATRIX_AUTO_OFF_IDLE` 生效；即使 USB 供电阻止 auto-off，
-  长时间 idle 后 BLE reconnect 等自动状态变化也不会点亮 LED
-- 设置为 `0` 表示进入 idle 后立即禁止自动状态事件唤醒
-- 按键活动、显式 LED Matrix 开关/亮度命令，以及手动 `LM_STA` 状态显示不受该窗口限制
-
-#### `CONFIG_ZMK_LED_MATRIX_BRT_STEP`
-
-定义 `LM_BRI` / `LM_BRD` 这类“亮度加减一步”行为的步幅。
-
-#### `CONFIG_ZMK_LED_MATRIX_BRT_START`
-
-定义系统初次启动或设置未恢复时的初始亮度。
-
-#### `CONFIG_ZMK_LED_MATRIX_PROFILE_START`
-
-定义默认 display profile ID。
-
-#### `CONFIG_ZMK_LED_MATRIX_SPD_LEVELS`
-
-定义速度档位总数，影响：
-
-- `zmk_led_matrix_calc_spd()`
-- `LM_SPI` / `LM_SPD`
-- `LM_SPS`
-
-#### `CONFIG_ZMK_LED_MATRIX_SPD_START`
-
-定义启动默认速度档位。默认规则是：
-
-- 如果 `SPD_LEVELS >= 4`，默认值是 `4`
-- 否则默认值就是 `SPD_LEVELS`
-
-#### `CONFIG_ZMK_LED_MATRIX_ON_START`
-
-定义启动时 LED Matrix 默认是否开启。
-
-### 3.4 backend 自动推导相关隐藏选项
-
-在 `app/Kconfig` 中，有两个隐藏 helper config：
-
-- `CONFIG_ZMK_LED_MATRIX_USES_LED_API`
-- `CONFIG_ZMK_LED_MATRIX_USES_LED_STRIP_API`
-
-它们由 `/chosen { zmk,led-matrix = ...; }` 指向节点上的 `led-driver` 自动推导：
-
-- `led-driver = "matrix"` -> `CONFIG_ZMK_LED_MATRIX_USES_LED_API = y`
-- `led-driver = "strip"` -> `CONFIG_ZMK_LED_MATRIX_USES_LED_STRIP_API = y`
-
-然后 `CONFIG_ZMK_LED_MATRIX` 再根据它们去 `select LED` 或 `select LED_STRIP`。
-
-### 3.5 led_composite Kconfig
-
-`app/module/drivers/led/Kconfig` 中与本文相关的项为：
-
-| 选项                       | 类型   | 默认值 | 依赖                                        | 说明                          |
-| -------------------------- | ------ | ------ | ------------------------------------------- | ----------------------------- |
-| `CONFIG_ZMK_LED_COMPOSITE` | `bool` | `y`    | `LED` 且 `DT_HAS_ZMK_LED_COMPOSITE_ENABLED` | 启用 `zmk,led-composite` 驱动 |
-
-它还会：
-
-- `select LED_STRIP`
-
-原因是 `led_composite` 允许 child 中混入 `led-strip-device`，因此驱动实现需要同时具备 `led_strip` 相关 API。
-
----
-
-## 4. 行为节点、行为命令与宏定义
-
-### 4.1 `&lm` 行为节点
-
-`app/dts/behaviors/led_matrix.dtsi` 中定义了如下行为节点：
+The `lm` node comes from `app/dts/behaviors/led_matrix.dtsi`. Its short node name allows invocation on a split peripheral.
 
 ```dts
 lm: led_mtx {
@@ -427,183 +52,25 @@ lm: led_mtx {
 };
 ```
 
-关键点：
+The two binding cells hold a command ID and an argument. Include `<dt-bindings/zmk/led_matrix.h>` and use the macros below. Commands such as `LM_TOG` already expand to both cells.
 
-- 节点 label 是 `lm`
-- `#binding-cells = <2>`，意味着 keymap 里要传两个参数位
-- 注释明确写了“Behavior can be invoked on peripherals, so name must be `<= 8` characters.”
+| Binding                                            | Effect                                                                                  |
+| -------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `&lm LM_ON`, `&lm LM_OFF`, `&lm LM_TOG`            | Turn lighting on, turn it off, or toggle it.                                            |
+| `&lm LM_BRI`, `&lm LM_BRD`, `&lm LM_BRT 40`        | Increase, decrease, or set global brightness (0–100%). Setting zero turns lighting off. |
+| `&lm LM_EFF`, `&lm LM_EFR`, `&lm LM_EFS 1`         | Select the next, previous, or specified main profile.                                   |
+| `&lm LM_SPI`, `&lm LM_SPD`, `&lm LM_SPS 3`         | Increase, decrease, or set the speed level.                                             |
+| `&lm LM_HUI`, `&lm LM_HUD`, `&lm LM_HUS 2`         | Select the next, previous, or specified manual palette hue.                             |
+| `&lm LM_STA LM_STA_ALL`                            | Manually show the configured status zones in the mask.                                  |
+| `&lm LM_CFF 0`, `&lm LM_CFR 0`, `&lm LM_CFS(0, 1)` | Select the next, previous, or specified local profile for group 0.                      |
 
-所以在 keymap 中它的标准用法是：
-
-```dts
-&lm <param1> <param2>
-```
-
-### 4.2 行为命令宏
-
-来源：`app/include/dt-bindings/zmk/led_matrix.h`
-
-#### 开关与亮度
-
-| 宏       | 底层命令 ID  | 含义            |
-| -------- | ------------ | --------------- |
-| `LM_ON`  | `LM_ON_CMD`  | 打开 LED Matrix |
-| `LM_OFF` | `LM_OFF_CMD` | 关闭 LED Matrix |
-| `LM_TOG` | `LM_TOG_CMD` | 切换开关状态    |
-| `LM_BRI` | `LM_BRI_CMD` | 亮度增加一步    |
-| `LM_BRD` | `LM_BRD_CMD` | 亮度减少一步    |
-| `LM_BRT` | `LM_BRT_CMD` | 直接设置亮度值  |
-
-#### Profile 与速度
-
-| 宏       | 含义                       |
-| -------- | -------------------------- |
-| `LM_EFF` | 切到下一个 display profile |
-| `LM_EFR` | 切到上一个 display profile |
-| `LM_EFS` | 直接设置 display profile   |
-| `LM_SPI` | 速度增加一步               |
-| `LM_SPD` | 速度减少一步               |
-| `LM_SPS` | 直接设置速度               |
-
-#### 手动色相
-
-| 宏       | 含义                    |
-| -------- | ----------------------- |
-| `LM_HUI` | 手动 hue index 增加一步 |
-| `LM_HUD` | 手动 hue index 减少一步 |
-| `LM_HUS` | 直接设置 hue index      |
-
-#### 状态与 independent child
-
-| 宏                       | 含义                                            |
-| ------------------------ | ----------------------------------------------- |
-| `LM_STA`                 | 手动显示状态源                                  |
-| `LM_CFF`                 | independent child profile 下一项                |
-| `LM_CFR`                 | independent child profile 上一项                |
-| `LM_CFS(child, profile)` | 直接设置某个 independent child 的 local profile |
-
-### 4.3 `LM_CFS(...)` 与 child/profile 打包宏
-
-`LM_CFS(child_id, profile_id)` 的底层不是单独传两个分离值，而是先使用：
-
-- `LM_CHILD_PROFILE_PACK(child_id, profile_id)`
-
-编码方式是：
+`LM_CFS(child_id, profile_id)` expands to the command and a packed argument. `LM_CHILD_PROFILE_PACK` keeps eight bits per ID. `LM_CHILD_PROFILE_CHILD_ID` and `LM_CHILD_PROFILE_PROFILE_ID` extract them.
 
 ```c
 ((((child_id) & 0xFF) << 8) | ((profile_id) & 0xFF))
 ```
 
-对应的解码宏是：
-
-- `LM_CHILD_PROFILE_CHILD_ID(encoded)`
-- `LM_CHILD_PROFILE_PROFILE_ID(encoded)`
-
-这说明：
-
-- child id 只保留低 8 位
-- profile id 也只保留低 8 位
-
-### 4.4 状态位宏
-
-| 宏               | 值       | 含义           |
-| ---------------- | -------- | -------------- | --- | ---- | ---------- |
-| `LM_STA_BATTERY` | `0x01`   | Battery 状态源 |
-| `LM_STA_USB`     | `0x02`   | USB 状态源     |
-| `LM_STA_BLE`     | `0x04`   | BLE 状态源     |
-| `LM_STA_HID`     | `0x08`   | HID 状态源     |
-| `LM_STA_ALL`     | `BATTERY | USB            | BLE | HID` | 所有状态源 |
-
-这些值主要用于：
-
-- `&lm LM_STA <mask>`
-- `zmk_led_matrix_show_status(uint8_t sources_mask)`
-
-### 4.5 `matrix-led-grid` 特殊标记宏
-
-| 宏         | 值       | 含义                              |
-| ---------- | -------- | --------------------------------- |
-| `LM_PH`    | `0xFFFD` | placeholder cell，无 key position |
-| `LM_BREAK` | `0xFFFE` | 行分隔符                          |
-| `LM_NOLED` | `0xFFFF` | 该 RC cell 有 key，但没有 LED     |
-
-这些宏只在 `matrix-led-grid` 这样的 token stream 中有意义。
-
-### 4.6 颜色宏
-
-来源：`app/include/dt-bindings/zmk/led_matrix_colors.h`
-
-#### 通用构造宏
-
-- `LM_RGB(r, g, b)`：构造 `0xRRGGBB`
-
-#### 动态颜色
-
-- `LM_RAINBOW`
-- `LM_PALETTE`
-
-#### 基础颜色别名
-
-- `LM_BLACK`
-- `LM_WHITE`
-- `LM_RED`
-- `LM_GREEN`
-- `LM_BLUE`
-- `LM_YELLOW`
-- `LM_CYAN`
-- `LM_MAGENTA`
-- `LM_ORANGE`
-- `LM_AMBER`
-- `LM_PURPLE`
-- `LM_PINK`
-
-#### 灰度和低亮色
-
-- `LM_GRAY_08`
-- `LM_GRAY_10`
-- `LM_GRAY_20`
-- `LM_GRAY_40`
-- `LM_GRAY_80`
-- `LM_DIM_WHITE`
-- `LM_DIM_RED`
-- `LM_DIM_GREEN`
-- `LM_DIM_BLUE`
-- `LM_DIM_YELLOW`
-- `LM_DIM_CYAN`
-- `LM_DIM_AMBER`
-
-#### 语义色别名
-
-这些别名用于让 DTS 里表达“语义颜色”而不是死写 RGB 值：
-
-- Base layer:
-  - `LM_BASE_OFF`
-  - `LM_BASE_IDLE`
-  - `LM_BASE_SOFT`
-- USB:
-  - `LM_USB_HID`
-  - `LM_USB_POWERED`
-  - `LM_USB_NONE`
-- BLE:
-  - `LM_BLE_OPEN`
-  - `LM_BLE_CONNECTED`
-  - `LM_BLE_DISCONNECTED`
-- Battery:
-  - `LM_BATTERY_ON`
-  - `LM_BATTERY_OFF`
-  - `LM_BATTERY_LOW`
-  - `LM_BATTERY_MID`
-  - `LM_BATTERY_HIGH`
-- HID:
-  - `LM_HID_ON`
-  - `LM_HID_OFF`
-  - `LM_HID_CAPS_ON`
-  - `LM_HID_NUM_ON`
-  - `LM_HID_SCROLL_ON`
-
-### 4.7 `&lm` keymap 示例
-
-下面的写法展示了 LED Matrix 行为在 keymap 中的典型使用方式：
+The status mask combines `LM_STA_BATTERY` (0x01), `LM_STA_USB` (0x02), `LM_STA_BLE` (0x04), and `LM_STA_HID` (0x08). `LM_STA_ALL` selects all four.
 
 ```dts
 #include <dt-bindings/zmk/led_matrix.h>
@@ -614,29 +81,203 @@ lm: led_mtx {
 
         default_layer {
             bindings = <
-                &lm LM_TOG 0
-                &lm LM_BRI 0
+                &lm LM_TOG
+                &lm LM_BRI
                 &lm LM_EFS 1
                 &lm LM_STA LM_STA_BLE
-                &lm LM_CFS(0, 1) 0
+                &lm LM_CFS(0, 1)
             >;
         };
     };
 };
 ```
 
-说明：
+Include `<dt-bindings/zmk/led_matrix_colors.h>` for `LM_RGB(r, g, b)`, named colors, grays and dim colors. A literal is `0xRRGGBB`. `LM_PALETTE` follows the selected manual hue and `LM_RAINBOW` changes over time. The header also provides named defaults for base, USB, BLE, battery and HID states.
 
-- `LM_TOG` / `LM_BRI` 这种无额外值的命令，第二参数通常填 `0`
-- `LM_EFS`、`LM_STA`、`LM_CFS(...)` 这种命令则使用第二参数承载实际值或编码值
+| Color family | Aliases                                                                                                                                        |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| Basic        | `LM_BLACK`, `LM_WHITE`, `LM_RED`, `LM_GREEN`, `LM_BLUE`, `LM_YELLOW`, `LM_CYAN`, `LM_MAGENTA`, `LM_ORANGE`, `LM_AMBER`, `LM_PURPLE`, `LM_PINK` |
+| GRAY         | `LM_GRAY_08`, `LM_GRAY_10`, `LM_GRAY_20`, `LM_GRAY_40`, `LM_GRAY_80`                                                                           |
+| DIM          | `LM_DIM_WHITE`, `LM_DIM_RED`, `LM_DIM_GREEN`, `LM_DIM_BLUE`, `LM_DIM_YELLOW`, `LM_DIM_CYAN`, `LM_DIM_AMBER`                                    |
+| BASE         | `LM_BASE_OFF`, `LM_BASE_IDLE`, `LM_BASE_SOFT`                                                                                                  |
+| USB          | `LM_USB_HID`, `LM_USB_POWERED`, `LM_USB_NONE`                                                                                                  |
+| BLE          | `LM_BLE_OPEN`, `LM_BLE_CONNECTED`, `LM_BLE_DISCONNECTED`                                                                                       |
+| BATTERY      | `LM_BATTERY_ON`, `LM_BATTERY_OFF`, `LM_BATTERY_LOW`, `LM_BATTERY_MID`, `LM_BATTERY_HIGH`                                                       |
+| HID          | `LM_HID_ON`, `LM_HID_OFF`, `LM_HID_CAPS_ON`, `LM_HID_NUM_ON`, `LM_HID_SCROLL_ON`                                                               |
 
----
+## Devicetree controller and mapping
 
-## 5. Public Runtime API
+Set the chosen node on each firmware image:
 
-来源：`app/include/zmk/led_matrix.h`
+```dts
+/ {
+    chosen {
+        zmk,led-matrix = &led_matrix;
+    };
+};
+```
 
-### 5.1 渲染来源枚举
+Select a backend and declare the number of logical LEDs on this controller. These two excerpts show the hardware-selection properties. Add a renderable source or enable the editor before using either node.
+
+```dts
+led_matrix: led_matrix {
+    compatible = "zmk,led-matrix";
+    led-driver = "matrix";
+    led-device = <&some_led_dev>;
+    led-count = <N>;
+};
+```
+
+```dts
+led_matrix: led_matrix {
+    compatible = "zmk,led-matrix";
+    led-driver = "strip";
+    led-strip-device = <&some_strip_dev>;
+    led-count = <N>;
+};
+```
+
+| Property               | Meaning and constraints                                                                                                                                                                                                                           |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `led-count`            | Required logical LED count. Grid entries, status zones and per-LED colors use these zero-based indices.                                                                                                                                           |
+| `led-driver`           | Required. Use `"matrix"` with `led-device`, or `"strip"` with `led-strip-device`. The selected device must be enabled and ready.                                                                                                                  |
+| `output-channel-count` | Total physical channel space of a channel-writing backend. Defaults to three channels per logical LED. Set it explicitly when the hardware exposes a different count.                                                                             |
+| `channel-indexes`      | Optional logical RGB channel to physical channel map for `write_channels`. Supply exactly `led-count * 3` values in logical R, G, B order, each below the output channel count.                                                                   |
+| `led-indexes`          | Optional physical LED map for a per-LED backend. Use `led-count` indices for one physical LED per logical LED, or `led-count * 3` for one physical scalar LED per channel.                                                                        |
+| `matrix-led-grid`      | A row-by-row map in local switch-scan coordinates. Each row must match the local column count and the number of rows must match the scanner. Each split half defines its own grid. The matrix transform maps local cells to global key positions. |
+
+A numeric grid entry identifies a logical LED. `LM_PH` (0xFFFD) marks a placeholder without a key, `LM_BREAK` (0xFFFE) separates rows, and `LM_NOLED` (0xFFFF) marks a key without lighting. Position-driven effects and layers using implicit LED membership need the grid. A controller used solely for status, independent zones or position-independent effects can omit it.
+
+### Child nodes
+
+| Child                     | How to configure it                                                                                                                                                                                                                                                  |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Main profile              | Give it a `profile-id`, a `renderer`, and `colors`. One color broadcasts to the full profile; a per-LED array uses `led-count` entries. Optional properties include `display-name`, `brightness`, `period-ms`, `effect-style`, and `effect-direction`.               |
+| Layer color               | Give it a `layer-id` and `layer-colors`. Supply ordered `layer-leds` explicitly or inherit grid traversal order. Supply one color or one per target LED. `brightness` controls intensity. `display-time-ms = <0>` keeps the overlay visible until the layer changes. |
+| Independent group         | Give it an `independent-id`, an ordered `independent-leds` list, and at least one nested profile. A factory-defined group cannot repeat LEDs, share them with another independent group, or claim LEDs already mapped in the grid.                                   |
+| Independent local profile | Put a child with its own `profile-id` inside the group. Set colors, renderer, brightness and period on that child. Local IDs within a group and independent group IDs must be unique and consecutive from zero.                                                      |
+
+With the editor disabled, initialization requires at least one main profile, independent group, layer color or status zone. With the editor enabled, a compatible client can populate an empty catalog.
+
+### Renderers and styles
+
+Set `effect-style` to a zero-based style number. Where the renderer supports direction, set `effect-direction` to `"forward"` or `"reverse"`. Defaults are style zero and forward. Studio offers the animations available on the selected side.
+
+| ID  | Renderer                                | Styles in numeric order                                                                               | Layout                                                |
+| --- | --------------------------------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| 0–3 | `solid`, `breathe`, `spectrum`, `swirl` | Steady color, breathing, global hue cycle, hue cycle along ordered LEDs                               | Main or independent profile                           |
+| 4–6 | `keypress`, `ripple`, `rain`            | Held key and afterglow, wavefront from the latest key, falling column trails                          | Local grid                                            |
+| 7   | `starlight`                             | Sparkles with an additional meteor when a grid is present                                             | Main profile                                          |
+| 8   | `gradient`                              | Horizontal, vertical, stepped horizontal, stepped vertical                                            | Grid, reversible                                      |
+| 9   | `wave`                                  | Horizontal, vertical, chevron, traveling ocean wave, brightness bands                                 | Grid, reversible                                      |
+| 10  | `radial`                                | Single center, two centers, edge fountain                                                             | Grid. Reverse the fountain to swap its starting edge. |
+| 11  | `rotary`                                | Pinwheel, color spiral, brightness spiral, dual beacon, color beacon                                  | Grid, reversible rotation                             |
+| 12  | `particles`                             | Single-color speckles, colored raindrops, clusters of blooms                                          | Grid                                                  |
+| 13  | `chase`                                 | A leading pixel with up to three trailing levels along the ordered members                            | Main or independent profile, reversible               |
+| 14  | `reactive`                              | Wide, cross, square wavefront, piano column, solid splash, color splash, ripple over a lit background | Grid, up to eight recent keystrokes                   |
+| 15  | `heatmap`                               | A press adds 40 heat to its cell and 12 to each orthogonal neighbor. Heat peaks at 100 and decays.    | Grid                                                  |
+
+For example, apply these settings to a main profile for reverse dual-center rings:
+
+```dts
+renderer = "radial";
+effect-style = <1>;
+effect-direction = "reverse";
+colors = <LM_PALETTE>;
+period-ms = <1400>;
+```
+
+The effective period controls animation speed, decay and reaction timing. A fixed-color static gradient refreshes on initial display and settings changes. A rainbow gradient continues to evolve. Hue-cycling effects start from the selected hue, use the brightness of gray or white as a color seed, and leave black off.
+
+For `keypress`, `keypress-afterglow-ms` sets the hold time after release and `keypress-fadeout-ms` sets the following fade time. Zero fade switches off as soon as afterglow ends. `keypress-range` is measured in local grid cells. Zero lights only the pressed key.
+
+### Matching familiar lighting menus
+
+The examples below use the K2 HE ANSI RGB and Air60 HE demo menus. The NuPhy entries describe visual approximations, particularly bloom, tide, piano and the always-lit ripple. They have not been matched frame by frame on hardware. Numbers refer to `effect-style`. [Keychron device definition](https://launcher.keychron.com/static/device/875826720/json/v3.json) · [NuPhy demo](https://drive.nuphyio.com/?selectDevice=2/#/pressKey)
+
+| Keychron                                | NuPhy effect (English description) | LED Matrix setting                               |
+| --------------------------------------- | ---------------------------------- | ------------------------------------------------ |
+| None                                    | Backlight off                      | `LM_OFF`                                         |
+| Solid Color, Per Key RGB                | Custom                             | `solid` with one color or per-LED colors         |
+| Breathing, Cycle All                    | Breathing, spectrum                | `breathe`, `spectrum` respectively               |
+| —                                       | Steps                              | `gradient` 2 or 3                                |
+| Cycle Left Right, Cycle Up Down         | Horizontal or vertical wave        | `wave` 0 or 1                                    |
+| Rainbow Moving Chevron                  | —                                  | `wave` 2                                         |
+| —                                       | Ocean wave, bands                  | `wave` 3 or 4                                    |
+| Cycle Out In, Cycle Out In Dual         | Tide                               | `radial` 0 or 1, reverse for inward motion       |
+| —                                       | Fountain                           | `radial` 2                                       |
+| Cycle Pinwheel, Cycle Spiral            | Rotation                           | `rotary` 0 or 1                                  |
+| Band Spiral Val                         | —                                  | `rotary` 2                                       |
+| Dual Beacon, Rainbow Beacon             | —                                  | `rotary` 3 or 4                                  |
+| Pixel Rain, Jellybean Raindrops         | Galaxy                             | `particles` 0 or 1                               |
+| —                                       | Bloom, chase                       | `particles` 2, `chase` respectively              |
+| Digital Rain                            | Rain                               | `rain`                                           |
+| Reactive Simple                         | Single key                         | `keypress` with `keypress-range = <0>`           |
+| Reactive Multiwide, Reactive Multinexus | —                                  | `reactive` 0 or 1                                |
+| —                                       | Grid, piano                        | `reactive` 2 or 3                                |
+| Solid Splash, Splash                    | Ripple                             | `reactive` 4 or 5, or `ripple` for one wavefront |
+| —                                       | Always-lit ripple                  | `reactive` 6                                     |
+| Typing Heatmap                          | —                                  | `heatmap`                                        |
+
+For the Air60 HE bar, breathing, chase, neon and static correspond to independent profiles using `breathe`, `chase`, `spectrum` and `solid`. Keychron Mix RGB combines zones on a timeline.
+
+## Status indicators and timing
+
+All status lists contain logical LED indices. A color can be fixed RGB, a named color, or a supported dynamic color. Define the zones that exist on each half.
+
+| Source  | Devicetree properties                                                                   | What the LEDs show                                                                                                    |
+| ------- | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Battery | `battery-leds`, `battery-color-on`, `battery-color-off`, `battery-level-colors`         | The order of LEDs controls the battery bar. Level colors divide the charge range into equal buckets from low to high. |
+| USB     | `usb-leds`, `usb-color-none`, `usb-color-powered`, `usb-color-hid`                      | Disconnected, powered, or active HID state.                                                                           |
+| BLE     | `ble-profile-leds`, `ble-color-open`, `ble-color-connected`, `ble-color-disconnected`   | The active profile and its connection state. LED list order identifies the profiles.                                  |
+| HID     | `hid-caps-leds`, `hid-num-leds`, `hid-scroll-leds`, `hid-compose-leds`, `hid-kana-leds` | Each indicator uses its matching `hid-…-color-on` and `hid-…-color-off` properties.                                   |
+
+If zones share an LED, the last applicable source in this order sets its color:
+
+```text
+Battery < USB < BLE < HID
+```
+
+For shared HID indicators the order is:
+
+```text
+Caps < Num < Scroll < Compose < Kana
+```
+
+`status-timeout-ms` defaults to 3000 ms. The individual `battery-timeout-ms`, `usb-timeout-ms`, `ble-timeout-ms`, and `hid-timeout-ms` inherit it unless explicitly set. A positive timeout displays that source temporarily after an event. Zero keeps its current state visible while runtime output permits it, including USB disconnected, BLE disconnected/open, inactive HID colors, and unlit battery segments. Battery changes refresh a visible persistent display. With `ble-pairing-hold = <1>` (the default), an open profile may trigger a pairing indication lasting five times the effective BLE timeout.
+
+### Idle, sleep, and refresh timing
+
+With idle auto-off enabled, unplugging USB while idle suspends base lighting immediately. Eligible status indications can still run until their timeout. Reconnecting USB lifts idle suspension, while manual off and sleep retain their own state. USB policy uses a snapshot initialized at boot and updated by USB events.
+
+The idle status wake window starts at `ZMK_ACTIVITY_IDLE`. After it expires, automatic BLE, USB, battery, HID and endpoint events update the cached state without lighting or refreshing LEDs. This window also applies when USB keeps base lighting active. Key activity, explicit power/brightness commands and manual `LM_STA` remain available.
+
+| Runtime mode                | Output                                                              |
+| --------------------------- | ------------------------------------------------------------------- |
+| `OFF`                       | User lighting is off. State subscriptions remain active.            |
+| `ACTIVE`                    | Base lighting and applicable overlays can render.                   |
+| `FORCE_SHOW_ONLY`           | A status request can temporarily display its LEDs.                  |
+| `AUTO_SUSPENDED`            | Idle policy suspended base lighting.                                |
+| `AUTO_SUSPENDED_FORCE_SHOW` | A temporary indication is visible during idle suspension.           |
+| `SLEEP_SUSPENDED`           | Sleep suspends the controller and finishes outstanding output work. |
+
+The 50 ms refresh timer stops on entry to off, idle suspension or sleep. Output synchronization clears LEDs and turns off managed power. It skips a redundant clear when an output is already disabled or an ungated output last accepted an all-black frame. Pairing flashes and other visible animations can restart the timer. The final visible color or effect determines demand. An unused rainbow color, an absent zone, and a fully obscured animation do not keep the timer running.
+
+With the user switch still on, a stable all-black frame can shut down managed power without changing the selected profile or saved state. The next relevant event restores output. A breathing or blinking animation advances across its temporary black frames. Afterglow expiry handles uptime rollover, ripples stop refreshing at their end, and key releases are recorded while the lights are off. A rain animation returning after a long period of occlusion advances a bounded number of steps.
+
+### Output failures and hardware verification
+
+An IS31 backend with `sdb-gpios` attempts hardware shutdown even if clearing, checking I²C readiness or issuing software shutdown fails. A successful SDB operation records chip shutdown; supply voltage may still be present. The IS31FL3737 driver reinitializes the chip and resets its register-page cache under a mutex when waking from shutdown or an unknown state. Failed initialization triggers another shutdown attempt.
+
+A failed frame or power transition stops periodic rendering. The output service retries up to three times, with delays of 100, 500 and 2000 ms. Each retry reads the current target state. A new request supersedes the previous one, success cancels the remaining attempts, and sleep cancels and waits for outstanding work. After the final failure the service waits for a new request. Direct RGB and scalar outputs continue processing healthy LEDs and return the first error.
+
+The generic external power driver tries all its control GPIOs. A partial failure leaves the state unknown, requiring a fresh hardware operation on the next request. Temporary switches use the runtime API and preserve the user's persistent external power setting.
+
+Board idle and sleep settings are separate from LED Matrix. Corne54 uses a 15 s idle timeout; check the built `zephyr/.config` for the selected half's sleep settings. The Numpad can blank its screen and backlight while keeping BLE connected. Display, radio and sampling activity also affect total current. For a hardware power test, record the firmware hash, battery capacity and voltage; disconnect the debugger and measure battery current, SDB (P0.06 on the applicable board), and I²C activity. After at least 100 idle/wake and USB attach/detach cycles and a 48-hour idle period, check that current returns to the measured shutdown baseline and that periodic writes stop. The power regression tests and measurement notes are in `app/tests/led-matrix/power-regression/`.
+
+## Runtime API and saved settings
+
+The public interface lives in `app/include/zmk/led_matrix.h`. Read a snapshot with `zmk_led_matrix_get_state()`. It reports the user switch, global brightness, selected profile and renderer, effective render source, active status mask and effective layer-color layer ID.
 
 ```c
 enum zmk_led_matrix_render_source {
@@ -647,21 +288,6 @@ enum zmk_led_matrix_render_source {
     ZMK_LED_MATRIX_RENDER_SOURCE_STATUS_OVERLAY,
 };
 ```
-
-含义如下：
-
-- `OFF`
-  - 当前没有任何有效渲染输出
-- `PROFILE`
-  - 当前基础输出来自 display profile
-- `INDEPENDENT`
-  - 当前有效源是 independent group
-- `LAYER_COLOR`
-  - 当前有效源是 layer color
-- `STATUS_OVERLAY`
-  - 当前有效源是状态叠加层
-
-### 5.2 `struct zmk_led_matrix_state`
 
 ```c
 struct zmk_led_matrix_state {
@@ -676,680 +302,60 @@ struct zmk_led_matrix_state {
 };
 ```
 
-它描述当前对外可见的 LED Matrix 状态，包括：
+The `calc` functions return a candidate value for a direction. The `set` functions apply it. Use the independent-profile functions with a group ID and use `zmk_led_matrix_show_status()` with a mask of `LM_STA_*` bits.
 
-- 是否开启
-- 当前亮度
-- 当前有效渲染来源
-- 当前 profile ID / 名称
-- 当前 renderer 名称
-- 当前实际显示的状态源 mask
-- 当前生效的 layer color layer ID
+```c
+int zmk_led_matrix_on(void);
+int zmk_led_matrix_off(void);
+int zmk_led_matrix_toggle(void);
+bool zmk_led_matrix_is_on(void);
 
-### 5.3 开关接口
+int zmk_led_matrix_set_brt(uint8_t brightness);
+uint8_t zmk_led_matrix_get_brt(void);
+uint8_t zmk_led_matrix_calc_brt(int direction);
 
-| 接口                               | 作用             |
-| ---------------------------------- | ---------------- |
-| `int zmk_led_matrix_on(void);`     | 打开 LED Matrix  |
-| `int zmk_led_matrix_off(void);`    | 关闭 LED Matrix  |
-| `int zmk_led_matrix_toggle(void);` | 切换开关状态     |
-| `bool zmk_led_matrix_is_on(void);` | 查询当前是否开启 |
+int zmk_led_matrix_set_spd(uint8_t speed);
+uint8_t zmk_led_matrix_get_spd(void);
+uint8_t zmk_led_matrix_calc_spd(int direction);
 
-### 5.4 亮度接口
+int zmk_led_matrix_set_hue_index(uint8_t index);
+uint8_t zmk_led_matrix_get_hue_index(void);
+uint8_t zmk_led_matrix_calc_hue_index(int direction);
 
-| 接口                                              | 作用                   |
-| ------------------------------------------------- | ---------------------- |
-| `int zmk_led_matrix_set_brt(uint8_t brightness);` | 直接设置亮度           |
-| `uint8_t zmk_led_matrix_get_brt(void);`           | 获取亮度               |
-| `uint8_t zmk_led_matrix_calc_brt(int direction);` | 根据方向计算下一档亮度 |
+int zmk_led_matrix_set_profile(uint8_t profile_id);
+uint8_t zmk_led_matrix_get_profile(void);
+uint8_t zmk_led_matrix_calc_profile(int direction);
 
-### 5.5 速度接口
+int zmk_led_matrix_set_independent_profile(uint8_t child_id, uint8_t profile_id);
+uint8_t zmk_led_matrix_get_independent_profile(uint8_t child_id);
+uint8_t zmk_led_matrix_calc_independent_profile(uint8_t child_id, int direction);
 
-| 接口                                              | 作用                   |
-| ------------------------------------------------- | ---------------------- |
-| `int zmk_led_matrix_set_spd(uint8_t speed);`      | 设置速度               |
-| `uint8_t zmk_led_matrix_get_spd(void);`           | 获取速度               |
-| `uint8_t zmk_led_matrix_calc_spd(int direction);` | 根据方向计算下一档速度 |
+int zmk_led_matrix_get_state(struct zmk_led_matrix_state *out);
 
-### 5.6 手动色相接口
-
-| 接口                                                    | 作用                 |
-| ------------------------------------------------------- | -------------------- |
-| `int zmk_led_matrix_set_hue_index(uint8_t index);`      | 设置手动 hue index   |
-| `uint8_t zmk_led_matrix_get_hue_index(void);`           | 获取手动 hue index   |
-| `uint8_t zmk_led_matrix_calc_hue_index(int direction);` | 计算下一档 hue index |
-
-### 5.7 Display profile 接口
-
-| 接口                                                  | 作用                     |
-| ----------------------------------------------------- | ------------------------ |
-| `int zmk_led_matrix_set_profile(uint8_t profile_id);` | 设置 display profile     |
-| `uint8_t zmk_led_matrix_get_profile(void);`           | 获取当前 display profile |
-| `uint8_t zmk_led_matrix_calc_profile(int direction);` | 计算前一/后一 profile    |
-
-### 5.8 Independent profile 接口
-
-| 接口                                                                                | 作用                                        |
-| ----------------------------------------------------------------------------------- | ------------------------------------------- |
-| `int zmk_led_matrix_set_independent_profile(uint8_t child_id, uint8_t profile_id);` | 设置某个 independent child 的 local profile |
-| `uint8_t zmk_led_matrix_get_independent_profile(uint8_t child_id);`                 | 读取某个 child 的当前 local profile         |
-| `uint8_t zmk_led_matrix_calc_independent_profile(uint8_t child_id, int direction);` | 计算 child 的前一/后一 local profile        |
-
-### 5.9 状态查询与强制状态显示
-
-| 接口                                                              | 作用             |
-| ----------------------------------------------------------------- | ---------------- |
-| `int zmk_led_matrix_get_state(struct zmk_led_matrix_state *out);` | 读取当前状态快照 |
-| `int zmk_led_matrix_show_status(uint8_t sources_mask);`           | 手动触发状态显示 |
-
-### 5.10 运行时持久化补充说明
-
-`app/src/led_matrix/api.c` 中可以看到 LED Matrix 会通过 settings 读回历史配置。当前实现已经处理多版 settings 结构：
-
-- `v1`
-- `v2`
-- `v3`
-- `v4`
-- `v5`
-
-持久化内容覆盖：
-
-- `on`
-- `brightness`
-- `selected_profile_id`
-- `speed`
-- `manual_hue_index`
-- `selected_independent_profile_ids`
-
-因此 `*_START` 类 Kconfig 只决定“首次启动或未恢复设置时”的初始状态，不等同于每次开机都强制覆盖用户状态。
-
-settings 保存仍使用 `CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE` 去抖，但 delayable work 投递到
-ZMK 共享低优先级工作队列。连续修改只保留最后一次保存，存储键和 `v5` 数据格式不变。
-
-### 5.11 Studio 灯效设置
-
-本节中的界面操作使用支持本分支 Lighting RPC 的 [afayge 定制版 ZMK Studio](https://github.com/afayge/zmk-studio)。同时启用 Studio RPC、LED Matrix 和 `&lm` 行为的固件会向客户端报告基础灯效控制能力。设备解锁后，在 **Lighting** 页可调节开关、亮度、主预设、动画速度、手动色板和各独立灯区的预设。主预设、独立灯区和局部预设均可用 `display-name` 设置界面名称。色板选择影响使用 `LM_PALETTE` 的颜色。
-
-`CONFIG_ZMK_LED_MATRIX_STUDIO_NOTIFICATIONS` 默认启用。设备解锁后，开关、亮度、预设、速度和颜色的设置变化会通知 Studio；仅含状态覆盖或切层提示的事件由键盘本地处理。关闭此选项可单独隔离灯效通知，Studio 仍可读取和修改灯效。
-
-调节立即生效，亮度为零会关灯。启用 settings 时，固件按现有去抖策略保存设置，键位编辑器的 Save 和 Discard 只作用于键位。实体灯效键和 Studio 共用全局行为，在线的分体副机接收同一绝对命令，Studio 回显主机状态。
-
-启用 `CONFIG_ZMK_LED_MATRIX_EDITOR` 和 settings 后，**Effects and indicators** 会列出所选控制器实际配置的主预设、独立灯区预设、层颜色、状态指示灯和计时设置。分体键盘通过主机连接，在 **Keyboard side** 中选择目标侧。亮度、动画和成员可以分侧配置。没有空间网格的控制器只报告适用的动画。
-
-选择 **Edit group** 后，可使用 RGB、手动色板或动态彩虹，按逻辑 LED 编号统一或逐灯设置。电池分档按电量从低到高等分，清空分档后使用亮色。状态源可以继承默认时长，显式设为 0 时沿用该源的常驻与唤醒规则。**Live status** 显示该侧渲染器使用的状态，**Show on keyboard** 可手动触发所选状态源。
-
-**Apply** 校验并保存整组，**Restore firmware defaults** 恢复所选组的 Devicetree 定义。Studio 从目标侧回读确认。在同一浏览器标签页中，断线或写入失败后会保留草稿。重新读取后可核对设备上的值再决定是否重试。旧版固件仍可提供基础控件。高级编辑需要目标侧支持相应的分体传输协议。
-
-在 **Edit LED positions** 中点选键位或键盘侧面的额外 LED。成员列表可调整电量点亮顺序或蓝牙配置档位；逐灯颜色跟随灯号。支持的 HID 锁定状态可各自选灯。**New independent group** 可创建混用键位灯与额外灯的独立组；独立组之间不能重复占用，状态灯可以覆盖同一颗灯。每侧的自定义槽位由 `CONFIG_ZMK_LED_MATRIX_CUSTOM_GROUPS` 指定，默认 4 个。删除组或调整成员不会重排其他组的 ID。
-
-**Main preset management** 可新建、复制、改名和删除主预设。默认预留 4 个自定义槽位，可通过 `CONFIG_ZMK_LED_MATRIX_CUSTOM_PRESETS` 调整。两侧共用预设 ID 和名称，每侧分别保存颜色、动画及有序灯号。点击 **Apply preset change** 后，Studio 会逐侧核对写入结果，中断后可继续。删除当前预设会优先切换到内置预设。**Layer colors** 按键盘的稳定层 ID 列出各层。可用 **Add layer effect** 添加覆盖，选择灯号并设置颜色、亮度和时长。时长为 0 时持续到切层，移除后恢复下方灯效。分体主侧在切层、切换主预设和重连时发送当前状态。
-
-主预设和独立组使用 v4 设置记录保存样式和方向。旧主预设 v3 和独立组 v2 记录以默认样式和正向加载，下次编辑写入 v4。层灯效沿用 v3，指示灯沿用 v2，旧颜色记录沿用出厂灯位。独立组的成员、组名和全部局部预设在一次写入中提交。旧版 v1 颜色记录在首次修改时自动迁移。其余组的差异单独保存在 `lm_editor/<group key>` 下。记录包含格式版本和组拓扑校验值，升级固件后拓扑不匹配的记录会被忽略。现有 `led_matrix/state` 继续保存全局状态并兼容 v1–v5。
-
----
-
-## 6. Devicetree 结构总览
-
-来源：
-
-- `app/dts/bindings/zmk,led-matrix.yaml`
-- `app/module/dts/bindings/led/zmk,led-composite.yaml`
-
-### 6.1 `/chosen` 节点
-
-LED Matrix 启用时，根节点 `chosen` 中必须存在：
-
-```dts
-/ {
-    chosen {
-        zmk,led-matrix = &led_matrix;
-    };
-};
+int zmk_led_matrix_show_status(uint8_t sources_mask);
 ```
 
-如果开启了 `CONFIG_ZMK_LED_MATRIX` 但没有 chosen node，`app/src/led_matrix.c` 会直接报错并拒绝构建/初始化。
+The `led_matrix/state` settings record stores the switch, brightness, selected main profile ID, speed, manual hue and selected independent profile IDs. The loader supports records v1–v5. Saves use `CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE` on the shared low-priority queue so quick successive changes write the latest state. When a catalog has no main preset, the editor uses ID 255 to represent an empty selection.
 
-### 6.2 `zmk,led-matrix` 顶层节点最小骨架
+### Studio controls and editing
 
-```dts
-led_matrix: led_matrix {
-    compatible = "zmk,led-matrix";
-    led-driver = "matrix";
-    led-device = <&some_led_dev>;
-    led-count = <N>;
-};
-```
+Use the [companion Studio client](https://github.com/afayge/zmk-studio). Firmware with Studio RPC, LED Matrix and the `&lm` behavior advertises basic lighting controls. On an unlocked keyboard, **Lighting** changes power, brightness, main preset, speed, hue and each independent zone's selected preset. Use `display-name` for readable names. Hue changes affect colors configured as `LM_PALETTE`. Changes take effect immediately. Physical lighting keys and Studio use the same global behavior: connected split peripherals receive the absolute command, and Studio shows the central's state. The keymap editor's Save and Discard apply to the keymap. Lighting has its own persistence.
 
-如果是 strip backend，则写成：
+Setting changes notify the unlocked client when `CONFIG_ZMK_LED_MATRIX_STUDIO_NOTIFICATIONS` is on. Layer and status-only display events stay local. Disabling notifications leaves reads and writes available.
 
-```dts
-led_matrix: led_matrix {
-    compatible = "zmk,led-matrix";
-    led-driver = "strip";
-    led-strip-device = <&some_strip_dev>;
-    led-count = <N>;
-};
-```
+- **Effects and indicators** lists editable main presets, independent profiles, layer colors, indicators and timing options when settings and the editor are enabled. On a split, connect to the central and select the target under **Keyboard side**. Each side advertises its geometry and supported animations. Advanced edits require compatible split transport on the target.
+- **Edit group** accepts uniform or per-LED RGB colors, palette colors or rainbow. Empty battery buckets use the configured on color. A status timeout can inherit the default or explicitly use zero. **Live status** shows the target's current source; **Show on keyboard** triggers it manually.
+- **Edit LED positions** selects key LEDs or extra LEDs. Order the members to set battery fill or BLE profile order. Per-LED colors follow the LED number. Each supported HID lock can have its own membership.
+- **New independent group** can combine key LEDs and extra LEDs at runtime. Independent groups cannot claim the same LED. A status overlay may cover a group member. Deletion or membership edits preserve the IDs of other groups. Slot counts are per side.
+- **Main preset management** can create, copy, rename or delete a preset. Halves share its ID and name, and store their colors, animation and ordered members separately. **Apply preset change** checks each side and can resume after interruption. Deleting the active preset prefers a built-in fallback if available.
+- **Layer colors** uses stable layer IDs. **Add layer effect** sets the targets, color, brightness and duration. Zero duration lasts until the layer changes. Removing the overlay reveals the underlying effect. The central resends layer state after layer changes, profile changes and reconnection.
+- **Apply** validates and saves the whole group. **Restore firmware defaults** restores the selected group's Devicetree definition. Studio reads back the target side to confirm the result. A failed write or disconnect preserves the draft in the same browser tab; reread the device before retrying.
 
----
+The editor stores group differences under `lm_editor/<group key>`. Records carry a format version and a topology checksum. A topology mismatch causes the saved override to be ignored after a firmware update. Main presets and independent groups store style and direction in v4. A v3 main preset or v2 independent group loads with default style and forward direction and is written as v4 on its next edit. Layer records use v3 and indicators use v2. Legacy colors use factory LED membership; v1 color records migrate on first edit. An independent group's name, members and all local profiles are committed together.
 
-## 7. `zmk,led-matrix` 顶层属性详细说明
+## Composite devices
 
-### 7.1 输出 backend 相关
-
-| 属性               | 必需性   | 说明                                |
-| ------------------ | -------- | ----------------------------------- |
-| `led-driver`       | 必填     | `"matrix"` 或 `"strip"`             |
-| `led-device`       | 条件必填 | 仅当 `led-driver = "matrix"` 时使用 |
-| `led-strip-device` | 条件必填 | 仅当 `led-driver = "strip"` 时使用  |
-| `led-count`        | 必填     | 逻辑 LED 总数                       |
-
-#### `led-count`
-
-表示逻辑 LED 数量，而不是物理通道数。对于 RGB 输出，逻辑 LED 数量通常对应：
-
-- profile `colors` 的长度上限
-- grid 中可映射 LED 的索引范围
-- 状态 LED 属性引用的索引范围
-
-### 7.2 输出映射相关
-
-| 属性                   | 说明                                                       |
-| ---------------------- | ---------------------------------------------------------- |
-| `output-channel-count` | backend 暴露的总物理输出通道数                             |
-| `channel-indexes`      | 逻辑 RGB 通道 -> 物理 RGB 通道映射                         |
-| `led-indexes`          | 逻辑 LED -> 物理 LED 映射，用于非 `write_channels` backend |
-
-#### `output-channel-count`
-
-如果省略，则默认认为：
-
-```text
-led-count * 3
-```
-
-当 backend 实际通道数和这个推导值不一致时，通常需要显式设置。
-
-#### `channel-indexes`
-
-用于支持 `write_channels` 的 backend。长度必须严格等于：
-
-```text
-led-count * 3
-```
-
-每个元素表示一个“逻辑 RGB 通道”对应到 backend 扁平通道空间中的哪个物理通道。
-
-这是 `led_composite` 场景下非常常见的属性。
-
-#### `led-indexes`
-
-用于不支持 `write_channels` 的非 write-channels backend。binding 允许两种长度：
-
-- `led-count`
-- `led-count * 3`
-
-但当前 `LED Matrix` 更偏向 `write_channels` 路径，实际使用中通常优先考虑 `channel-indexes`。
-
-### 7.3 空间布局相关
-
-| 属性              | 说明                          |
-| ----------------- | ----------------------------- |
-| `matrix-led-grid` | 本地 RC 空间中的 LED 网格描述 |
-
-`matrix-led-grid` 是 position-driven renderer 的核心输入。它本质上是一个 token stream，支持以下 token：
-
-- 普通数字：逻辑 LED 索引
-- `LM_NOLED`
-- `LM_PH`
-- `LM_BREAK`
-
-作用：
-
-- 定义按键空间与 LED 空间的相对位置。
-- 为 `keypress` / `ripple` / `rain` 等基于位置的 renderer 提供几何信息。
-- 当 layer color 未显式写 `layer-leds` 时，提供默认 LED 遍历顺序。
-
-重要约束：
-
-- 行数必须和当前 kscan 行数一致。
-- 每行宽度必须和当前 kscan 列数一致。
-- split 键盘上，每半边写本地 grid，matrix transform 再映射到全局位置空间。
-
-### 7.4 状态 LED 与颜色属性
-
-#### Battery
-
-- `battery-leds`
-- `battery-color-on`
-- `battery-color-off`
-- `battery-level-colors`
-
-#### BLE
-
-- `ble-profile-leds`
-- `ble-color-open`
-- `ble-color-connected`
-- `ble-color-disconnected`
-
-#### USB
-
-- `usb-leds`
-- `usb-color-hid`
-- `usb-color-powered`
-- `usb-color-none`
-
-#### HID
-
-- `hid-caps-leds`
-- `hid-caps-color-on`
-- `hid-caps-color-off`
-- `hid-num-leds`
-- `hid-num-color-on`
-- `hid-num-color-off`
-- `hid-scroll-leds`
-- `hid-scroll-color-on`
-- `hid-scroll-color-off`
-- `hid-compose-leds`
-- `hid-compose-color-on`
-- `hid-compose-color-off`
-- `hid-kana-leds`
-- `hid-kana-color-on`
-- `hid-kana-color-off`
-
-这些属性都作用于逻辑 LED 索引空间，而不是物理通道空间。
-
-### 7.5 状态与超时属性
-
-| 属性                 | 默认值  | 说明                          |
-| -------------------- | ------- | ----------------------------- |
-| `status-timeout-ms`  | `3000`  | 默认自动状态显示超时          |
-| `usb-timeout-ms`     | inherit | USB 自动状态显示超时          |
-| `ble-timeout-ms`     | inherit | BLE 自动状态显示超时          |
-| `hid-timeout-ms`     | inherit | HID 自动状态显示超时          |
-| `battery-timeout-ms` | inherit | Battery 自动状态显示超时      |
-| `ble-pairing-hold`   | `1`     | BLE open profile 是否保持可见 |
-
-inherit 表示未显式设置时继承 `status-timeout-ms`。
-
----
-
-## 8. `zmk,led-matrix` 子节点模型
-
-`zmk,led-matrix` 的 child node 不止一种语义，它实际上承载三类一级 child，以及一类二级 child。
-
-### 8.1 Display profile child
-
-识别条件：
-
-- child 上存在 `profile-id`
-
-常见属性：
-
-- `profile-id`
-- `display-name`
-- `renderer`
-- `effect-style`、`effect-direction`（可选）
-- `colors`
-- `brightness`
-- `period-ms`
-- `keypress-afterglow-ms`
-- `keypress-fadeout-ms`
-- `keypress-range`
-
-用途：
-
-- 定义用户可切换的基础光效 profile。
-
-### 8.2 Layer color child
-
-识别条件：
-
-- child 上存在 `layer-id`
-
-常见属性：
-
-- `layer-id`
-- `layer-colors`
-- `layer-leds`
-- `brightness`
-- `display-time-ms`
-
-用途：
-
-- 某个 layer 激活时，对特定 LED 区域显示覆盖颜色。
-
-### 8.3 Independent container child
-
-识别条件：
-
-- child 上存在 `independent-id`
-
-常见属性：
-
-- `independent-id`
-- `independent-leds`
-
-用途：
-
-- 定义一组“独立于主 profile”的 LED 分组。
-- 每个分组拥有自己的 local profiles。
-- container 本身的 `renderer`、`colors`、`brightness`、`period-ms` 不作为 local profile；
-  至少需要一个带 `profile-id` 的二级 local profile，否则初始化返回 `-EINVAL`。
-
-### 8.4 Independent local profile child
-
-这是独立组内部的二级 child，识别条件：
-
-- 父节点已经是 `independent-id` child
-- 自己拥有 `profile-id`
-
-常见属性：
-
-- `profile-id`
-- `renderer`
-- `effect-style`、`effect-direction`（可选）
-- `colors`
-- `brightness`
-- `period-ms`
-
-### 8.5 `renderer` 枚举
-
-主预设支持下表的 16 种渲染器。Studio 的 **Animation** 按本侧固件能力列出可用项，**Style** 和 **Direction** 随所选动画变化。Devicetree 用 `effect-style` 选择样式（从 0 开始），用 `effect-direction` 选择 `"forward"` 或 `"reverse"`。省略时取样式 0 和正向。
-
-| ID  | `renderer`                              | 样式（按编号排列）                                             | 布局 / 方向                        |
-| --- | --------------------------------------- | -------------------------------------------------------------- | ---------------------------------- |
-| 0–3 | `solid`、`breathe`、`spectrum`、`swirl` | 常亮、呼吸、整体色相循环、按灯号循环                           | 主预设及独立灯区                   |
-| 4–6 | `keypress`、`ripple`、`rain`            | 按住与余辉、最后一次按键的波前、列雨                           | 本侧网格                           |
-| 7   | `starlight`                             | 星闪，具备网格时可见流星                                       | 主预设                             |
-| 8   | `gradient`                              | 横向、纵向、横向阶梯、纵向阶梯                                 | 网格，可反向                       |
-| 9   | `wave`                                  | 横波、纵波、折线波、往返海浪、明暗带                           | 网格，可反向                       |
-| 10  | `radial`                                | 单中心、双中心、边缘喷泉                                       | 网格，可反向；喷泉反向时交换起始边 |
-| 11  | `rotary`                                | 风车、彩色螺旋、明暗螺旋、双灯标、彩色灯标                     | 网格，可反向旋转                   |
-| 12  | `particles`                             | 单色散点、彩色雨点、簇状绽放                                   | 网格                               |
-| 13  | `chase`                                 | 灯头和最多三级拖尾沿有序成员移动                               | 主预设及独立灯区，可反向           |
-| 14  | `reactive`                              | 宽域、十字、方格波前、钢琴列、单色扩散、彩色扩散、常亮底涟漪   | 网格，最多同时保留最近 8 次敲击    |
-| 15  | `heatmap`                               | 按键和相邻上下左右格分别增加 40、12 点热度，上限 100，逐渐冷却 | 网格                               |
-
-例如，把以下属性放进现有主预设即可得到反向双中心色环。按键事件形变、冷却和动画速度都跟随有效 `period-ms`。静态渐变使用固定颜色时只更新首帧或设置变更帧，使用 `LM_RAINBOW` 时继续变色。色相循环类样式以所选颜色为起点，灰白基色取其亮度生成彩色，黑色保持熄灭。
-
-```dts
-renderer = "radial";
-effect-style = <1>;
-effect-direction = "reverse";
-colors = <LM_PALETTE>;
-period-ms = <1400>;
-```
-
-#### 厂商菜单对照
-
-以下名称来自 K2 HE ANSI RGB 演示和 Air60 HE 演示。Keychron 模式按设备定义中的英文名称列出。NuPhy 的对应项是 ZMK 对该名称的视觉近似，特别是百花、潮汐、钢琴和常亮涟漪，尚无实机帧序列对照。表中的数字是 `effect-style`。
-
-| Keychron K2 HE ANSI RGB                 | NuPhy Air60 HE 背光 | ZMK 配置                               |
-| --------------------------------------- | ------------------- | -------------------------------------- |
-| None                                    | 背光开关            | `LM_OFF`                               |
-| Solid Color、Per Key RGB                | 自定义              | `solid` 配单色或逐灯颜色               |
-| Breathing                               | 呼吸                | `breathe`                              |
-| Cycle All                               | 光谱                | `spectrum`                             |
-| —                                       | 阶梯                | `gradient` 2 或 3                      |
-| Cycle Left Right、Cycle Up Down         | 波浪、上下波浪      | `wave` 0、1                            |
-| Rainbow Moving Chevron                  | —                   | `wave` 2                               |
-| —                                       | 海浪、波带          | `wave` 3、4                            |
-| Cycle Out In、Cycle Out In Dual         | 潮汐                | `radial` 0、1，反向可向内收拢          |
-| —                                       | 喷泉                | `radial` 2                             |
-| Cycle Pinwheel、Cycle Spiral            | 旋转                | `rotary` 0、1                          |
-| Band Spiral Val                         | —                   | `rotary` 2                             |
-| Dual Beacon、Rainbow Beacon             | —                   | `rotary` 3、4                          |
-| Pixel Rain、Jellybean Raindrops         | 银河                | `particles` 0、1                       |
-| —                                       | 百花                | `particles` 2                          |
-| —                                       | 流光                | `chase`                                |
-| Digital Rain                            | 落雨                | `rain`                                 |
-| Reactive Simple                         | 单点                | `keypress`，`keypress-range = <0>`     |
-| Reactive Multiwide、Reactive Multinexus | —                   | `reactive` 0、1                        |
-| —                                       | 宫格、钢琴          | `reactive` 2、3                        |
-| Solid Splash、Splash                    | 涟漪                | `reactive` 4、5；单个波前可选 `ripple` |
-| —                                       | 常亮涟漪            | `reactive` 6                           |
-| Typing Heatmap                          | —                   | `heatmap`                              |
-
-Air60 HE 条形灯的「呼吸」「流光」「霓虹」「静态」依次对应独立灯区的 `breathe`、`chase`、`spectrum` 和 `solid`。Keychron 的 Mix RGB 属于分区时间线编排，本表覆盖单项灯效。[Keychron 设备定义](https://launcher.keychron.com/static/device/875826720/json/v3.json) · [NuPhy 演示](https://drive.nuphyio.com/?selectDevice=2/#/pressKey)
-
-### 8.6 renderer 特定参数
-
-#### `keypress-afterglow-ms`
-
-只在 `renderer = "keypress"` 时使用。
-
-表示：
-
-- 按键释放后 LED 保持亮起的时间。
-
-#### `keypress-fadeout-ms`
-
-也只在 `renderer = "keypress"` 时使用。
-
-表示：
-
-- afterglow 结束后进入 fade-out 的时间。
-- 如果为 `0`，afterglow 结束后立即熄灭。
-
-#### `keypress-range`
-
-也是 `keypress` 专用。
-
-表示：
-
-- glow 半径，单位是本地 `matrix-led-grid` cell。
-- `0` 表示只点亮被按下键对应位置。
-
-### 8.7 layer color 的目标 LED 选择规则
-
-`layer color` 有两种目标选择模式：
-
-#### 显式模式
-
-提供：
-
-- `layer-leds`
-
-则目标 LED 直接由这个列表决定。
-
-#### 隐式模式
-
-如果省略 `layer-leds`：
-
-- 目标 LED 默认来自 `matrix-led-grid` 的 grid traversal order。
-
-这也是为什么没有 grid 时，某些 layer color 配置会非法。
-
-### 8.8 child 相关约束
-
-根据 binding 和核心校验逻辑，至少需要注意：
-
-- 关闭编辑器时，控制器至少需要一个主预设、独立灯区、层色或状态区。启用编辑器后，允许使用空目录启动，再从兼容客户端添加灯效。
-- `independent-leds` 不能重复。
-- 同一个逻辑 LED 不能同时出现在多个 independent container 中。
-- 当存在 `matrix-led-grid` 时，`independent-leds` 不应该再出现在 grid 中。
-- `layer-leds` 内不允许重复索引。
-- local `profile-id` 与 `independent-id` 都要求连续、唯一、合法。
-
----
-
-## 9. 状态定义、优先级与超时行为
-
-### 9.1 状态源优先级
-
-binding 中明确写明共享状态 LED 的固定覆盖优先级：
-
-```text
-Battery < USB < BLE < HID
-```
-
-这意味着：
-
-- 同一个逻辑 LED 若同时用于多个状态区，优先级更高的状态会覆盖优先级更低的状态。
-- 当前实现没有颜色混合，采用固定覆盖。
-
-### 9.2 HID 内部优先级
-
-HID 共享 LED 内部顺序为：
-
-```text
-Caps < Num < Scroll < Compose < Kana
-```
-
-所以多个 HID indicator 共用同一逻辑 LED 时，后者覆盖前者。
-
-### 9.3 `status-timeout-ms` 与持久/瞬态行为
-
-#### 超时值大于 0
-
-表示：
-
-- 状态显示是 timed transient。
-- 状态源在事件触发后显示一段时间，再自动清除 transient overlay。
-
-#### 超时值等于 0
-
-表示：
-
-- 该状态源进入 persistent 模式。
-- 只要当前 runtime output 允许渲染，该状态就持续可见。
-
-### 9.4 各状态源的语义差异
-
-#### `usb-timeout-ms = 0`
-
-USB 状态会持久显示，包括：
-
-- `usb-color-none`
-- `usb-color-powered`
-- `usb-color-hid`
-
-#### `ble-timeout-ms = 0`
-
-BLE 状态会持久显示，包括：
-
-- open
-- connected
-- disconnected
-
-#### `hid-timeout-ms = 0`
-
-HID 状态会持久显示，包括 inactive/off color。
-
-#### `battery-timeout-ms = 0`
-
-Battery 状态会持久显示，包括：
-
-- `battery-color-off`
-- `battery-level-colors` 对应的 bucket 色
-
-并且 battery 更新会在可见 persistent 状态上直接刷新。
-
-### 9.5 `ble-pairing-hold`
-
-`ble-pairing-hold` 默认值为 `1`，表示：
-
-- active BLE profile 处于 open 状态时，BLE 指示保持可见
-- 这可能形成 pairing transient
-- 若形成 transient，持续时间是 `5 * ble-timeout-ms`
-- 如果 `ble-timeout-ms` 未设置，则继承 `status-timeout-ms`
-
-### 9.6 LED Matrix 运行时模式
-
-内部 runtime mode 来源：`app/src/led_matrix/internal.h`
-
-- `OFF`
-- `ACTIVE`
-- `FORCE_SHOW_ONLY`
-- `AUTO_SUSPENDED`
-- `AUTO_SUSPENDED_FORCE_SHOW`
-- `SLEEP_SUSPENDED`
-
-其中：
-
-- `ACTIVE` 允许基础渲染
-- `FORCE_SHOW_ONLY` 允许状态显示，但不一定允许 base render
-- `AUTO_SUSPENDED` 表示 idle auto-off 生效
-- `AUTO_SUSPENDED_FORCE_SHOW` 表示 idle auto-off 后仍在 idle status wake 窗口内，由自动状态事件临时点亮
-- `SLEEP_SUSPENDED` 表示活动状态已进入 sleep
-
-进入 `OFF`、`AUTO_SUSPENDED` 或 `SLEEP_SUSPENDED` 时，50 ms 周期刷新定时器会在状态
-切换路径中立即停止；清屏及 managed power/ext-power 关闭随后由输出同步完成。处于 OFF
-时仍保留 Battery、USB、BLE、HID、按键和 layer 的事件订阅，但只允许事件驱动处理，不再
-保持周期渲染。BLE open/pairing 指示需要闪烁时会临时恢复周期刷新，状态超时并回到 OFF 后
-再次停止。
-
-如果 backend/ext-power 已经处于关闭状态，OFF 收尾不会重复提交 clear；没有物理电源门控
-时，若最后一次成功提交的帧已经全黑，也会跳过重复 clear flush。
-
-逻辑开关与输出电源分别管理。即使 `state.on` 仍为 true，当最终合成输出全黑，且没有需要
-继续按时间推进的可见灯效时，也停止周期刷新并关闭可管理的输出电源；不修改用户开关、
-profile 或持久化设置。后续按键、layer、状态或配置事件需要显示内容时，再恢复输出。
-呼吸、闪烁等动画中的短暂黑帧仍保留其时间推进，不对每个黑帧反复断电。
-
-周期刷新依据当前实际生效的输出判定：HID 使用当前锁定状态对应的 ON/OFF 颜色，USB
-使用当前连接状态的颜色，BLE 使用当前 profile 的状态与闪烁规则，Battery 使用当前电量
-桶和实际显示的 LED。未配置的 zone、未选中的动态颜色，以及被更高优先级输出完全覆盖的
-动态内容，不单独维持 50 ms timer。BLE open/pairing 的有效闪烁仍需要 timer。
-
-按键余辉使用支持 uptime 回绕的截止时间比较，到期后清除运行状态；涟漪结束后停止刷新。
-关闭期间也会记录松键，闲置后的第一键可直接恢复按键灯效。完全遮挡的雨滴动画恢复显示时
-只进行有界时间推进，避免补算长时间不可见的历史帧。
-
-### 9.7 关断失败与功耗验收
-
-有 `sdb-gpios` 的 IS31 backend 在清屏、I²C 就绪检查或软件 shutdown 失败时，仍会尝试
-拉低 SDB。只有 GPIO 操作成功才记录硬件关断完成；软件 shutdown 失败但 SDB 成功时记录
-警告，不为已经完成的硬件关断重复重试。SDB 是芯片 shutdown 控制，并不代表切断 VCC。
-
-IS31FL3737 的恢复初始化由驱动在互斥锁内完成，同时重置寄存器页缓存；初始化失败会尝试
-重新关断。电源状态未知时必须完整恢复初始化，不能只写 unblank。输出电源同步失败后停止
-周期刷新并阻止渲染，使用独立延迟工作依次在 100 ms、500 ms、2000 ms 后最多重试三次。
-每次重试读取当前目标状态；新的输出同步请求取代旧重试，成功后取消剩余重试。耗尽后记录
-错误，等待新的输出同步请求，不持续轮询。sleep 同步收尾会取消并等待重试及输出工作结束，
-不留下睡眠后访问设备的重试。
-
-帧提交失败也会停止 tick、尝试关断，并使用同一有限重试预算；周期 tick 本身不重置预算。
-直连 RGB、GPIO／PWM 输出会在某颗 LED 写入失败后继续处理其余 LED，并保留首个错误。
-
-composite 的 managed power 能力不代表每个 child 都能失能。只有确认全部输出均已关断，
-才允许将失败的清屏视为已完成或跳过后续清屏；无门控或部分门控组合仍须保留未受控输出
-的清屏错误。关断时即使一个 child 失败，也继续尝试其余 child 及共享外电源，返回错误并
-保留有界重试。临时关断和恢复使用外电源 runtime API，不修改外电源的持久化开关。
-通用外电源驱动会在某个控制 GPIO 失败后继续处理其余控制脚，将部分失败状态标为未知；
-下一次开关请求会重新操作硬件，避免沿用旧缓存跳过回退关断。只有全部控制脚成功后，
-才报告已知的开启或关闭状态。
-
-`numpad` 默认启用屏幕背光 idle 自动关闭及显示 idle blanking，按键活动后恢复；保留 BLE
-连接，不额外启用深度休眠。`corne54`、`corne54v3` 左右默认禁用深度休眠，保留 15 s
-idle；`corne54v3` 和 `bmk4SGK` 默认启用 LED Matrix idle auto-off，后者 idle 为 30 s。
-状态唤醒窗口不因这些默认值调整而改变。屏幕、BLE、活动检测等仍有独立耗电；电池采样
-timer 在 idle 时停止，手动关 LED 但仍 ACTIVE 时可继续采样，不能用 LED 全黑判断整机
-功耗正常。
-
-实机应记录固件哈希、电池容量及电压，断开调试器，以电池端电流、P0.06/SDB 电平和 I²C
-活动共同验收：重复至少 100 次空闲唤醒和 USB 插拔，然后静置 48 小时。状态提示结束后应
-回到正常关断电流基线，SDB 保持低电平，LED 周期刷新和连续 I²C 写入停止。软件故障测试
-不能代替这项实机测量。回归入口及记录模板见 `app/tests/led-matrix/power-regression/README.md`。
-
----
-
-## 10. led_composite 详细说明
-
-### 10.1 功能定位
-
-`led_composite` 的定位是：
-
-- 统一多个 child backend 为一个连续扁平 channel space
-- 对外提供一个 `led` API 设备
-- 内部将 `write_channels` 分发到不同 child
-
-它非常适合作为 `LED Matrix` 的 `led-device`。
-
-### 10.2 DTS 结构
-
-顶层节点：
+Use `zmk,led-composite` when one logical output spans multiple devices. A direct strip needs only the strip backend. A composite can join several channel controllers or include strips and single-color GPIO/PWM LEDs in the same space.
 
 ```dts
 led_chain: led_composite {
@@ -1360,262 +366,38 @@ led_chain: led_composite {
 };
 ```
 
-每个 child 支持的属性为：
+Each child needs exactly one of `led-device` or `led-strip-device`, plus a `channel-offset` and a positive `channel-count`. Start at offset zero. Each following child's offset must equal the end of the preceding child's range. Gaps and overlaps fail validation. For strips that specify `ext-power-device`, all such children must name the same external supply. The controller's effective `output-channel-count` must agree with the composite total, and every `channel-indexes` entry must fit in that space.
 
-| 属性               | 必需性 | 含义                                        |
-| ------------------ | ------ | ------------------------------------------- |
-| `led-device`       | 二选一 | child 是 Zephyr `led` API 设备              |
-| `led-strip-device` | 二选一 | child 是 Zephyr `led_strip` API 设备        |
-| `channel-offset`   | 必填   | child 在 composite 扁平通道空间中的起始偏移 |
-| `channel-count`    | 必填   | child 暴露的 RGB 通道数                     |
-| `ext-power-device` | 可选   | strip child 使用的共享外部电源设备          |
+| Child interface         | Number of channels                            | Write behavior                                                                                                                                    |
+| ----------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Native `write_channels` | Native writable channel count                 | Forward writes in the affected child range.                                                                                                       |
+| Scalar brightness       | Three channels per physical LED               | Keep an RGB shadow for partial writes. Take `max(R, G, B)` and convert 0–255 to 0–100% for `led_set_brightness()`.                                |
+| Binary LED              | Three channels per physical LED               | Both `on` and `off` must exist. The maximum of the cached RGB triple selects on or off.                                                           |
+| LED strip               | A multiple of three, one RGB triple per pixel | Update the channel buffer and try `led_strip_update_channels()`. On `-ENOSYS`, pack it into `struct led_rgb[]` and call `led_strip_update_rgb()`. |
 
-### 10.3 child 二选一规则
+The composite's public Zephyr LED driver operation is `write_channels`. A matrix child is probed in the order shown above. In `app/module/drivers/led/led_composite.c`, the child configuration holds the selected device, optional supply and SDB, channel bounds, LED/pixel counts and scalar or strip buffers. Runtime state tracks the chosen matrix API and which children have been soft-blanked or shut down. The device mutex protects the child states, total count, capabilities and shared supply state. The driver distinguishes generic, IS31FL3733, IS31FL3737 and corresponding mock matrix devices.
 
-每个 child 必须：
+### Capability and power API
 
-- 定义且只定义 `led-device` 或 `led-strip-device` 之一
-
-否则 `led_composite_validate()` 会报错：
-
-- 同时有两个 backend -> 非法
-- 两个都没有 -> 非法
-
-### 10.4 连续通道空间规则
-
-`led_composite` 要求所有 child range：
-
-- 从 `0` 开始
-- 按声明顺序升序排列
-- 无 overlap
-- 无 gap
-
-内部校验通过 `expected_offset` 实现，任何 child 的 `channel-offset` 只要不等于当前预期 offset，就会报错。
-
-### 10.5 `channel-count` 规则
-
-对于 strip child：
-
-- `channel-count` 必须是 `3` 的倍数
-
-因为 strip 最终以 RGB pixel 形式提交，每个像素对应 `R/G/B` 三个通道。
-
-对于 `led-device` child，`led_composite` 按以下优先级选择 API：
-
-1. `write_channels`
-2. `set_brightness`
-3. 同时存在的 `on` / `off`
-
-`write_channels` child 的 `channel-count` 仍表示设备暴露的原生通道数。brightness 或 binary
-标量 child 的 `channel-count` 必须等于物理 LED 子节点数量的三倍；composite 为每颗物理灯
-保留三个逻辑 RGB 通道，并取 `max(R, G, B)`。brightness child 再把 `0..255` 转换为
-`0..100%`，binary child 则把非零值视为 on。这个规则允许 `pwm-leds` 之类的单色设备与
-RGB 矩阵或灯带共享同一个 LED Matrix 通道空间。
-
-### 10.6 内部数据结构组成
-
-`app/module/drivers/led/led_composite.c` 中可以看到几组关键内部结构：
-
-#### `enum zmk_led_composite_child_type`
-
-- `INVALID`
-- `MATRIX`
-- `STRIP`
-
-#### `enum zmk_led_composite_matrix_kind`
-
-用于区分 matrix child 的更细类型：
-
-- generic
-- IS31FL3733
-- IS31FL3737
-- mock IS31FL3733
-- mock IS31FL3737
-
-#### `struct zmk_led_composite_child_config`
-
-保存每个 child 的静态配置，包括：
-
-- child type
-- matrix kind
-- `zmk_is31_power_config`
-- `dev`
-- `ext_power_dev`
-- `sdb`
-- `channel_offset`
-- `channel_count`
-- `led_count`
-- `pixel_count`
-- `scalar_channels`
-- `strip_channels`
-- `strip_pixels`
-- `has_led_device`
-- `has_strip_device`
-
-#### `struct zmk_led_composite_child_state`
-
-保存 child 的运行状态：
-
-- 当前 matrix API 类型：channels、brightness 或 binary
-- `hard_powered_off`
-- `soft_blanked`
-
-#### `struct zmk_led_composite_data`
-
-这是 device runtime data，保存：
-
-- `k_mutex lock`
-- `child_states`
-- `total_channel_count`
-- `capabilities`
-- `shared_ext_power_dev`
-- `shared_ext_power_is_off`
-
-### 10.7 写入路径
-
-`led_composite` 的 public `led` API 只实现了：
+`app/include/drivers/led/led_composite.h` exposes three operations:
 
 ```c
-.write_channels = zmk_led_composite_write_channels
+int zmk_led_composite_get_channel_count(const struct device *dev, uint32_t *count);
+int zmk_led_composite_get_capabilities(const struct device *dev, uint32_t *caps);
+int zmk_led_composite_power(const struct device *dev, bool enable);
 ```
 
-写入流程如下：
+`ZMK_LED_COMPOSITE_CAP_MANAGED_POWER` indicates that at least one child supports managed power, such as IS31 soft blanking or a strip on a switched supply. `ZMK_LED_COMPOSITE_CAP_FULL_HARD_OFF` requires every child to support hardware shutdown. LED Matrix checks the channel count and these capability bits when selecting its output policy.
 
-#### matrix child
+`zmk_led_composite_power(dev, false)` clears or disables children and switches off the shared supply. Zero means all children completed the shutdown available to them. An ungated child must actually clear successfully. A confirmed hardware or software disable can satisfy shutdown after a failed clear on that child. One failure does not prevent attempts on other children or the shared supply. Retries skip successful children. Failed wake-up attempts roll back the children and shared supply. An SDB pin places the chip in shutdown independently of VCC.
 
-如果 child 支持 `write_channels`，直接调用：
+## Devicetree examples
 
-```c
-led_write_channels(child->dev, ...)
-```
+The first six examples come from the simulator fixtures named below. Mock device nodes exercise the mapping and rendering logic. For hardware, use the real driver, bus and pin configuration.
 
-否则先更新该 child 的 RGB shadow buffer，再按受影响的物理 LED 逐个取三通道最大值：
+### Minimal matrix backend
 
-- `set_brightness` child：转换为 `0..100%` 后调用 `led_set_brightness()`
-- binary child：非零调用 `led_on()`，全零调用 `led_off()`
-
-shadow buffer 保证即使一次写入只覆盖一部分 RGB 通道，也能用完整的三个通道计算标量值。
-
-#### strip child
-
-先把数据写入 child 的 `strip_channels` buffer，然后：
-
-1. 优先调用 `led_strip_update_channels()`
-2. 若返回 `-ENOSYS`
-3. 则把通道 buffer 重新组装为 `struct led_rgb[]`
-4. 再 fallback 调用 `led_strip_update_rgb()`
-
-这意味着：
-
-- 如果 strip backend 原生支持 update-channels，会优先走更直接的通道提交路径。
-- 如果不支持，也仍然能 fallback 到普通 RGB strip API。
-
-### 10.8 电源路径与能力位
-
-`led_composite` 的 public capability 宏：
-
-- `ZMK_LED_COMPOSITE_CAP_MANAGED_POWER`
-- `ZMK_LED_COMPOSITE_CAP_FULL_HARD_OFF`
-
-#### `ZMK_LED_COMPOSITE_CAP_MANAGED_POWER`
-
-表示 composite backend 具备受控电源能力。来源可能包括：
-
-- matrix child 支持 soft power
-- strip child 具备 `ext-power-device`
-
-#### `ZMK_LED_COMPOSITE_CAP_FULL_HARD_OFF`
-
-表示 composite backend 可以实现完整硬关断。要成立，所有 child 都必须支持 full hard-off。
-
-#### matrix child 的电源路径
-
-当 child 是 IS31 或对应 mock power personality 时：
-
-- 可以 soft blank
-- 如果有 `sdb-gpios`，还可以 hard off
-
-#### strip child 的电源路径
-
-当 child 有 `ext-power-device` 时：
-
-- 通过共享的 ext power controller 实现 power gating
-- 临时关断和恢复调用 runtime API，不改变持久化外电源设置，也不额外请求 settings save
-
-#### shared ext power 约束
-
-多个 strip child 若都使用 `ext-power-device`，必须共享同一个设备，否则校验失败。
-
-关断会尽力处理所有 child 及共享外电源；一个设备失败不阻止其他设备关闭。每个成功的
-关断单独记录，错误返回给 LED Matrix 的有界重试服务。完整关断须覆盖全部 child；
-`MANAGED_POWER` 仅说明存在可管理设备，不能单独证明未受控 GPIO、PWM 或 strip 已灭。
-
-### 10.9 对外运行接口
-
-来源：`app/include/drivers/led/led_composite.h`
-
-#### `int zmk_led_composite_get_channel_count(const struct device *dev, uint32_t *count);`
-
-作用：
-
-- 获取 composite backend 暴露的总通道数
-
-#### `int zmk_led_composite_get_capabilities(const struct device *dev, uint32_t *caps);`
-
-作用：
-
-- 获取 composite backend 的 capability 位图
-
-#### `int zmk_led_composite_power(const struct device *dev, bool enable);`
-
-作用：
-
-- 控制 composite backend 电源状态
-- LED Matrix 在 composite backend 场景下会查询 capability 并据此决定 runtime power strategy
-- `enable=false` 内部完成逐 child 清零及其支持的软件或硬件关断；返回 0 表示全部 child
-  已完成所能达到的关闭方式，不代表全部 VCC 已被切断
-- 没有门控的 child 必须清零成功；有可靠软件或硬件关断的 child，可在确认失能后收敛清屏
-  错误。失败时继续处理其余输出，重试跳过已经成功关闭的 child
-- 恢复失败时尝试将所有 child 及共享外电源重新关闭，避免留下部分恢复的供电状态
-
----
-
-## 11. LED Matrix 与 led_composite 的运行时交互
-
-在 `app/src/led_matrix/api.c` 中，若 backend 是 composite，会执行：
-
-1. `zmk_led_composite_get_channel_count()`
-2. 比较 composite channel 数与 `OUTPUT_CHANNEL_COUNT`
-3. `zmk_led_composite_get_capabilities()`
-
-这意味着：
-
-- `zmk,led-matrix` 里声明的 `output-channel-count`
-- 以及 `channel-indexes` 的上界
-
-必须与 composite 实际暴露的通道空间保持一致。
-
-在 `app/src/led_matrix/power.c` 中，如果 backend 是 composite，则 `LED Matrix` 会根据：
-
-- `ZMK_LED_COMPOSITE_CAP_MANAGED_POWER`
-- `ZMK_LED_COMPOSITE_CAP_FULL_HARD_OFF`
-
-决定：
-
-- 仅 blank
-- 还是进入 hard-off
-
-因此 `led_composite` 不只是一个映射器，它也参与 runtime power policy。
-
----
-
-## 12. DTS Samples
-
-本节所有样例均从现有测试 `native_sim.keymap` 中提炼，避免发明不存在的语法。
-
-### 12.1 最小 `matrix` backend
-
-来源：`app/tests/led-matrix/basic/native_sim.keymap`
+Fixture: `app/tests/led-matrix/basic/native_sim.keymap`.
 
 ```dts
 #include "../behavior_keymap.dtsi"
@@ -1665,9 +447,9 @@ shadow buffer 保证即使一次写入只覆盖一部分 RGB 通道，也能用�
 };
 ```
 
-### 12.2 最小 `strip` backend
+### Direct strip with external power
 
-来源：`app/tests/led-matrix/idle-auto-off-strip-ext-power-runtime-only/native_sim.keymap`
+Fixture: `app/tests/led-matrix/idle-auto-off-strip-ext-power-runtime-only/native_sim.keymap`.
 
 ```dts
 #include <dt-bindings/zmk/keys.h>
@@ -1705,9 +487,9 @@ shadow buffer 保证即使一次写入只覆盖一部分 RGB 通道，也能用�
 };
 ```
 
-### 12.3 `profile + status + layer color`
+### Main preset, host status and layer color
 
-来源：`app/tests/led-matrix/layer-color-status-priority/native_sim.keymap`
+Fixture: `app/tests/led-matrix/layer-color-status-priority/native_sim.keymap`.
 
 ```dts
 #include <dt-bindings/zmk/keys.h>
@@ -1766,9 +548,9 @@ shadow buffer 保证即使一次写入只覆盖一部分 RGB 通道，也能用�
 };
 ```
 
-### 12.4 `independent LED container`
+### Independent group with local presets
 
-来源：`app/tests/led-matrix/independent-solid/native_sim.keymap`
+Fixture: `app/tests/led-matrix/independent-solid/native_sim.keymap`.
 
 ```dts
 #include "../behavior_keymap.dtsi"
@@ -1824,9 +606,9 @@ shadow buffer 保证即使一次写入只覆盖一部分 RGB 通道，也能用�
 };
 ```
 
-### 12.5 `led_composite` contiguous range 示例
+### Contiguous ranges across two controllers
 
-来源：`app/tests/led-matrix/composite-split/native_sim.keymap`
+Fixture: `app/tests/led-matrix/composite-split/native_sim.keymap`.
 
 ```dts
 #include "../behavior_keymap.dtsi"
@@ -1899,9 +681,9 @@ shadow buffer 保证即使一次写入只覆盖一部分 RGB 通道，也能用�
 };
 ```
 
-### 12.6 `mixed matrix + strip + ext-power`
+### Matrix and strip with shared power
 
-来源：`app/tests/led-matrix/composite-mixed-power/native_sim.keymap`
+Fixture: `app/tests/led-matrix/composite-mixed-power/native_sim.keymap`.
 
 ```dts
 #include <behaviors.dtsi>
@@ -1991,10 +773,9 @@ shadow buffer 保证即使一次写入只覆盖一部分 RGB 通道，也能用�
 };
 ```
 
-### 12.7 Trackball 四路 PWM LED：独立使用
+### Standalone trackball PWM LEDs
 
-标准 `pwm-leds` 直接作为 LED Matrix 的 `led-device` 时，每个物理 LED 都是标量亮度输出。
-下面的 independent group 按 WHT、GRN、RED、BLU 顺序定义关闭、白灯 30% 和绿红混合 70%。
+The four physical PWM LEDs are white, green, red and blue. The independent group provides off, white at 30%, and green plus red at 70%. Select the entire combination with `&lm LM_CFS(0, 2)`. Define additional local profiles for different group brightness levels. `LM_BRT` adjusts brightness globally. The local profile selection is saved when settings are enabled.
 
 ```dts
 #include <zephyr/dt-bindings/pwm/pwm.h>
@@ -2048,14 +829,9 @@ shadow buffer 保证即使一次写入只覆盖一部分 RGB 通道，也能用�
 };
 ```
 
-使用 `&lm LM_CFS(0, 2)` 可以原子切换整个四灯组合。同一颜色组合需要多个亮度时，应定义
-多个 local profile；`LM_BRT` 仍然调节整个 LED Matrix 的全局亮度。启用 settings 后，
-independent profile 的选择由现有 LED Matrix settings 格式持久化。
+### Trackball PWM LEDs beside a keyboard matrix
 
-### 12.8 Trackball PWM LED 与键盘矩阵混合
-
-已有键盘 RGB backend 可以放在前一个 composite child，四颗 PWM 灯作为标量 child 放在
-后面。假设键盘 backend 占 6 个通道，则 PWM child 从 6 开始并占 `4 * 3 = 12` 个通道：
+The keyboard controller occupies channels 0–5. Four PWM LEDs occupy the next twelve channels, starting at offset 6.
 
 ```dts
 / {
@@ -2091,230 +867,18 @@ independent profile 的选择由现有 LED Matrix settings 格式持久化。
 };
 ```
 
----
-
-## 13. 常见错误与校验规则
-
-本节直接基于 binding、源码日志和测试用例整理。
-
-### 13.1 缺少 `/chosen { zmk,led-matrix = ...; }`
-
-问题：
-
-- 开启了 `CONFIG_ZMK_LED_MATRIX`，但未设置 chosen node
-
-后果：
-
-- `app/src/led_matrix.c` 直接报错并终止
-
-### 13.2 `led-driver` 与 backend 节点不匹配
-
-问题：
-
-- `led-driver = "matrix"` 却没有 `led-device`
-- `led-driver = "strip"` 却没有 `led-strip-device`
-
-后果：
-
-- backend 无法建立
-
-### 13.3 关闭编辑器时缺少可渲染来源
-
-问题：
-
-- 没有 display profile
-- 没有 independent child
-- 没有 layer color
-- 没有状态 LED zone
-
-后果：
-
-- `zmk,led-matrix requires at least one profile, independent child, layer color, or status LED zone`
-
-### 13.4 `channel-indexes` 长度错误
-
-问题：
-
-- 长度不是 `led-count * 3`
-
-后果：
-
-- DTS 校验失败或运行时校验失败
-
-### 13.5 position-driven renderer 缺少 `matrix-led-grid`
-
-问题：
-
-- 使用 `keypress`
-- 使用 `ripple`
-- 使用 `rain`
-- 或 layer color 未提供 `layer-leds`
-- 但没有提供 `matrix-led-grid`
-
-后果：
-
-- 几何布局无法推导，配置非法
-
-### 13.6 `layer-leds` / `independent-leds` 重叠或非法
-
-问题：
-
-- `independent-leds` 重复
-- 多个 independent child 使用同一 LED
-- `independent-leds` 仍出现在 `matrix-led-grid`
-- `layer-leds` 自身有重复项
-
-后果：
-
-- 配置非法
-
-### 13.7 `independent-id` / local `profile-id` 非法
-
-问题：
-
-- ID 重复
-- ID 出现空洞
-- local profile 缺失或重复
-
-后果：
-
-- `LED Matrix` 运行时无法连续管理这些条目
-
-### 13.8 `led_composite` child 配置错误
-
-问题包括：
-
-- 同时写了 `led-device` 和 `led-strip-device`
-- 两个都没写
-- `channel-count = 0`
-- child target device 不 ready
-- matrix child 缺少 `write_channels`、`set_brightness` 和成对的 `on` / `off`
-- brightness/binary child 的 `channel-count` 不等于物理 LED 数量的三倍
-- strip child 缺少 LED strip API
-
-### 13.9 `led_composite` 区间错误
-
-问题包括：
-
-- `channel-offset` 不从 0 开始
-- child range 有 gap
-- child range overlap
-
-后果：
-
-- 连续扁平通道空间无法建立
-
-### 13.10 strip child 非 3 倍数通道数
-
-问题：
-
-- `channel-count % 3 != 0`
-
-后果：
-
-- 无法正确组装 RGB pixel
-
-### 13.11 多个 strip child 使用不同 `ext-power-device`
-
-问题：
-
-- 一个 composite 内多个 strip child 分别绑定不同外部电源设备
-
-后果：
-
-- 校验失败，因为 shared ext power 必须统一
-
-### 13.12 backend 能力与映射属性不匹配
-
-问题：
-
-- backend 不支持 `write_channels`
-- 但仍试图使用 `channel-indexes` / `output-channel-count`
-
-后果：
-
-- 配置或运行路径不成立
-
----
-
-## 14. 实际使用建议
-
-### 14.1 何时直接用 `led-driver = "strip"`
-
-适合：
-
-- 你的输出就是单一 strip backend
-- 不需要把多个 backend 聚成一个设备
-- 想配合 `CONFIG_ZMK_LED_MATRIX_EXT_POWER` 做最直接的 strip 电源管理
-
-### 14.2 何时用 `led-driver = "matrix"` + `led_composite`
-
-适合：
-
-- 你有多个 backend 需要拼接成一个逻辑输出
-- 你需要 matrix child 与 strip child 混合
-- 你希望 LED Matrix 通过统一 channel space 做精确映射
-- 你希望把 managed power 行为聚合在 composite 层
-
-### 14.3 何时必须定义 `matrix-led-grid`
-
-只要你涉及以下任一需求，就建议定义：
-
-- `keypress`
-- `ripple`
-- `rain`
-- layer color 默认目标 LED 依赖 grid
-- 任何基于位置的光效
-
-如果只做：
-
-- 纯状态 LED
-- 纯 independent child
-- 纯固定 profile 且不需要位置关系
-
-则理论上可以省略。
-
----
-
-## 15. 参考路径索引
-
-为了便于继续深挖，下面列出本文对应的关键源码路径：
-
-### LED Matrix
-
-- `app/src/led_matrix.c`
-- `app/src/led_matrix/core.c`
-- `app/src/led_matrix/render.c`
-- `app/src/led_matrix/status.c`
-- `app/src/led_matrix/power.c`
-- `app/src/led_matrix/api.c`
-- `app/src/led_matrix/internal.h`
-- `app/include/zmk/led_matrix.h`
-- `app/include/zmk/events/led_matrix_state_changed.h`
-
-### 行为与宏
-
-- `app/src/behaviors/behavior_led_matrix.c`
-- `app/dts/behaviors/led_matrix.dtsi`
-- `app/dts/bindings/behaviors/zmk,behavior-led-matrix.yaml`
-- `app/include/dt-bindings/zmk/led_matrix.h`
-- `app/include/dt-bindings/zmk/led_matrix_colors.h`
-
-### Devicetree binding
-
-- `app/dts/bindings/zmk,led-matrix.yaml`
-- `app/module/dts/bindings/led/zmk,led-composite.yaml`
-
-### led_composite
-
-- `app/module/drivers/led/led_composite.c`
-- `app/include/drivers/led/led_composite.h`
-
-### 样例来源
-
-- `app/tests/led-matrix/basic/native_sim.keymap`
-- `app/tests/led-matrix/idle-auto-off-strip-ext-power-runtime-only/native_sim.keymap`
-- `app/tests/led-matrix/layer-color-status-priority/native_sim.keymap`
-- `app/tests/led-matrix/independent-solid/native_sim.keymap`
-- `app/tests/led-matrix/composite-split/native_sim.keymap`
-- `app/tests/led-matrix/composite-mixed-power/native_sim.keymap`
+## Validation and source index
+
+The [configuration guide's troubleshooting table](development/hardware-integration/lighting/led-matrix.mdx#troubleshooting) covers missing nodes, incompatible backends, grid dimensions, group membership and invalid channel ranges. For an initialization failure, start with the first LED Matrix or composite diagnostic. Verify that the built `zephyr/zephyr.dts` contains the intended chosen node, driver, map and profiles, then check the resolved Kconfig in `zephyr/.config`.
+
+| Implementation                                                                                    | Responsibility                                                                                                                                        |
+| ------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `app/src/led_matrix.c`                                                                            | Select and validate the chosen controller, assemble the implementation and check backend readiness.                                                   |
+| `app/src/led_matrix/core.c` and `internal.h`                                                      | Construct the Devicetree configuration, profile and group lookups, color tables, mappings, mode definitions and runtime state.                        |
+| `render.c`, `effects.c`, `effect_shapes.h`, `render_demand.c` under `app/src/led_matrix/`         | Render layers, profiles, independent groups and status in priority order, determine whether output needs another frame, and submit it to the backend. |
+| `status.c` and `power.c` in the same directory                                                    | Maintain state snapshots, timed overlays, activity policy, power transitions, retries and sleep handling.                                             |
+| `api.c`, `editor.c`, `studio.c`, `studio_notification.c`                                          | Implement the runtime API, saved settings, preset editing, Studio RPC and lighting notifications.                                                     |
+| `app/include/zmk/events/led_matrix_state_changed.h`, `app/src/events/led_matrix_state_changed.c`  | Define and publish lighting state changes.                                                                                                            |
+| `app/src/behaviors/behavior_led_matrix.c`, `app/dts/behaviors/led_matrix.dtsi`                    | Implement the global key behavior and its split commands. Command macros and colors are in `app/include/dt-bindings/zmk/`.                            |
+| `app/dts/bindings/zmk,led-matrix.yaml`, `app/dts/bindings/behaviors/zmk,behavior-led-matrix.yaml` | Define the controller and behavior properties.                                                                                                        |
+| `app/module/drivers/led/led_composite.c`, `app/module/dts/bindings/led/zmk,led-composite.yaml`    | Implement the composite driver and define its child devices.                                                                                          |
