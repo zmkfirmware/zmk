@@ -3,13 +3,13 @@ title: Lighting
 sidebar_label: Lighting
 ---
 
-ZMK supports two distinct systems in order to control lighting hardware integrated into keyboards.
-Your keyboard likely uses only one type, depending on the type of LED hardware it supports:
+This fork supports three lighting systems. Choose one based on your LED hardware and the effects you need:
 
 - [RGB underglow](#rgb-underglow) system controls LED strips composed of addressable RGB LEDs.
   Most keyboards that have multi-color lighting utilizes these.
 - [Backlight](#backlight) system controls parallel-connected, non-addressable, single color LEDs.
   These are found on keyboards that have a single color backlight that only allows for brightness control.
+- [LED Matrix](../development/hardware-integration/lighting/led-matrix.mdx) maps keys to LEDs for reactive effects, layer colors, and status indicators. It supports addressable strips and Zephyr LED devices.
 
 :::info
 

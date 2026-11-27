@@ -6,6 +6,85 @@ description: Bilingual reference for ZMK LED Matrix and led_composite configurat
 
 See the [Lighting feature page](../../../features/lighting.md) for the classic lighting overview and the [Lighting configuration page](../../../config/lighting.md) for related settings.
 
+## 在 Corne54 上配置并验证
+
+Corne54 左右半板各有一条 28 灯 WS2812 灯带。可以先原样构建下方的板级配置，再改一个颜色或一个键位验证接线。下面的板级文件均位于 [Corne54 板目录](https://github.com/afayge/zmk/tree/main/app/boards/bmk/corne54)。
+
+### 1. 启用灯光，确认启动状态
+
+`corne54_left_defconfig` 和 `corne54_right_defconfig` 已包含以下设置。移植到自己的键盘时，把这些选项放到对应的板级或用户 `.conf` 中。保存过的运行时设置优先于启动默认值。
+
+```ini
+CONFIG_ZMK_LED_MATRIX=y
+CONFIG_ZMK_LED_MATRIX_ON_START=n
+CONFIG_ZMK_LED_MATRIX_BRT_START=40
+CONFIG_ZMK_LED_MATRIX_AUTO_OFF_IDLE=y
+```
+
+Corne54 还启用了 `CONFIG_ZMK_EXT_POWER` 和 `CONFIG_ZMK_LED_MATRIX_EXT_POWER`，用板上的电源控制 GPIO 开关灯带。移植时先确认灯带是否有可控电源。
+
+### 2. 将按键位置映射到本侧灯号
+
+`corne54.dtsi` 定义了 `led_strip`、`chain-length = <28>` 和 GRB 颜色顺序。下面是 `corne54_left.dts` 的精简配置，保留了左侧的完整网格和一个常亮预设。在现有板上修改同名节点即可。颜色常量和网格标记来自片段开头的两个头文件。
+
+```dts
+#include <dt-bindings/zmk/led_matrix.h>
+#include <dt-bindings/zmk/led_matrix_colors.h>
+
+/ {
+    chosen {
+        zmk,led-matrix = &led_matrix;
+    };
+
+    led_matrix: led_matrix {
+        compatible = "zmk,led-matrix";
+        led-driver = "strip";
+        led-strip-device = <&led_strip>;
+        led-count = <28>;
+        matrix-led-grid = <
+            0 1 2 3 4 5 LM_BREAK
+            6 7 8 9 10 11 LM_BREAK
+            12 13 14 15 16 17 LM_BREAK
+            18 19 20 21 22 23 LM_BREAK
+            LM_PH LM_PH 24 25 26 27
+        >;
+
+        profile0 {
+            profile-id = <0>;
+            display-name = "Palette";
+            renderer = "solid";
+            colors = <LM_PALETTE>;
+            brightness = <100>;
+        };
+    };
+};
+```
+
+网格按本侧扫描矩阵的行、列填写。数字是从零开始的逻辑灯号。直连灯带时，灯号就是灯珠在串联链中的位置。`LM_BREAK` 换行，`LM_PH` 表示没有按键的位置，`LM_NOLED` 表示有按键但没有灯。右半板使用自己的 `corne54_right.dts`，末行是 `27 24 25 26 LM_PH LM_PH`。按键触发了相邻灯时，先检查该侧网格；整条灯带都把红色显示成绿色时，先检查灯带节点的 `color-mapping`。
+
+| 手上的硬件 | 在控制器中怎么选 | 怎么映射 |
+| --- | --- | --- |
+| 可寻址 RGB 灯带 | `led-driver = "strip"`，`led-strip-device = <&led_strip>` | 按串联顺序编号，网格描述每个键下是哪颗灯。 |
+| 单个 Zephyr LED 驱动 | `led-driver = "matrix"`，`led-device` 指向驱动节点 | 对支持 `write_channels` 的驱动，可用 `channel-indexes` 按每灯 R、G、B 分别指定物理通道。使用逐灯 API 时，可用 `led-indexes` 指定物理灯号。 |
+| 多芯片或混合灯区 | 同样选 `"matrix"`，`led-device` 指向 `zmk,led-composite` 节点 | 为各子设备分配从 0 开始连续的 `channel-offset` 和 `channel-count`，再通过 `channel-indexes` 映射到逻辑灯。 |
+
+### 3. 在 keymap 中控制灯效
+
+`corne54.keymap` 已包含 `<dt-bindings/zmk/led_matrix.h>`，Fn 层已绑定灯光键。为其他布局移植时，在已有层的 `bindings` 中选取单个键位替换。例如 `&lm LM_TOG` 开关灯光，`&lm LM_EFF` 切到下一个预设，`&lm LM_BRI` 增亮，`&lm LM_STA LM_STA_ALL` 显示已配置的状态区。出厂预设 0 使用 `LM_PALETTE`，可以用 `&lm LM_HUI` 改色。需要固定红色时，把预设的 `colors` 改为 `<LM_RED>`。
+
+### 4. 分别构建左右半板
+
+在已初始化的 west 工作区中，从本仓库根目录执行：
+
+```sh
+west build -s app -b corne54_left -d build/corne54_left
+west build -s app -b corne54_right -d build/corne54_right
+```
+
+各构建目录的 `zephyr/zmk.uf2` 对应一侧。将匹配的 UF2 刷入对应半板；首次使用默认设置时灯光关闭。在 Fn 层按灯光开关键，再切换预设、改变亮度。用按键响应灯效逐行核对两侧的网格；用显示状态键核对该侧配置的电量、蓝牙或锁定键灯号。
+
+层色、状态覆盖优先级、独立灯区、Studio 在线编辑和电源时序见[完整参考手册](../../../led-matrix-led-composite-reference.mdx)。下文给出不同后端的配置片段。
+
 ## 概览 / Overview
 
 `LED Matrix` 是一个位于 ZMK 渲染层之上的 RGB 控制器。它不是对单一硬件类型的命名，而是一个把多种输入源统一渲染到逻辑 LED 空间的子系统：基础 profile、layer color、independent LED container、Battery/USB/BLE/HID 状态叠加都由它统一仲裁。
@@ -608,7 +687,7 @@ These errors are all enforced either by runtime validation in the source or by e
   原因 / Why: backend 设备与所选驱动类型不匹配。
   修正 / Fix: 按 driver 类型提供正确的 phandle。
 
-- `zmk,led-matrix` 既没有 profile，也没有 independent child、layer color、status zone
+- 关闭 `CONFIG_ZMK_LED_MATRIX_EDITOR`，且 `zmk,led-matrix` 既没有 profile，也没有 independent child、layer color、status zone
   原因 / Why: 没有任何可渲染来源。
   修正 / Fix: 至少提供一种 renderable source。
 

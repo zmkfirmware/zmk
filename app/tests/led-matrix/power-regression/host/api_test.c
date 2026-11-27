@@ -68,6 +68,7 @@ static void led_matrix_clear_layer_color_runtime_state(void) { cleared_layer++; 
 static void led_matrix_clear_transient_status_state_sync(void) { assert(false); }
 static void led_matrix_clear_layer_color_runtime_state_sync(void) { assert(false); }
 static void clear_keypress_release_state(void) { cleared_releases++; }
+static void effect_reset_input(void) {}
 static void led_matrix_reset_rain_state(void) { reset_rain++; }
 static void led_matrix_reset_auto_suspend_state(void) { auto_resets++; }
 static void led_matrix_restore_base_runtime_overlays(void) { restored_overlays++; }

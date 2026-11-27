@@ -52,6 +52,11 @@ struct peripheral_slot {
     struct bt_gatt_subscribe_params sensor_subscribe_params;
     struct bt_gatt_discover_params sub_discover_params;
     uint16_t run_behavior_handle;
+#if IS_ENABLED(CONFIG_ZMK_LED_MATRIX_EDITOR)
+    struct bt_gatt_subscribe_params lighting_sub;
+    struct bt_gatt_discover_params lighting_discovery;
+    bool lighting_search_complete;
+#endif
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING)
     struct bt_gatt_subscribe_params batt_lvl_subscribe_params;
     struct bt_gatt_read_params batt_lvl_read_params;
@@ -215,6 +220,11 @@ int release_peripheral_slot(int index) {
     // Clean up previously discovered handles;
     slot->subscribe_params.value_handle = 0;
     slot->run_behavior_handle = 0;
+#if IS_ENABLED(CONFIG_ZMK_LED_MATRIX_EDITOR)
+    slot->lighting_sub.value_handle = 0;
+    slot->lighting_sub.ccc_handle = 0;
+    slot->lighting_search_complete = false;
+#endif
     slot->selected_physical_layout_handle = 0;
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_PERIPHERAL_HID_INDICATORS)
     slot->update_hid_indicators = 0;
@@ -477,6 +487,24 @@ static uint8_t split_central_battery_level_read_func(struct bt_conn *conn, uint8
 
 #endif /* IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING) */
 
+#if IS_ENABLED(CONFIG_ZMK_LED_MATRIX_EDITOR)
+static uint8_t lighting_notify(struct bt_conn *conn, struct bt_gatt_subscribe_params *params,
+                               const void *data, uint16_t len) {
+    if (!data) {
+        params->value_handle = 0;
+        return BT_GATT_ITER_STOP;
+    }
+    int source = peripheral_slot_index_for_conn(conn);
+    if (source >= 0 && len == sizeof(struct zmk_lighting_packet)) {
+        struct peripheral_event_wrapper ev = {
+            .source = source, .event.type = ZMK_SPLIT_TRANSPORT_PERIPHERAL_EVENT_TYPE_LIGHTING};
+        memcpy(&ev.event.data.lighting, data, len);
+        if (k_msgq_put(&peripheral_event_msgq, &ev, K_NO_WAIT) == 0)
+            k_work_submit(&peripheral_event_work);
+    }
+    return BT_GATT_ITER_CONTINUE;
+}
+#endif
 static int split_central_subscribe(struct bt_conn *conn, struct bt_gatt_subscribe_params *params) {
     atomic_set(params->flags, BT_GATT_SUBSCRIBE_FLAG_NO_RESUB);
     int err = bt_gatt_subscribe(conn, params);
@@ -539,6 +567,11 @@ static uint8_t split_central_chrc_discovery_func(struct bt_conn *conn,
                                                  const struct bt_gatt_attr *attr,
                                                  struct bt_gatt_discover_params *params) {
     if (!attr) {
+#if IS_ENABLED(CONFIG_ZMK_LED_MATRIX_EDITOR)
+        struct peripheral_slot *slot = peripheral_slot_for_conn(conn);
+        if (slot)
+            slot->lighting_search_complete = true;
+#endif
         LOG_DBG("Discover complete");
         return BT_GATT_ITER_STOP;
     }
@@ -603,6 +636,16 @@ static uint8_t split_central_chrc_discovery_func(struct bt_conn *conn,
                 slot->discover_params.type = BT_GATT_DISCOVER_STD_CHAR_DESC;
             }
 #endif // IS_ENABLED(CONFIG_ZMK_INPUT_SPLIT)
+#if IS_ENABLED(CONFIG_ZMK_LED_MATRIX_EDITOR)
+        } else if (!bt_uuid_cmp(chrc_uuid, BT_UUID_DECLARE_128(ZMK_SPLIT_BT_LIGHTING_UUID))) {
+            slot->lighting_sub.disc_params = &slot->lighting_discovery;
+            slot->lighting_sub.end_handle = slot->discover_params.end_handle;
+            slot->lighting_sub.value_handle = bt_gatt_attr_value_handle(attr);
+            slot->lighting_sub.notify = lighting_notify;
+            slot->lighting_sub.value = BT_GATT_CCC_NOTIFY;
+            split_central_subscribe(conn, &slot->lighting_sub);
+            zmk_lighting_sync_runtime();
+#endif
         } else if (bt_uuid_cmp(chrc_uuid,
                                BT_UUID_DECLARE_128(ZMK_SPLIT_BT_CHAR_RUN_BEHAVIOR_UUID)) == 0) {
             LOG_DBG("Found run behavior handle");
@@ -707,6 +750,10 @@ static uint8_t split_central_chrc_discovery_func(struct bt_conn *conn,
     }
 #endif // IS_ENABLED(CONFIG_ZMK_INPUT_SPLIT)
 
+#if IS_ENABLED(CONFIG_ZMK_LED_MATRIX_EDITOR)
+    // Older peripherals lack this optional characteristic. Finish ordinary discovery in that case.
+    subscribed = subscribed && slot->lighting_sub.value_handle;
+#endif
     return subscribed ? BT_GATT_ITER_STOP : BT_GATT_ITER_CONTINUE;
 }
 
@@ -1174,6 +1221,27 @@ static int split_central_bt_send_command(uint8_t source,
     }
 
     switch (cmd.type) {
+#if IS_ENABLED(CONFIG_ZMK_LED_MATRIX_EDITOR)
+    case ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_LIGHTING: {
+        struct peripheral_slot *slot = &peripherals[source];
+        /* Keep the connection alive if the peripheral disconnects during this write. */
+        unsigned int irq = irq_lock();
+        struct bt_conn *conn = slot->state == PERIPHERAL_SLOT_STATE_CONNECTED && slot->conn
+                                   ? bt_conn_ref(slot->conn)
+                                   : NULL;
+        uint16_t handle = slot->lighting_sub.value_handle;
+        bool complete = slot->lighting_search_complete;
+        irq_unlock(irq);
+        if (!conn) {
+            return -ENOTCONN;
+        }
+        int err = handle ? bt_gatt_write_without_response(conn, handle, &cmd.data.lighting,
+                                                          sizeof(cmd.data.lighting), false)
+                         : (complete ? -ENOTSUP : -EINPROGRESS);
+        bt_conn_unref(conn);
+        return err;
+    }
+#endif
     case ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_HID_INDICATORS:
     case ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_PHYSICAL_LAYOUT:
     case ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_INVOKE_BEHAVIOR: {

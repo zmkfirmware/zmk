@@ -16,6 +16,16 @@ config BOARD_ENABLE_DCDC_HV
 
 if BOARD_NUMPAD
 
+config NUMPAD_LCD_BACKLIGHT_DIAGNOSTICS
+    bool "Read-only LCD power and backlight diagnostics"
+    default n
+    depends on ZMK_BACKLIGHT && ZMK_EXT_POWER && GPIO && LOG
+    depends on DT_HAS_ZMK_EXT_POWER_GENERIC_ENABLED
+    help
+      Log backlight/activity state and P0.08/P0.12 output latches and pin
+      configuration at boot, after key/activity events, and every second.
+      Does not configure GPIOs, control power, or modify saved settings.
+
 config ZMK_WIDGET_LED_MATRIX_EFFECT_STATUS
     bool "Show LED matrix effect name on the numpad custom status screen"
     depends on ZMK_DISPLAY && ZMK_LED_MATRIX

@@ -1,2 +1,2 @@
-Profile 0 renderer Keypress requires matrix-led-grid
+Profile 0 renderer keypress requires matrix-led-grid
 Invalid zmk,led-matrix DTS configuration (-22)

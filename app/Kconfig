@@ -399,6 +399,29 @@ menuconfig ZMK_LED_MATRIX
 
 if ZMK_LED_MATRIX
 
+config ZMK_LED_MATRIX_STUDIO_NOTIFICATIONS
+    bool "Notify Studio of lighting settings changes"
+    depends on ZMK_LED_MATRIX && ZMK_STUDIO_RPC && ZMK_BEHAVIOR_LED_MATRIX
+    default y
+
+config ZMK_LED_MATRIX_EDITOR
+    bool "Studio LED Matrix configuration editor"
+    default y if ZMK_STUDIO_RPC || (ZMK_SPLIT && !ZMK_SPLIT_ROLE_CENTRAL)
+    depends on ZMK_LED_MATRIX && SETTINGS
+    select CRC
+
+config ZMK_LED_MATRIX_CUSTOM_PRESETS
+    int "User-defined main lighting presets"
+    depends on ZMK_LED_MATRIX_EDITOR
+    range 1 16
+    default 4
+
+config ZMK_LED_MATRIX_CUSTOM_GROUPS
+    int "User-defined lighting group slots"
+    depends on ZMK_LED_MATRIX_EDITOR
+    range 1 16
+    default 4
+
 config ZMK_LED_MATRIX_EXT_POWER
     bool "LED matrix toggling also controls external power (strip backend only)"
     depends on ZMK_EXT_POWER && DT_HAS_ZMK_EXT_POWER_GENERIC_ENABLED

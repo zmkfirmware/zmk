@@ -202,3 +202,5 @@ nice_view_spi: &spi0 {
         height = <68>;
     };
 };
+
+#include "../corne54-led-matrix-presets.dtsi"

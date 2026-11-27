@@ -29,12 +29,55 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 const struct zmk_split_transport_peripheral *active_transport;
 
+#if IS_ENABLED(CONFIG_ZMK_LED_MATRIX_EDITOR)
+/* Runtime state is a replaceable snapshot, independent of editor transfers. */
+static atomic_t lighting_runtime;
+static void apply_lighting_runtime(struct k_work *work) {
+    atomic_val_t state = atomic_get(&lighting_runtime);
+    zmk_lighting_apply_runtime(state >> 8, state & 0xff);
+}
+static K_WORK_DEFINE(lighting_runtime_work, apply_lighting_runtime);
+struct lighting_job {
+    const struct zmk_split_transport_peripheral *transport;
+    struct zmk_lighting_packet request;
+};
+K_MSGQ_DEFINE(lighting_jobs, sizeof(struct lighting_job), 2, 4);
+static void lighting_worker(void *a, void *b, void *c) {
+    struct lighting_job job;
+    while (true) {
+        k_msgq_get(&lighting_jobs, &job, K_FOREVER);
+        if (job.transport != active_transport)
+            continue;
+        struct zmk_split_transport_peripheral_event ev = {
+            .type = ZMK_SPLIT_TRANSPORT_PERIPHERAL_EVENT_TYPE_LIGHTING};
+        zmk_lighting_exchange(&job.request, &ev.data.lighting);
+        if (job.transport == active_transport)
+            job.transport->api->report_event(&ev);
+    }
+}
+K_THREAD_DEFINE(lighting_thread, 3072, lighting_worker, NULL, NULL, NULL,
+                K_LOWEST_APPLICATION_THREAD_PRIO, 0, 0);
+#endif
 int zmk_split_transport_peripheral_command_handler(
     const struct zmk_split_transport_peripheral *transport,
     struct zmk_split_transport_central_command cmd) {
     LOG_DBG("");
 
     switch (cmd.type) {
+#if IS_ENABLED(CONFIG_ZMK_LED_MATRIX_EDITOR)
+    case ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_LIGHTING: {
+        if (transport != active_transport)
+            return -ENODEV;
+        if (cmd.data.lighting.op == LM_RUNTIME) {
+            if (cmd.data.lighting.length != 2) return -EINVAL;
+            atomic_set(&lighting_runtime, (cmd.data.lighting.data[0] << 8) | cmd.data.lighting.data[1]);
+            k_work_submit(&lighting_runtime_work);
+            return 0;
+        }
+        struct lighting_job job = {transport, cmd.data.lighting};
+        return k_msgq_put(&lighting_jobs, &job, K_NO_WAIT);
+    }
+#endif
     case ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_INVOKE_BEHAVIOR: {
         struct zmk_behavior_binding binding = {
             .param1 = cmd.data.invoke_behavior.param1,

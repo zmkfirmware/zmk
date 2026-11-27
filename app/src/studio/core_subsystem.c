@@ -48,6 +48,9 @@ zmk_studio_Response get_device_info(const zmk_studio_Request *req) {
     LOG_DBG("");
     zmk_core_GetDeviceInfoResponse resp = zmk_core_GetDeviceInfoResponse_init_zero;
 
+    resp.lighting_support = IS_ENABLED(CONFIG_ZMK_BEHAVIOR_LED_MATRIX)
+                                ? zmk_core_LightingSupport_LED_MATRIX
+                                : zmk_core_LightingSupport_UNAVAILABLE;
     resp.name.funcs.encode = encode_device_info_name;
 #if IS_ENABLED(CONFIG_HWINFO)
     resp.serial_number.funcs.encode = encode_device_info_serial_number;

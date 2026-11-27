@@ -60,8 +60,15 @@ if [ $build_exit_code -gt 0 ]; then
     exit 1
 fi
 
+# LED Matrix snapshots contain the message body. Zephyr's log backend adds
+# a module name and, for debug messages, the emitting C function.
+normalize_log='s/.*> //'
+case "$testcase" in
+    led-matrix/*) normalize_log='s/^.*<dbg> [[:alnum:]_]*: [a-z_][a-z0-9_]*: //; s/^.*<[a-z]*> [[:alnum:]_]*: //' ;;
+esac
+
 ${ZMK_BUILD_DIR}/tests/$testcase/zephyr/zmk.exe |
-    sed -e "s/.*> //" |
+    sed -e "$normalize_log" |
     tee ${ZMK_BUILD_DIR}/tests/$testcase/keycode_events_full.log |
     sed -n -f $path/events.patterns >${ZMK_BUILD_DIR}/tests/$testcase/keycode_events.log
 

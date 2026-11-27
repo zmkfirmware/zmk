@@ -51,8 +51,7 @@ static void led_matrix_mark_keypress_time(const struct led_matrix_profile_cfg *p
             origin_cell >= grid_cell_count) {
             continue;
         }
-        uint32_t color = led_matrix_configured_color(profile->color_map, profile->color_map_count,
-                                                     LM_BLACK, origin_led);
+        uint32_t color = main_profile_color(profile, origin_led);
         if (!led_matrix_color_needs_time(color, profile->brightness,
                                          !pressed_positions[position] && release_pending)) {
             continue;
@@ -96,8 +95,7 @@ static void led_matrix_mark_profile_time(const struct led_matrix_profile_cfg *pr
             uint16_t row = cell_row(cell), col = cell_col(cell);
             uint16_t distance = (row > origin_row ? row - origin_row : origin_row - row) +
                                 (col > origin_col ? col - origin_col : origin_col - col);
-            uint32_t color = led_matrix_configured_color(profile->color_map,
-                                                         profile->color_map_count, LM_BLACK, led);
+            uint32_t color = main_profile_color(profile, led);
             /* A pixel already behind the tail can no longer change in this ripple. */
             logical_leds_dynamic[led] |=
                 radius <= distance + RIPPLE_TAIL_CELLS &&
@@ -113,8 +111,7 @@ static void led_matrix_mark_profile_time(const struct led_matrix_profile_cfg *pr
         for (size_t cell = 0; cell < grid_cell_count; cell++) {
             uint16_t led = cell_to_led[cell];
             if (led != LM_NOLED && led < LOGICAL_LED_COUNT) {
-                uint32_t color = led_matrix_configured_color(
-                    profile->color_map, profile->color_map_count, LM_BLACK, led);
+                uint32_t color = main_profile_color(profile, led);
                 logical_leds_dynamic[led] |=
                     led_matrix_color_needs_time(color, profile->brightness, true);
             }
@@ -122,8 +119,7 @@ static void led_matrix_mark_profile_time(const struct led_matrix_profile_cfg *pr
         return;
     }
     for (uint16_t led = 0; led < LOGICAL_LED_COUNT; led++) {
-        uint32_t color = led_matrix_configured_color(profile->color_map, profile->color_map_count,
-                                                     LM_BLACK, led);
+        uint32_t color = main_profile_color(profile, led);
         logical_leds_dynamic[led] =
             led_matrix_renderer_color_needs_time(color, profile->brightness, profile->renderer);
     }
@@ -135,7 +131,10 @@ led_matrix_mark_independent_time(const struct led_matrix_independent_group_cfg *
     for (size_t i = 0; i < group->led_count; i++) {
         uint32_t color =
             led_matrix_configured_color(profile->color_map, profile->color_map_count, LM_BLACK, i);
+        uint8_t renderer = profile->renderer;
+        if (renderer == LED_MATRIX_RENDERER_CHASE && group->led_count == 1)
+            renderer = LED_MATRIX_RENDERER_SOLID;
         logical_leds_dynamic[group->leds[i]] =
-            led_matrix_renderer_color_needs_time(color, profile->brightness, profile->renderer);
+            led_matrix_renderer_color_needs_time(color, profile->brightness, renderer);
     }
 }

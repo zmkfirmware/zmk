@@ -28,11 +28,11 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #define LED_MATRIX_INDEPENDENT_CHILD_COUNT(node_id)                                               \
     +COND_CODE_1(DT_NODE_HAS_PROP(node_id, independent_id), (1), (0))
 #define ZMK_LED_MATRIX_PROFILE_COUNT                                                              \
-    (0 DT_FOREACH_CHILD(LED_MATRIX_NODE, LED_MATRIX_PROFILE_CHILD_COUNT))
+    (0 DT_FOREACH_CHILD_STATUS_OKAY(LED_MATRIX_NODE, LED_MATRIX_PROFILE_CHILD_COUNT))
 #define ZMK_LED_MATRIX_INDEPENDENT_COUNT                                                          \
-    (0 DT_FOREACH_CHILD(LED_MATRIX_NODE, LED_MATRIX_INDEPENDENT_CHILD_COUNT))
+    (0 DT_FOREACH_CHILD_STATUS_OKAY(LED_MATRIX_NODE, LED_MATRIX_INDEPENDENT_CHILD_COUNT))
 #else
-#define ZMK_LED_MATRIX_PROFILE_COUNT 1
+#define ZMK_LED_MATRIX_PROFILE_COUNT 0
 #define ZMK_LED_MATRIX_INDEPENDENT_COUNT 0
 #endif
 
@@ -55,12 +55,14 @@ static const struct behavior_parameter_value_metadata no_arg_values[] = {
     {.display_name = "Brightness Down",
      .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE,
      .value = LM_BRD_CMD},
+#if ZMK_LED_MATRIX_PROFILE_COUNT > 0 || IS_ENABLED(CONFIG_ZMK_LED_MATRIX_EDITOR)
     {.display_name = "Profile Next",
      .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE,
      .value = LM_EFF_CMD},
     {.display_name = "Profile Previous",
      .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE,
      .value = LM_EFR_CMD},
+#endif
     {.display_name = "Speed Up",
      .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE,
      .value = LM_SPI_CMD},
@@ -71,6 +73,7 @@ static const struct behavior_parameter_value_metadata no_arg_values[] = {
     {.display_name = "Hue Down", .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE, .value = LM_HUD_CMD},
 };
 
+#if ZMK_LED_MATRIX_PROFILE_COUNT > 0 || IS_ENABLED(CONFIG_ZMK_LED_MATRIX_EDITOR)
 static const struct behavior_parameter_value_metadata profile_p1_values[] = {
     {.display_name = "Set Profile",
      .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE,
@@ -83,9 +86,11 @@ static const struct behavior_parameter_value_metadata profile_p2_values[] = {
      .range =
          {
              .min = 0,
-             .max = ZMK_LED_MATRIX_PROFILE_MAX,
+             .max = IS_ENABLED(CONFIG_ZMK_LED_MATRIX_EDITOR) ? 254 : ZMK_LED_MATRIX_PROFILE_MAX,
          }},
 };
+
+#endif
 
 static const struct behavior_parameter_value_metadata brightness_p1_values[] = {
     {.display_name = "Set Brightness",
@@ -151,6 +156,7 @@ static const struct behavior_parameter_value_metadata hue_p2_values[] = {
          }},
 };
 
+#if ZMK_LED_MATRIX_INDEPENDENT_COUNT > 0
 static const struct behavior_parameter_value_metadata child_relative_p1_values[] = {
     {.display_name = "Child Profile Next",
      .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE,
@@ -170,23 +176,39 @@ static const struct behavior_parameter_value_metadata child_relative_p2_values[]
          }},
 };
 
+/* Studio validates the packed zone/preset pair as one binding parameter. */
+#define CHILD_PRESET_VALUE(preset, zone)                                                        \
+    {.display_name = DT_PROP_OR(preset, display_name, DT_NODE_FULL_NAME(preset)),               \
+     .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE,                                               \
+     .value = LM_CHILD_PROFILE_PACK(DT_PROP(zone, independent_id), DT_PROP(preset, profile_id))},
+#define CHILD_PRESET_VALUES(zone)                                                               \
+    COND_CODE_1(DT_NODE_HAS_PROP(zone, independent_id),                                         \
+                (DT_FOREACH_CHILD_STATUS_OKAY_VARGS(zone, CHILD_PRESET_VALUE, zone)), ())
+static const struct behavior_parameter_value_metadata child_set_p2_values[] = {
+    DT_FOREACH_CHILD_STATUS_OKAY(LED_MATRIX_NODE, CHILD_PRESET_VALUES)};
+
 static const struct behavior_parameter_value_metadata child_set_p1_values[] = {
     {.display_name = "Set Child Profile",
      .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE,
      .value = LM_CFS_CMD},
 };
 
+#endif
+
 static const struct behavior_parameter_metadata_set no_args_set = {
     .param1_values = no_arg_values,
     .param1_values_len = ARRAY_SIZE(no_arg_values),
 };
 
+#if ZMK_LED_MATRIX_PROFILE_COUNT > 0 || IS_ENABLED(CONFIG_ZMK_LED_MATRIX_EDITOR)
 static const struct behavior_parameter_metadata_set profile_args_set = {
     .param1_values = profile_p1_values,
     .param1_values_len = ARRAY_SIZE(profile_p1_values),
     .param2_values = profile_p2_values,
     .param2_values_len = ARRAY_SIZE(profile_p2_values),
 };
+
+#endif
 
 static const struct behavior_parameter_metadata_set brightness_args_set = {
     .param1_values = brightness_p1_values,
@@ -216,6 +238,7 @@ static const struct behavior_parameter_metadata_set hue_args_set = {
     .param2_values_len = ARRAY_SIZE(hue_p2_values),
 };
 
+#if ZMK_LED_MATRIX_INDEPENDENT_COUNT > 0
 static const struct behavior_parameter_metadata_set child_relative_args_set = {
     .param1_values = child_relative_p1_values,
     .param1_values_len = ARRAY_SIZE(child_relative_p1_values),
@@ -226,17 +249,25 @@ static const struct behavior_parameter_metadata_set child_relative_args_set = {
 static const struct behavior_parameter_metadata_set child_set_args_set = {
     .param1_values = child_set_p1_values,
     .param1_values_len = ARRAY_SIZE(child_set_p1_values),
+    .param2_values = child_set_p2_values,
+    .param2_values_len = ARRAY_SIZE(child_set_p2_values),
 };
+
+#endif
 
 static const struct behavior_parameter_metadata_set sets[] = {
     no_args_set,
+#if ZMK_LED_MATRIX_PROFILE_COUNT > 0 || IS_ENABLED(CONFIG_ZMK_LED_MATRIX_EDITOR)
     profile_args_set,
+#endif
     brightness_args_set,
     speed_args_set,
     hue_args_set,
     status_args_set,
+#if ZMK_LED_MATRIX_INDEPENDENT_COUNT > 0
     child_relative_args_set,
     child_set_args_set,
+#endif
 };
 
 static const struct behavior_parameter_metadata metadata = {

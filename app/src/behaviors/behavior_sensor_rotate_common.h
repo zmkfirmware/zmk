@@ -28,3 +28,9 @@ int zmk_behavior_sensor_rotate_common_accept_data(
 int zmk_behavior_sensor_rotate_common_process(struct zmk_behavior_binding *binding,
                                               struct zmk_behavior_binding_event event,
                                               enum behavior_sensor_binding_process_mode mode);
+int zmk_rotate_ticks(struct behavior_sensor_rotate_data *data,
+                     struct zmk_behavior_binding_event event,
+                     const struct zmk_sensor_config *sensor_config,
+                     const struct zmk_sensor_channel_data *channel_data);
+int zmk_rotate_queue(struct zmk_behavior_binding_event event, struct zmk_behavior_binding binding,
+                     int triggers, int tap_ms);

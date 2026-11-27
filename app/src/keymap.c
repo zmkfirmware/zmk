@@ -13,6 +13,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/stdlib.h>
 #include <zmk/behavior.h>
 #include <zmk/keymap.h>
+#include <zmk/encoder_bindings.h>
 #include <zmk/physical_layouts.h>
 #include <zmk/matrix.h>
 #include <zmk/sensors.h>
@@ -100,7 +101,7 @@ static const char *zmk_keymap_layer_names[ZMK_KEYMAP_LAYERS_LEN] = {
 
 static struct zmk_behavior_binding
     zmk_sensor_keymap[ZMK_KEYMAP_LAYERS_LEN][ZMK_KEYMAP_SENSORS_LEN] = {
-        DT_INST_FOREACH_CHILD_SEP(0, SENSOR_LAYER, (, ))};
+        ZMK_KEYMAP_LAYERS_FOREACH_SEP(SENSOR_LAYER, (, ))};
 
 #endif /* ZMK_KEYMAP_HAS_SENSORS */
 
@@ -473,6 +474,10 @@ struct zmk_behavior_binding_setting {
 } __packed;
 
 int zmk_keymap_check_unsaved_changes(void) {
+#if ZMK_STUDIO_ENCODERS
+    if (zmk_encoder_dirty())
+        return 1;
+#endif
     for (int l = 0; l < ZMK_KEYMAP_LAYERS_LEN; l++) {
         uint8_t *pending = zmk_keymap_layer_pending_changes[l];
         for (int kp = 0; kp < ZMK_KEYMAP_LEN; kp++) {
@@ -583,7 +588,12 @@ int zmk_keymap_save_changes(void) {
     }
 #endif // IS_ENABLED(CONFIG_ZMK_KEYMAP_LAYER_REORDERING)
 
-    return save_layer_names();
+    ret = save_layer_names();
+#if ZMK_STUDIO_ENCODERS
+    if (!ret)
+        ret = zmk_encoder_save();
+#endif
+    return ret;
 }
 
 #if IS_ENABLED(CONFIG_ZMK_KEYMAP_LAYER_REORDERING)
@@ -612,6 +622,9 @@ static void reload_from_stock_keymap(void) {
 }
 
 int zmk_keymap_discard_changes(void) {
+#if ZMK_STUDIO_ENCODERS
+    zmk_encoder_discard();
+#endif
     load_stock_keymap_layer_ordering();
     reload_from_stock_keymap();
 
@@ -653,6 +666,11 @@ static int keymap_track_changed_bindings(const char *key, size_t len, settings_r
 }
 
 int zmk_keymap_reset_settings(void) {
+#if ZMK_STUDIO_ENCODERS
+    int rc = zmk_encoder_reset();
+    if (rc < 0)
+        return rc;
+#endif
     settings_delete(LAYER_ORDER_SETTINGS_KEY);
 
     uint8_t zmk_keymap_layer_changes[ZMK_KEYMAP_LAYERS_LEN][PENDING_ARRAY_SIZE];
@@ -752,9 +770,16 @@ int zmk_keymap_position_state_changed(uint8_t source, uint32_t position, bool pr
 }
 
 #if ZMK_KEYMAP_HAS_SENSORS
+#if ZMK_STUDIO_ENCODERS
+const struct zmk_behavior_binding *zmk_encoder_stock(uint8_t layer, uint8_t sensor) {
+    return &zmk_sensor_keymap[layer][sensor];
+}
+#endif
 int zmk_keymap_sensor_event(uint8_t sensor_index,
                             const struct zmk_sensor_channel_data *channel_data,
                             size_t channel_data_size, int64_t timestamp) {
+    if (sensor_index >= ZMK_KEYMAP_SENSORS_LEN || !channel_data_size)
+        return -EINVAL;
     bool opaque_response = false;
 
     for (int layer_idx = ZMK_KEYMAP_LAYERS_LEN - 1; layer_idx >= 0; layer_idx--) {
@@ -769,17 +794,30 @@ int zmk_keymap_sensor_event(uint8_t sensor_index,
         LOG_DBG("layer idx: %d, layer id: %d sensor_index: %d, binding name: %s", layer_idx,
                 layer_id, sensor_index, binding->behavior_dev ? binding->behavior_dev : "(null)");
 
-        const struct device *behavior = zmk_behavior_get_binding(binding->behavior_dev);
-        if (!behavior) {
-            LOG_DBG("No behavior assigned to %d on layer %d", sensor_index, layer_id);
-            continue;
-        }
-
         struct zmk_behavior_binding_event event = {
             .layer = layer_id,
             .position = ZMK_VIRTUAL_KEY_POSITION_SENSOR(sensor_index),
             .timestamp = timestamp,
         };
+
+        enum behavior_sensor_binding_process_mode mode =
+            (!opaque_response && layer_idx >= LAYER_ID_TO_INDEX(_zmk_keymap_layer_default) &&
+             zmk_keymap_layer_active(layer_id))
+                ? BEHAVIOR_SENSOR_BINDING_PROCESS_MODE_TRIGGER
+                : BEHAVIOR_SENSOR_BINDING_PROCESS_MODE_DISCARD;
+
+#if ZMK_STUDIO_ENCODERS
+        int handled = zmk_encoder_process(event, sensor_index, channel_data, mode);
+        if (handled >= 0) {
+            opaque_response |= handled == ZMK_BEHAVIOR_OPAQUE;
+            continue;
+        }
+#endif
+        const struct device *behavior = zmk_behavior_get_binding(binding->behavior_dev);
+        if (!behavior) {
+            LOG_DBG("No behavior assigned to %d on layer %d", sensor_index, layer_id);
+            continue;
+        }
 
         int ret = behavior_sensor_keymap_binding_accept_data(
             binding, event, zmk_sensors_get_config_at_index(sensor_index), channel_data_size,
@@ -791,12 +829,6 @@ int zmk_keymap_sensor_event(uint8_t sensor_index,
                     binding->behavior_dev, ret);
             continue;
         }
-
-        enum behavior_sensor_binding_process_mode mode =
-            (!opaque_response && layer_idx >= LAYER_ID_TO_INDEX(_zmk_keymap_layer_default) &&
-             zmk_keymap_layer_active(layer_id))
-                ? BEHAVIOR_SENSOR_BINDING_PROCESS_MODE_TRIGGER
-                : BEHAVIOR_SENSOR_BINDING_PROCESS_MODE_DISCARD;
 
         ret = behavior_sensor_keymap_binding_process(binding, event, mode);
 
@@ -845,6 +877,10 @@ static int keymap_handle_set(const char *name, size_t len, settings_read_cb read
     const char *next;
 
     LOG_DBG("Setting Keymap setting %s", name);
+#if ZMK_STUDIO_ENCODERS
+    if (settings_name_steq(name, "enc1", &next) && next)
+        return zmk_encoder_load(next, len, read_cb, cb_arg);
+#endif
 
     if (settings_name_steq(name, "l_n", &next) && next) {
         char *endptr;

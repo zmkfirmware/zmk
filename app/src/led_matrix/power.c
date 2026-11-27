@@ -504,6 +504,7 @@ static void led_matrix_clear_runtime_suspend_state(bool synchronous) {
     force_show_active = false;
     force_show_wake_context = LED_MATRIX_WAKE_CONTEXT_NONE;
     ripple_state.active = false;
+    effect_reset_input();
     led_matrix_reset_rain_state();
 
     if (synchronous) {

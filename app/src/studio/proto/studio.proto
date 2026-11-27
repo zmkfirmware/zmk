@@ -1,0 +1,47 @@
+// Requests
+syntax = "proto3";
+
+package zmk.studio;
+
+import "meta.proto";
+import "core.proto";
+import "lighting.proto";
+import "behaviors.proto";
+import "keymap.proto";
+
+message Request {
+    uint32 request_id = 1;
+
+    oneof subsystem {
+        zmk.core.Request core = 3;
+        zmk.behaviors.Request behaviors = 4;
+        zmk.keymap.Request keymap = 5;
+        zmk.lighting.Request lighting = 6;
+    }
+}
+
+message Response {
+    oneof type {
+        RequestResponse request_response = 1;
+        Notification notification = 2;
+    }
+}
+
+message RequestResponse {
+    uint32 request_id = 1;
+    oneof subsystem {
+        zmk.meta.Response meta = 2;
+        zmk.core.Response core = 3;
+        zmk.behaviors.Response behaviors = 4;
+        zmk.keymap.Response keymap = 5;
+        zmk.lighting.Response lighting = 6;
+    }
+}
+
+message Notification {
+    oneof subsystem {
+        zmk.core.Notification core = 2;
+        zmk.keymap.Notification keymap = 5;
+        zmk.lighting.Notification lighting = 6;
+    }
+}

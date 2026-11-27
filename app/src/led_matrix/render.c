@@ -407,6 +407,18 @@ static void render_independent_group(const struct led_matrix_independent_group_c
     led_matrix_mark_independent_time(group, profile);
 
     switch (profile->renderer) {
+    case LED_MATRIX_RENDERER_CHASE: {
+        uint32_t period = led_matrix_effective_independent_profile_period_ms(profile);
+        for (size_t i = 0; i < group->led_count; i++) {
+            struct effect_sample sample =
+                effect_geometry(profile->renderer, 0, profile->effect_direction, 0, 0, 1, 1, now_ms,
+                                period, i, group->led_count);
+            struct led_rgb8 color = resolve_independent_profile_color(profile, i, now_ms);
+            logical_leds[group->leds[i]] =
+                scale_color(scale_color(color, profile->brightness), sample.level);
+        }
+        break;
+    }
     case LED_MATRIX_RENDERER_SOLID:
         render_independent_profile_solid(group, profile, now_ms);
         break;
@@ -425,12 +437,19 @@ static void render_independent_group(const struct led_matrix_independent_group_c
 }
 
 static void render_independent_groups(uint32_t now_ms) {
-    for (size_t i = 0; i < INDEPENDENT_GROUP_COUNT; i++) {
+    for (size_t i = 0; i < ARRAY_SIZE(independent_groups); i++) {
+        if (!independent_groups[i].led_count) {
+            continue;
+        }
         render_independent_group(&independent_groups[i], now_ms);
     }
 }
 
 static void render_profile(const struct led_matrix_profile_cfg *profile, uint32_t now_ms) {
+    if (profile->renderer >= LED_MATRIX_RENDERER_GRADIENT) {
+        render_extended_effect(profile, now_ms);
+        return;
+    }
     led_matrix_mark_profile_time(profile, now_ms);
     switch (profile->renderer) {
     case LED_MATRIX_RENDERER_SOLID:
@@ -583,6 +602,16 @@ static void render_active_base_source(uint32_t now_ms) {
 
     if (profile != NULL) {
         render_profile(profile, now_ms);
+#ifdef CONFIG_ZMK_LED_MATRIX_EDITOR
+        if (profile->member_index) {
+            for (size_t i = 0; i < LOGICAL_LED_COUNT; i++) {
+                if (profile->member_index[i] == LM_NOLED) {
+                    logical_leds[i] = (struct led_rgb8){0};
+                    logical_leds_dynamic[i] = false;
+                }
+            }
+        }
+#endif
     }
 
     if (led_matrix_has_independent_groups()) {

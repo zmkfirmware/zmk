@@ -100,7 +100,7 @@ static void led_matrix_refresh_layer_snapshot(void) {
 #if LED_MATRIX_HAS_CENTRAL_STATE
     zmk_keymap_layer_index_t layer_idx = zmk_keymap_highest_layer_active();
     snapshot.active_layer = zmk_keymap_layer_index_to_id(layer_idx);
-#else
+#elif !IS_ENABLED(CONFIG_ZMK_LED_MATRIX_EDITOR)
     snapshot.active_layer = 0;
 #endif
 }
@@ -260,7 +260,7 @@ static void led_matrix_handle_hid_status_event(void) {
 
 #if IS_ENABLED(CONFIG_ZMK_BLE) && LED_MATRIX_HAS_CENTRAL_STATE
 static uint32_t led_matrix_ble_pairing_timeout_ms(void) {
-    return (uint32_t)BLE_TIMEOUT_MS * BLE_PAIRING_TIMEOUT_MULTIPLIER;
+    return (uint32_t)timeout_for_source(LED_MATRIX_STATUS_BLE) * BLE_PAIRING_TIMEOUT_MULTIPLIER;
 }
 
 static bool led_matrix_start_ble_pairing_transient(enum led_matrix_status_wake_context wake_context,
@@ -306,8 +306,8 @@ static void led_matrix_handle_ble_status_event(void) {
         bool switched_profile = previous.ble_profile != updated.ble_profile;
         bool was_pairing_transient = ble_pairing_transient_active;
         bool completion_overlay_allowed = ble_pairing_transient_allows_completion_overlay;
-        bool pairing_transient_now = BLE_PAIRING_HOLD && updated.ble_open;
-        bool pairing_session_settled = BLE_PAIRING_HOLD && previous.ble_open && !updated.ble_open;
+        bool pairing_transient_now = LM_PAIRING_HOLD && updated.ble_open;
+        bool pairing_session_settled = LM_PAIRING_HOLD && previous.ble_open && !updated.ble_open;
         enum led_matrix_status_wake_context wake_context = led_matrix_resolve_status_wake_context();
 
         if (pairing_transient_now) {
@@ -400,7 +400,13 @@ static void led_matrix_handle_position_event(uint32_t position, bool pressed) {
         led_matrix_schedule_render();
     }
     if (pressed) {
-        trigger_ripple_for_position(position);
+        if (profile && (profile->renderer == LED_MATRIX_RENDERER_REACTIVE ||
+                        profile->renderer == LED_MATRIX_RENDERER_HEATMAP)) {
+            if (effect_press(profile, position, k_uptime_get_32()))
+                led_matrix_schedule_render();
+        } else {
+            trigger_ripple_for_position(position);
+        }
     }
 }
 
@@ -497,6 +503,9 @@ static int led_matrix_listener(const zmk_event_t *eh) {
             return 0;
         }
 
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL) && IS_ENABLED(CONFIG_ZMK_LED_MATRIX_EDITOR)
+        zmk_lighting_sync_runtime();
+#endif
         if (!led_matrix_base_render_enabled()) {
             LOG_DBG("LED matrix layer changed: %d -> %d (OFF, snapshot only)", old_layer,
                     snapshot.active_layer);

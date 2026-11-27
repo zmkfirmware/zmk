@@ -14,6 +14,15 @@ if(CONFIG_ZMK_DISPLAY_STATUS_SCREEN_CUSTOM)
   endif()
 endif()
 
+if(NOT CONFIG_ZMK_STUDIO)
+  # Keep FN+0 opaque when the standard Studio unlock driver is not built.
+  zephyr_library_sources(studio/unlock_disabled.c)
+endif()
+
+if(CONFIG_NUMPAD_LCD_BACKLIGHT_DIAGNOSTICS)
+  zephyr_library_sources(diagnostics/backlight_probe.c)
+endif()
+
 # The no-op behavior remains available when disabled so the default keymap still builds.
 zephyr_library_include_directories(${CMAKE_SOURCE_DIR}/include)
 zephyr_library_sources(calculator/behavior.c)

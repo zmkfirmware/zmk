@@ -8,6 +8,7 @@
 
 #include <zmk/hid_indicators_types.h>
 #include <zmk/sensors.h>
+#include <zmk/led_matrix_editor.h>
 #include <zephyr/sys/util.h>
 
 enum zmk_split_transport_connections_status {
@@ -30,12 +31,16 @@ enum zmk_split_transport_peripheral_event_type {
     ZMK_SPLIT_TRANSPORT_PERIPHERAL_EVENT_TYPE_SENSOR_EVENT,
     ZMK_SPLIT_TRANSPORT_PERIPHERAL_EVENT_TYPE_INPUT_EVENT,
     ZMK_SPLIT_TRANSPORT_PERIPHERAL_EVENT_TYPE_BATTERY_EVENT,
+    ZMK_SPLIT_TRANSPORT_PERIPHERAL_EVENT_TYPE_LIGHTING,
 };
 
 struct zmk_split_transport_peripheral_event {
     enum zmk_split_transport_peripheral_event_type type;
 
     union {
+#if IS_ENABLED(CONFIG_ZMK_LED_MATRIX_EDITOR)
+        struct zmk_lighting_packet lighting;
+#endif
         struct {
             uint8_t position;
             uint8_t pressed;
@@ -66,12 +71,16 @@ enum zmk_split_transport_central_command_type {
     ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_INVOKE_BEHAVIOR,
     ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_PHYSICAL_LAYOUT,
     ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_SET_HID_INDICATORS,
+    ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_LIGHTING,
 } __packed;
 
 struct zmk_split_transport_central_command {
     enum zmk_split_transport_central_command_type type;
 
     union {
+#if IS_ENABLED(CONFIG_ZMK_LED_MATRIX_EDITOR)
+        struct zmk_lighting_packet lighting;
+#endif
         struct {
             char behavior_dev[16];
             uint32_t param1, param2;

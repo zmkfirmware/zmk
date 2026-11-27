@@ -188,7 +188,7 @@
 	&lm LM_SPI      &lm LM_BRI      &lm LM_HUI          &lm LM_TOG
 	&lm LM_SPD      &lm LM_BRD      &lm LM_HUD          &lm LM_EFF
 	&bt BT_SEL 0 	&bt BT_SEL 1 	&bt BT_SEL 2 		&bt BT_SEL 3 
-	&mo 2       	&none 			&out OUT_TOG		&tog 1
+	&mo 2       	&studio_unlock 	&out OUT_TOG		&tog 1
 			>;
 		};
 
@@ -209,7 +209,7 @@
                 &lm LM_SPI &lm LM_BRI &lm LM_HUI &lm LM_TOG
                 &lm LM_SPD &lm LM_BRD &lm LM_HUD &lm LM_EFF
                 &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3
-                &mo CALC_FN_LAYER &none &out OUT_TOG &calc CALC_SEND
+                &mo CALC_FN_LAYER &studio_unlock &out OUT_TOG &calc CALC_SEND
             >;
         };
 	};

@@ -13,6 +13,7 @@ LOG_MODULE_DECLARE(zmk_studio, CONFIG_ZMK_STUDIO_LOG_LEVEL);
 #include <zmk/behavior.h>
 #include <zmk/matrix.h>
 #include <zmk/keymap.h>
+#include <zmk/encoder_bindings.h>
 #include <zmk/studio/rpc.h>
 #include <zmk/physical_layouts.h>
 
@@ -50,6 +51,41 @@ static bool encode_layer_bindings(pb_ostream_t *stream, const pb_field_t *field,
     return true;
 }
 
+#if ZMK_STUDIO_ENCODERS
+static void encode_direction(uint8_t layer, uint8_t sensor, bool ccw, bool *supported,
+                             zmk_keymap_EncoderDirection *out) {
+    struct zmk_behavior_binding binding;
+    *supported = zmk_encoder_get(layer, sensor, ccw, &binding, &out->overridden) == 0;
+    if (*supported && binding.behavior_dev) {
+        out->has_binding = true;
+        out->binding.behavior_id = zmk_behavior_get_local_id(binding.behavior_dev);
+        out->binding.param1 = binding.param1;
+        out->binding.param2 = binding.param2;
+    }
+}
+
+static bool encode_encoders(pb_ostream_t *stream, const pb_field_t *field, void *const *arg) {
+    uint8_t layer = *(uint8_t *)*arg;
+    for (int s = 0; s < ZMK_KEYMAP_SENSORS_LEN; s++) {
+        zmk_keymap_Encoder item = zmk_keymap_Encoder_init_zero;
+        encode_direction(layer, s, false, &item.has_clockwise, &item.clockwise);
+        encode_direction(layer, s, true, &item.has_counterclockwise, &item.counterclockwise);
+        if (!pb_encode_tag_for_field(stream, field) ||
+            !pb_encode_submessage(stream, &zmk_keymap_Encoder_msg, &item))
+            return false;
+    }
+    return true;
+}
+#endif
+
+static void layer_encoders(zmk_keymap_Layer *layer, const uint8_t *layer_id) {
+#if ZMK_STUDIO_ENCODERS
+    layer->has_encoder_map = true;
+    layer->encoder_map.encoders.funcs.encode = encode_encoders;
+    layer->encoder_map.encoders.arg = (void *)layer_id;
+#endif
+}
+
 static bool encode_layer_name(pb_ostream_t *stream, const pb_field_t *field, void *const *arg) {
     const zmk_keymap_layer_index_t layer_idx = *(uint8_t *)*arg;
 
@@ -85,6 +121,7 @@ static bool encode_keymap_layers(pb_ostream_t *stream, const pb_field_t *field, 
         layer.name.funcs.encode = encode_layer_name;
         layer.name.arg = &layer_id;
 
+        layer_encoders(&layer, &layer_id);
         layer.bindings.funcs.encode = encode_layer_bindings;
         layer.bindings.arg = &layer_id;
 
@@ -132,7 +169,8 @@ zmk_studio_Response set_layer_binding(const zmk_studio_Request *req) {
 
     const char *behavior_name = zmk_behavior_find_behavior_name_from_local_id(bid);
 
-    if (!behavior_name) {
+    const struct device *dev = behavior_name ? zmk_behavior_get_binding(behavior_name) : NULL;
+    if (!zmk_behavior_accepts_key(dev) || set_req->binding.behavior_id != bid) {
         return KEYMAP_RESPONSE(
             set_layer_binding,
             zmk_keymap_SetLayerBindingResponse_SET_LAYER_BINDING_RESP_INVALID_BEHAVIOR);
@@ -171,6 +209,59 @@ zmk_studio_Response set_layer_binding(const zmk_studio_Request *req) {
     return KEYMAP_RESPONSE(set_layer_binding,
                            zmk_keymap_SetLayerBindingResponse_SET_LAYER_BINDING_RESP_OK);
 }
+
+#if ZMK_STUDIO_ENCODERS
+static zmk_studio_Response set_encoder_binding(const zmk_studio_Request *req) {
+    const zmk_keymap_SetEncoderBindingRequest *q =
+        &req->subsystem.keymap.request_type.set_encoder_binding;
+    if (q->sensor_index >= ZMK_KEYMAP_SENSORS_LEN || q->layer_id >= ZMK_KEYMAP_LAYERS_LEN)
+        return KEYMAP_RESPONSE(
+            set_encoder_binding,
+            zmk_keymap_SetLayerBindingResponse_SET_LAYER_BINDING_RESP_INVALID_LOCATION);
+    bool active_layer = false;
+    for (int i = 0; i < ZMK_KEYMAP_LAYERS_LEN; i++) {
+        if (zmk_keymap_layer_index_to_id(i) == q->layer_id)
+            active_layer = true;
+    }
+    if (!active_layer)
+        return KEYMAP_RESPONSE(
+            set_encoder_binding,
+            zmk_keymap_SetLayerBindingResponse_SET_LAYER_BINDING_RESP_INVALID_LOCATION);
+    struct zmk_behavior_binding binding;
+    bool restore =
+        q->which_change == zmk_keymap_SetEncoderBindingRequest_restore_tag && q->change.restore;
+    if (!restore) {
+        if (q->which_change != zmk_keymap_SetEncoderBindingRequest_binding_tag ||
+            q->change.binding.behavior_id <= 0 || q->change.binding.behavior_id > UINT16_MAX)
+            return KEYMAP_RESPONSE(
+                set_encoder_binding,
+                zmk_keymap_SetLayerBindingResponse_SET_LAYER_BINDING_RESP_INVALID_BEHAVIOR);
+        binding = (struct zmk_behavior_binding){
+            .behavior_dev =
+                zmk_behavior_find_behavior_name_from_local_id(q->change.binding.behavior_id),
+            .param1 = q->change.binding.param1,
+            .param2 = q->change.binding.param2};
+        if (!binding.behavior_dev)
+            return KEYMAP_RESPONSE(
+                set_encoder_binding,
+                zmk_keymap_SetLayerBindingResponse_SET_LAYER_BINDING_RESP_INVALID_BEHAVIOR);
+    }
+    int rc = zmk_encoder_set(q->layer_id, q->sensor_index, q->counterclockwise,
+                             restore ? NULL : &binding);
+    if (rc < 0)
+        return KEYMAP_RESPONSE(
+            set_encoder_binding,
+            zmk_keymap_SetLayerBindingResponse_SET_LAYER_BINDING_RESP_INVALID_PARAMETERS);
+    raise_zmk_studio_rpc_notification((struct zmk_studio_rpc_notification){
+        .notification =
+            KEYMAP_NOTIFICATION(unsaved_changes_status_changed,
+                                zmk_keymap_check_unsaved_changes() > 0 ||
+                                    zmk_physical_layouts_check_unsaved_selection() > 0)});
+    return KEYMAP_RESPONSE(set_encoder_binding,
+                           zmk_keymap_SetLayerBindingResponse_SET_LAYER_BINDING_RESP_OK);
+}
+ZMK_RPC_SUBSYSTEM_HANDLER(keymap, set_encoder_binding, ZMK_STUDIO_RPC_HANDLER_SECURED);
+#endif
 
 zmk_studio_Response check_unsaved_changes(const zmk_studio_Request *req) {
     LOG_DBG("");
@@ -404,6 +495,7 @@ zmk_studio_Response add_layer(const zmk_studio_Request *req) {
         resp.result.ok.layer.name.funcs.encode = encode_layer_name;
         resp.result.ok.layer.name.arg = &layer_id;
 
+        layer_encoders(&resp.result.ok.layer, &layer_id);
         resp.result.ok.layer.bindings.funcs.encode = encode_layer_bindings;
         resp.result.ok.layer.bindings.arg = &layer_id;
 
@@ -470,6 +562,7 @@ zmk_studio_Response restore_layer(const zmk_studio_Request *req) {
         resp.result.ok.name.funcs.encode = encode_layer_name;
         resp.result.ok.name.arg = (void *)&restore_req->layer_id;
 
+        layer_encoders(&resp.result.ok, (const uint8_t *)&restore_req->layer_id);
         resp.result.ok.bindings.funcs.encode = encode_layer_bindings;
         resp.result.ok.bindings.arg = (void *)&restore_req->layer_id;
 
@@ -536,7 +629,3 @@ ZMK_RPC_SUBSYSTEM_HANDLER(keymap, add_layer, ZMK_STUDIO_RPC_HANDLER_SECURED);
 ZMK_RPC_SUBSYSTEM_HANDLER(keymap, remove_layer, ZMK_STUDIO_RPC_HANDLER_SECURED);
 ZMK_RPC_SUBSYSTEM_HANDLER(keymap, restore_layer, ZMK_STUDIO_RPC_HANDLER_SECURED);
 ZMK_RPC_SUBSYSTEM_HANDLER(keymap, set_layer_props, ZMK_STUDIO_RPC_HANDLER_SECURED);
-
-static int event_mapper(const zmk_event_t *eh, zmk_studio_Notification *n) { return 0; }
-
-ZMK_RPC_EVENT_MAPPER(keymap, event_mapper);

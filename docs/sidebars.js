@@ -190,6 +190,7 @@ module.exports = {
             "hardware-integration/lighting/underglow",
             "hardware-integration/lighting/backlight",
             "hardware-integration/lighting/led-indicators",
+            "development/hardware-integration/lighting/led-matrix",
           ],
         },
       ],

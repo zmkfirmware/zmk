@@ -5,8 +5,8 @@
  */
 
 #include "msg_framing.h"
+#include "rpc_tx.h"
 
-#include <pb_encode.h>
 #include <pb_decode.h>
 
 #include <zephyr/init.h>
@@ -69,152 +69,102 @@ static zmk_studio_Response handle_request(const zmk_studio_Request *req) {
     return resp;
 }
 
+#if IS_ENABLED(CONFIG_ZMK_STUDIO_TRANSPORT_BLE)
+#include <zephyr/bluetooth/l2cap.h>
+// A GATT write is accepted atomically; keep room for at least one ATT write.
+RING_BUF_DECLARE(rpc_rx_buf, MAX(CONFIG_ZMK_STUDIO_RPC_RX_BUF_SIZE, BT_L2CAP_RX_MTU - 3));
+#else
 RING_BUF_DECLARE(rpc_rx_buf, CONFIG_ZMK_STUDIO_RPC_RX_BUF_SIZE);
+#endif
 
 static K_SEM_DEFINE(rpc_rx_sem, 0, 1);
 
 static enum studio_framing_state rpc_framing_state;
+static struct k_spinlock rx_lock;
+static enum zmk_transport rx_transport;
+static uint32_t rx_session;
 
 static K_MUTEX_DEFINE(rpc_transport_mutex);
 static struct zmk_rpc_transport *selected_transport;
 
-struct ring_buf *zmk_rpc_get_rx_buf(void) { return &rpc_rx_buf; }
+int zmk_rpc_rx_put(enum zmk_transport source, const uint8_t *data, size_t len) {
+    int rc = 0;
+    k_spinlock_key_t key = k_spin_lock(&rx_lock);
+    if (source != rx_transport) {
+        rc = -ENOTCONN;
+    } else if (len > ring_buf_space_get(&rpc_rx_buf)) {
+        rc = -ENOSPC;
+    } else {
+        ring_buf_put(&rpc_rx_buf, data, len);
+    }
+    k_spin_unlock(&rx_lock, key);
+    if (!rc) {
+        k_sem_give(&rpc_rx_sem);
+    }
+    return rc;
+}
 
-void zmk_rpc_rx_notify(void) { k_sem_give(&rpc_rx_sem); }
+static void select_session(const struct zmk_rpc_transport *transport) {
+    k_spinlock_key_t key = k_spin_lock(&rx_lock);
+    studio_tx_select(transport);
+    rx_session = studio_tx_session();
+    rx_transport = transport ? transport->transport : ZMK_TRANSPORT_NONE;
+    ring_buf_reset(&rpc_rx_buf);
+    k_spin_unlock(&rx_lock, key);
+    k_sem_give(&rpc_rx_sem);
+}
 
 static bool rpc_read_cb(pb_istream_t *stream, uint8_t *buf, size_t count) {
-    uint32_t write_offset = 0;
-
-    do {
-        uint8_t *buffer;
-        uint32_t len = ring_buf_get_claim(&rpc_rx_buf, &buffer, count - write_offset);
-
-        if (len > 0) {
-            for (int i = 0; i < len; i++) {
-                if (studio_framing_process_byte(&rpc_framing_state, buffer[i])) {
-                    buf[write_offset++] = buffer[i];
-                }
-            }
-        } else {
-            k_sem_take(&rpc_rx_sem, K_FOREVER);
+    uint32_t expected = *(uint32_t *)stream->state;
+    while (count) {
+        uint8_t byte;
+        k_spinlock_key_t key = k_spin_lock(&rx_lock);
+        bool current = rx_session == expected;
+        bool ready = current && ring_buf_get(&rpc_rx_buf, &byte, 1) == 1;
+        k_spin_unlock(&rx_lock, key);
+        if (!current) {
+            return false;
         }
-
-        ring_buf_get_finish(&rpc_rx_buf, len);
-    } while (write_offset < count && rpc_framing_state != FRAMING_STATE_EOF);
-
-    if (rpc_framing_state == FRAMING_STATE_EOF) {
-        stream->bytes_left = 0;
-        return false;
-    } else {
-        return true;
-    }
-}
-
-static pb_istream_t pb_istream_for_rx_ring_buf() {
-    pb_istream_t stream = {&rpc_read_cb, NULL, SIZE_MAX};
-    return stream;
-}
-
-RING_BUF_DECLARE(rpc_tx_buf, CONFIG_ZMK_STUDIO_RPC_TX_BUF_SIZE);
-
-struct ring_buf *zmk_rpc_get_tx_buf(void) { return &rpc_tx_buf; }
-
-static bool rpc_tx_buffer_write(pb_ostream_t *stream, const uint8_t *buf, size_t count) {
-    void *user_data = stream->state;
-    size_t written = 0;
-
-    bool escape_byte_already_written = false;
-    do {
-        uint32_t write_idx = 0;
-
-        uint8_t *write_buf;
-        uint32_t claim_len = ring_buf_put_claim(&rpc_tx_buf, &write_buf, count - written);
-
-        if (claim_len == 0) {
+        if (!ready) {
+            k_sem_take(&rpc_rx_sem, K_FOREVER);
             continue;
         }
-
-        int escapes_written = 0;
-        for (int i = 0; i < claim_len && write_idx < claim_len; i++) {
-            uint8_t b = buf[written + i];
-            switch (b) {
-            case FRAMING_EOF:
-            case FRAMING_ESC:
-            case FRAMING_SOF:
-                // Care to be taken. We may need to write the escape byte,
-                // but that's the last available spot for this claim, so we track
-                // if the escape has already been written in the previous iteration
-                // of our loop.
-                if (!escape_byte_already_written) {
-                    escapes_written++;
-                    write_buf[write_idx++] = FRAMING_ESC;
-                    escape_byte_already_written = true;
-                    if (write_idx >= claim_len) {
-                        LOG_WRN("Skipping on, no room to write escape and real byte");
-                        continue;
-                    }
-                }
-            default:
-                write_buf[write_idx++] = b;
-                escape_byte_already_written = false;
-                break;
-            }
+        if (studio_framing_process_byte(&rpc_framing_state, byte)) {
+            *buf++ = byte;
+            count--;
+        } else if (rpc_framing_state == FRAMING_STATE_EOF) {
+            stream->bytes_left = 0;
+            return false;
         }
-
-        ring_buf_put_finish(&rpc_tx_buf, write_idx);
-
-        written += (write_idx - escapes_written);
-
-        selected_transport->tx_notify(&rpc_tx_buf, write_idx, false, user_data);
-    } while (written < count);
-
+    }
     return true;
 }
 
-static pb_ostream_t pb_ostream_for_tx_buf(void *user_data) {
-    pb_ostream_t stream = {&rpc_tx_buffer_write, (void *)user_data, SIZE_MAX, 0};
-    return stream;
+struct queued_notification {
+    uint32_t session;
+    zmk_studio_Notification notification;
+};
+
+K_MSGQ_DEFINE(notifications, sizeof(struct queued_notification), 8, 4);
+
+static void notification_main(void *a, void *b, void *c) {
+    struct queued_notification item;
+    while (true) {
+        k_msgq_get(&notifications, &item, K_FOREVER);
+        zmk_studio_Response response = {.which_type = zmk_studio_Response_notification_tag,
+                                        .type.notification = item.notification};
+        studio_tx_send(&response, item.session);
+    }
 }
 
-static int send_response(const zmk_studio_Response *resp) {
-    k_mutex_lock(&rpc_transport_mutex, K_FOREVER);
-
-    if (!selected_transport) {
-        goto exit;
-    }
-
-    void *user_data = selected_transport->tx_user_data ? selected_transport->tx_user_data() : NULL;
-
-    pb_ostream_t stream = pb_ostream_for_tx_buf(user_data);
-
-    uint8_t framing_byte = FRAMING_SOF;
-    ring_buf_put(&rpc_tx_buf, &framing_byte, 1);
-
-    selected_transport->tx_notify(&rpc_tx_buf, 1, false, user_data);
-
-    /* Now we are ready to encode the message! */
-    bool status = pb_encode(&stream, &zmk_studio_Response_msg, resp);
-
-    if (!status) {
-#if !IS_ENABLED(CONFIG_NANOPB_NO_ERRMSG)
-        LOG_ERR("Failed to encode the message %s", stream.errmsg);
-#endif // !IS_ENABLED(CONFIG_NANOPB_NO_ERRMSG)
-        return -EINVAL;
-    }
-
-    framing_byte = FRAMING_EOF;
-    ring_buf_put(&rpc_tx_buf, &framing_byte, 1);
-
-    selected_transport->tx_notify(&rpc_tx_buf, 1, true, user_data);
-
-exit:
-    k_mutex_unlock(&rpc_transport_mutex);
-    return 0;
-}
+K_THREAD_DEFINE(studio_notify_thread, CONFIG_ZMK_STUDIO_RPC_THREAD_STACK_SIZE, notification_main,
+                NULL, NULL, NULL, K_LOWEST_APPLICATION_THREAD_PRIO, 0, 0);
 
 static void rpc_main(void) {
     for (;;) {
-        pb_istream_t stream = pb_istream_for_rx_ring_buf();
+        uint32_t request_session = studio_tx_session();
+        pb_istream_t stream = {
+            .callback = rpc_read_cb, .state = &request_session, .bytes_left = SIZE_MAX};
         zmk_studio_Request req = zmk_studio_Request_init_zero;
 #if IS_ENABLED(CONFIG_THREAD_ANALYZER)
         thread_analyzer_print(0);
@@ -223,10 +173,10 @@ static void rpc_main(void) {
 
         rpc_framing_state = FRAMING_STATE_IDLE;
 
-        if (status) {
+        if (status && request_session == studio_tx_session()) {
             zmk_studio_Response resp = handle_request(&req);
 
-            int err = send_response(&resp);
+            int err = studio_tx_send(&resp, request_session);
 #if IS_ENABLED(CONFIG_THREAD_ANALYZER)
             thread_analyzer_print(0);
 #endif // IS_ENABLED(CONFIG_THREAD_ANALYZER)
@@ -248,9 +198,11 @@ static void refresh_selected_transport(void) {
     k_mutex_lock(&rpc_transport_mutex, K_FOREVER);
 
     if (selected_transport && selected_transport->transport == transport) {
+        select_session(selected_transport);
         goto exit_refresh;
     }
 
+    select_session(NULL);
     if (selected_transport) {
         if (selected_transport->rx_stop) {
             selected_transport->rx_stop();
@@ -264,6 +216,7 @@ static void refresh_selected_transport(void) {
     STRUCT_SECTION_FOREACH(zmk_rpc_transport, t) {
         if (t->transport == transport) {
             selected_transport = t;
+            select_session(t);
             if (selected_transport->rx_start) {
                 selected_transport->rx_start();
             }
@@ -322,10 +275,11 @@ static int studio_rpc_listener_cb(const zmk_event_t *eh) {
 
     struct zmk_studio_rpc_notification *rpc_notify = as_zmk_studio_rpc_notification(eh);
     if (rpc_notify) {
-        zmk_studio_Response resp = zmk_studio_Response_init_zero;
-        resp.which_type = zmk_studio_Response_notification_tag;
-        resp.type.notification = rpc_notify->notification;
-        send_response(&resp);
+        struct queued_notification item = {.session = studio_tx_session(),
+                                           .notification = rpc_notify->notification};
+        if (k_msgq_put(&notifications, &item, K_NO_WAIT) < 0) {
+            LOG_WRN("Studio notification queue full");
+        }
         return ZMK_EV_EVENT_BUBBLE;
     }
 

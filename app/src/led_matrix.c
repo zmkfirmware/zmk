@@ -48,6 +48,7 @@
 #include <zmk/hid_indicators.h>
 #include <zmk/keymap.h>
 #include <zmk/led_matrix.h>
+#include <zmk/led_matrix_editor.h>
 #include <zmk/matrix.h>
 #include <zmk/matrix_transform.h>
 #include <zmk/usb.h>
@@ -143,6 +144,7 @@ static const struct device *const output_dev =
 #endif
 
 #include "led_matrix/core.c"
+#include "led_matrix/effects.c"
 
 #include "led_matrix/power.c"
 
@@ -537,10 +539,18 @@ static int validate_independent_groups(void) {
             if (profile->renderer != LED_MATRIX_RENDERER_SOLID &&
                 profile->renderer != LED_MATRIX_RENDERER_BREATHE &&
                 profile->renderer != LED_MATRIX_RENDERER_SPECTRUM &&
-                profile->renderer != LED_MATRIX_RENDERER_SWIRL) {
+                profile->renderer != LED_MATRIX_RENDERER_SWIRL &&
+                profile->renderer != LED_MATRIX_RENDERER_CHASE) {
                 LOG_ERR("Independent child %u local profile %u renderer %s is unsupported",
                         group->independent_id, profile->profile_id,
                         renderer_name(profile->renderer));
+                return -EINVAL;
+            }
+
+            if (!effect_options_valid(profile->renderer, profile->effect_style,
+                                      profile->effect_direction)) {
+                LOG_ERR("Independent group %u profile %u has invalid effect options",
+                        group->independent_id, profile->profile_id);
                 return -EINVAL;
             }
 
@@ -615,15 +625,16 @@ static int validate_profiles(void) {
         }
         seen_profile_ids[profile->profile_id] = true;
 
-        if (profile->renderer >= LED_MATRIX_RENDERER_COUNT) {
-            LOG_ERR("Profile %u has invalid renderer %u", profile->profile_id, profile->renderer);
+        if (!effect_options_valid(profile->renderer, profile->effect_style,
+                                  profile->effect_direction)) {
+            LOG_ERR("Profile %u has invalid renderer/style/direction (%u/%u/%u)",
+                    profile->profile_id, profile->renderer, profile->effect_style,
+                    profile->effect_direction);
             return -EINVAL;
         }
 
 #if !HAS_MATRIX_LED_GRID
-        if (profile->renderer == LED_MATRIX_RENDERER_KEYPRESS ||
-            profile->renderer == LED_MATRIX_RENDERER_RIPPLE ||
-            profile->renderer == LED_MATRIX_RENDERER_RAIN) {
+        if (effect_requires_grid(profile->renderer)) {
             LOG_ERR("Profile %u renderer %s requires matrix-led-grid", profile->profile_id,
                     renderer_name(profile->renderer));
             return -EINVAL;
@@ -681,7 +692,7 @@ static int validate_profiles(void) {
 
 static void led_matrix_sanitize_runtime_state(void) {
     if (!led_matrix_has_profiles() || find_display_profile(state.selected_profile_id) == NULL) {
-        state.selected_profile_id = 0U;
+        state.selected_profile_id = first_available_profile();
     }
 
     for (size_t id = 0; id < INDEPENDENT_GROUP_COUNT; id++) {
@@ -758,7 +769,8 @@ static int validate_layer_colors(void) {
 }
 
 static int validate_renderable_source_presence(void) {
-    if (led_matrix_has_profiles() || led_matrix_has_independent_groups() || LAYER_COLOR_COUNT > 0 ||
+    if (IS_ENABLED(CONFIG_ZMK_LED_MATRIX_EDITOR) || led_matrix_has_profiles() ||
+        led_matrix_has_independent_groups() || LAYER_COLOR_COUNT > 0 ||
         led_matrix_has_renderable_status_zones()) {
         return 0;
     }
@@ -996,4 +1008,12 @@ static int validate_dts_layout(void) {
 
 #include "led_matrix/render.c"
 
+#if IS_ENABLED(CONFIG_ZMK_LED_MATRIX_EDITOR)
+#include "led_matrix/editor.c"
+#endif
+
 #include "led_matrix/api.c"
+
+#if IS_ENABLED(CONFIG_ZMK_STUDIO_RPC) && IS_ENABLED(CONFIG_ZMK_BEHAVIOR_LED_MATRIX)
+#include "led_matrix/studio.c"
+#endif

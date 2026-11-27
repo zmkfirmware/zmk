@@ -40,7 +40,9 @@ target_sources(app PRIVATE src/events/activity_state_changed.c)
 target_sources(app PRIVATE src/events/position_state_changed.c)
 target_sources(app PRIVATE src/events/sensor_event.c)
 target_sources_ifdef(CONFIG_ZMK_WPM app PRIVATE src/events/wpm_state_changed.c)
-target_sources_ifdef(CONFIG_USB_DEVICE_STACK app PRIVATE src/events/usb_conn_state_changed.c)
+if (CONFIG_USB_DEVICE_STACK OR CONFIG_ZMK_LED_MATRIX)
+  target_sources(app PRIVATE src/events/usb_conn_state_changed.c)
+endif()
 target_sources(app PRIVATE src/behaviors/behavior_reset.c)
 target_sources_ifdef(CONFIG_ZMK_EXT_POWER app PRIVATE src/behaviors/behavior_ext_power.c)
 target_sources_ifdef(CONFIG_ZMK_BEHAVIOR_SOFT_OFF app PRIVATE src/behaviors/behavior_soft_off.c)
@@ -76,6 +78,7 @@ if ((NOT CONFIG_ZMK_SPLIT) OR CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
   target_sources(app PRIVATE src/events/endpoint_changed.c)
   target_sources(app PRIVATE src/hid_listener.c)
   target_sources(app PRIVATE src/keymap.c)
+  target_sources_ifdef(CONFIG_ZMK_STUDIO app PRIVATE src/encoder_bindings.c)
   target_sources(app PRIVATE src/events/layer_state_changed.c)
   target_sources(app PRIVATE src/events/modifiers_state_changed.c)
   target_sources(app PRIVATE src/events/keycode_state_changed.c)
@@ -93,7 +96,9 @@ target_sources_ifdef(CONFIG_ZMK_RGB_UNDERGLOW app PRIVATE src/behaviors/behavior
 target_sources_ifdef(CONFIG_ZMK_BACKLIGHT app PRIVATE src/behaviors/behavior_backlight.c)
 target_sources_ifdef(CONFIG_ZMK_BEHAVIOR_LED_MATRIX app PRIVATE src/behaviors/behavior_led_matrix.c)
 
-target_sources_ifdef(CONFIG_ZMK_BATTERY_REPORTING app PRIVATE src/events/battery_state_changed.c)
+if (CONFIG_ZMK_BATTERY_REPORTING OR CONFIG_ZMK_LED_MATRIX)
+  target_sources(app PRIVATE src/events/battery_state_changed.c)
+endif()
 target_sources_ifdef(CONFIG_ZMK_BATTERY_REPORTING app PRIVATE src/battery.c)
 
 target_sources_ifdef(CONFIG_ZMK_HID_INDICATORS app PRIVATE src/events/hid_indicators_changed.c)
@@ -123,13 +128,24 @@ if (CONFIG_ZMK_STUDIO_RPC)
     # Turn off the default nanopb behavior
   set(NANOPB_GENERATE_CPP_STANDALONE OFF)
 
-  nanopb_generate_cpp(proto_srcs proto_hdrs RELPATH ${ZEPHYR_ZMK_STUDIO_MESSAGES_MODULE_DIR}
-                        ${ZEPHYR_ZMK_STUDIO_MESSAGES_MODULE_DIR}/proto/zmk/studio.proto
-                        ${ZEPHYR_ZMK_STUDIO_MESSAGES_MODULE_DIR}/proto/zmk/meta.proto
-                        ${ZEPHYR_ZMK_STUDIO_MESSAGES_MODULE_DIR}/proto/zmk/core.proto
-                        ${ZEPHYR_ZMK_STUDIO_MESSAGES_MODULE_DIR}/proto/zmk/behaviors.proto
-                        ${ZEPHYR_ZMK_STUDIO_MESSAGES_MODULE_DIR}/proto/zmk/keymap.proto
-  )
+  # Stage the local protocol extensions next to the pinned upstream schemas.
+  set(studio_schema_dir ${CMAKE_CURRENT_BINARY_DIR}/studio_schema)
+  foreach(name studio core lighting meta behaviors keymap)
+    set(upstream ${ZEPHYR_ZMK_STUDIO_MESSAGES_MODULE_DIR}/proto/zmk/${name})
+    set(schema ${CMAKE_CURRENT_SOURCE_DIR}/src/studio/proto/${name}.proto)
+    if(NOT EXISTS ${schema})
+      set(schema ${upstream}.proto)
+    endif()
+    set(staged ${studio_schema_dir}/proto/zmk/${name})
+    configure_file(${schema} ${staged}.proto COPYONLY)
+    if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/studio/proto/${name}.options.in)
+      configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/studio/proto/${name}.options.in ${staged}.options.in COPYONLY)
+    elseif(EXISTS ${upstream}.options.in)
+      configure_file(${upstream}.options.in ${staged}.options.in COPYONLY)
+    endif()
+    list(APPEND studio_schemas ${staged}.proto)
+  endforeach()
+  nanopb_generate_cpp(proto_srcs proto_hdrs RELPATH ${studio_schema_dir} ${studio_schemas})
 
   target_include_directories(app PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
   target_sources(app PRIVATE ${proto_srcs} ${proto_hdrs})

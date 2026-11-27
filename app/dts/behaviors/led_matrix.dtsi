@@ -8,7 +8,8 @@
 
 / {
     behaviors {
-#if ZMK_BEHAVIOR_OMIT(LM)
+// Studio invokes this global behavior even on keyboards without an LM key.
+#if defined(ZMK_BEHAVIORS_OMIT_LM) && ZMK_BEHAVIOR_OMIT(LM)
         /omit-if-no-ref/
 #endif
         // Behavior can be invoked on peripherals, so name must be <= 8 characters.

@@ -11,7 +11,7 @@
 #include <zephyr/sys/ring_buffer.h>
 
 #include <zephyr/logging/log.h>
-#include <zmk/studio/rpc.h>
+#include "rpc_tx.h"
 
 LOG_MODULE_DECLARE(zmk_studio, CONFIG_ZMK_STUDIO_LOG_LEVEL);
 
@@ -20,46 +20,35 @@ LOG_MODULE_DECLARE(zmk_studio, CONFIG_ZMK_STUDIO_LOG_LEVEL);
 
 static const struct device *const uart_dev = DEVICE_DT_GET(UART_DEVICE_NODE);
 
-static void tx_notify(struct ring_buf *tx_ring_buf, size_t written, bool msg_done,
-                      void *user_data) {
-    if (msg_done || (ring_buf_size_get(tx_ring_buf) > (ring_buf_capacity_get(tx_ring_buf) / 2))) {
+static void uart_tx_start(void) {
 #if IS_ENABLED(CONFIG_UART_INTERRUPT_DRIVEN)
-        uart_irq_tx_enable(uart_dev);
-#else
-        struct ring_buf *tx_buf = zmk_rpc_get_tx_buf();
-        uint8_t *buf;
-        uint32_t claim_len;
-        while ((claim_len = ring_buf_get_claim(tx_buf, &buf, tx_buf->size)) > 0) {
-            for (int i = 0; i < claim_len; i++) {
-                uart_poll_out(uart_dev, buf[i]);
-            }
-
-            ring_buf_get_finish(tx_buf, claim_len);
-        }
+    uart_irq_tx_enable(uart_dev);
 #endif
-    }
 }
 
 #if !IS_ENABLED(CONFIG_UART_INTERRUPT_DRIVEN)
 
+// Polling UART drivers may block in uart_poll_out. Keep this off the frame writer.
+static void uart_poll_tx(void) {
+    uint32_t ticket;
+    uint8_t buf[32];
+    size_t len;
+    if ((len = studio_tx_peek(ZMK_TRANSPORT_USB, buf, sizeof(buf), &ticket))) {
+        for (size_t i = 0; i < len; i++) {
+            uart_poll_out(uart_dev, buf[i]);
+        }
+        studio_tx_complete(ticket, len);
+    }
+}
+
 static void uart_rx_main(void) {
     for (;;) {
-        uint8_t *buf;
-        struct ring_buf *ring_buf = zmk_rpc_get_rx_buf();
-        uint32_t claim_len = ring_buf_put_claim(ring_buf, &buf, 1);
-
-        if (claim_len < 1) {
-            LOG_WRN("NO CLAIM ABLE TO BE HAD");
-            k_sleep(K_MSEC(1));
-            continue;
-        }
-
-        if (uart_poll_in(uart_dev, buf) < 0) {
-            ring_buf_put_finish(ring_buf, 0);
+        uart_poll_tx();
+        uint8_t byte;
+        if (uart_poll_in(uart_dev, &byte) < 0) {
             k_sleep(K_MSEC(1));
         } else {
-            ring_buf_put_finish(ring_buf, 1);
-            zmk_rpc_rx_notify();
+            zmk_rpc_rx_put(ZMK_TRANSPORT_USB, &byte, 1);
         }
     }
 }
@@ -87,7 +76,7 @@ static int stop_rx(void) {
     return 0;
 }
 
-ZMK_RPC_TRANSPORT(uart, ZMK_TRANSPORT_USB, start_rx, stop_rx, NULL, tx_notify);
+ZMK_RPC_TRANSPORT(uart, ZMK_TRANSPORT_USB, start_rx, stop_rx, uart_tx_start);
 
 #if IS_ENABLED(CONFIG_UART_INTERRUPT_DRIVEN)
 
@@ -101,42 +90,31 @@ static void serial_cb(const struct device *dev, void *user_data) {
     }
 
     if (uart_irq_rx_ready(uart_dev)) {
-        /* read until FIFO empty */
-        uint32_t last_read = 0, len = 0;
-        struct ring_buf *buf = zmk_rpc_get_rx_buf();
+        uint8_t buf[MIN(16, CONFIG_ZMK_STUDIO_RPC_RX_BUF_SIZE)];
+        int len;
         do {
-            uint8_t *buffer;
-            len = ring_buf_put_claim(buf, &buffer, buf->size);
-            if (len > 0) {
-                last_read = uart_fifo_read(uart_dev, buffer, len);
-
-                ring_buf_put_finish(buf, last_read);
-            } else {
-                LOG_ERR("Dropping incoming RPC byte, insufficient room in the RX buffer. Bump "
-                        "CONFIG_ZMK_STUDIO_RPC_RX_BUF_SIZE.");
-                uint8_t dummy;
-                last_read = uart_fifo_read(uart_dev, &dummy, 1);
+            len = uart_fifo_read(uart_dev, buf, sizeof(buf));
+            if (len > 0 && zmk_rpc_rx_put(ZMK_TRANSPORT_USB, buf, len) == -ENOSPC) {
+                LOG_WRN("Studio RX buffer full");
             }
-        } while (last_read && last_read == len);
-
-        zmk_rpc_rx_notify();
+        } while (len == sizeof(buf));
     }
 
     if (uart_irq_tx_ready(uart_dev)) {
-        struct ring_buf *tx_buf = zmk_rpc_get_tx_buf();
-        uint32_t len;
-        while ((len = ring_buf_size_get(tx_buf)) > 0) {
-            uint8_t *buf;
-            uint32_t claim_len = ring_buf_get_claim(tx_buf, &buf, tx_buf->size);
-
-            if (claim_len == 0) {
-                continue;
+        uint8_t buf[32];
+        uint32_t ticket;
+        size_t len = studio_tx_peek(ZMK_TRANSPORT_USB, buf, sizeof(buf), &ticket);
+        if (!len) {
+            uart_irq_tx_disable(uart_dev);
+            // A writer may have enabled TX just before we disabled it.
+            if (studio_tx_peek(ZMK_TRANSPORT_USB, buf, sizeof(buf), &ticket)) {
+                uart_irq_tx_enable(uart_dev);
             }
-
-            int sent = uart_fifo_fill(uart_dev, buf, claim_len);
-
-            ring_buf_get_finish(tx_buf, MAX(sent, 0));
+            return;
         }
+        int sent = uart_fifo_fill(uart_dev, buf, len);
+        studio_tx_complete(ticket, sent);
+        // A full hardware FIFO will signal again when space becomes available.
     }
 }
 

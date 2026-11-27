@@ -2,6 +2,7 @@
 #include "demand_fakes.h"
 #include "demand_math.inc"
 #include "demand_core.inc"
+#include "src/led_matrix/effects.c"
 #include "src/led_matrix/render_demand.c"
 #include "demand_render.inc"
 #include "demand_compose.inc"
@@ -13,6 +14,7 @@ static struct led_matrix_color_list_cfg color_cfg(uint32_t *color) {
         .colors = color, .count = 1, .default_color = LM_BLACK};
 }
 static void reset(void) {
+    effect_reset_input();
     test_now_ms = 0;
     scheduled_renders = 0;
     state.on = true;
@@ -333,6 +335,68 @@ static void position_event_lifecycle(void) {
     expect("idle first real event starts ripple", test_now_ms, true, true);
     expect("event ripple ends", 10000, false, false);
 }
+static void extended_effects(void) {
+    reset();
+    /* The slowest supported speed can scale a 16-bit period by 255. */
+    assert(effect_phase(65535U * 255U - 1U, 65535U * 255U) == 359);
+    /* Magenta has a negative red-sector angle before hue normalization. */
+    struct led_rgb8 yellow = shift_color_hue((struct led_rgb8){255, 0, 255}, 120);
+    assert(yellow.r == 255 && yellow.g == 255 && yellow.b == 0);
+    base_colors[0] = LM_RED;
+    profile.renderer = LED_MATRIX_RENDERER_GRADIENT;
+    /* The second row is wired right-to-left, with the last grid cell absent. */
+    cell_to_led[2] = 3;
+    cell_to_led[3] = LM_NOLED;
+    led_to_cell[2] = LM_NOLED;
+    led_to_cell[3] = 2;
+    expect("static gradient sleeps", 0, true, false);
+    assert(!memcmp(&logical_leds[0], &logical_leds[3], sizeof(logical_leds[0])));
+    assert(!logical_leds[2].r && !logical_leds[2].g && !logical_leds[2].b);
+    profile.renderer = LED_MATRIX_RENDERER_WAVE;
+    expect("wave follows columns", 250, true, true);
+    assert(!memcmp(&logical_leds[0], &logical_leds[3], sizeof(logical_leds[0])));
+    assert(memcmp(&logical_leds[0], &logical_leds[1], sizeof(logical_leds[0])));
+    source_mask = LED_MATRIX_STATUS_HID;
+    hid_zones[0].count = 4;
+    expect("covered wave sleeps", 250, false, false);
+    source_mask = 0;
+    profile.renderer = LED_MATRIX_RENDERER_REACTIVE;
+    profile.effect_style = 4;
+    expect("reactive waits for input", 0, false, false);
+    idle_suspended = true;
+    test_now_ms = 10;
+    led_matrix_handle_position_event(0, true);
+    test_now_ms = 60;
+    led_matrix_handle_position_event(1, true);
+    assert(!idle_suspended);
+    expect("overlapping waves survive the second press", 60, true, true);
+    assert(logical_leds[0].r > 200 && logical_leds[1].r == 255);
+    expect("reactive tail completes", 1060, false, false);
+    profile.effect_style = 6;
+    expect("lit ripple rests with background", 1100, true, false);
+    profile.renderer = LED_MATRIX_RENDERER_HEATMAP;
+    profile.effect_style = 0;
+    test_now_ms = 1200;
+    led_matrix_handle_position_event(0, true);
+    assert(effect_heat(0, 1200, 1000) == 40 && effect_heat(1, 1200, 1000) == 12);
+    test_now_ms = 1300;
+    led_matrix_handle_position_event(0, true);
+    assert(effect_heat(0, 1300, 1000) == 70 && effect_heat(1, 1300, 1000) == 14);
+    expect("heat accumulates", 1300, true, true);
+    expect("heat cools completely", 2000, false, false);
+    grid_cell_count = 0;
+    assert(!effect_requires_grid(LED_MATRIX_RENDERER_CHASE));
+    assert(effect_requires_grid(LED_MATRIX_RENDERER_RADIAL));
+    independent_present = true;
+    independent_profile.renderer = LED_MATRIX_RENDERER_CHASE;
+    independent_colors[0] = LM_RED;
+    static const uint16_t order[] = {3, 0, 2, 1};
+    independent_groups[0].leds = order;
+    expect("strip chase follows member order without a grid", 250, true, true);
+    assert(logical_leds[0].r == 255 && logical_leds[3].r == 127);
+    independent_groups[0].led_count = 1;
+    expect("one member chase rests", 900, true, false);
+}
 int main(void) {
     static_and_animation();
     status_selection();
@@ -341,6 +405,7 @@ int main(void) {
     runtime_gates();
     rain_resume_is_bounded();
     position_event_lifecycle();
+    extended_effects();
     printf("PASS demand: %u production composition checks (current colors, masking, dark animation "
            "phases, keypress/ripple expiry and wake)\n",
            checks);

@@ -29,7 +29,7 @@
         };
 
         layer_color1 {
-            layer-id = <1>;
+            layer-id = <0>;
             brightness = <100>;
             display-time-ms = <0>;
             layer-leds = <0 1>;

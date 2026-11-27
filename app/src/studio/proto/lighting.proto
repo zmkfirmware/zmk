@@ -1,0 +1,71 @@
+syntax = "proto3";
+package zmk.lighting;
+
+message Profile {
+    uint32 id = 1;
+    string name = 2;
+    string renderer = 3;
+}
+message Zone {
+    uint32 id = 1;
+    string name = 2;
+    repeated Profile profiles = 3;
+}
+message Catalog {
+    repeated Profile profiles = 1;
+    repeated Zone zones = 2;
+    uint32 max_speed = 3;
+    uint32 hue_count = 4;
+    bool persistent = 5;
+    uint32 editor_version = 6;
+    uint32 peripheral_slots = 7;
+}
+message State {
+    bool enabled = 1;
+    uint32 brightness = 2;
+    uint32 profile = 3;
+    uint32 speed = 4;
+    uint32 hue = 5;
+    // One local profile ID per independent zone, indexed by zone ID.
+    bytes zone_profiles = 6;
+}
+message ZoneSelection {
+    uint32 zone = 1;
+    uint32 profile = 2;
+}
+message Setting {
+    oneof value {
+        bool enabled = 1;
+        uint32 brightness = 2;
+        uint32 profile = 3;
+        uint32 speed = 4;
+        uint32 hue = 5;
+        ZoneSelection zone_profile = 6;
+    }
+}
+// A bounded chunk for the local controller (side 0) or split slot (side 1+).
+message Exchange {
+    uint32 side = 1;
+    bytes packet = 2;
+}
+message Request {
+    oneof request_type {
+        bool get_catalog = 1;
+        bool get_state = 2;
+        Setting set = 3;
+        Exchange exchange = 4;
+    }
+}
+message Response {
+    oneof response_type {
+        Catalog catalog = 1;
+        State state = 2;
+        bool rejected = 3;
+        Exchange exchange = 4;
+    }
+}
+message Notification {
+    oneof notification_type {
+        bool state_changed = 1;
+    }
+}

@@ -12,6 +12,15 @@
 #define HID_TIMEOUT_MS DT_PROP_OR(MATRIX_NODE, hid_timeout_ms, STATUS_TIMEOUT_MS)
 #define BATTERY_TIMEOUT_MS DT_PROP_OR(MATRIX_NODE, battery_timeout_ms, STATUS_TIMEOUT_MS)
 #define BLE_PAIRING_HOLD DT_PROP_OR(MATRIX_NODE, ble_pairing_hold, 1)
+#if IS_ENABLED(CONFIG_ZMK_LED_MATRIX_EDITOR)
+static uint16_t manual_timeout = STATUS_TIMEOUT_MS;
+static bool pairing_hold = BLE_PAIRING_HOLD;
+#define LM_MANUAL_TIMEOUT manual_timeout
+#define LM_PAIRING_HOLD pairing_hold
+#else
+#define LM_MANUAL_TIMEOUT STATUS_TIMEOUT_MS
+#define LM_PAIRING_HOLD BLE_PAIRING_HOLD
+#endif
 #define BLE_PAIRING_TIMEOUT_MULTIPLIER 5U
 
 #define LED_MATRIX_TICK_MS 50
@@ -40,7 +49,7 @@
 #define STARLIGHT_METEOR_TAIL_END_INTENSITY 10U
 
 #define LED_MATRIX_STATUS_ONLY_PERSISTENT_TIMEOUT_MS                                               \
-    ((STATUS_TIMEOUT_MS > 0U) ? STATUS_TIMEOUT_MS : 3000U)
+    ((LM_MANUAL_TIMEOUT > 0U) ? LM_MANUAL_TIMEOUT : 3000U)
 
 #define LED_MATRIX_SERVICE_SYNC_OUTPUT BIT(0)
 #define LED_MATRIX_SERVICE_RENDER BIT(1)
@@ -186,6 +195,14 @@ enum led_matrix_renderer {
     LED_MATRIX_RENDERER_RIPPLE,
     LED_MATRIX_RENDERER_RAIN,
     LED_MATRIX_RENDERER_STARLIGHT,
+    LED_MATRIX_RENDERER_GRADIENT,
+    LED_MATRIX_RENDERER_WAVE,
+    LED_MATRIX_RENDERER_RADIAL,
+    LED_MATRIX_RENDERER_ROTARY,
+    LED_MATRIX_RENDERER_PARTICLES,
+    LED_MATRIX_RENDERER_CHASE,
+    LED_MATRIX_RENDERER_REACTIVE,
+    LED_MATRIX_RENDERER_HEATMAP,
     LED_MATRIX_RENDERER_COUNT,
 };
 
@@ -278,8 +295,14 @@ struct led_matrix_color_validation_descriptor {
 };
 
 struct led_matrix_profile_cfg {
+#if IS_ENABLED(CONFIG_ZMK_LED_MATRIX_EDITOR)
+    uint16_t *member_index;
+    bool disabled;
+#endif
     uint8_t profile_id;
     uint8_t renderer;
+    uint8_t effect_style;
+    uint8_t effect_direction;
     int32_t keypress_afterglow_ms;
     int32_t keypress_fadeout_ms;
     int32_t keypress_range;
@@ -290,9 +313,25 @@ struct led_matrix_profile_cfg {
     const char *display_name;
 };
 
+#if IS_ENABLED(CONFIG_ZMK_LED_MATRIX_EDITOR)
+#define LM_CONFIG_CONST
+#else
+#define LM_CONFIG_CONST const
+#endif
+#if IS_ENABLED(CONFIG_ZMK_STUDIO_RPC) || IS_ENABLED(CONFIG_ZMK_LED_MATRIX_EDITOR)
+#define LM_PROFILE_NAME(node_id) .display_name = DT_PROP_OR(node_id, display_name, ""),
+#else
+#define LM_PROFILE_NAME(node_id)
+#endif
+
 struct led_matrix_independent_profile_cfg {
+#if (IS_ENABLED(CONFIG_ZMK_STUDIO_RPC) || IS_ENABLED(CONFIG_ZMK_LED_MATRIX_EDITOR))
+    const char *display_name;
+#endif
     uint8_t profile_id;
     uint8_t renderer;
+    uint8_t effect_style;
+    uint8_t effect_direction;
     uint16_t period_ms;
     uint16_t brightness;
     const uint32_t *color_map;
@@ -300,14 +339,20 @@ struct led_matrix_independent_profile_cfg {
 };
 
 struct led_matrix_independent_group_cfg {
+#if (IS_ENABLED(CONFIG_ZMK_STUDIO_RPC) || IS_ENABLED(CONFIG_ZMK_LED_MATRIX_EDITOR))
+    const char *display_name;
+#endif
     uint8_t independent_id;
     const uint16_t *leds;
     size_t led_count;
-    const struct led_matrix_independent_profile_cfg *profiles;
+    LM_CONFIG_CONST struct led_matrix_independent_profile_cfg *profiles;
     size_t profile_count;
 };
 
 struct led_matrix_layer_color_cfg {
+#if IS_ENABLED(CONFIG_ZMK_LED_MATRIX_EDITOR)
+    bool disabled;
+#endif
     zmk_keymap_layer_id_t layer_id;
     uint16_t brightness;
     uint32_t display_time_ms;
@@ -485,6 +530,8 @@ DT_FOREACH_CHILD_STATUS_OKAY(MATRIX_NODE, DECLARE_DISPLAY_PROFILE_NAME)
                     {                                                                              \
                         .profile_id = DT_PROP(node_id, profile_id),                                \
                         .renderer = DT_ENUM_IDX_OR(node_id, renderer, LED_MATRIX_RENDERER_SOLID),  \
+                        .effect_style = DT_PROP_OR(node_id, effect_style, 0),                      \
+                        .effect_direction = DT_ENUM_IDX_OR(node_id, effect_direction, 0),          \
                         .keypress_afterglow_ms = DT_PROP_OR(node_id, keypress_afterglow_ms, 0),    \
                         .keypress_fadeout_ms = DT_PROP_OR(node_id, keypress_fadeout_ms, 0),        \
                         .keypress_range = DT_PROP_OR(node_id, keypress_range, 0),                  \
@@ -496,12 +543,26 @@ DT_FOREACH_CHILD_STATUS_OKAY(MATRIX_NODE, DECLARE_DISPLAY_PROFILE_NAME)
                     }, ),                                                                          \
                 ())
 
-#if DISPLAY_PROFILE_COUNT > 0
-static const struct led_matrix_profile_cfg display_profiles[] = {
-    DT_FOREACH_CHILD_STATUS_OKAY(MATRIX_NODE, DISPLAY_PROFILE_ENTRY)};
+#if IS_ENABLED(CONFIG_ZMK_LED_MATRIX_EDITOR)
+#define CUSTOM_PRESET_COUNT CONFIG_ZMK_LED_MATRIX_CUSTOM_PRESETS
+/* Stable shared IDs even when the halves have different factory presets. */
+#define FIRST_CUSTOM_PRESET (255 - CUSTOM_PRESET_COUNT)
+#if IS_ENABLED(CONFIG_ZMK_SPLIT) && !IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
+/* The central's active layer mask has 32 bits. */
+#define EXTRA_LAYER_SLOTS 32
 #else
-static const struct led_matrix_profile_cfg display_profiles[1] = {{0}};
+#define EXTRA_LAYER_SLOTS ZMK_KEYMAP_LAYERS_LEN
 #endif
+BUILD_ASSERT(DISPLAY_PROFILE_COUNT <= FIRST_CUSTOM_PRESET);
+#else
+#define CUSTOM_PRESET_COUNT 0
+#define EXTRA_LAYER_SLOTS 0
+#endif
+#define PROFILE_SLOTS (DISPLAY_PROFILE_COUNT + CUSTOM_PRESET_COUNT)
+#define LAYER_SLOTS (LAYER_COLOR_COUNT + EXTRA_LAYER_SLOTS)
+static LM_CONFIG_CONST struct led_matrix_profile_cfg display_profiles[MAX(1, PROFILE_SLOTS)] = {
+    DT_FOREACH_CHILD_STATUS_OKAY(MATRIX_NODE, DISPLAY_PROFILE_ENTRY)
+};
 
 #define DECLARE_INDEPENDENT_LEDS(node_id)                                                          \
     COND_CODE_1(DT_NODE_HAS_PROP(node_id, independent_id),                                         \
@@ -518,7 +579,7 @@ static const struct led_matrix_profile_cfg display_profiles[1] = {{0}};
     COND_CODE_1(DT_NODE_HAS_PROP(node_id, independent_id),                                         \
                 (DT_FOREACH_CHILD_STATUS_OKAY_VARGS(                                               \
                      node_id, DECLARE_INDEPENDENT_PROFILE_COLOR_MAP,                               \
-                     node_id) static const struct led_matrix_independent_profile_cfg               \
+                     node_id) static LM_CONFIG_CONST struct led_matrix_independent_profile_cfg               \
                      LED_MATRIX_INDEPENDENT_PROFILES_NAME(                                         \
                          node_id)[MAX(1, DT_CHILD_NUM_STATUS_OKAY(node_id))] =                     \
                          {COND_CODE_1(UTIL_BOOL(DT_CHILD_NUM_STATUS_OKAY(node_id)),                \
@@ -529,8 +590,11 @@ static const struct led_matrix_profile_cfg display_profiles[1] = {{0}};
 
 #define INDEPENDENT_PROFILE_ENTRY(node_id, group_node)                                             \
     {                                                                                              \
+        LM_PROFILE_NAME(node_id) \
         .profile_id = DT_PROP_OR(node_id, profile_id, DT_NODE_CHILD_IDX(node_id)),                 \
         .renderer = DT_ENUM_IDX_OR(node_id, renderer, LED_MATRIX_RENDERER_SOLID),                  \
+        .effect_style = DT_PROP_OR(node_id, effect_style, 0),                                      \
+        .effect_direction = DT_ENUM_IDX_OR(node_id, effect_direction, 0),                          \
         .period_ms = DT_PROP_OR(node_id, period_ms, 1000),                                         \
         .brightness = DT_PROP_OR(node_id, brightness, 100),                                        \
         .color_map = LED_MATRIX_INDEPENDENT_PROFILE_COLOR_MAP_NAME(group_node, node_id),           \
@@ -544,6 +608,7 @@ DT_FOREACH_CHILD_STATUS_OKAY(MATRIX_NODE, DECLARE_INDEPENDENT_PROFILE_BLOCK)
     COND_CODE_1(DT_NODE_HAS_PROP(node_id, independent_id),                                         \
                 (                                                                                  \
                     {                                                                              \
+                        LM_PROFILE_NAME(node_id) \
                         .independent_id = DT_PROP(node_id, independent_id),                        \
                         .leds = LED_MATRIX_INDEPENDENT_LEDS_NAME(node_id),                         \
                         .led_count = DT_PROP_LEN_OR(node_id, independent_leds, 0),                 \
@@ -552,12 +617,16 @@ DT_FOREACH_CHILD_STATUS_OKAY(MATRIX_NODE, DECLARE_INDEPENDENT_PROFILE_BLOCK)
                     }, ),                                                                          \
                 ())
 
-#if INDEPENDENT_GROUP_COUNT > 0
-static const struct led_matrix_independent_group_cfg independent_groups[] = {
-    DT_FOREACH_CHILD_STATUS_OKAY(MATRIX_NODE, INDEPENDENT_GROUP_ENTRY)};
+#ifdef CONFIG_ZMK_LED_MATRIX_EDITOR
+#define CUSTOM_GROUP_COUNT CONFIG_ZMK_LED_MATRIX_CUSTOM_GROUPS
 #else
-static const struct led_matrix_independent_group_cfg independent_groups[1] = {{0}};
+#define CUSTOM_GROUP_COUNT 0
 #endif
+#define GROUP_SLOTS (INDEPENDENT_GROUP_COUNT + CUSTOM_GROUP_COUNT)
+BUILD_ASSERT(GROUP_SLOTS <= 255);
+static LM_CONFIG_CONST struct led_matrix_independent_group_cfg independent_groups[MAX(1, GROUP_SLOTS)] = {
+    DT_FOREACH_CHILD_STATUS_OKAY(MATRIX_NODE, INDEPENDENT_GROUP_ENTRY)
+};
 
 #define DECLARE_LAYER_COLOR_MAP(node_id)                                                           \
     COND_CODE_1(DT_NODE_HAS_PROP(node_id, layer_id),                                               \
@@ -584,12 +653,13 @@ DT_FOREACH_CHILD_STATUS_OKAY(MATRIX_NODE, DECLARE_LAYER_COLOR_MAP)
                     }, ),                                                                          \
                 ())
 
-#if LAYER_COLOR_COUNT > 0
-static const struct led_matrix_layer_color_cfg layer_colors[] = {
-    DT_FOREACH_CHILD_STATUS_OKAY(MATRIX_NODE, LAYER_COLOR_ENTRY)};
-#else
-static const struct led_matrix_layer_color_cfg layer_colors[1] = {{0}};
+static LM_CONFIG_CONST struct led_matrix_layer_color_cfg layer_colors[MAX(1, LAYER_SLOTS)] = {
+    DT_FOREACH_CHILD_STATUS_OKAY(MATRIX_NODE, LAYER_COLOR_ENTRY)
+};
+#if IS_ENABLED(CONFIG_ZMK_LED_MATRIX_EDITOR) && !LED_MATRIX_HAS_CENTRAL_STATE
+static bool has_central_layer;
 #endif
+static size_t runtime_layer_count = LAYER_COLOR_COUNT;
 
 static struct led_matrix_state state = {
     .on = IS_ENABLED(CONFIG_ZMK_LED_MATRIX_ON_START),
@@ -685,130 +755,130 @@ static void led_matrix_store_selected_independent_profiles(uint8_t *saved_ids, s
     }
 }
 
-static const struct led_zone battery_zone = {
+static LM_CONFIG_CONST struct led_zone battery_zone = {
     .leds = battery_leds_dt,
     .count = ARRAY_COUNT_IF_PROP(MATRIX_NODE, battery_leds),
 };
-static const struct led_zone ble_zone = {
+static LM_CONFIG_CONST struct led_zone ble_zone = {
     .leds = ble_profile_leds_dt,
     .count = ARRAY_COUNT_IF_PROP(MATRIX_NODE, ble_profile_leds),
 };
-static const struct led_zone usb_zone = {
+static LM_CONFIG_CONST struct led_zone usb_zone = {
     .leds = usb_leds_dt,
     .count = ARRAY_COUNT_IF_PROP(MATRIX_NODE, usb_leds),
 };
-static const struct led_zone hid_caps_zone = {
+static LM_CONFIG_CONST struct led_zone hid_caps_zone = {
     .leds = hid_caps_leds_dt,
     .count = ARRAY_COUNT_IF_PROP(MATRIX_NODE, hid_caps_leds),
 };
-static const struct led_zone hid_num_zone = {
+static LM_CONFIG_CONST struct led_zone hid_num_zone = {
     .leds = hid_num_leds_dt,
     .count = ARRAY_COUNT_IF_PROP(MATRIX_NODE, hid_num_leds),
 };
-static const struct led_zone hid_scroll_zone = {
+static LM_CONFIG_CONST struct led_zone hid_scroll_zone = {
     .leds = hid_scroll_leds_dt,
     .count = ARRAY_COUNT_IF_PROP(MATRIX_NODE, hid_scroll_leds),
 };
-static const struct led_zone hid_compose_zone = {
+static LM_CONFIG_CONST struct led_zone hid_compose_zone = {
     .leds = hid_compose_leds_dt,
     .count = ARRAY_COUNT_IF_PROP(MATRIX_NODE, hid_compose_leds),
 };
-static const struct led_zone hid_kana_zone = {
+static LM_CONFIG_CONST struct led_zone hid_kana_zone = {
     .leds = hid_kana_leds_dt,
     .count = ARRAY_COUNT_IF_PROP(MATRIX_NODE, hid_kana_leds),
 };
 
-static const struct led_matrix_color_list_cfg usb_color_hid_cfg = {
+static LM_CONFIG_CONST struct led_matrix_color_list_cfg usb_color_hid_cfg = {
     .colors = usb_color_hid_dt,
     .count = ARRAY_COUNT_IF_PROP(MATRIX_NODE, usb_color_hid),
     .default_color = DEFAULT_USB_COLOR_HID,
 };
-static const struct led_matrix_color_list_cfg usb_color_powered_cfg = {
+static LM_CONFIG_CONST struct led_matrix_color_list_cfg usb_color_powered_cfg = {
     .colors = usb_color_powered_dt,
     .count = ARRAY_COUNT_IF_PROP(MATRIX_NODE, usb_color_powered),
     .default_color = DEFAULT_USB_COLOR_POWERED,
 };
-static const struct led_matrix_color_list_cfg usb_color_none_cfg = {
+static LM_CONFIG_CONST struct led_matrix_color_list_cfg usb_color_none_cfg = {
     .colors = usb_color_none_dt,
     .count = ARRAY_COUNT_IF_PROP(MATRIX_NODE, usb_color_none),
     .default_color = DEFAULT_USB_COLOR_NONE,
 };
-static const struct led_matrix_color_list_cfg ble_color_open_cfg = {
+static LM_CONFIG_CONST struct led_matrix_color_list_cfg ble_color_open_cfg = {
     .colors = ble_color_open_dt,
     .count = ARRAY_COUNT_IF_PROP(MATRIX_NODE, ble_color_open),
     .default_color = DEFAULT_BLE_COLOR_OPEN,
 };
-static const struct led_matrix_color_list_cfg ble_color_connected_cfg = {
+static LM_CONFIG_CONST struct led_matrix_color_list_cfg ble_color_connected_cfg = {
     .colors = ble_color_connected_dt,
     .count = ARRAY_COUNT_IF_PROP(MATRIX_NODE, ble_color_connected),
     .default_color = DEFAULT_BLE_COLOR_CONNECTED,
 };
-static const struct led_matrix_color_list_cfg ble_color_disconnected_cfg = {
+static LM_CONFIG_CONST struct led_matrix_color_list_cfg ble_color_disconnected_cfg = {
     .colors = ble_color_disconnected_dt,
     .count = ARRAY_COUNT_IF_PROP(MATRIX_NODE, ble_color_disconnected),
     .default_color = DEFAULT_BLE_COLOR_DISCONNECTED,
 };
-static const struct led_matrix_color_list_cfg battery_color_on_cfg = {
+static LM_CONFIG_CONST struct led_matrix_color_list_cfg battery_color_on_cfg = {
     .colors = battery_color_on_dt,
     .count = ARRAY_COUNT_IF_PROP(MATRIX_NODE, battery_color_on),
     .default_color = DEFAULT_BATTERY_COLOR_ON,
 };
-static const struct led_matrix_color_list_cfg battery_color_off_cfg = {
+static LM_CONFIG_CONST struct led_matrix_color_list_cfg battery_color_off_cfg = {
     .colors = battery_color_off_dt,
     .count = ARRAY_COUNT_IF_PROP(MATRIX_NODE, battery_color_off),
     .default_color = DEFAULT_BATTERY_COLOR_OFF,
 };
-static const struct led_matrix_color_list_cfg battery_level_color_cfg = {
+static LM_CONFIG_CONST struct led_matrix_color_list_cfg battery_level_color_cfg = {
     .colors = battery_level_colors_dt,
     .count = ARRAY_COUNT_IF_PROP(MATRIX_NODE, battery_level_colors),
     .default_color = DEFAULT_BATTERY_COLOR_ON,
 };
-static const struct led_matrix_color_list_cfg hid_caps_color_on_cfg = {
+static LM_CONFIG_CONST struct led_matrix_color_list_cfg hid_caps_color_on_cfg = {
     .colors = hid_caps_color_on_dt,
     .count = ARRAY_COUNT_IF_PROP(MATRIX_NODE, hid_caps_color_on),
     .default_color = DEFAULT_HID_COLOR_ON,
 };
-static const struct led_matrix_color_list_cfg hid_caps_color_off_cfg = {
+static LM_CONFIG_CONST struct led_matrix_color_list_cfg hid_caps_color_off_cfg = {
     .colors = hid_caps_color_off_dt,
     .count = ARRAY_COUNT_IF_PROP(MATRIX_NODE, hid_caps_color_off),
     .default_color = DEFAULT_HID_COLOR_OFF,
 };
-static const struct led_matrix_color_list_cfg hid_num_color_on_cfg = {
+static LM_CONFIG_CONST struct led_matrix_color_list_cfg hid_num_color_on_cfg = {
     .colors = hid_num_color_on_dt,
     .count = ARRAY_COUNT_IF_PROP(MATRIX_NODE, hid_num_color_on),
     .default_color = DEFAULT_HID_COLOR_ON,
 };
-static const struct led_matrix_color_list_cfg hid_num_color_off_cfg = {
+static LM_CONFIG_CONST struct led_matrix_color_list_cfg hid_num_color_off_cfg = {
     .colors = hid_num_color_off_dt,
     .count = ARRAY_COUNT_IF_PROP(MATRIX_NODE, hid_num_color_off),
     .default_color = DEFAULT_HID_COLOR_OFF,
 };
-static const struct led_matrix_color_list_cfg hid_scroll_color_on_cfg = {
+static LM_CONFIG_CONST struct led_matrix_color_list_cfg hid_scroll_color_on_cfg = {
     .colors = hid_scroll_color_on_dt,
     .count = ARRAY_COUNT_IF_PROP(MATRIX_NODE, hid_scroll_color_on),
     .default_color = DEFAULT_HID_COLOR_ON,
 };
-static const struct led_matrix_color_list_cfg hid_scroll_color_off_cfg = {
+static LM_CONFIG_CONST struct led_matrix_color_list_cfg hid_scroll_color_off_cfg = {
     .colors = hid_scroll_color_off_dt,
     .count = ARRAY_COUNT_IF_PROP(MATRIX_NODE, hid_scroll_color_off),
     .default_color = DEFAULT_HID_COLOR_OFF,
 };
-static const struct led_matrix_color_list_cfg hid_compose_color_on_cfg = {
+static LM_CONFIG_CONST struct led_matrix_color_list_cfg hid_compose_color_on_cfg = {
     .colors = hid_compose_color_on_dt,
     .count = ARRAY_COUNT_IF_PROP(MATRIX_NODE, hid_compose_color_on),
     .default_color = DEFAULT_HID_COLOR_ON,
 };
-static const struct led_matrix_color_list_cfg hid_compose_color_off_cfg = {
+static LM_CONFIG_CONST struct led_matrix_color_list_cfg hid_compose_color_off_cfg = {
     .colors = hid_compose_color_off_dt,
     .count = ARRAY_COUNT_IF_PROP(MATRIX_NODE, hid_compose_color_off),
     .default_color = DEFAULT_HID_COLOR_OFF,
 };
-static const struct led_matrix_color_list_cfg hid_kana_color_on_cfg = {
+static LM_CONFIG_CONST struct led_matrix_color_list_cfg hid_kana_color_on_cfg = {
     .colors = hid_kana_color_on_dt,
     .count = ARRAY_COUNT_IF_PROP(MATRIX_NODE, hid_kana_color_on),
     .default_color = DEFAULT_HID_COLOR_ON,
 };
-static const struct led_matrix_color_list_cfg hid_kana_color_off_cfg = {
+static LM_CONFIG_CONST struct led_matrix_color_list_cfg hid_kana_color_off_cfg = {
     .colors = hid_kana_color_off_dt,
     .count = ARRAY_COUNT_IF_PROP(MATRIX_NODE, hid_kana_color_off),
     .default_color = DEFAULT_HID_COLOR_OFF,
@@ -879,14 +949,52 @@ static const char *renderer_name(uint8_t renderer) {
         return "rain";
     case LED_MATRIX_RENDERER_STARLIGHT:
         return "starlight";
+    case LED_MATRIX_RENDERER_GRADIENT:
+        return "gradient";
+    case LED_MATRIX_RENDERER_WAVE:
+        return "wave";
+    case LED_MATRIX_RENDERER_RADIAL:
+        return "radial";
+    case LED_MATRIX_RENDERER_ROTARY:
+        return "rotary";
+    case LED_MATRIX_RENDERER_PARTICLES:
+        return "particles";
+    case LED_MATRIX_RENDERER_CHASE:
+        return "chase";
+    case LED_MATRIX_RENDERER_REACTIVE:
+        return "reactive";
+    case LED_MATRIX_RENDERER_HEATMAP:
+        return "heatmap";
     default:
         return "unknown";
     }
 }
 
-static bool led_matrix_has_profiles(void) { return DISPLAY_PROFILE_COUNT > 0U; }
+static bool profile_available(size_t i) {
+#if IS_ENABLED(CONFIG_ZMK_LED_MATRIX_EDITOR)
+    if (i >= DISPLAY_PROFILE_COUNT) return display_profiles[i].member_index && !display_profiles[i].disabled;
+#endif
+    return i < DISPLAY_PROFILE_COUNT;
+}
+static bool led_matrix_has_profiles(void) {
+    for (size_t i = 0; i < PROFILE_SLOTS; i++) if (profile_available(i)) return true;
+    return false;
+}
+static uint8_t first_available_profile(void) {
+    uint8_t first = UINT8_MAX;
+    for (size_t i = 0; i < PROFILE_SLOTS; i++)
+        if (profile_available(i)) first = MIN(first, display_profiles[i].profile_id);
+    return first;
+}
 
-static bool led_matrix_has_independent_groups(void) { return INDEPENDENT_GROUP_COUNT > 0U; }
+static bool led_matrix_has_independent_groups(void) {
+    for (size_t i = 0; i < GROUP_SLOTS; ++i) {
+        if (independent_groups[i].led_count) {
+            return true;
+        }
+    }
+    return false;
+}
 
 static bool led_matrix_has_spatial_grid(void) { return grid_cell_count > 0U; }
 
@@ -958,22 +1066,21 @@ static struct led_hsb rgb8_to_hsb(struct led_rgb8 color) {
     uint8_t max = MAX(color.r, MAX(color.g, color.b));
     uint8_t min = MIN(color.r, MIN(color.g, color.b));
     uint8_t delta = max - min;
-    uint16_t hue = 0U;
+    int hue = 0;
     uint8_t sat = max == 0U ? 0U : (uint8_t)(((uint16_t)delta * 100U) / max);
 
     if (delta != 0U) {
         if (max == color.r) {
-            hue = (uint16_t)(60 * (((int)color.g - (int)color.b) * 100 / delta)) / 100;
+            hue = 60 * (((int)color.g - (int)color.b) * 100 / delta) / 100;
         } else if (max == color.g) {
-            hue = (uint16_t)(120 + (60 * (((int)color.b - (int)color.r) * 100 / delta)) / 100);
+            hue = 120 + 60 * (((int)color.b - (int)color.r) * 100 / delta) / 100;
         } else {
-            hue = (uint16_t)(240 + (60 * (((int)color.r - (int)color.g) * 100 / delta)) / 100);
+            hue = 240 + 60 * (((int)color.r - (int)color.g) * 100 / delta) / 100;
         }
 
-        while ((int16_t)hue < 0) {
-            hue = (uint16_t)(hue + 360U);
+        if (hue < 0) {
+            hue += 360;
         }
-        hue %= 360U;
     }
 
     return (struct led_hsb){.h = hue, .s = sat, .b = (uint8_t)(((uint16_t)max * 100U) / 255U)};
@@ -1282,8 +1389,8 @@ static void set_zone_color_from_config(const struct led_zone *zone, const uint32
 }
 
 static const struct led_matrix_profile_cfg *find_display_profile(uint8_t profile_id) {
-    for (size_t i = 0; i < DISPLAY_PROFILE_COUNT; i++) {
-        if (display_profiles[i].profile_id == profile_id) {
+    for (size_t i = 0; i < PROFILE_SLOTS; i++) {
+        if (profile_available(i) && display_profiles[i].profile_id == profile_id) {
             return &display_profiles[i];
         }
     }
@@ -1301,7 +1408,10 @@ static const struct led_matrix_profile_cfg *selected_profile_cfg(void) {
 
 static const struct led_matrix_layer_color_cfg *
 find_layer_color_cfg(zmk_keymap_layer_id_t layer_id) {
-    for (size_t i = 0; i < LAYER_COLOR_COUNT; i++) {
+    for (size_t i = 0; i < runtime_layer_count; i++) {
+#if IS_ENABLED(CONFIG_ZMK_LED_MATRIX_EDITOR)
+        if (layer_colors[i].disabled) continue;
+#endif
         if (layer_colors[i].layer_id == layer_id) {
             return &layer_colors[i];
         }
@@ -1350,6 +1460,9 @@ find_independent_profile(const struct led_matrix_independent_group_cfg *group, u
 
 static const struct led_matrix_independent_profile_cfg *
 selected_independent_profile_cfg(const struct led_matrix_independent_group_cfg *group) {
+    if (group && group->independent_id >= INDEPENDENT_GROUP_COUNT && group->profile_count == 1) {
+        return group->profiles;
+    }
     if (group == NULL || group->independent_id >= LED_MATRIX_INDEPENDENT_PROFILE_SLOT_COUNT) {
         return NULL;
     }
@@ -1367,20 +1480,21 @@ static size_t led_matrix_total_independent_led_count(void) {
     return total;
 }
 
+static uint32_t main_profile_color(const struct led_matrix_profile_cfg *profile, uint16_t led) {
+    if (!profile) return LM_BLACK;
+#ifdef CONFIG_ZMK_LED_MATRIX_EDITOR
+    if (profile->member_index) {
+        led = profile->member_index[led];
+        /* A pressed origin outside the output mask seeds its neighbors with
+         * the first color. The compositor applies the mask at the destination. */
+        if (led == LM_NOLED) led = 0;
+    }
+#endif
+    return led_matrix_configured_color(profile->color_map, profile->color_map_count, LM_BLACK, led);
+}
 static struct led_rgb8 resolve_profile_color(const struct led_matrix_profile_cfg *profile,
                                              uint16_t led, uint32_t now_ms) {
-    uint32_t color = LM_BLACK;
-
-    if (profile == NULL || profile->color_map_count == 0U) {
-        return (struct led_rgb8){0, 0, 0};
-    }
-
-    if (profile->color_map_count == 1U) {
-        color = profile->color_map[0];
-    } else if (led < profile->color_map_count) {
-        color = profile->color_map[led];
-    }
-
+    uint32_t color = main_profile_color(profile, led);
     return led_matrix_color_is_dynamic(color) ? resolve_dynamic_color(color, led, now_ms)
                                               : color24_to_rgb8(color);
 }
@@ -1444,7 +1558,7 @@ led_matrix_ble_color_cfg_for_snapshot(const struct led_matrix_snapshot *snapshot
 
 static const struct led_matrix_status_source_descriptor *
 led_matrix_status_source_descriptor_for_source(enum led_matrix_status_source source);
-static const struct led_matrix_status_source_descriptor status_source_descriptors[4];
+static LM_CONFIG_CONST struct led_matrix_status_source_descriptor status_source_descriptors[4];
 static const struct led_matrix_hid_indicator_descriptor hid_indicator_descriptors[5];
 extern struct k_work_delayable led_matrix_clear_status_work;
 extern struct k_work_delayable led_matrix_clear_layer_color_work;
@@ -1458,6 +1572,7 @@ static void led_matrix_queue_service_work(uint32_t requests);
 static int led_matrix_reschedule_delayable_work(struct k_work_delayable *work, k_timeout_t delay);
 static void led_matrix_sync_tick_state(void);
 static void led_matrix_schedule_render(void);
+static uint16_t timeout_for_source(enum led_matrix_status_source src);
 static uint32_t
 timeout_for_sources_with_wake_context(uint8_t sources,
                                       enum led_matrix_status_wake_context wake_context);
@@ -1724,7 +1839,7 @@ static enum zmk_transport led_matrix_current_output_transport(void) {
 #endif
 }
 
-static const struct led_matrix_status_source_descriptor status_source_descriptors[] = {
+static LM_CONFIG_CONST struct led_matrix_status_source_descriptor status_source_descriptors[] = {
     {
         .source = LED_MATRIX_STATUS_BATTERY,
         .name = "battery",

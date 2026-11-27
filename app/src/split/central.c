@@ -7,6 +7,8 @@
 #include <errno.h>
 
 #include <zmk/stdlib.h>
+#include <zmk/keymap.h>
+#include <zmk/led_matrix.h>
 #include <zmk/split/transport/central.h>
 #include <zmk/split/central.h>
 #include <zmk/hid_indicators_types.h>
@@ -38,6 +40,11 @@ int zmk_split_transport_central_peripheral_event_handler(
         return -EINVAL;
     }
     switch (ev.type) {
+#if IS_ENABLED(CONFIG_ZMK_LED_MATRIX_EDITOR)
+    case ZMK_SPLIT_TRANSPORT_PERIPHERAL_EVENT_TYPE_LIGHTING:
+        zmk_lighting_receive_reply(source, &ev.data.lighting);
+        return 0;
+#endif
     case ZMK_SPLIT_TRANSPORT_PERIPHERAL_EVENT_TYPE_KEY_POSITION_EVENT: {
         struct zmk_position_state_changed state_ev = {.source = source,
                                                       .position =
@@ -163,6 +170,32 @@ int zmk_split_central_get_peripheral_battery_level(uint8_t source, uint8_t *leve
 
 #endif // IS_ENABLED(CONFIG_ZMK_SPLIT_BLE_CENTRAL_BATTERY_LEVEL_FETCHING)
 
+#if IS_ENABLED(CONFIG_ZMK_LED_MATRIX_EDITOR)
+static void sync_lighting_work(struct k_work *work);
+static K_WORK_DELAYABLE_DEFINE(runtime_sync, sync_lighting_work);
+void zmk_lighting_sync_runtime(void) {
+    k_work_reschedule(&runtime_sync, K_NO_WAIT);
+}
+static void sync_lighting_work(struct k_work *work) {
+    const struct zmk_split_transport_central *t = active_transport;
+    if (!t || !t->api->get_available_source_ids || !t->api->send_command) return;
+    uint8_t slots[ZMK_SPLIT_CENTRAL_PERIPHERAL_COUNT];
+    int count = t->api->get_available_source_ids(slots);
+    struct zmk_split_transport_central_command cmd = {
+        .type = ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_LIGHTING,
+        .data.lighting = {.op = LM_RUNTIME, .length = 2, .data = {
+            zmk_keymap_layer_index_to_id(zmk_keymap_highest_layer_active()), zmk_led_matrix_get_profile()}}};
+    bool retry = false;
+    for (int i = 0; i < count; i++) {
+        int rc = t->api->send_command(slots[i], cmd);
+        retry |= rc == -ENOMEM || rc == -EAGAIN || rc == -EBUSY;
+    }
+    /* A wired controller without a detect GPIO cannot observe a cable replug. */
+    if (retry || (IS_ENABLED(CONFIG_ZMK_SPLIT_WIRED) && !t->api->get_status))
+        k_work_schedule(&runtime_sync, retry ? K_MSEC(100) : K_SECONDS(3));
+}
+#endif
+
 static int select_first_available_transport(void) {
     // Transports are sorted by priority, so find the first
     // One that's available, and enable it. Any transport that
@@ -189,6 +222,9 @@ static int select_first_available_transport(void) {
                 err = active_transport->api->set_enabled(true);
             }
 
+#if IS_ENABLED(CONFIG_ZMK_LED_MATRIX_EDITOR)
+            if (!err) zmk_lighting_sync_runtime();
+#endif
             return err;
         }
     }
@@ -198,6 +234,9 @@ static int select_first_available_transport(void) {
 
 static int transport_status_changed_cb(const struct zmk_split_transport_central *central,
                                        struct zmk_split_transport_status status) {
+#if IS_ENABLED(CONFIG_ZMK_LED_MATRIX_EDITOR)
+    if (status.available) zmk_lighting_sync_runtime();
+#endif
     if (central == active_transport) {
         LOG_DBG("Central at %p changed status: enabled %d, available %d, connections %d", central,
                 status.enabled, status.available, status.connections);
@@ -225,3 +264,42 @@ static int central_init(void) {
 }
 
 SYS_INIT(central_init, APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT);
+
+#if IS_ENABLED(CONFIG_ZMK_LED_MATRIX_EDITOR)
+/* Studio serializes requests. Ignore late replies from older requests or other slots. */
+static K_SEM_DEFINE(lighting_ack, 0, 1);
+static struct k_spinlock lighting_lock;
+static struct zmk_lighting_packet lighting_reply;
+static uint16_t sequence;
+static int expected_source = -1;
+void zmk_lighting_receive_reply(uint8_t source, const struct zmk_lighting_packet *p) {
+    k_spinlock_key_t key = k_spin_lock(&lighting_lock);
+    if (source == expected_source && p->sequence == sequence) {
+        lighting_reply = *p;
+        expected_source = -1;
+        k_sem_give(&lighting_ack);
+    }
+    k_spin_unlock(&lighting_lock, key);
+}
+int zmk_lighting_forward(uint8_t source, struct zmk_lighting_packet *p) {
+    const struct zmk_split_transport_central *t = active_transport;
+    if (!t || !t->api->send_command)
+        return -ENOTCONN;
+    k_spinlock_key_t key = k_spin_lock(&lighting_lock);
+    k_sem_reset(&lighting_ack);
+    expected_source = source;
+    p->sequence = ++sequence;
+    k_spin_unlock(&lighting_lock, key);
+    struct zmk_split_transport_central_command cmd = {
+        .type = ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_LIGHTING, .data.lighting = *p};
+    int rc = t->api->send_command(source, cmd);
+    if (!rc)
+        rc = k_sem_take(&lighting_ack, K_SECONDS(2));
+    key = k_spin_lock(&lighting_lock);
+    if (!rc)
+        *p = lighting_reply;
+    expected_source = -1;
+    k_spin_unlock(&lighting_lock, key);
+    return rc;
+}
+#endif

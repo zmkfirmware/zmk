@@ -3,9 +3,9 @@
 
 description: |
   ZMK LED matrix controller.
-  Profiles are optional when layer color entries or status LED zones provide
-  the desired output, but every configuration must still define at least one
-  renderable source.
+  A controller without the runtime editor needs at least one profile, independent
+  group, layer color entry, or status LED zone. With the editor enabled the
+  controller can start with an empty catalog.
 
 compatible: "zmk,led-matrix"
 
@@ -88,8 +88,8 @@ properties:
       the chosen kscan row count, and every row width must match the chosen
       kscan column count.
       This property is required when using position-driven features such as
-      keypress/ripple/rain renderers or layer color entries that omit
-      layer-leds. It may be omitted for status-only or independent-only
+      keypress, ripple, rain, gradient, wave, radial, rotary, particles, reactive,
+      heatmap, or layer color entries that omit layer-leds. It may be omitted for status-only or independent-only
       configurations.
 
   independent-leds:
@@ -451,10 +451,20 @@ child-binding:
       required: false
       description: Human-readable profile name shown on displays.
 
+    effect-style:
+      type: int
+      enum: [0, 1, 2, 3, 4, 5, 6]
+      description: Zero-based style within the renderer, as listed in the LED Matrix reference.
+
+    effect-direction:
+      type: string
+      enum: ["forward", "reverse"]
+      description: Spatial or travel direction. Defaults to forward.
+
     renderer:
       type: string
       required: false
-      enum: ["solid", "breathe", "spectrum", "swirl", "keypress", "ripple", "rain", "starlight"]
+      enum: ["solid", "breathe", "spectrum", "swirl", "keypress", "ripple", "rain", "starlight", "gradient", "wave", "radial", "rotary", "particles", "chase", "reactive", "heatmap"]
       description: |
         Rendering mode for a display profile child. The implementation uses
         "solid" when omitted. The binding intentionally does not inject this
@@ -542,18 +552,34 @@ child-binding:
       Local profile entry for an independent LED container.
 
     properties:
+      display-name:
+        type: string
+        description: Optional local profile name shown in Studio.
+
       profile-id:
         type: int
         required: false
         description: |
           0-based local profile ID within an independent LED container.
 
+      effect-style:
+        type: int
+        enum: [0, 1, 2, 3, 4, 5, 6]
+        description: Zero-based style within the renderer, as listed in the LED Matrix reference.
+
+      effect-direction:
+        type: string
+        enum: ["forward", "reverse"]
+        description: Spatial or travel direction. Defaults to forward.
+
       renderer:
         type: string
         required: false
-        enum: ["solid", "breathe", "spectrum", "swirl", "keypress", "ripple", "rain", "starlight"]
+        enum: ["solid", "breathe", "spectrum", "swirl", "keypress", "ripple", "rain", "starlight", "gradient", "wave", "radial", "rotary", "particles", "chase", "reactive", "heatmap"]
         default: "solid"
-        description: Rendering mode for an independent LED local profile.
+        description: |
+          Independent profiles accept solid, breathe, spectrum, swirl, and chase.
+          The enum order matches main renderer IDs used by Studio.
 
       colors:
         type: array

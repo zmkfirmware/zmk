@@ -86,8 +86,10 @@ static int led_matrix_settings_load_cb(const char *name, size_t len, settings_re
         return -EINVAL;
     }
 
+    /* Editor settings may be loaded after the global selected ID. */
+#if !IS_ENABLED(CONFIG_ZMK_LED_MATRIX_EDITOR)
     led_matrix_sanitize_runtime_state();
-
+#endif
     return 0;
 }
 
@@ -166,12 +168,16 @@ static int zmk_led_matrix_init(void) {
     k_work_init_delayable(&led_matrix_save_work, led_matrix_save_state_handler);
 #endif
 
+#if IS_ENABLED(CONFIG_ZMK_LED_MATRIX_EDITOR)
+    editor_init_groups();
+#endif
     snapshot = (struct led_matrix_snapshot){0};
     led_matrix_refresh_status_snapshot(&snapshot);
     led_matrix_refresh_layer_snapshot();
 
     led_matrix_sanitize_runtime_state();
     ripple_state.active = false;
+    effect_reset_input();
     led_matrix_reset_rain_state();
     ble_pairing_transient_active = false;
     ble_pairing_transient_allows_completion_overlay = false;
@@ -337,7 +343,11 @@ int zmk_led_matrix_set_profile(uint8_t profile_id) {
     }
 
     state.selected_profile_id = profile_id;
+#if IS_ENABLED(CONFIG_ZMK_LED_MATRIX_EDITOR) && IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
+    zmk_lighting_sync_runtime();
+#endif
     ripple_state.active = false;
+    effect_reset_input();
     led_matrix_reset_rain_state();
     clear_keypress_release_state();
     led_matrix_schedule_render();
@@ -347,26 +357,28 @@ int zmk_led_matrix_set_profile(uint8_t profile_id) {
 
 uint8_t zmk_led_matrix_get_profile(void) {
     const struct led_matrix_profile_cfg *profile = selected_profile_cfg();
-    return profile != NULL ? profile->profile_id : 0U;
+    return profile != NULL ? profile->profile_id : (IS_ENABLED(CONFIG_ZMK_LED_MATRIX_EDITOR) ? UINT8_MAX : 0U);
 }
 
 uint8_t zmk_led_matrix_calc_profile(int direction) {
-#if DISPLAY_PROFILE_COUNT == 0
-    ARG_UNUSED(direction);
-    return 0U;
-#else
-    if (!led_matrix_has_profiles()) {
-        return 0U;
+    /* Factory IDs are dense. Count active custom slots in ascending ID order
+     * so next/previous and larger relative steps skip holes after deletion. */
+    int count = DISPLAY_PROFILE_COUNT;
+    int rank = MIN(state.selected_profile_id, DISPLAY_PROFILE_COUNT);
+    for (size_t i = DISPLAY_PROFILE_COUNT; i < PROFILE_SLOTS; i++) {
+        if (profile_available(i)) {
+            count++;
+            if (display_profiles[i].profile_id < state.selected_profile_id) rank++;
+        }
     }
-
-    int next = (int)zmk_led_matrix_get_profile() + direction;
-
-    while (next < 0) {
-        next += DISPLAY_PROFILE_COUNT;
+    if (!count) return 0;
+    int next = (rank + direction % count + count) % count;
+    if (next < DISPLAY_PROFILE_COUNT) return next;
+    next -= DISPLAY_PROFILE_COUNT;
+    for (size_t i = DISPLAY_PROFILE_COUNT; i < PROFILE_SLOTS; i++) {
+        if (profile_available(i) && next-- == 0) return display_profiles[i].profile_id;
     }
-
-    return (uint8_t)(next % DISPLAY_PROFILE_COUNT);
-#endif
+    return 0;
 }
 
 int zmk_led_matrix_set_independent_profile(uint8_t child_id, uint8_t profile_id) {
@@ -402,7 +414,7 @@ uint8_t zmk_led_matrix_get_independent_profile(uint8_t child_id) {
 
     const struct led_matrix_independent_profile_cfg *profile =
         selected_independent_profile_cfg(group);
-    return profile != NULL ? profile->profile_id : 0U;
+    return profile != NULL ? profile->profile_id : (IS_ENABLED(CONFIG_ZMK_LED_MATRIX_EDITOR) ? UINT8_MAX : 0U);
 }
 
 uint8_t zmk_led_matrix_calc_independent_profile(uint8_t child_id, int direction) {
@@ -482,9 +494,23 @@ int zmk_led_matrix_show_status(uint8_t sources_mask) {
     led_matrix_refresh_automatic_persistent_status_sources();
     led_matrix_enable_force_show_if_off();
     led_matrix_start_status_overlay(led_matrix_status_mask_to_sources(sources_mask),
-                                    STATUS_TIMEOUT_MS, false);
+                                    LM_MANUAL_TIMEOUT, false);
     led_matrix_schedule_render();
     return 0;
 }
 
 SYS_INIT(zmk_led_matrix_init, APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY);
+
+#if IS_ENABLED(CONFIG_ZMK_LED_MATRIX_EDITOR) && !LED_MATRIX_HAS_CENTRAL_STATE
+void zmk_lighting_apply_runtime(uint8_t layer, uint8_t profile) {
+    if (profile != state.selected_profile_id && find_display_profile(profile))
+        zmk_led_matrix_set_profile(profile);
+    if (has_central_layer && snapshot.active_layer == layer) return;
+    has_central_layer = true;
+    snapshot.active_layer = layer;
+    if (led_matrix_base_render_enabled()) {
+        led_matrix_refresh_layer_color(true);
+        led_matrix_schedule_render();
+    }
+}
+#endif

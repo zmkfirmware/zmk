@@ -31,8 +31,8 @@
 
         default_layer {
             bindings = <
-                &lm LM_SPD 0 &lm LM_SPI 0
-                &lm LM_SPI 0 &kp D
+                &lm LM_SPD &lm LM_SPI
+                &lm LM_SPI &kp D
             >;
         };
     };

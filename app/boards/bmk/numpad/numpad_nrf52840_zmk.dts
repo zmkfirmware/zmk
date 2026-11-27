@@ -34,6 +34,7 @@
 		zmk,battery = &vbatt;
 		zmk,led-matrix = &led_matrix;
 		zmk,physical-layout = &layout_numpad;
+		zmk,studio-rpc-uart = &numpad_studio_uart;
 	};
 
 	default_transform: keymap_transform_0 {
@@ -622,6 +623,9 @@ nice_view_spi: &spi0 {
 
 zephyr_udc0: &usbd {
     status = "okay";
+    numpad_studio_uart: cdc_acm_uart0 {
+        compatible = "zephyr,cdc-acm-uart";
+    };
 };
 
 

@@ -13,6 +13,8 @@
 #define BIT(n) (1U << (n))
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
+static unsigned int irq_lock(void) { return 0; }
+static void irq_unlock(unsigned int key) { (void)key; }
 #define ARG_UNUSED(a) ((void)(a))
 #define LOGICAL_LED_COUNT 4
 #define ZMK_KEYMAP_LEN 4
@@ -48,7 +50,16 @@ enum {
     LED_MATRIX_RENDERER_KEYPRESS,
     LED_MATRIX_RENDERER_RIPPLE,
     LED_MATRIX_RENDERER_RAIN,
-    LED_MATRIX_RENDERER_STARLIGHT
+    LED_MATRIX_RENDERER_STARLIGHT,
+    LED_MATRIX_RENDERER_GRADIENT,
+    LED_MATRIX_RENDERER_WAVE,
+    LED_MATRIX_RENDERER_RADIAL,
+    LED_MATRIX_RENDERER_ROTARY,
+    LED_MATRIX_RENDERER_PARTICLES,
+    LED_MATRIX_RENDERER_CHASE,
+    LED_MATRIX_RENDERER_REACTIVE,
+    LED_MATRIX_RENDERER_HEATMAP,
+    LED_MATRIX_RENDERER_COUNT,
 };
 enum led_matrix_status_source {
     LED_MATRIX_STATUS_BATTERY = BIT(0),
@@ -83,14 +94,14 @@ struct led_matrix_color_list_cfg {
     uint32_t default_color;
 };
 struct led_matrix_profile_cfg {
-    uint8_t renderer;
+    uint8_t renderer, effect_style, effect_direction;
     int32_t keypress_afterglow_ms, keypress_fadeout_ms, keypress_range;
     uint16_t period_ms, brightness;
     const uint32_t *color_map;
     size_t color_map_count;
 };
 struct led_matrix_independent_profile_cfg {
-    uint8_t renderer;
+    uint8_t renderer, effect_style, effect_direction;
     uint16_t period_ms, brightness;
     const uint32_t *color_map;
     size_t color_map_count;
@@ -149,6 +160,7 @@ static struct {
 } ripple_state;
 static struct led_matrix_rain_state rain_state;
 static uint16_t position_to_led[] = {0, 1, 2, 3}, position_to_cell[] = {0, 1, 2, 3};
+static uint16_t led_to_cell[] = {0, 1, 2, 3};
 static uint16_t cell_to_led[] = {0, 1, 2, 3}, cell_row_idx[] = {0, 0, 1, 1};
 static uint16_t cell_col_idx[] = {0, 1, 0, 1};
 static uint16_t grid_cell_count = 4, grid_row_count = 2, grid_col_count = 2;

@@ -15,7 +15,7 @@
 #include <zmk/ble.h>
 #include <zmk/event_manager.h>
 #include <zmk/events/ble_active_profile_changed.h>
-#include <zmk/studio/rpc.h>
+#include "rpc_tx.h"
 
 #include "uuid.h"
 
@@ -26,7 +26,7 @@ LOG_MODULE_DECLARE(zmk_studio, CONFIG_ZMK_STUDIO_LOG_LEVEL);
 static bool handling_rx = false;
 
 static K_SEM_DEFINE(indicate_sem, 1, 1);
-static atomic_t notify_size;
+static uint32_t indicate_ticket;
 
 static void rpc_ccc_cfg_changed(const struct bt_gatt_attr *attr, uint16_t value) {
     ARG_UNUSED(attr);
@@ -67,22 +67,9 @@ static ssize_t write_rpc_req(struct bt_conn *conn, const struct bt_gatt_attr *at
         return len;
     }
 
-    uint32_t copied = 0;
-    struct ring_buf *rpc_buf = zmk_rpc_get_rx_buf();
-    while (copied < len) {
-        uint8_t *buffer;
-        uint32_t claim_len = ring_buf_put_claim(rpc_buf, &buffer, len - copied);
-
-        if (claim_len > 0) {
-            memcpy(buffer, ((uint8_t *)buf) + copied, claim_len);
-            copied += claim_len;
-        }
-
-        ring_buf_put_finish(rpc_buf, claim_len);
+    if (zmk_rpc_rx_put(ZMK_TRANSPORT_BLE, buf, len) < 0) {
+        return BT_GATT_ERR(BT_ATT_ERR_INSUFFICIENT_RESOURCES);
     }
-
-    zmk_rpc_rx_notify();
-
     return len;
 }
 
@@ -94,29 +81,7 @@ BT_GATT_SERVICE_DEFINE(
                            write_rpc_req, NULL),
     BT_GATT_CCC(rpc_ccc_cfg_changed, BT_GATT_PERM_READ_ENCRYPT | BT_GATT_PERM_WRITE_ENCRYPT));
 
-static uint16_t get_notify_size_for_conn(struct bt_conn *conn) {
-    uint16_t notify_size = 23; // Default MTU size unless negotiated higher
-    struct bt_conn_info conn_info;
-    if (conn && bt_conn_get_info(conn, &conn_info) >= 0) {
-        notify_size = conn_info.le.data_len->tx_max_len;
-    }
-
-    return notify_size;
-}
-
-static void refresh_notify_size(void) {
-    struct bt_conn *conn = zmk_ble_active_profile_conn();
-
-    uint16_t ns = get_notify_size_for_conn(conn);
-    if (conn) {
-        bt_conn_unref(conn);
-    }
-
-    atomic_set(&notify_size, ns);
-}
-
-static int gatt_start_rx() {
-    refresh_notify_size();
+static int gatt_start_rx(void) {
     handling_rx = true;
     return 0;
 }
@@ -128,94 +93,70 @@ static int gatt_stop_rx(void) {
 
 static uint8_t indicate_buffer[27];
 
-static void indicate_cb(struct bt_conn *conn, struct bt_gatt_indicate_params *params, uint8_t err);
+static K_SEM_DEFINE(tx_ready, 0, 1);
+
+static void gatt_tx_start(void) { k_sem_give(&tx_ready); }
+
+static void indicate_cb(struct bt_conn *conn, struct bt_gatt_indicate_params *params, uint8_t err) {
+    studio_tx_complete(indicate_ticket, err ? -EIO : (int)params->len);
+}
+
+static void indicate_destroy(struct bt_gatt_indicate_params *params) {
+    k_sem_give(&indicate_sem);
+    gatt_tx_start();
+}
 
 static struct bt_gatt_indicate_params rpc_indicate_params = {
     .attr = &rpc_interface.attrs[1],
     .data = indicate_buffer,
     .func = indicate_cb,
+    .destroy = indicate_destroy,
 };
 
-static void notif_rpc_tx_cb(struct k_work *work) {
-    struct bt_conn *conn = zmk_ble_active_profile_conn();
-    struct ring_buf *tx_buf = zmk_rpc_get_tx_buf();
-
-    if (!conn) {
-        LOG_WRN("No active connection for queued data, dropping");
-        ring_buf_reset(tx_buf);
+static void send_indication(void) {
+    if (k_sem_take(&indicate_sem, K_NO_WAIT) < 0) {
         return;
     }
-
-    uint16_t notify_size = MIN(get_notify_size_for_conn(conn), sizeof(indicate_buffer));
-
-    if (ring_buf_size_get(tx_buf) > 0) {
-        int ret = k_sem_take(&indicate_sem, K_NO_WAIT);
-        if (ret < 0) {
-            return;
-        }
-
-        uint16_t added = 0;
-        while (added < notify_size && ring_buf_size_get(tx_buf) > 0) {
-            uint8_t *buf;
-            int len = ring_buf_get_claim(tx_buf, &buf, notify_size - added);
-
-            memcpy(indicate_buffer + added, buf, len);
-
-            added += len;
-            ring_buf_get_finish(tx_buf, len);
-        }
-
-        rpc_indicate_params.len = added;
-
-        int err = bt_gatt_indicate(conn, &rpc_indicate_params);
-        if (err < 0) {
-            LOG_WRN("Failed to notify the response %d", err);
-            k_sem_give(&indicate_sem);
-        }
+    uint32_t expected_session = studio_tx_session();
+    struct bt_conn *conn = zmk_ble_active_profile_conn();
+    size_t limit = conn ? MIN(sizeof(indicate_buffer), bt_gatt_get_mtu(conn) - 3U) : 1;
+    size_t len = studio_tx_peek(ZMK_TRANSPORT_BLE, indicate_buffer, limit, &indicate_ticket);
+    // If the active profile changed during lookup, its kick is pending in tx_ready.
+    if (studio_tx_session() != expected_session) {
+        len = 0;
     }
-
-    bt_conn_unref(conn);
-}
-
-static K_WORK_DEFINE(notify_tx_work, notif_rpc_tx_cb);
-
-struct gatt_write_state {
-    size_t pending_notify;
-};
-
-static void indicate_cb(struct bt_conn *conn, struct bt_gatt_indicate_params *params, uint8_t err) {
-    k_sem_give(&indicate_sem);
-    k_work_submit(&notify_tx_work);
-}
-
-static void gatt_tx_notify(struct ring_buf *tx_buf, size_t added, bool msg_done, void *user_data) {
-    struct gatt_write_state *state = (struct gatt_write_state *)user_data;
-
-    state->pending_notify += added;
-
-    atomic_t ns = atomic_get(&notify_size);
-
-    if (msg_done || state->pending_notify > ns) {
-        k_work_submit(&notify_tx_work);
-        state->pending_notify = 0;
+    int err = -ENOTCONN;
+    if (len && conn &&
+        bt_gatt_is_subscribed(conn, rpc_indicate_params.attr, BT_GATT_CCC_INDICATE)) {
+        rpc_indicate_params.len = len;
+        err = bt_gatt_indicate(conn, &rpc_indicate_params);
+    }
+    if (conn) {
+        bt_conn_unref(conn);
+    }
+    if (err) {
+        if (len) {
+            studio_tx_complete(indicate_ticket, err);
+        }
+        k_sem_give(&indicate_sem);
     }
 }
 
-static struct gatt_write_state tx_state = {};
-
-static void *gatt_tx_user_data(void) {
-    memset(&tx_state, 0, sizeof(tx_state));
-
-    return &tx_state;
+// ATT allocation may wait. A slow peer must never occupy the system workqueue.
+static void gatt_tx_main(void *a, void *b, void *c) {
+    for (;;) {
+        k_sem_take(&tx_ready, K_FOREVER);
+        send_indication();
+    }
 }
 
-ZMK_RPC_TRANSPORT(gatt, ZMK_TRANSPORT_BLE, gatt_start_rx, gatt_stop_rx, gatt_tx_user_data,
-                  gatt_tx_notify);
+K_THREAD_DEFINE(studio_gatt_tx_thread, CONFIG_ZMK_STUDIO_RPC_THREAD_STACK_SIZE, gatt_tx_main, NULL,
+                NULL, NULL, K_LOWEST_APPLICATION_THREAD_PRIO, 0, 0);
 
-static int gatt_rpc_listener(const zmk_event_t *eh) {
-    refresh_notify_size();
+ZMK_RPC_TRANSPORT(gatt, ZMK_TRANSPORT_BLE, gatt_start_rx, gatt_stop_rx, gatt_tx_start);
 
 #if IS_ENABLED(CONFIG_ZMK_STUDIO_LOCK_ON_DISCONNECT)
+static int gatt_rpc_listener(const zmk_event_t *eh) {
     struct bt_conn *conn = zmk_ble_active_profile_conn();
 
     if (!conn) {
@@ -223,10 +164,10 @@ static int gatt_rpc_listener(const zmk_event_t *eh) {
     } else {
         bt_conn_unref(conn);
     }
-#endif
 
     return 0;
 }
 
 ZMK_LISTENER(gatt_rpc_listener, gatt_rpc_listener);
 ZMK_SUBSCRIPTION(gatt_rpc_listener, zmk_ble_active_profile_changed);
+#endif

@@ -13,6 +13,26 @@ config USB_NRFX
 
 endif # USB_DEVICE_STACK
 
+# Board-local USB transport, enabled only with Studio. Diagnostics can opt out.
+if ZMK_STUDIO
+
+config ZMK_STUDIO_LOCKING
+    default y
+
+config USB_CDC_ACM
+    default y
+
+config SERIAL
+    default y
+
+config UART_INTERRUPT_DRIVEN
+    default y
+
+config UART_LINE_CTRL
+    default y
+
+endif # ZMK_STUDIO
+
 config BT_CTLR
 	default BT
 

@@ -130,10 +130,9 @@ static int validate_hid_usage(uint16_t usage_page, uint16_t usage_id) {
     LOG_DBG("Validate usage %d in page %d", usage_id, usage_page);
     switch (usage_page) {
     case HID_USAGE_KEY:
-        if (usage_id == 0 ||
-            (usage_id > ZMK_HID_KEYBOARD_NKRO_MAX_USAGE &&
-             usage_id < HID_USAGE_KEY_KEYBOARD_LEFTCONTROL) ||
-            usage_id > HID_USAGE_KEY_KEYBOARD_RIGHT_GUI) {
+        if (usage_id == 0 || (usage_id > ZMK_HID_KEYBOARD_MAX_USAGE &&
+                              (usage_id < HID_USAGE_KEY_KEYBOARD_LEFTCONTROL ||
+                               usage_id > HID_USAGE_KEY_KEYBOARD_RIGHT_GUI))) {
             return -EINVAL;
         }
         break;
@@ -161,6 +160,12 @@ static int check_param_matches_value(const struct behavior_parameter_value_metad
             return PARAM_MATCHES;
         }
         break;
+    case BEHAVIOR_PARAMETER_VALUE_TYPE_SIGNED_AXES:
+        return PARAM_MATCHES;
+    case BEHAVIOR_PARAMETER_VALUE_TYPE_HSB:
+        return (param >> 16) <= 360 && ((param >> 8) & 255) <= 100 && (param & 255) <= 100
+                   ? PARAM_MATCHES
+                   : -EINVAL;
     case BEHAVIOR_PARAMETER_VALUE_TYPE_HID_USAGE:
         if (validate_hid_usage(ZMK_HID_USAGE_PAGE(param), ZMK_HID_USAGE_ID(param)) >= 0) {
             return PARAM_MATCHES;

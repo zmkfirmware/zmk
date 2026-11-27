@@ -194,3 +194,5 @@
 
 };
 */
+
+#include "../corne54-led-matrix-presets.dtsi"

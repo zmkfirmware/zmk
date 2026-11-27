@@ -65,7 +65,7 @@ with tempfile.TemporaryDirectory(prefix="led-power-tests-") as tmp:
     (root / "demand_core.inc").write_text("\n".join(function(core, name) for name in (
         "led_matrix_color_is_dynamic", "led_matrix_color_is_time_dynamic", "resolve_dynamic_color",
         "led_matrix_configured_color", "led_matrix_color_can_emit", "led_matrix_color_needs_time",
-        "resolve_zone_color", "set_zone_color_from_config", "resolve_profile_color",
+        "resolve_zone_color", "set_zone_color_from_config", "main_profile_color", "resolve_profile_color",
         "resolve_independent_profile_color", "resolve_battery_on_color",
         "led_matrix_usb_color_cfg_for_state", "led_matrix_ble_color_cfg_for_snapshot",
         "render_hid_indicator", "led_matrix_reset_rain_state", "rain_sync_state", "grayscale_value")))
