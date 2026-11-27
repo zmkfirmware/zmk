@@ -692,7 +692,9 @@ static int validate_profiles(void) {
 
 static void led_matrix_sanitize_runtime_state(void) {
     if (!led_matrix_has_profiles() || find_display_profile(state.selected_profile_id) == NULL) {
-        state.selected_profile_id = first_available_profile();
+        state.selected_profile_id = IS_ENABLED(CONFIG_ZMK_LED_MATRIX_EDITOR)
+                                        ? first_available_profile()
+                                        : 0U;
     }
 
     for (size_t id = 0; id < INDEPENDENT_GROUP_COUNT; id++) {
