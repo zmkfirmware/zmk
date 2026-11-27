@@ -1,0 +1,8 @@
+# Copyright (c) 2026 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: USB Connection State Event Injector Behavior
+
+compatible: "zmk,behavior-raise-usb-conn-state"
+
+include: one_param.yaml

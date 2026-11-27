@@ -1,0 +1,646 @@
+---
+title: LED Matrix
+sidebar_label: LED Matrix
+description: Configure per-key lighting on Corne54 and map LED Matrix output to strips, matrix drivers, or composite devices.
+---
+
+See the [Lighting feature page](../../../features/lighting.md) for the classic lighting overview and the [Lighting configuration page](../../../config/lighting.md) for related settings.
+
+## Configure and test a Corne54
+
+Each half has a chain of 28 WS2812 LEDs. First build the stock configuration. Then change one color or key binding so you can verify the result on the keyboard. The files below are in the [Corne54 board directory](https://github.com/afayge/zmk/tree/main/app/boards/bmk/corne54).
+
+### 1. Enable lighting and choose a startup state
+
+Both `corne54_left_defconfig` and `corne54_right_defconfig` include these settings. When porting the configuration, put them in the corresponding board or user `.conf` file. Saved lighting settings take precedence over startup defaults.
+
+```ini
+CONFIG_ZMK_LED_MATRIX=y
+CONFIG_ZMK_LED_MATRIX_ON_START=n
+CONFIG_ZMK_LED_MATRIX_BRT_START=40
+CONFIG_ZMK_LED_MATRIX_AUTO_OFF_IDLE=y
+```
+
+Corne54 also enables `CONFIG_ZMK_EXT_POWER` and `CONFIG_ZMK_LED_MATRIX_EXT_POWER` to switch strip power through a board GPIO. On another keyboard, check the schematic for a controllable LED supply before enabling those options.
+
+### 2. Map switch positions to local LED numbers
+
+`corne54.dtsi` defines `led_strip`, a chain length of 28, and GRB color order. This excerpt from `corne54_left.dts` shows the entire left-hand grid and one solid-color preset. Edit the existing node when working on a Corne54. The two includes provide the grid tokens and color constants.
+
+```dts
+#include <dt-bindings/zmk/led_matrix.h>
+#include <dt-bindings/zmk/led_matrix_colors.h>
+
+/ {
+    chosen {
+        zmk,led-matrix = &led_matrix;
+    };
+
+    led_matrix: led_matrix {
+        compatible = "zmk,led-matrix";
+        led-driver = "strip";
+        led-strip-device = <&led_strip>;
+        led-count = <28>;
+        matrix-led-grid = <
+            0 1 2 3 4 5 LM_BREAK
+            6 7 8 9 10 11 LM_BREAK
+            12 13 14 15 16 17 LM_BREAK
+            18 19 20 21 22 23 LM_BREAK
+            LM_PH LM_PH 24 25 26 27
+        >;
+
+        profile0 {
+            profile-id = <0>;
+            display-name = "Palette";
+            renderer = "solid";
+            colors = <LM_PALETTE>;
+            brightness = <100>;
+        };
+    };
+};
+```
+
+Fill in the grid in local switch-scan row and column order. On a direct strip the logical LED number is the zero-based position of the pixel in the chain. Use `LM_BREAK` between rows, `LM_PH` for a cell without a switch, and `LM_NOLED` for a switch without a light. The right half has its own grid in `corne54_right.dts`. Its last row is `27 24 25 26 LM_PH LM_PH`. If a key lights its neighbor, inspect that half’s grid. If red appears green across the strip, inspect the strip’s `color-mapping`.
+
+| Hardware                              | Controller properties                                                   | Mapping                                                                                                                                                  |
+| ------------------------------------- | ----------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Addressable RGB strip                 | Set `led-driver = "strip"` and point `led-strip-device` at the strip.   | Number pixels in chain order. The grid locates each pixel under a switch.                                                                                |
+| One Zephyr LED device                 | Set `led-driver = "matrix"` and point `led-device` at the controller.   | Use `channel-indexes` to map R, G, and B when the device supports `write_channels`. For a per-LED API, use `led-indexes` to map physical LEDs.           |
+| Multiple controllers or mixed devices | Select `"matrix"` and point `led-device` at a `zmk,led-composite` node. | Assign each child a contiguous `channel-offset` and `channel-count`, starting at zero. Map logical RGB channels into this space using `channel-indexes`. |
+
+### 3. Bind lighting controls
+
+`corne54.keymap` includes `<dt-bindings/zmk/led_matrix.h>` and places the controls on the Fn layer. To adapt another keymap, replace individual entries in an existing layer’s `bindings`. Use `&lm LM_TOG` for power, `&lm LM_EFF` for the next effect, `&lm LM_BRI` for brightness up, and `&lm LM_STA LM_STA_ALL` to show configured status indicators. Preset 0 uses `LM_PALETTE`, so `&lm LM_HUI` changes its color. For fixed red, set the preset’s `colors` to `<LM_RED>`.
+
+### 4. Build and verify both halves
+
+From the repository root in an initialized west workspace, run:
+
+```sh
+west build -s app -b corne54_left -d build/corne54_left
+west build -s app -b corne54_right -d build/corne54_right
+```
+
+Flash the `zephyr/zmk.uf2` from each build directory to its matching half. With the factory defaults the lights start off. Toggle them on from the Fn layer, select a different preset, and change the brightness. Select a reactive preset and test each row on both halves. Use the status key to verify the battery, Bluetooth, or lock indicators configured on that half.
+
+See the [technical reference](../../../led-matrix-led-composite-reference.mdx) for layer colors, overlay priority, independent zones, Studio editing, and power timing.
+
+## Overview
+
+`LED Matrix` is an RGB controller that sits above the hardware backend. It is not tied to a single LED family; instead, it renders multiple sources into one logical LED space: base profiles, layer colors, independent LED containers, and Battery/USB/BLE/HID status overlays.
+
+- `RGB underglow` targets addressable strips and talks directly to `led_strip` drivers.
+- `Backlight` targets single-color parallel LEDs and mainly controls brightness.
+- `LED Matrix` targets a logical RGB matrix and can use either a Zephyr `led` backend or a direct `led_strip` backend.
+
+`led-driver = "matrix"` means LED Matrix writes through the Zephyr `led` API. The target can be a matrix driver chip or an aggregator such as `led_composite`. `led-driver = "strip"` means LED Matrix writes directly to the Zephyr `led_strip` API.
+
+`led_composite` is not a renderer. It is a backend adapter that exposes a single flattened RGB channel space built from multiple `led-device` and `led-strip-device` children, which `zmk,led-matrix` can then map with `channel-indexes`.
+
+## Relevant Files
+
+| Category            | Files                                                                                                                                                                                                                                                                                  | Purpose                                                       |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| Core implementation | `app/src/led_matrix.c`, `app/src/led_matrix/{api,core,power,render,status}.c`, `app/include/zmk/led_matrix.h`, `app/include/zmk/events/led_matrix_state_changed.h`                                                                                                                     | Rendering, state machine, runtime API, event definitions      |
+| Kconfig             | `app/Kconfig`, `app/Kconfig.defaults`, `app/module/drivers/led/Kconfig`                                                                                                                                                                                                                | Main switches, defaults, `led_composite` driver option        |
+| Devicetree bindings | `app/dts/bindings/zmk,led-matrix.yaml`, `app/dts/bindings/behaviors/zmk,behavior-led-matrix.yaml`, `app/module/dts/bindings/led/zmk,led-composite.yaml`                                                                                                                                | Bindings for `zmk,led-matrix`, `&lm`, and `led_composite`     |
+| Macros              | `app/include/dt-bindings/zmk/led_matrix.h`, `app/include/dt-bindings/zmk/led_matrix_colors.h`                                                                                                                                                                                          | `LM_*` commands, status bits, color and semantic aliases      |
+| Behavior node       | `app/dts/behaviors/led_matrix.dtsi`, `app/src/behaviors/behavior_led_matrix.c`                                                                                                                                                                                                         | `&lm` node declaration and parameter handling                 |
+| Composite driver    | `app/include/drivers/led/led_composite.h`, `app/module/drivers/led/led_composite.h`, `app/module/drivers/led/led_composite.c`                                                                                                                                                          | Public API, internal config, child validation, power handling |
+| Example sources     | `app/tests/led-matrix/basic/native_sim.keymap`, `independent-solid/native_sim.keymap`, `layer-color-status-priority/native_sim.keymap`, `idle-auto-off-strip-ext-power-runtime-only/native_sim.keymap`, `composite-split/native_sim.keymap`, `composite-mixed-power/native_sim.keymap` | DTS snippets in this page are derived from these tests        |
+
+## Kconfig
+
+### LED Matrix options
+
+| Option                                           | Type   | Default                                                       | Depends on                                                                    | Description                                                                            |
+| ------------------------------------------------ | ------ | ------------------------------------------------------------- | ----------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `CONFIG_ZMK_LED_MATRIX`                          | `bool` | `n`                                                           | backend derived from `/chosen/zmk,led-matrix` `led-driver`                    | Enables LED Matrix and auto-selects `LED` or `LED_STRIP`                               |
+| `CONFIG_ZMK_LED_MATRIX_EXT_POWER`                | `bool` | `n`                                                           | `CONFIG_ZMK_EXT_POWER`, `DT_HAS_ZMK_EXT_POWER_GENERIC_ENABLED`, strip backend | For `led-driver = "strip"` only; synchronizes external power with runtime rendering    |
+| `CONFIG_ZMK_LED_MATRIX_AUTO_OFF_IDLE`            | `bool` | `n`                                                           | `CONFIG_ZMK_LED_MATRIX`                                                       | Auto-suspends on battery when idle                                                     |
+| `CONFIG_ZMK_LED_MATRIX_IDLE_STATUS_WAKE_TIMEOUT` | `int`  | `1800000`                                                     | `CONFIG_ZMK_LED_MATRIX`                                                       | Activity-idle window for automatic status-event display; `0` disables them immediately |
+| `CONFIG_ZMK_LED_MATRIX_BRT_STEP`                 | `int`  | `10`                                                          | `CONFIG_ZMK_LED_MATRIX`                                                       | Brightness step percentage                                                             |
+| `CONFIG_ZMK_LED_MATRIX_BRT_START`                | `int`  | `60`                                                          | `CONFIG_ZMK_LED_MATRIX`                                                       | Default brightness percentage                                                          |
+| `CONFIG_ZMK_LED_MATRIX_PROFILE_START`            | `int`  | `0`                                                           | `CONFIG_ZMK_LED_MATRIX`                                                       | Initial profile ID                                                                     |
+| `CONFIG_ZMK_LED_MATRIX_SPD_LEVELS`               | `int`  | `7`                                                           | `CONFIG_ZMK_LED_MATRIX`                                                       | Number of effect speed levels                                                          |
+| `CONFIG_ZMK_LED_MATRIX_SPD_START`                | `int`  | `4` if levels `>= 4`, else `CONFIG_ZMK_LED_MATRIX_SPD_LEVELS` | `CONFIG_ZMK_LED_MATRIX`                                                       | Initial effect speed                                                                   |
+| `CONFIG_ZMK_LED_MATRIX_ON_START`                 | `bool` | `y`                                                           | `CONFIG_ZMK_LED_MATRIX`                                                       | Default on/off state at boot                                                           |
+
+### `led_composite` options
+
+| Option                     | Type   | Default | Depends on                                | Description                                                            |
+| -------------------------- | ------ | ------- | ----------------------------------------- | ---------------------------------------------------------------------- |
+| `CONFIG_ZMK_LED_COMPOSITE` | `bool` | `y`     | `LED`, `DT_HAS_ZMK_LED_COMPOSITE_ENABLED` | Enables `zmk,led-composite` and selects `LED_STRIP` for strip children |
+
+### Backend selection notes
+
+- `CONFIG_ZMK_LED_MATRIX_USES_LED_API` and `CONFIG_ZMK_LED_MATRIX_USES_LED_STRIP_API` are hidden helper options derived from the chosen `zmk,led-matrix` node.
+- With `led-driver = "matrix"`, `CONFIG_ZMK_LED_MATRIX` selects `LED`.
+- With `led-driver = "strip"`, `CONFIG_ZMK_LED_MATRIX` selects `LED_STRIP`.
+
+## Macros and Behavior
+
+### Behavior macros
+
+`app/include/dt-bindings/zmk/led_matrix.h` defines the command macros used by the `&lm` behavior. The most common set is:
+
+| Macro                              | Meaning                                            |
+| ---------------------------------- | -------------------------------------------------- |
+| `LM_ON`, `LM_OFF`, `LM_TOG`        | Turn on, turn off, toggle                          |
+| `LM_BRI`, `LM_BRD`                 | Brightness step up or down                         |
+| `LM_EFF`, `LM_EFR`                 | Next or previous display profile                   |
+| `LM_EFS <profile>`                 | Set display profile directly                       |
+| `LM_BRT <0..100>`                  | Set brightness directly                            |
+| `LM_SPI`, `LM_SPD`                 | Speed step up or down                              |
+| `LM_SPS <level>`                   | Set speed directly                                 |
+| `LM_HUI`, `LM_HUD`                 | Adjust palette hue                                 |
+| `LM_HUS <index>`                   | Set palette hue index                              |
+| `LM_STA <mask>`                    | Force-show status sources                          |
+| `LM_CFF <child>`, `LM_CFR <child>` | Step an independent child profile forward/backward |
+| `LM_CFS(child, profile)`           | Set a child profile directly                       |
+
+### Status and grid macros
+
+| Macro                                                      | Meaning                               |
+| ---------------------------------------------------------- | ------------------------------------- |
+| `LM_STA_BATTERY`, `LM_STA_USB`, `LM_STA_BLE`, `LM_STA_HID` | Status bits for `LM_STA`              |
+| `LM_STA_ALL`                                               | Show all status sources               |
+| `LM_BREAK`                                                 | Row separator in `matrix-led-grid`    |
+| `LM_NOLED`                                                 | RC cell has a key position but no LED |
+| `LM_PH`                                                    | Placeholder cell with no key position |
+
+### Color macros
+
+`app/include/dt-bindings/zmk/led_matrix_colors.h` defines color values and semantic aliases. The most useful subset is:
+
+| Macro                                                    | Meaning                  |
+| -------------------------------------------------------- | ------------------------ |
+| `LM_RGB(r, g, b)`                                        | Build a `0xRRGGBB` color |
+| `LM_RAINBOW`, `LM_PALETTE`                               | Dynamic colors           |
+| `LM_BLACK`, `LM_WHITE`, `LM_RED`, `LM_GREEN`, `LM_BLUE`  | Basic colors             |
+| `LM_USB_HID`, `LM_USB_POWERED`, `LM_USB_NONE`            | USB semantic colors      |
+| `LM_BLE_OPEN`, `LM_BLE_CONNECTED`, `LM_BLE_DISCONNECTED` | BLE semantic colors      |
+| `LM_BATTERY_LOW`, `LM_BATTERY_MID`, `LM_BATTERY_HIGH`    | Battery semantic colors  |
+
+### `&lm` keymap example
+
+```dts
+#include <dt-bindings/zmk/led_matrix.h>
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+                &lm LM_TOG
+                &lm LM_BRI
+                &lm LM_EFS 1
+                &lm LM_STA LM_STA_BLE
+                &lm LM_CFS(0, 1)
+            >;
+        };
+    };
+};
+```
+
+## DTS Structure
+
+### Top-level `zmk,led-matrix` properties
+
+| Property                                                                                                            | Required               | Meaning                                                                                         |
+| ------------------------------------------------------------------------------------------------------------------- | ---------------------- | ----------------------------------------------------------------------------------------------- |
+| `led-driver`                                                                                                        | Yes                    | `"matrix"` or `"strip"`; selects backend API                                                    |
+| `led-device`                                                                                                        | Conditionally required | Required when `led-driver = "matrix"`                                                           |
+| `led-strip-device`                                                                                                  | Conditionally required | Required when `led-driver = "strip"`                                                            |
+| `led-count`                                                                                                         | Yes                    | Number of logical LEDs                                                                          |
+| `output-channel-count`                                                                                              | No                     | Total physical output channels; defaults to `led-count * 3`                                     |
+| `channel-indexes`                                                                                                   | No                     | Logical RGB to physical channel map for write-channels backends; length must be `led-count * 3` |
+| `led-indexes`                                                                                                       | No                     | Logical LED to physical LED mapping for non-write-channels backends                             |
+| `matrix-led-grid`                                                                                                   | No                     | Local RC grid for position-driven renderers and layer colors without explicit `layer-leds`      |
+| `battery-leds`, `ble-profile-leds`, `usb-leds`, `hid-*-leds`                                                        | No                     | Logical LEDs used by status overlays                                                            |
+| `battery-color-*`, `ble-color-*`, `usb-color-*`, `hid-*-color-*`                                                    | No                     | Colors for each status source                                                                   |
+| `status-timeout-ms`, `usb-timeout-ms`, `ble-timeout-ms`, `hid-timeout-ms`, `battery-timeout-ms`, `ble-pairing-hold` | No                     | Automatic status duration and BLE open hold policy                                              |
+
+### Child node models
+
+| Child kind                | Key property        | Common properties                                                             |
+| ------------------------- | ------------------- | ----------------------------------------------------------------------------- |
+| display profile           | `profile-id`        | `display-name`, `renderer`, `colors`, `brightness`, `period-ms`, `keypress-*` |
+| layer color entry         | `layer-id`          | `layer-colors`, `layer-leds`, `brightness`, `display-time-ms`                 |
+| independent container     | `independent-id`    | `independent-leds` plus nested local profiles                                 |
+| independent local profile | nested `profile-id` | `renderer`, `colors`, `brightness`, `period-ms`                               |
+
+Child node constraints:
+
+- When `layer-leds` is omitted, the target LEDs default to the traversal order of `matrix-led-grid`.
+- `independent-leds` must be unique and must not overlap other independent containers.
+- When `matrix-led-grid` is present, `independent-leds` must not also appear in that grid.
+
+## LED Matrix DTS Examples
+
+### 1. Minimal matrix backend
+
+Derived from: `app/tests/led-matrix/basic/native_sim.keymap`
+
+```dts
+#include <dt-bindings/zmk/led_matrix.h>
+
+/ {
+    chosen {
+        zmk,led-matrix = &led_matrix;
+    };
+
+    led_matrix_dev: led_matrix_dev {
+        compatible = "zmk,led-mock";
+        mode = "channels";
+        channel-count = <12>;
+    };
+
+    led_matrix: led_matrix {
+        compatible = "zmk,led-matrix";
+        led-driver = "matrix";
+        led-device = <&led_matrix_dev>;
+        led-count = <4>;
+        output-channel-count = <12>;
+        channel-indexes = <
+            3 4 5
+            0 1 2
+            6 7 8
+            9 10 11
+        >;
+        matrix-led-grid = <
+            0 1 LM_BREAK
+            2 3
+        >;
+
+        profile0 {
+            profile-id = <0>;
+            display-name = "Channel";
+            renderer = "solid";
+            colors = <0x010203 0x100020 0x0000FF 0xAB0000>;
+            brightness = <100>;
+            period-ms = <1000>;
+        };
+    };
+};
+```
+
+### 2. Minimal strip backend
+
+Derived from: `app/tests/led-matrix/idle-auto-off-strip-ext-power-runtime-only/native_sim.keymap`
+
+```dts
+/ {
+    chosen {
+        zmk,led-matrix = &led_matrix;
+    };
+
+    strip_power_child: strip_power_child {
+        compatible = "zmk,led-strip-mock";
+        chain-length = <1>;
+    };
+
+    led_matrix: led_matrix {
+        compatible = "zmk,led-matrix";
+        led-driver = "strip";
+        led-strip-device = <&strip_power_child>;
+        led-count = <1>;
+
+        profile0 {
+            profile-id = <0>;
+            display-name = "Strip Base";
+            renderer = "solid";
+            colors = <0x102030>;
+            brightness = <100>;
+            period-ms = <1000>;
+        };
+    };
+};
+```
+
+### 3. profile + status + layer color
+
+Derived from: `app/tests/led-matrix/layer-color-status-priority/native_sim.keymap`
+
+```dts
+#include <dt-bindings/zmk/led_matrix_colors.h>
+
+/ {
+    chosen {
+        zmk,led-matrix = &led_matrix;
+    };
+
+    led_matrix_dev: led_matrix_dev {
+        compatible = "zmk,led-mock";
+        mode = "color";
+    };
+
+    led_matrix: led_matrix {
+        compatible = "zmk,led-matrix";
+        led-driver = "matrix";
+        led-device = <&led_matrix_dev>;
+        led-count = <1>;
+        status-timeout-ms = <1000>;
+        usb-timeout-ms = <1000>;
+        hid-timeout-ms = <1000>;
+        usb-leds = <0>;
+        usb-color-hid = <0xFF0000>;
+        usb-color-powered = <LM_BLACK>;
+        usb-color-none = <LM_BLACK>;
+        hid-caps-leds = <0>;
+        hid-caps-color-on = <0x00FF00>;
+        hid-caps-color-off = <LM_BLACK>;
+
+        profile0 {
+            profile-id = <0>;
+            display-name = "Off";
+            renderer = "solid";
+            colors = <LM_BLACK>;
+            brightness = <100>;
+            period-ms = <1000>;
+        };
+
+        layer_color1 {
+            layer-id = <1>;
+            brightness = <100>;
+            display-time-ms = <0>;
+            layer-leds = <0>;
+            layer-colors = <0x0000FF>;
+        };
+    };
+};
+```
+
+### 4. independent LED container
+
+Derived from: `app/tests/led-matrix/independent-solid/native_sim.keymap`
+
+```dts
+#include <dt-bindings/zmk/led_matrix.h>
+
+/ {
+    chosen {
+        zmk,led-matrix = &led_matrix;
+    };
+
+    led_matrix_dev: led_matrix_dev {
+        compatible = "zmk,led-mock";
+        mode = "color";
+    };
+
+    led_matrix: led_matrix {
+        compatible = "zmk,led-matrix";
+        led-driver = "matrix";
+        led-device = <&led_matrix_dev>;
+        led-count = <5>;
+        matrix-led-grid = <
+            0 1 LM_BREAK
+            2 3
+        >;
+
+        profile0 {
+            profile-id = <0>;
+            display-name = "Independent Solid";
+            renderer = "solid";
+            colors = <0x010203 0x100020 0x0000FF 0xAB0000 0x123456>;
+            brightness = <100>;
+            period-ms = <1000>;
+        };
+
+        independent0 {
+            independent-id = <0>;
+            independent-leds = <4>;
+
+            profile0 {
+                profile-id = <0>;
+                renderer = "solid";
+                colors = <0x123456>;
+                brightness = <100>;
+                period-ms = <1000>;
+            };
+        };
+    };
+};
+```
+
+## `led_composite`
+
+### Core concept
+
+`zmk,led-composite` uses child nodes to flatten multiple backends into one continuous RGB channel space. Each child declares its offset and length inside that flattened space.
+
+| Property           | Required   | Meaning                                                                     |
+| ------------------ | ---------- | --------------------------------------------------------------------------- |
+| `led-device`       | one of two | Child backend that exposes the Zephyr `led` API                             |
+| `led-strip-device` | one of two | Child backend that exposes the Zephyr `led_strip` API                       |
+| `channel-offset`   | Yes        | Start offset in the flattened channel space                                 |
+| `channel-count`    | Yes        | Writable RGB channels; strip and scalar children use three channels per LED |
+| `ext-power-device` | No         | Optional shared power controller for strip children                         |
+
+The constraints are:
+
+- Each child must define exactly one of `led-device` or `led-strip-device`.
+- Child ranges must start at `0`, be declared in ascending order, and remain contiguous with no overlaps or holes.
+- When multiple strip children use `ext-power-device`, they must share the same device.
+- An `led-device` prefers `write_channels`, then `set_brightness`, and finally paired `on` / `off` callbacks.
+- A brightness/binary scalar child needs three channels per physical LED; the maximum RGB component becomes its scalar brightness.
+
+### public API and capability macros
+
+`app/include/drivers/led/led_composite.h` exposes the following interface:
+
+- `ZMK_LED_COMPOSITE_CAP_MANAGED_POWER`: Child backend supports managed power.
+- `ZMK_LED_COMPOSITE_CAP_FULL_HARD_OFF`: Child backend supports full hard-off.
+- `zmk_led_composite_get_channel_count(const struct device *dev, uint32_t *count)`: Query total channel count.
+- `zmk_led_composite_get_capabilities(const struct device *dev, uint32_t *caps)`: Query capability bitmap.
+- `zmk_led_composite_power(const struct device *dev, bool enable)`: Enable or disable composite power state.
+
+### 5. contiguous range mapping example
+
+Derived from: `app/tests/led-matrix/composite-split/native_sim.keymap`
+
+```dts
+/ {
+    chosen {
+        zmk,led-matrix = &led_matrix;
+    };
+
+    composite_split_child0: composite_split_child0 {
+        compatible = "zmk,led-mock";
+        mode = "channels";
+        channel-count = <5>;
+    };
+
+    composite_split_child1: composite_split_child1 {
+        compatible = "zmk,led-mock";
+        mode = "channels";
+        channel-count = <7>;
+    };
+
+    led_chain: led_composite {
+        compatible = "zmk,led-composite";
+
+        child0 {
+            led-device = <&composite_split_child0>;
+            channel-offset = <0>;
+            channel-count = <5>;
+        };
+
+        child1 {
+            led-device = <&composite_split_child1>;
+            channel-offset = <5>;
+            channel-count = <7>;
+        };
+    };
+
+    led_matrix: led_matrix {
+        compatible = "zmk,led-matrix";
+        led-driver = "matrix";
+        led-device = <&led_chain>;
+        led-count = <4>;
+        output-channel-count = <12>;
+        channel-indexes = <
+            0 1 2
+            3 4 5
+            6 7 8
+            9 10 11
+        >;
+
+        profile0 {
+            profile-id = <0>;
+            display-name = "Composite Split";
+            renderer = "solid";
+            colors = <0x010203 0x040506 0x070809 0x0A0B0C>;
+            brightness = <100>;
+            period-ms = <1000>;
+        };
+    };
+};
+```
+
+### 6. mixed matrix + strip + ext-power
+
+Derived from: `app/tests/led-matrix/composite-mixed-power/native_sim.keymap`
+
+```dts
+/ {
+    chosen {
+        zmk,led-matrix = &led_matrix;
+    };
+
+    ext_power_mock: ext_power_mock {
+        compatible = "zmk,ext-power-mock";
+    };
+
+    matrix_power_child: matrix_power_child {
+        compatible = "zmk,led-mock";
+        mode = "channels";
+        channel-count = <6>;
+        managed-power-kind = "is31fl3737";
+        sdb-gpios = <&gpio0 0 GPIO_ACTIVE_HIGH>;
+    };
+
+    strip_power_child: strip_power_child {
+        compatible = "zmk,led-strip-mock";
+        chain-length = <2>;
+        support-update-channels;
+    };
+
+    led_chain: led_composite {
+        compatible = "zmk,led-composite";
+
+        child0 {
+            led-device = <&matrix_power_child>;
+            channel-offset = <0>;
+            channel-count = <6>;
+        };
+
+        child1 {
+            led-strip-device = <&strip_power_child>;
+            channel-offset = <6>;
+            channel-count = <6>;
+            ext-power-device = <&ext_power_mock>;
+        };
+    };
+
+    led_matrix: led_matrix {
+        compatible = "zmk,led-matrix";
+        led-driver = "matrix";
+        led-device = <&led_chain>;
+        led-count = <4>;
+        output-channel-count = <12>;
+        channel-indexes = <
+            0 1 2
+            3 4 5
+            6 7 8
+            9 10 11
+        >;
+
+        profile0 {
+            profile-id = <0>;
+            display-name = "Composite Mixed Power";
+            renderer = "solid";
+            colors = <0x010203 0x040506 0x070809 0x0A0B0C>;
+            brightness = <100>;
+            period-ms = <1000>;
+        };
+    };
+};
+```
+
+### 7. BlackBerry Trackball PWM LEDs
+
+The four WHT, GRN, RED, and BLU outputs can use standard `pwm-leds`. A 1 ms period with
+`PWM_POLARITY_NORMAL` is active high; the board DTS supplies the actual controllers, channels, and
+pinctrl configuration.
+
+```dts
+#include <zephyr/dt-bindings/pwm/pwm.h>
+
+/ {
+    trackball_leds: pwm_leds {
+        compatible = "pwm-leds";
+        wht { pwms = <&pwm0 0 PWM_MSEC(1) PWM_POLARITY_NORMAL>; };
+        grn { pwms = <&pwm0 1 PWM_MSEC(1) PWM_POLARITY_NORMAL>; };
+        red { pwms = <&pwm1 0 PWM_MSEC(1) PWM_POLARITY_NORMAL>; };
+        blu { pwms = <&pwm1 1 PWM_MSEC(1) PWM_POLARITY_NORMAL>; };
+    };
+};
+```
+
+If no other LEDs exist, use `&trackball_leds` directly as the LED Matrix `led-device` with
+`led-indexes = <0 1 2 3>`. With an existing channel backend, append the PWM device as a scalar
+composite child:
+
+```dts
+trackball {
+    led-device = <&trackball_leds>;
+    channel-offset = <6>;  /* Example: the keyboard backend uses channels 0..5. */
+    channel-count = <12>; /* 4 physical LEDs * 3 logical RGB channels */
+};
+```
+
+Put the four logical LEDs in one independent container and define a local profile for every
+combination and brightness. `&lm LM_CFS(0, 2)` atomically switches group 0 to profile 2. `LM_BRT`
+remains global, and settings persists the independent profile selection.
+
+## Troubleshooting
+
+| Symptom or diagnostic                      | What to check                                                                                                                                                                                                                             |
+| ------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Controller missing or backend unavailable  | Set `chosen { zmk,led-matrix = &led_matrix; };` at the root. Use `led-device` for a matrix backend and `led-strip-device` for a strip. Check that the target device is enabled.                                                           |
+| Empty controller fails to initialize       | With the runtime editor disabled, provide a main preset, independent group, layer color, or status zone.                                                                                                                                  |
+| LEDs show the wrong channels               | For a `write_channels` backend, provide exactly three entries per logical LED in `channel-indexes`. Each entry must fit in `output-channel-count`. For a driver using per-LED calls, use `led-indexes`.                                   |
+| Position-driven effects fail to initialize | Provide a local `matrix-led-grid` matching the switch-scan dimensions. A layer color without a grid needs explicit `layer-leds`.                                                                                                          |
+| Independent group fails to initialize      | Number independent groups and their local presets consecutively from zero. Check for duplicate LEDs, overlaps between groups, or a factory group that also lists grid LEDs.                                                               |
+| Composite fails validation                 | Give each child exactly one backend. Arrange its channel range immediately after the preceding one, starting at zero. A strip needs an integral number of RGB triples. All strips specifying external power must use the same controller. |
+| A scalar child has the wrong channel count | Reserve three channels per physical LED. A brightness device needs `set_brightness`; a binary device needs both `on` and `off`.                                                                                                           |
+
+## References
+
+- Controller binding: `app/dts/bindings/zmk,led-matrix.yaml`
+- Behavior binding: `app/dts/bindings/behaviors/zmk,behavior-led-matrix.yaml`
+- Composite binding: `app/module/dts/bindings/led/zmk,led-composite.yaml`
+- Keymap commands and colors: `app/include/dt-bindings/zmk/led_matrix.h` and `led_matrix_colors.h` in the same directory
+- Runtime APIs: `app/include/zmk/led_matrix.h` and `app/include/drivers/led/led_composite.h`

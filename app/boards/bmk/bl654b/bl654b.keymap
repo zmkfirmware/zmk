@@ -1,0 +1,88 @@
+/*
+ * Copyright (c) 2021 Nick Winans
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+//#include <dt-bindings/zmk/rgb.h>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/outputs.h>
+#include <dt-bindings/zmk/backlight.h>
+
+/ {
+	keymap {
+		compatible = "zmk,keymap";
+		
+		default_layer {
+// ------------------------------------
+// | NumLck |   /   |   *   |   BS   | 
+// |    7   |   8   |   9   |    -   |
+// |    4   |   5   |   6   |    +   |
+// |    1   |   2   |   3   |    =   |
+// |    0   |   .   | MO(1) |   ENT  |
+// ------------------------------------
+			display-name = "Base";
+			bindings = <
+	&kp KP_NLCK  &kp KP_DIVIDE  &kp KP_MULTIPLY  &kp BSPC 
+	&kp KP_N7  &kp KP_N8  &kp KP_N9  &kp KP_MINUS 
+	&kp KP_N4  &kp KP_N5  &kp KP_N6  &kp KP_PLUS 
+	&kp KP_N1  &kp KP_N2  &kp KP_N3  &kp KP_EQUAL 
+	&kp KP_N0 &kp KP_DOT  &mo 2  &kp KP_ENTER
+			>;
+		};
+
+		media_layer {
+// ------------------------------------
+// | NumLck | 	 /  | 	 *  | 	Mute	| 
+// |    7   |In Bri	|Eject	|Volume Down|
+// |Previous|Play/PS| Next	|Volume Up	|
+// |    1   |De Bri	|  Stop | 	  =		|
+// |    0   |   .   | MO(1) |   ENT 	|
+// ------------------------------------
+			display-name = "Media";
+			bindings = <
+	&kp KP_NLCK  &kp KP_DIVIDE  &kp KP_MULTIPLY  &kp C_MUTE 
+	&kp KP_N7  &kp C_BRI_UP  &kp C_EJECT  &kp C_VOL_DN 
+	&kp C_PREV &kp C_PLAY  &kp C_NEXT  &kp C_VOL_UP 
+	&kp KP_N1  &kp C_BRI_DN  &kp C_STOP  &kp C_MUTE 
+	&kp KP_N0 &kp KP_DOT  &mo 2  &kp KP_ENTER
+				>;
+			};
+
+		func_layer {
+// --------------------------------------
+// |        |        |        |        | 
+// |        |        |        |        | 
+// |  BT 4  |        |        |        | 
+// |  BT 1  |  BT 2  |  BT 3  | BT CLR | 
+// |  BT 0  |        |        |        |
+// --------------------------------------
+			display-name = "Fn";
+			bindings = <
+	&none 			&none 			&none 	&bl BL_TOG
+	&none 			&none 			&none	&bl BL_DEC
+	&bt BT_SEL 4 	&none 			&none	&bl BL_INC
+	&bt BT_SEL 1 	&bt BT_SEL 2 	&bt BT_SEL 3 		&bt BT_CLR
+	&bt BT_SEL 0  	&none 			&mo 2				&tog 1
+			>;
+		};
+	};
+
+	behaviors {
+        tog_on: toggle_layer_on_only {
+            compatible = "zmk,behavior-toggle-layer";
+            #binding-cells = <1>;
+            display-name = "Toggle Layer On";
+            toggle-mode = "on";
+        };
+
+		tog_off: toggle_layer_off_only {
+            compatible = "zmk,behavior-toggle-layer";
+            #binding-cells = <1>;
+            display-name = "Toggle Layer Off";
+            toggle-mode = "off";
+        };
+    };
+};

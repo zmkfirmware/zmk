@@ -67,7 +67,7 @@ static const struct behavior_parameter_value_metadata prof_index_param2_values[]
     {
         .display_name = "Profile",
         .type = BEHAVIOR_PARAMETER_VALUE_TYPE_RANGE,
-        .range = {.min = 0, .max = ZMK_BLE_PROFILE_COUNT},
+        .range = {.min = 0, .max = ZMK_BLE_PROFILE_COUNT - 1},
     },
 };
 

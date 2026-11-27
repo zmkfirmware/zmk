@@ -1,0 +1,233 @@
+syntax = "proto3";
+
+package zmk.keymap;
+
+message Request {
+    oneof request_type {
+        bool get_keymap = 1;
+        SetLayerBindingRequest set_layer_binding = 2;
+        bool check_unsaved_changes = 3;
+        bool save_changes = 4;
+        bool discard_changes = 5;
+        bool get_physical_layouts = 6;
+        uint32 set_active_physical_layout = 7;
+        MoveLayerRequest move_layer = 8;
+        AddLayerRequest add_layer = 9;
+        RemoveLayerRequest remove_layer = 10;
+        RestoreLayerRequest restore_layer = 11;
+        SetLayerPropsRequest set_layer_props = 12;
+        SetEncoderBindingRequest set_encoder_binding = 13;
+    }
+}
+
+message Response {
+    oneof response_type {
+        Keymap get_keymap = 1;
+        SetLayerBindingResponse set_layer_binding = 2;
+        bool check_unsaved_changes = 3;
+        SaveChangesResponse save_changes = 4;
+        bool discard_changes = 5;
+        PhysicalLayouts get_physical_layouts = 6;
+        SetActivePhysicalLayoutResponse set_active_physical_layout = 7;
+        MoveLayerResponse move_layer = 8;
+        AddLayerResponse add_layer = 9;
+        RemoveLayerResponse remove_layer = 10;
+        RestoreLayerResponse restore_layer = 11;
+        SetLayerPropsResponse set_layer_props = 12;
+        SetLayerBindingResponse set_encoder_binding = 13;
+    }
+}
+
+message Notification {
+    oneof notification_type {
+        bool unsaved_changes_status_changed = 1;
+    }
+}
+
+message SaveChangesResponse {
+    oneof result {
+        bool ok = 1;
+        SaveChangesErrorCode err = 2;
+    }
+}
+
+enum SaveChangesErrorCode {
+    SAVE_CHANGES_ERR_OK = 0;
+    SAVE_CHANGES_ERR_GENERIC = 1;
+    SAVE_CHANGES_ERR_NOT_SUPPORTED = 2;
+    SAVE_CHANGES_ERR_NO_SPACE = 3;
+}
+
+enum SetLayerBindingResponse {
+    SET_LAYER_BINDING_RESP_OK = 0;
+    SET_LAYER_BINDING_RESP_INVALID_LOCATION = 1;
+    SET_LAYER_BINDING_RESP_INVALID_BEHAVIOR = 2;
+    SET_LAYER_BINDING_RESP_INVALID_PARAMETERS = 3;
+}
+
+message SetActivePhysicalLayoutResponse {
+    oneof result {
+        Keymap ok = 1;
+        SetActivePhysicalLayoutErrorCode err = 2;
+    }
+}
+
+enum MoveLayerErrorCode {
+    MOVE_LAYER_ERR_OK = 0;
+    MOVE_LAYER_ERR_GENERIC = 1;
+    MOVE_LAYER_ERR_INVALID_LAYER = 2;
+    MOVE_LAYER_ERR_INVALID_DESTINATION = 3;
+}
+
+message MoveLayerResponse {
+    oneof result {
+        Keymap ok = 1;
+        MoveLayerErrorCode err = 2;
+    }
+}
+
+message AddLayerResponse {
+    oneof result {
+        AddLayerResponseDetails ok = 1;
+        AddLayerErrorCode err = 2;
+    }
+}
+
+enum AddLayerErrorCode {
+    ADD_LAYER_ERR_OK = 0;
+    ADD_LAYER_ERR_GENERIC = 1;
+    ADD_LAYER_ERR_NO_SPACE = 2;
+}
+
+message AddLayerResponseDetails {
+    uint32 index = 1;
+    Layer layer = 2;
+}
+
+message RemoveLayerResponse {
+    oneof result {
+        RemoveLayerOk ok = 1;
+        RemoveLayerErrorCode err = 2;
+    }
+}
+
+message RemoveLayerOk {
+}
+
+enum RemoveLayerErrorCode {
+    REMOVE_LAYER_ERR_OK = 0;
+    REMOVE_LAYER_ERR_GENERIC = 1;
+    REMOVE_LAYER_ERR_INVALID_INDEX = 2;
+}
+
+message RestoreLayerResponse {
+    oneof result {
+        Layer ok = 1;
+        RestoreLayerErrorCode err = 2;
+    }
+}
+
+enum RestoreLayerErrorCode {
+    RESTORE_LAYER_ERR_OK = 0;
+    RESTORE_LAYER_ERR_GENERIC = 1;
+    RESTORE_LAYER_ERR_INVALID_ID = 2;
+    RESTORE_LAYER_ERR_INVALID_INDEX = 3;
+}
+
+enum SetLayerPropsResponse {
+    SET_LAYER_PROPS_RESP_OK = 0;
+    SET_LAYER_PROPS_RESP_ERR_GENERIC = 1;
+    SET_LAYER_PROPS_RESP_ERR_INVALID_ID = 2;
+}
+
+enum SetActivePhysicalLayoutErrorCode {
+    SET_ACTIVE_PHYSICAL_LAYOUT_ERR_OK = 0;
+    SET_ACTIVE_PHYSICAL_LAYOUT_ERR_GENERIC = 1;
+    SET_ACTIVE_PHYSICAL_LAYOUT_ERR_INVALID_LAYOUT_INDEX = 2;
+}
+
+message SetLayerBindingRequest {
+    uint32 layer_id = 1;
+    int32 key_position = 2;
+
+    BehaviorBinding binding = 3;
+}
+
+message MoveLayerRequest {
+    uint32 start_index = 1;
+    uint32 dest_index = 2;
+}
+
+message AddLayerRequest {
+}
+
+message RemoveLayerRequest {
+    uint32 layer_index = 1;
+}
+
+message RestoreLayerRequest {
+    uint32 layer_id = 1;
+    uint32 at_index = 2;
+}
+
+message SetLayerPropsRequest {
+    uint32 layer_id = 1;
+    string name = 2;
+}
+
+message Keymap {
+    repeated Layer layers = 1;
+    uint32 available_layers = 2;
+    uint32 max_layer_name_length = 3;
+}
+
+message Layer {
+    uint32 id = 1;
+    string name = 2;
+    repeated BehaviorBinding bindings = 3;
+    optional EncoderMap encoder_map = 4;
+}
+
+message BehaviorBinding {
+    sint32 behavior_id = 1;
+    uint32 param1 = 2;
+    uint32 param2 = 3;
+}
+
+message PhysicalLayouts {
+    uint32 active_layout_index = 1;
+    repeated PhysicalLayout layouts = 2;
+}
+
+message PhysicalLayout {
+    string name = 1;
+    repeated KeyPhysicalAttrs keys = 2;
+}
+
+message KeyPhysicalAttrs {
+    sint32 width = 1;
+    sint32 height = 2;
+    sint32 x = 3;
+    sint32 y = 4;
+    sint32 r = 5;
+    sint32 rx = 6;
+    sint32 ry = 7;
+}
+message EncoderMap { repeated Encoder encoders = 1; }
+message Encoder {
+    EncoderDirection clockwise = 1;
+    EncoderDirection counterclockwise = 2;
+}
+message EncoderDirection {
+    BehaviorBinding binding = 1;
+    bool overridden = 2;
+}
+message SetEncoderBindingRequest {
+    uint32 layer_id = 1;
+    uint32 sensor_index = 2;
+    bool counterclockwise = 3;
+    oneof change {
+        BehaviorBinding binding = 4;
+        bool restore = 5;
+    }
+}

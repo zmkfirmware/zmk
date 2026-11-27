@@ -1,0 +1,2 @@
+usb-leds has duplicate/overlap LED index: 0
+Invalid zmk,led-matrix DTS configuration (-22)

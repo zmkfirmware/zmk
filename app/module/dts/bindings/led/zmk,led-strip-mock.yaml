@@ -1,0 +1,19 @@
+# Copyright (c) 2026 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Test LED strip device with optional update_channels support
+
+compatible: "zmk,led-strip-mock"
+
+include: ["base.yaml"]
+
+properties:
+  chain-length:
+    type: int
+    required: true
+    description: Number of RGB pixels exposed by this mock strip.
+
+  support-update-channels:
+    type: boolean
+    required: false
+    description: Expose led_strip_update_channels in addition to update_rgb.

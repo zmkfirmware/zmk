@@ -96,6 +96,12 @@ static bool encode_value_description(pb_ostream_t *stream, const pb_field_t *fie
             desc.value_type.range.min = val->range.min;
             desc.value_type.range.max = val->range.max;
             break;
+        case BEHAVIOR_PARAMETER_VALUE_TYPE_SIGNED_AXES:
+            desc.which_value_type = zmk_behaviors_BehaviorParameterValueDescription_signed_axes_tag;
+            break;
+        case BEHAVIOR_PARAMETER_VALUE_TYPE_HSB:
+            desc.which_value_type = zmk_behaviors_BehaviorParameterValueDescription_hsb_tag;
+            break;
         case BEHAVIOR_PARAMETER_VALUE_TYPE_NIL:
             desc.which_value_type = zmk_behaviors_BehaviorParameterValueDescription_nil_tag;
             break;
@@ -161,6 +167,13 @@ static bool encode_behavior_name(pb_ostream_t *stream, const pb_field_t *field, 
     return pb_encode_string(stream, zbm->metadata.display_name, strlen(zbm->metadata.display_name));
 }
 
+static bool encode_text(pb_ostream_t *stream, const pb_field_t *field, void *const *arg) {
+    const char *text = *arg;
+    if (!text || !*text)
+        return true;
+    return pb_encode_tag_for_field(stream, field) && pb_encode_string(stream, text, strlen(text));
+}
+
 static struct encode_metadata_sets_state state = {};
 
 zmk_studio_Response get_behavior_details(const zmk_studio_Request *req) {
@@ -197,6 +210,12 @@ zmk_studio_Response get_behavior_details(const zmk_studio_Request *req) {
     zmk_behaviors_GetBehaviorDetailsResponse resp =
         zmk_behaviors_GetBehaviorDetailsResponse_init_zero;
     resp.id = behavior_id;
+    resp.has_binding_type = true;
+    resp.binding_type.compatible.funcs.encode = encode_text;
+    resp.binding_type.compatible.arg = (void *)zbm->metadata.compatible;
+    resp.binding_type.binding_label.funcs.encode = encode_text;
+    resp.binding_type.binding_label.arg = (void *)zbm->metadata.binding_label;
+    resp.binding_type.sensor_only = !zmk_behavior_accepts_key(device);
     resp.display_name.funcs.encode = encode_behavior_name;
     resp.display_name.arg = zbm;
 

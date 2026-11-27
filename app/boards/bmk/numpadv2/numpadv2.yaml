@@ -1,0 +1,17 @@
+identifier: numpadv2
+name: numpadv2
+type: keyboard
+arch: arm
+toolchain:
+  - zephyr
+  - gnuarmemb
+  - xtools
+supported:
+  - gpio
+  - usb_device
+  - ble
+  - ieee802154
+  - watchdog
+  - spi
+  - kscan
+  - adc

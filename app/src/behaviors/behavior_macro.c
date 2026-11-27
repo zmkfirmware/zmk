@@ -326,6 +326,12 @@ static const struct behavior_driver_api behavior_macro_driver_api = {
                        &behavior_macro_config_##inst, POST_KERNEL,                                 \
                        CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_macro_driver_api);
 
+#define DT_DRV_COMPAT zmk_behavior_macro
 DT_FOREACH_STATUS_OKAY(zmk_behavior_macro, MACRO_INST)
+#undef DT_DRV_COMPAT
+#define DT_DRV_COMPAT zmk_behavior_macro_one_param
 DT_FOREACH_STATUS_OKAY(zmk_behavior_macro_one_param, MACRO_INST)
+#undef DT_DRV_COMPAT
+#define DT_DRV_COMPAT zmk_behavior_macro_two_param
 DT_FOREACH_STATUS_OKAY(zmk_behavior_macro_two_param, MACRO_INST)
+#undef DT_DRV_COMPAT

@@ -1,0 +1,2 @@
+channel-indexes entry out of range: 12 (max 11)
+Invalid zmk,led-matrix DTS configuration (-22)

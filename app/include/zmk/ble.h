@@ -44,6 +44,12 @@ int zmk_ble_unpair_all(void);
 
 int zmk_ble_set_device_name(char *name);
 
+#if IS_ENABLED(CONFIG_ZMK_TEST_BEHAVIORS)
+int zmk_ble_test_set_active_profile_open(bool open);
+int zmk_ble_test_set_active_profile_connected(bool connected);
+int zmk_ble_test_raise_active_profile_changed(void);
+#endif
+
 #if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
 int zmk_ble_put_peripheral_addr(const bt_addr_le_t *addr);
 #endif /* IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL) */

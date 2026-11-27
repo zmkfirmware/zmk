@@ -1,0 +1,76 @@
+#include <dt-bindings/zmk/kscan_mock.h>
+#include <dt-bindings/zmk/led_matrix.h>
+#include <dt-bindings/zmk/led_matrix_colors.h>
+#include <dt-bindings/led/led.h>
+#include <behaviors.dtsi>
+
+/ {
+    chosen {
+        zmk,kscan = &kscan;
+        zmk,led-matrix = &led_matrix;
+    };
+
+    kscan: native_posix_64_kscan_mock {
+        compatible = "zmk,kscan-mock";
+        rows = <1>;
+        columns = <3>;
+        exit-after;
+        events = <
+            ZMK_MOCK_PRESS(0,0,50)
+            ZMK_MOCK_RELEASE(0,0,150)
+            ZMK_MOCK_PRESS(0,1,10)
+            ZMK_MOCK_RELEASE(0,1,150)
+            ZMK_MOCK_PRESS(0,2,10)
+            ZMK_MOCK_RELEASE(0,2,150)
+        >;
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+                &lm LM_STA LM_STA_BATTERY
+                &lm LM_STA LM_STA_BLE
+                &lm LM_STA LM_STA_ALL
+            >;
+        };
+    };
+
+    EXT_POWER {
+        compatible = "zmk,ext-power-generic";
+        control-gpios = <&gpio0 0 GPIO_ACTIVE_HIGH>;
+    };
+
+    strip_power_child: strip_power_child {
+        compatible = "zmk,led-strip-mock";
+        chain-length = <2>;
+    };
+
+    led_matrix: led_matrix {
+        compatible = "zmk,led-matrix";
+        led-driver = "strip";
+        led-strip-device = <&strip_power_child>;
+        led-count = <2>;
+        status-timeout-ms = <80>;
+        battery-timeout-ms = <80>;
+        ble-timeout-ms = <80>;
+        ble-pairing-hold = <0>;
+        battery-leds = <0>;
+        battery-color-on = <LM_GREEN>;
+        battery-color-off = <LM_BLACK>;
+        ble-profile-leds = <1>;
+        ble-color-open = <LM_BLUE>;
+        ble-color-connected = <LM_GREEN>;
+        ble-color-disconnected = <LM_RED>;
+
+        profile0 {
+            profile-id = <0>;
+            display-name = "Manual Status While Off";
+            renderer = "solid";
+            colors = <LM_WHITE>;
+            brightness = <100>;
+            period-ms = <1000>;
+        };
+    };
+};

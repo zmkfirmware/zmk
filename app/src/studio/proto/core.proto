@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package zmk.core;
+
+enum LockState {
+    ZMK_STUDIO_CORE_LOCK_STATE_LOCKED = 0;
+    ZMK_STUDIO_CORE_LOCK_STATE_UNLOCKED = 1;
+}
+
+message Request {
+    oneof request_type {
+        bool get_device_info = 1;
+        bool get_lock_state = 2;
+        bool lock = 3;
+        bool reset_settings = 4;
+    }
+}
+
+message Response {
+    oneof response_type {
+        GetDeviceInfoResponse get_device_info = 1;
+        LockState get_lock_state = 2;
+        bool reset_settings = 4;
+    }
+}
+
+enum LightingSupport {
+    LEGACY = 0;
+    UNAVAILABLE = 1;
+    LED_MATRIX = 2;
+}
+
+message GetDeviceInfoResponse {
+    string name = 1;
+    bytes serial_number = 2;
+    LightingSupport lighting_support = 3;
+}
+
+message Notification {
+    oneof notification_type {
+        LockState lock_state_changed = 1;
+    }
+}

@@ -6,6 +6,7 @@
 
 #pragma once
 
+#include <errno.h>
 #include <zephyr/types.h>
 #include <stddef.h>
 #include <zephyr/device.h>
@@ -24,11 +25,15 @@ extern "C" {
 
 typedef int (*ext_power_enable_t)(const struct device *dev);
 typedef int (*ext_power_disable_t)(const struct device *dev);
+typedef int (*ext_power_enable_runtime_t)(const struct device *dev);
+typedef int (*ext_power_disable_runtime_t)(const struct device *dev);
 typedef int (*ext_power_get_t)(const struct device *dev);
 
 __subsystem struct ext_power_api {
     ext_power_enable_t enable;
     ext_power_disable_t disable;
+    ext_power_enable_runtime_t enable_runtime;
+    ext_power_disable_runtime_t disable_runtime;
     ext_power_get_t get;
 };
 /**
@@ -65,6 +70,48 @@ __syscall int ext_power_disable(const struct device *dev);
 
 static inline int z_impl_ext_power_disable(const struct device *dev) {
     const struct ext_power_api *api = (const struct ext_power_api *)dev->api;
+
+    if (api->disable == NULL) {
+        return -ENOTSUP;
+    }
+
+    return api->disable(dev);
+}
+
+/**
+ * @brief Enable the external power output without changing persisted settings
+ * @param dev Pointer to the device structure for the driver instance.
+ *
+ * @retval 0 If successful.
+ * @retval Negative errno code if failure.
+ */
+static inline int ext_power_enable_runtime(const struct device *dev) {
+    const struct ext_power_api *api = (const struct ext_power_api *)dev->api;
+
+    if (api->enable_runtime != NULL) {
+        return api->enable_runtime(dev);
+    }
+
+    if (api->enable == NULL) {
+        return -ENOTSUP;
+    }
+
+    return api->enable(dev);
+}
+
+/**
+ * @brief Disable the external power output without changing persisted settings
+ * @param dev Pointer to the device structure for the driver instance.
+ *
+ * @retval 0 If successful.
+ * @retval Negative errno code if failure.
+ */
+static inline int ext_power_disable_runtime(const struct device *dev) {
+    const struct ext_power_api *api = (const struct ext_power_api *)dev->api;
+
+    if (api->disable_runtime != NULL) {
+        return api->disable_runtime(dev);
+    }
 
     if (api->disable == NULL) {
         return -ENOTSUP;

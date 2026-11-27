@@ -1,0 +1,86 @@
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/kscan_mock.h>
+#include <dt-bindings/zmk/led_matrix.h>
+#include <dt-bindings/led/led.h>
+#include <behaviors.dtsi>
+
+/ {
+    chosen {
+        zmk,kscan = &kscan;
+        zmk,led-matrix = &led_matrix;
+    };
+
+    kscan: native_posix_64_kscan_mock {
+        compatible = "zmk,kscan-mock";
+        rows = <4>;
+        columns = <4>;
+        exit-after;
+        events = <
+            ZMK_MOCK_PRESS(0,0,500)
+            ZMK_MOCK_RELEASE(0,0,10)
+            ZMK_MOCK_PRESS(0,1,500)
+            ZMK_MOCK_RELEASE(0,1,10)
+            ZMK_MOCK_PRESS(0,2,500)
+            ZMK_MOCK_RELEASE(0,2,10)
+            ZMK_MOCK_PRESS(0,3,500)
+            ZMK_MOCK_RELEASE(0,3,10)
+        >;
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+                &kp N1 &kp N2 &kp N3 &kp N4
+                &kp Q &kp W &kp E &kp R
+                &kp A &kp S &kp D &kp F
+                &kp Z &kp X &kp C &kp V
+            >;
+        };
+    };
+
+    led_matrix_dev: led_matrix_dev {
+        compatible = "zmk,led-mock";
+        mode = "color";
+
+        led_0 { index = <0>; color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>; };
+        led_1 { index = <1>; color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>; };
+        led_2 { index = <2>; color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>; };
+        led_3 { index = <3>; color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>; };
+        led_4 { index = <4>; color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>; };
+        led_5 { index = <5>; color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>; };
+        led_6 { index = <6>; color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>; };
+        led_7 { index = <7>; color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>; };
+        led_8 { index = <8>; color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>; };
+        led_9 { index = <9>; color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>; };
+        led_10 { index = <10>; color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>; };
+        led_11 { index = <11>; color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>; };
+        led_12 { index = <12>; color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>; };
+        led_13 { index = <13>; color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>; };
+        led_14 { index = <14>; color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>; };
+        led_15 { index = <15>; color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>; };
+    };
+
+    led_matrix: led_matrix {
+        compatible = "zmk,led-matrix";
+        led-driver = "matrix";
+        led-device = <&led_matrix_dev>;
+        led-count = <16>;
+        matrix-led-grid = <
+            0 1 2 3 LM_BREAK
+            4 5 6 7 LM_BREAK
+            8 9 10 11 LM_BREAK
+            12 13 14 15
+        >;
+
+        profile0 {
+            profile-id = <0>;
+            display-name = "Rain Randomized";
+            renderer = "rain";
+            colors = <0x3399FF>;
+            brightness = <100>;
+            period-ms = <1200>;
+        };
+    };
+};

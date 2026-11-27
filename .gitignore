@@ -17,3 +17,12 @@ __pycache__
 
 # clangd
 app/.cache/
+
+# Local firmware builds and exported artifacts
+/app/_bmkbuild*/
+/.codex-corne54-left-buildsrc/
+/output/
+/trackball_gpio_diagnostic.log
+
+# Local agent worktrees
+/.claude/

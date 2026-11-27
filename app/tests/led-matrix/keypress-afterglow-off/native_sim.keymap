@@ -1,0 +1,61 @@
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/kscan_mock.h>
+#include <dt-bindings/zmk/led_matrix.h>
+#include <dt-bindings/zmk/led_matrix_colors.h>
+#include <dt-bindings/led/led.h>
+#include <behaviors.dtsi>
+
+/ {
+    chosen {
+        zmk,kscan = &kscan;
+        zmk,led-matrix = &led_matrix;
+    };
+
+    kscan: native_posix_64_kscan_mock {
+        compatible = "zmk,kscan-mock";
+        rows = <1>;
+        columns = <1>;
+        exit-after;
+        events = <
+            ZMK_MOCK_PRESS(0,0,10)
+            ZMK_MOCK_RELEASE(0,0,10)
+        >;
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <&kp A>;
+        };
+    };
+
+    led_matrix_dev: led_matrix_dev {
+        compatible = "zmk,led-mock";
+        mode = "color";
+
+        led_0 {
+            index = <0>;
+            color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>;
+        };
+    };
+
+    led_matrix: led_matrix {
+        compatible = "zmk,led-matrix";
+        led-driver = "matrix";
+        led-device = <&led_matrix_dev>;
+        led-count = <1>;
+        matrix-led-grid = <0>;
+
+        profile0 {
+            profile-id = <0>;
+            display-name = "Afterglow Off";
+            renderer = "keypress";
+            keypress-afterglow-ms = <0>;
+            keypress-range = <0>;
+            colors = <0x112233>;
+            brightness = <100>;
+            period-ms = <1000>;
+        };
+    };
+};

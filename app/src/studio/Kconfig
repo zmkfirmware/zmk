@@ -103,6 +103,7 @@ config ZMK_STUDIO_RPC_THREAD_STACK_SIZE
 
 config ZMK_STUDIO_RPC_RX_BUF_SIZE
     int "RX Buffer Size"
+    default 96 if ZMK_LED_MATRIX_EDITOR
     default 30
 
 config ZMK_STUDIO_RPC_TX_BUF_SIZE

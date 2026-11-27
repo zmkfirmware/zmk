@@ -1,0 +1,13 @@
+file_format: "1"
+id: bl654b
+name: bl654b
+type: board
+arch: arm
+features:
+  - keys
+  - backlight
+  - display
+outputs:
+  - usb
+  - ble
+url: https://bmk-io.com

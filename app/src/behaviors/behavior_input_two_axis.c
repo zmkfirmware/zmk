@@ -283,8 +283,19 @@ static int on_keymap_binding_released(struct zmk_behavior_binding *binding,
     return 0;
 }
 
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+static const struct behavior_parameter_value_metadata axes = {
+    .display_name = "Motion", .type = BEHAVIOR_PARAMETER_VALUE_TYPE_SIGNED_AXES};
+static const struct behavior_parameter_metadata_set axis_set = {.param1_values_len = 1,
+                                                                .param1_values = &axes};
+static const struct behavior_parameter_metadata axis_metadata = {.sets_len = 1, .sets = &axis_set};
+#endif
 static const struct behavior_driver_api behavior_input_two_axis_driver_api = {
-    .binding_pressed = on_keymap_binding_pressed, .binding_released = on_keymap_binding_released};
+#if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
+    .parameter_metadata = &axis_metadata,
+#endif
+    .binding_pressed = on_keymap_binding_pressed,
+    .binding_released = on_keymap_binding_released};
 
 #define ITA_INST(n)                                                                                \
     static struct behavior_input_two_axis_data behavior_input_two_axis_data_##n = {};              \

@@ -1,0 +1,202 @@
+#include <zephyr/dt-bindings/gpio/gpio.h>
+#include <zephyr/dt-bindings/input/input-event-codes.h>
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/kscan_mock.h>
+
+/ {
+    behaviors {
+        raw_left: raw_left {
+            compatible = "zmk,behavior-gpio-emul-input";
+            #binding-cells = <0>;
+            gpios = <&gpio0 1 GPIO_ACTIVE_HIGH>;
+        };
+        raw_right: raw_right {
+            compatible = "zmk,behavior-gpio-emul-input";
+            #binding-cells = <0>;
+            gpios = <&gpio0 2 GPIO_ACTIVE_HIGH>;
+        };
+        raw_up: raw_up {
+            compatible = "zmk,behavior-gpio-emul-input";
+            #binding-cells = <0>;
+            gpios = <&gpio0 3 GPIO_ACTIVE_HIGH>;
+        };
+        raw_down: raw_down {
+            compatible = "zmk,behavior-gpio-emul-input";
+            #binding-cells = <0>;
+            gpios = <&gpio0 4 GPIO_ACTIVE_HIGH>;
+        };
+        scaled_right: scaled_right {
+            compatible = "zmk,behavior-gpio-emul-input";
+            #binding-cells = <0>;
+            gpios = <&gpio0 7 GPIO_ACTIVE_HIGH>;
+        };
+        slow_right: slow_right {
+            compatible = "zmk,behavior-gpio-emul-input";
+            #binding-cells = <0>;
+            gpios = <&gpio0 12 GPIO_ACTIVE_HIGH>;
+        };
+        legacy_right: legacy_right {
+            compatible = "zmk,behavior-gpio-emul-input";
+            #binding-cells = <0>;
+            gpios = <&gpio0 17 GPIO_ACTIVE_HIGH>;
+        };
+    };
+
+    raw_trackball: raw_trackball {
+        compatible = "sparkfun,blackberry-trackballer";
+        left-gpios = <&gpio0 1 GPIO_ACTIVE_HIGH>;
+        right-gpios = <&gpio0 2 GPIO_ACTIVE_HIGH>;
+        up-gpios = <&gpio0 3 GPIO_ACTIVE_HIGH>;
+        down-gpios = <&gpio0 4 GPIO_ACTIVE_HIGH>;
+        button-gpios = <&gpio0 5 GPIO_ACTIVE_HIGH>;
+        zephyr,axis-x = <INPUT_REL_X>;
+        zephyr,axis-y = <INPUT_REL_Y>;
+        report-period-ms = <4>;
+        interpolation-frames = <4>;
+        acceleration-start-hz = <100>;
+        acceleration-max-hz = <200>;
+        minimum-step = <8>;
+        maximum-step = <8>;
+    };
+
+    raw_trackball_listener: raw_trackball_listener {
+        compatible = "zmk,input-listener";
+        device = <&raw_trackball>;
+    };
+
+    scaled_trackball: scaled_trackball {
+        compatible = "sparkfun,blackberry-trackballer";
+        left-gpios = <&gpio0 6 GPIO_ACTIVE_HIGH>;
+        right-gpios = <&gpio0 7 GPIO_ACTIVE_HIGH>;
+        up-gpios = <&gpio0 8 GPIO_ACTIVE_HIGH>;
+        down-gpios = <&gpio0 9 GPIO_ACTIVE_HIGH>;
+        button-gpios = <&gpio0 10 GPIO_ACTIVE_HIGH>;
+        zephyr,axis-x = <INPUT_REL_X>;
+        zephyr,axis-y = <INPUT_REL_Y>;
+        report-period-ms = <4>;
+        interpolation-frames = <4>;
+        acceleration-start-hz = <100>;
+        acceleration-max-hz = <200>;
+        minimum-step = <8>;
+        maximum-step = <8>;
+    };
+
+    scaled_speed: scaled_speed {
+        compatible = "zmk,input-processor-speed-profile";
+        #input-processor-cells = <0>;
+        type = <INPUT_EV_REL>;
+        codes = <INPUT_REL_X INPUT_REL_Y>;
+        speed-percentages = <300>;
+        default-speed-level = <1>;
+        track-remainders;
+    };
+
+    scaled_trackball_listener: scaled_trackball_listener {
+        compatible = "zmk,input-listener";
+        device = <&scaled_trackball>;
+        input-processors = <&scaled_speed>;
+    };
+
+    slow_trackball: slow_trackball {
+        compatible = "sparkfun,blackberry-trackballer";
+        left-gpios = <&gpio0 11 GPIO_ACTIVE_HIGH>;
+        right-gpios = <&gpio0 12 GPIO_ACTIVE_HIGH>;
+        up-gpios = <&gpio0 13 GPIO_ACTIVE_HIGH>;
+        down-gpios = <&gpio0 14 GPIO_ACTIVE_HIGH>;
+        button-gpios = <&gpio0 15 GPIO_ACTIVE_HIGH>;
+        zephyr,axis-x = <INPUT_REL_X>;
+        zephyr,axis-y = <INPUT_REL_Y>;
+        report-period-ms = <4>;
+        interpolation-frames = <4>;
+        acceleration-start-hz = <100>;
+        acceleration-max-hz = <200>;
+        minimum-step = <1>;
+        maximum-step = <1>;
+    };
+
+    slow_trackball_listener: slow_trackball_listener {
+        compatible = "zmk,input-listener";
+        device = <&slow_trackball>;
+    };
+
+    legacy_trackball: legacy_trackball {
+        compatible = "sparkfun,blackberry-trackballer";
+        left-gpios = <&gpio0 16 GPIO_ACTIVE_HIGH>;
+        right-gpios = <&gpio0 17 GPIO_ACTIVE_HIGH>;
+        up-gpios = <&gpio0 18 GPIO_ACTIVE_HIGH>;
+        down-gpios = <&gpio0 19 GPIO_ACTIVE_HIGH>;
+        button-gpios = <&gpio0 20 GPIO_ACTIVE_HIGH>;
+        zephyr,axis-x = <INPUT_REL_X>;
+        zephyr,axis-y = <INPUT_REL_Y>;
+        report-period-ms = <4>;
+        acceleration-start-hz = <100>;
+        acceleration-max-hz = <200>;
+        minimum-step = <8>;
+        maximum-step = <8>;
+    };
+
+    legacy_trackball_listener: legacy_trackball_listener {
+        compatible = "zmk,input-listener";
+        device = <&legacy_trackball>;
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+                &raw_left       &raw_right       &raw_up          &raw_down
+                &scaled_right   &slow_right      &legacy_right    &none
+            >;
+        };
+    };
+};
+
+&kscan {
+    rows = <2>;
+    columns = <4>;
+    events = <
+        /* Step 8 is split into four synchronized diagonal reports of -2/-2. */
+        ZMK_MOCK_PRESS(0,0,1)
+        ZMK_MOCK_RELEASE(0,0,1)
+        ZMK_MOCK_PRESS(0,2,1)
+        ZMK_MOCK_RELEASE(0,2,25)
+
+        /* The opposite diagonal has the same synchronized frame sequence. */
+        ZMK_MOCK_PRESS(0,1,1)
+        ZMK_MOCK_RELEASE(0,1,1)
+        ZMK_MOCK_PRESS(0,3,1)
+        ZMK_MOCK_RELEASE(0,3,25)
+
+        /* Two pulses before the first report combine to 16, then split into four 4s. */
+        ZMK_MOCK_PRESS(0,1,1)
+        ZMK_MOCK_RELEASE(0,1,1)
+        ZMK_MOCK_PRESS(0,1,1)
+        ZMK_MOCK_RELEASE(0,1,25)
+
+        /* Opposite pulses before the first report cancel without an old-direction tail. */
+        ZMK_MOCK_PRESS(0,0,1)
+        ZMK_MOCK_RELEASE(0,0,1)
+        ZMK_MOCK_PRESS(0,1,1)
+        ZMK_MOCK_RELEASE(0,1,25)
+
+        /* Independent frame state: X starts one report period before Y. */
+        ZMK_MOCK_PRESS(0,1,1)
+        ZMK_MOCK_RELEASE(0,1,6)
+        ZMK_MOCK_PRESS(0,3,1)
+        ZMK_MOCK_RELEASE(0,3,25)
+
+        /* The downstream 300% processor scales each frame from 2 to 6. */
+        ZMK_MOCK_PRESS(1,0,1)
+        ZMK_MOCK_RELEASE(1,0,25)
+
+        /* A one-unit pulse is sent immediately without empty interpolation reports. */
+        ZMK_MOCK_PRESS(1,1,1)
+        ZMK_MOCK_RELEASE(1,1,10)
+
+        /* Omitting interpolation-frames preserves the legacy one-report behavior. */
+        ZMK_MOCK_PRESS(1,2,1)
+        ZMK_MOCK_RELEASE(1,2,10)
+    >;
+};

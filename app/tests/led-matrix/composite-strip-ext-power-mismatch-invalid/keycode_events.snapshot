@@ -1,0 +1,2 @@
+LED composite "led_composite" strip children must share the same ext-power device
+LED matrix output device "led_composite" is not ready

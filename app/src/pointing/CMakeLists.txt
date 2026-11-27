@@ -4,6 +4,8 @@
 target_sources_ifdef(CONFIG_ZMK_INPUT_LISTENER app PRIVATE input_listener.c)
 target_sources_ifdef(CONFIG_ZMK_INPUT_PROCESSOR_TRANSFORM app PRIVATE input_processor_transform.c)
 target_sources_ifdef(CONFIG_ZMK_INPUT_PROCESSOR_SCALER app PRIVATE input_processor_scaler.c)
+target_sources_ifdef(CONFIG_ZMK_INPUT_PROCESSOR_SPEED_PROFILE app PRIVATE
+                     input_processor_speed_profile.c)
 target_sources_ifdef(CONFIG_ZMK_INPUT_PROCESSOR_TEMP_LAYER app PRIVATE input_processor_temp_layer.c)
 target_sources_ifdef(CONFIG_ZMK_INPUT_PROCESSOR_CODE_MAPPER app PRIVATE input_processor_code_mapper.c)
 target_sources_ifdef(CONFIG_ZMK_INPUT_PROCESSOR_BEHAVIORS app PRIVATE input_processor_behaviors.c)

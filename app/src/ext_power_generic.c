@@ -29,6 +29,8 @@ struct ext_power_generic_config {
 
 struct ext_power_generic_data {
     bool status;
+    bool status_known;
+    bool persisted_status;
 #if IS_ENABLED(CONFIG_SETTINGS)
     bool settings_init;
 #endif
@@ -40,8 +42,10 @@ static void ext_power_save_state_work(struct k_work *work) {
     const struct device *ext_power = DEVICE_DT_GET(DT_DRV_INST(0));
     struct ext_power_generic_data *data = ext_power->data;
 
+    (void)work;
+
     snprintf(setting_path, sizeof(setting_path), "ext_power/state/%s", ext_power->name);
-    settings_save_one(setting_path, &data->status, sizeof(data->status));
+    settings_save_one(setting_path, &data->persisted_status, sizeof(data->persisted_status));
 }
 
 static struct k_work_delayable ext_power_save_work;
@@ -56,61 +60,102 @@ int ext_power_save_state(void) {
 #endif
 }
 
-static int ext_power_generic_enable(const struct device *dev) {
+static int ext_power_generic_apply_state(const struct device *dev, bool enable) {
     struct ext_power_generic_data *data = dev->data;
     const struct ext_power_generic_config *config = dev->config;
 
-    for (int i = 0; i < config->control_gpios_count; i++) {
+    int err = 0;
+    data->status_known = false;
+    for (size_t i = 0; i < config->control_gpios_count; i++) {
         const struct gpio_dt_spec *gpio = &config->control[i];
-        if (gpio_pin_set_dt(gpio, 1)) {
-            LOG_WRN("Failed to set ext-power control pin %d", i);
-            return -EIO;
+        if (gpio_pin_set_dt(gpio, enable ? 1 : 0)) {
+            LOG_WRN("Failed to %s ext-power control pin %u", enable ? "set" : "clear", (unsigned)i);
+            /* A failed control must not strand the remaining supply controls. */
+            err = -EIO;
         }
     }
-    data->status = true;
-    return ext_power_save_state();
+
+    if (err == 0) {
+        data->status = enable;
+        data->status_known = true;
+    }
+    return err;
+}
+
+static int ext_power_generic_set_state(const struct device *dev, bool enable, bool persist) {
+    struct ext_power_generic_data *data = dev->data;
+    bool status_changed = !data->status_known || data->status != enable;
+    bool persisted_changed = data->persisted_status != enable;
+
+    if (status_changed) {
+        int err = ext_power_generic_apply_state(dev, enable);
+        if (err != 0) {
+            return err;
+        }
+    }
+
+    data->status = enable;
+
+    if (!persist) {
+        if (status_changed) {
+            LOG_DBG("EXT power generic runtime[%s]=%d", dev->name, enable ? 1 : 0);
+        }
+
+        return 0;
+    }
+
+    data->persisted_status = enable;
+
+    if (status_changed || persisted_changed) {
+        LOG_DBG("EXT power generic persistent[%s]=%d", dev->name, enable ? 1 : 0);
+    }
+
+#if IS_ENABLED(CONFIG_SETTINGS)
+    if (persisted_changed) {
+        return ext_power_save_state();
+    }
+#endif
+
+    return 0;
+}
+
+static int ext_power_generic_enable(const struct device *dev) {
+    return ext_power_generic_set_state(dev, true, true);
 }
 
 static int ext_power_generic_disable(const struct device *dev) {
-    struct ext_power_generic_data *data = dev->data;
-    const struct ext_power_generic_config *config = dev->config;
+    return ext_power_generic_set_state(dev, false, true);
+}
 
-    for (int i = 0; i < config->control_gpios_count; i++) {
-        const struct gpio_dt_spec *gpio = &config->control[i];
-        if (gpio_pin_set_dt(gpio, 0)) {
-            LOG_WRN("Failed to clear ext-power control pin %d", i);
-            return -EIO;
-        }
-    }
-    data->status = false;
-    return ext_power_save_state();
+static int ext_power_generic_enable_runtime(const struct device *dev) {
+    return ext_power_generic_set_state(dev, true, false);
+}
+
+static int ext_power_generic_disable_runtime(const struct device *dev) {
+    return ext_power_generic_set_state(dev, false, false);
 }
 
 static int ext_power_generic_get(const struct device *dev) {
-    struct ext_power_generic_data *data = dev->data;
-    return data->status;
+    const struct ext_power_generic_data *data = dev->data;
+    return data->status_known ? data->status : -EIO;
 }
 
 #if IS_ENABLED(CONFIG_SETTINGS)
 static int ext_power_settings_set_status(const struct device *dev, size_t len,
                                          settings_read_cb read_cb, void *cb_arg) {
     struct ext_power_generic_data *data = dev->data;
+    bool persisted_status;
 
-    if (len != sizeof(data->status)) {
+    if (len != sizeof(persisted_status)) {
         return -EINVAL;
     }
 
-    int rc = read_cb(cb_arg, &data->status, sizeof(data->status));
+    int rc = read_cb(cb_arg, &persisted_status, sizeof(persisted_status));
     if (rc >= 0) {
         data->settings_init = true;
+        data->persisted_status = persisted_status;
 
-        if (data->status) {
-            ext_power_generic_enable(dev);
-        } else {
-            ext_power_generic_disable(dev);
-        }
-
-        return 0;
+        return ext_power_generic_set_state(dev, persisted_status, false);
     }
     return rc;
 }
@@ -132,11 +177,9 @@ static int ext_power_settings_commit() {
     struct ext_power_generic_data *data = dev->data;
 
     if (!data->settings_init) {
-
-        data->status = true;
-        k_work_schedule(&ext_power_save_work, K_NO_WAIT);
-
-        ext_power_enable(dev);
+        data->settings_init = true;
+        data->persisted_status = true;
+        return ext_power_generic_enable_runtime(dev);
     }
 
     return 0;
@@ -150,10 +193,10 @@ SETTINGS_STATIC_HANDLER_DEFINE(ext_power, "ext_power/state", NULL, ext_power_set
 static int ext_power_generic_init(const struct device *dev) {
     const struct ext_power_generic_config *config = dev->config;
 
-    for (int i = 0; i < config->control_gpios_count; i++) {
+    for (size_t i = 0; i < config->control_gpios_count; i++) {
         const struct gpio_dt_spec *gpio = &config->control[i];
         if (gpio_pin_configure_dt(gpio, GPIO_OUTPUT_INACTIVE)) {
-            LOG_ERR("Failed to configure ext-power control pin %d", i);
+            LOG_ERR("Failed to configure ext-power control pin %u", (unsigned)i);
             return -EIO;
         }
     }
@@ -163,7 +206,10 @@ static int ext_power_generic_init(const struct device *dev) {
 #endif
 
     // Enable by default. We may get disabled again once settings load.
-    ext_power_enable(dev);
+    int rc = ext_power_generic_enable_runtime(dev);
+    if (rc != 0) {
+        return rc;
+    }
 
     if (config->init_delay_ms) {
         k_msleep(config->init_delay_ms);
@@ -176,11 +222,9 @@ static int ext_power_generic_init(const struct device *dev) {
 static int ext_power_generic_pm_action(const struct device *dev, enum pm_device_action action) {
     switch (action) {
     case PM_DEVICE_ACTION_RESUME:
-        ext_power_generic_enable(dev);
-        return 0;
+        return ext_power_generic_enable_runtime(dev);
     case PM_DEVICE_ACTION_SUSPEND:
-        ext_power_generic_disable(dev);
-        return 0;
+        return ext_power_generic_disable_runtime(dev);
     default:
         return -ENOTSUP;
     }
@@ -197,6 +241,8 @@ static const struct ext_power_generic_config config = {
 
 static struct ext_power_generic_data data = {
     .status = false,
+    .status_known = false,
+    .persisted_status = false,
 #if IS_ENABLED(CONFIG_SETTINGS)
     .settings_init = false,
 #endif
@@ -204,6 +250,8 @@ static struct ext_power_generic_data data = {
 
 static const struct ext_power_api api = {.enable = ext_power_generic_enable,
                                          .disable = ext_power_generic_disable,
+                                         .enable_runtime = ext_power_generic_enable_runtime,
+                                         .disable_runtime = ext_power_generic_disable_runtime,
                                          .get = ext_power_generic_get};
 
 #define ZMK_EXT_POWER_INIT_PRIORITY 81

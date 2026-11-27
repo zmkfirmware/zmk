@@ -1,0 +1,884 @@
+---
+title: LED Matrix and led_composite reference
+description: Lighting effects, Devicetree properties, key bindings, runtime settings, and power management in this ZMK fork.
+---
+
+For a first build, follow the [Corne54 configuration guide](development/hardware-integration/lighting/led-matrix.mdx). This reference covers the controller, its hardware backends, and the configuration shared by the firmware and the companion Studio client.
+
+## Lighting and hardware
+
+LED Matrix assigns a logical number to each LED. A main profile supplies the base colors. Independent groups have their own local profiles. Layer colors and status indicators can override the resulting colors on selected LEDs. The controller maps the completed frame to the hardware, applies brightness, and manages power and refresh timing.
+
+| System        | Hardware interface          | Typical use                                                                                            |
+| ------------- | --------------------------- | ------------------------------------------------------------------------------------------------------ |
+| RGB underglow | Zephyr `led_strip`          | Run an effect on a strip of addressable LEDs.                                                          |
+| Backlight     | Zephyr LED or PWM driver    | Adjust the brightness of a single-color backlight.                                                     |
+| LED Matrix    | Zephyr `led` or `led_strip` | Address individual keys, locate effects on a grid, or combine independent zones and status indicators. |
+
+With `led-driver = "strip"`, the controller sends pixels through `led_strip_update_rgb()`. With `"matrix"`, it uses the target's LED API, which can expose channel writes, RGB colors, scalar brightness, or binary on/off. An IS31 controller or a `zmk,led-composite` device can serve as the matrix backend. A composite exposes one continuous channel space built from several devices.
+
+## Kconfig settings
+
+Defaults below come from `app/Kconfig`, `app/Kconfig.defaults`, and the LED module's Kconfig. A board or user configuration can override them. Startup defaults apply until the firmware restores saved settings.
+
+| Option                                                                        | Default              | Behavior                                                                                                                                                      |
+| ----------------------------------------------------------------------------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `CONFIG_ZMK_LED_MATRIX`                                                       | `n`                  | Enable the controller. The chosen node selects the LED or LED strip API. HID indicators and the low-priority work queue are selected automatically.           |
+| `CONFIG_ZMK_LED_MATRIX_EXT_POWER`                                             | `n`                  | Coordinate a direct strip's external supply with rendering. Requires the strip backend, `CONFIG_ZMK_EXT_POWER`, and an enabled generic external power device. |
+| `CONFIG_ZMK_LED_MATRIX_AUTO_OFF_IDLE`                                         | `n`                  | Suspend base lighting on battery when idle. Resume on activity. USB power prevents this automatic suspension.                                                 |
+| `CONFIG_ZMK_LED_MATRIX_IDLE_STATUS_WAKE_TIMEOUT`                              | `1800000` ms         | Time after entering idle during which an automatic status event may light the LEDs. Zero closes the window immediately.                                       |
+| `CONFIG_ZMK_LED_MATRIX_BRT_STEP`                                              | `10`                 | Percentage points per brightness step.                                                                                                                        |
+| `CONFIG_ZMK_LED_MATRIX_BRT_START`                                             | `60`                 | Startup global brightness, in percent.                                                                                                                        |
+| `CONFIG_ZMK_LED_MATRIX_PROFILE_START`                                         | `0`                  | Startup main profile ID.                                                                                                                                      |
+| `CONFIG_ZMK_LED_MATRIX_SPD_LEVELS`                                            | `7`                  | Number of animation speed levels.                                                                                                                             |
+| `CONFIG_ZMK_LED_MATRIX_SPD_START`                                             | `min(4, SPD_LEVELS)` | Startup speed level.                                                                                                                                          |
+| `CONFIG_ZMK_LED_MATRIX_ON_START`                                              | `y`                  | Initial power switch state.                                                                                                                                   |
+| `CONFIG_ZMK_LED_MATRIX_EDITOR`                                                | Conditional          | Requires LED Matrix and `CONFIG_SETTINGS`. Defaults on with Studio RPC or on a split peripheral. Allows persistent editing and an empty starting catalog.     |
+| `CONFIG_ZMK_LED_MATRIX_CUSTOM_PRESETS`, `CONFIG_ZMK_LED_MATRIX_CUSTOM_GROUPS` | `4` each             | Reserve 1–16 editable slots of each kind with the editor enabled.                                                                                             |
+| `CONFIG_ZMK_LED_MATRIX_STUDIO_NOTIFICATIONS`                                  | `y` when available   | Notify an unlocked Studio client of lighting setting changes. Requires Studio RPC, LED Matrix and its behavior.                                               |
+| `CONFIG_ZMK_LED_COMPOSITE`                                                    | `y` when available   | Build the composite driver when `LED` and an enabled composite node are present. Selects `LED_STRIP` for strip children.                                      |
+
+The hidden options `CONFIG_ZMK_LED_MATRIX_USES_LED_API` and `CONFIG_ZMK_LED_MATRIX_USES_LED_STRIP_API` are derived from the chosen node's `led-driver`. Set the Devicetree property when changing backend. The controller shares ZMK's low-priority queue for rendering, final power transitions and debounced settings saves.
+
+## Key bindings and colors
+
+The `lm` node comes from `app/dts/behaviors/led_matrix.dtsi`. Its short node name allows invocation on a split peripheral.
+
+```dts
+lm: led_mtx {
+    compatible = "zmk,behavior-led-matrix";
+    #binding-cells = <2>;
+    display-name = "LED Matrix";
+};
+```
+
+The two binding cells hold a command ID and an argument. Include `<dt-bindings/zmk/led_matrix.h>` and use the macros below. Commands such as `LM_TOG` already expand to both cells.
+
+| Binding                                            | Effect                                                                                  |
+| -------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `&lm LM_ON`, `&lm LM_OFF`, `&lm LM_TOG`            | Turn lighting on, turn it off, or toggle it.                                            |
+| `&lm LM_BRI`, `&lm LM_BRD`, `&lm LM_BRT 40`        | Increase, decrease, or set global brightness (0–100%). Setting zero turns lighting off. |
+| `&lm LM_EFF`, `&lm LM_EFR`, `&lm LM_EFS 1`         | Select the next, previous, or specified main profile.                                   |
+| `&lm LM_SPI`, `&lm LM_SPD`, `&lm LM_SPS 3`         | Increase, decrease, or set the speed level.                                             |
+| `&lm LM_HUI`, `&lm LM_HUD`, `&lm LM_HUS 2`         | Select the next, previous, or specified manual palette hue.                             |
+| `&lm LM_STA LM_STA_ALL`                            | Manually show the configured status zones in the mask.                                  |
+| `&lm LM_CFF 0`, `&lm LM_CFR 0`, `&lm LM_CFS(0, 1)` | Select the next, previous, or specified local profile for group 0.                      |
+
+`LM_CFS(child_id, profile_id)` expands to the command and a packed argument. `LM_CHILD_PROFILE_PACK` keeps eight bits per ID. `LM_CHILD_PROFILE_CHILD_ID` and `LM_CHILD_PROFILE_PROFILE_ID` extract them.
+
+```c
+((((child_id) & 0xFF) << 8) | ((profile_id) & 0xFF))
+```
+
+The status mask combines `LM_STA_BATTERY` (0x01), `LM_STA_USB` (0x02), `LM_STA_BLE` (0x04), and `LM_STA_HID` (0x08). `LM_STA_ALL` selects all four.
+
+```dts
+#include <dt-bindings/zmk/led_matrix.h>
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+                &lm LM_TOG
+                &lm LM_BRI
+                &lm LM_EFS 1
+                &lm LM_STA LM_STA_BLE
+                &lm LM_CFS(0, 1)
+            >;
+        };
+    };
+};
+```
+
+Include `<dt-bindings/zmk/led_matrix_colors.h>` for `LM_RGB(r, g, b)`, named colors, grays and dim colors. A literal is `0xRRGGBB`. `LM_PALETTE` follows the selected manual hue and `LM_RAINBOW` changes over time. The header also provides named defaults for base, USB, BLE, battery and HID states.
+
+| Color family | Aliases                                                                                                                                        |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| Basic        | `LM_BLACK`, `LM_WHITE`, `LM_RED`, `LM_GREEN`, `LM_BLUE`, `LM_YELLOW`, `LM_CYAN`, `LM_MAGENTA`, `LM_ORANGE`, `LM_AMBER`, `LM_PURPLE`, `LM_PINK` |
+| GRAY         | `LM_GRAY_08`, `LM_GRAY_10`, `LM_GRAY_20`, `LM_GRAY_40`, `LM_GRAY_80`                                                                           |
+| DIM          | `LM_DIM_WHITE`, `LM_DIM_RED`, `LM_DIM_GREEN`, `LM_DIM_BLUE`, `LM_DIM_YELLOW`, `LM_DIM_CYAN`, `LM_DIM_AMBER`                                    |
+| BASE         | `LM_BASE_OFF`, `LM_BASE_IDLE`, `LM_BASE_SOFT`                                                                                                  |
+| USB          | `LM_USB_HID`, `LM_USB_POWERED`, `LM_USB_NONE`                                                                                                  |
+| BLE          | `LM_BLE_OPEN`, `LM_BLE_CONNECTED`, `LM_BLE_DISCONNECTED`                                                                                       |
+| BATTERY      | `LM_BATTERY_ON`, `LM_BATTERY_OFF`, `LM_BATTERY_LOW`, `LM_BATTERY_MID`, `LM_BATTERY_HIGH`                                                       |
+| HID          | `LM_HID_ON`, `LM_HID_OFF`, `LM_HID_CAPS_ON`, `LM_HID_NUM_ON`, `LM_HID_SCROLL_ON`                                                               |
+
+## Devicetree controller and mapping
+
+Set the chosen node on each firmware image:
+
+```dts
+/ {
+    chosen {
+        zmk,led-matrix = &led_matrix;
+    };
+};
+```
+
+Select a backend and declare the number of logical LEDs on this controller. These two excerpts show the hardware-selection properties. Add a renderable source or enable the editor before using either node.
+
+```dts
+led_matrix: led_matrix {
+    compatible = "zmk,led-matrix";
+    led-driver = "matrix";
+    led-device = <&some_led_dev>;
+    led-count = <N>;
+};
+```
+
+```dts
+led_matrix: led_matrix {
+    compatible = "zmk,led-matrix";
+    led-driver = "strip";
+    led-strip-device = <&some_strip_dev>;
+    led-count = <N>;
+};
+```
+
+| Property               | Meaning and constraints                                                                                                                                                                                                                           |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `led-count`            | Required logical LED count. Grid entries, status zones and per-LED colors use these zero-based indices.                                                                                                                                           |
+| `led-driver`           | Required. Use `"matrix"` with `led-device`, or `"strip"` with `led-strip-device`. The selected device must be enabled and ready.                                                                                                                  |
+| `output-channel-count` | Total physical channel space of a channel-writing backend. Defaults to three channels per logical LED. Set it explicitly when the hardware exposes a different count.                                                                             |
+| `channel-indexes`      | Optional logical RGB channel to physical channel map for `write_channels`. Supply exactly `led-count * 3` values in logical R, G, B order, each below the output channel count.                                                                   |
+| `led-indexes`          | Optional physical LED map for a per-LED backend. Use `led-count` indices for one physical LED per logical LED, or `led-count * 3` for one physical scalar LED per channel.                                                                        |
+| `matrix-led-grid`      | A row-by-row map in local switch-scan coordinates. Each row must match the local column count and the number of rows must match the scanner. Each split half defines its own grid. The matrix transform maps local cells to global key positions. |
+
+A numeric grid entry identifies a logical LED. `LM_PH` (0xFFFD) marks a placeholder without a key, `LM_BREAK` (0xFFFE) separates rows, and `LM_NOLED` (0xFFFF) marks a key without lighting. Position-driven effects and layers using implicit LED membership need the grid. A controller used solely for status, independent zones or position-independent effects can omit it.
+
+### Child nodes
+
+| Child                     | How to configure it                                                                                                                                                                                                                                                  |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Main profile              | Give it a `profile-id`, a `renderer`, and `colors`. One color broadcasts to the full profile; a per-LED array uses `led-count` entries. Optional properties include `display-name`, `brightness`, `period-ms`, `effect-style`, and `effect-direction`.               |
+| Layer color               | Give it a `layer-id` and `layer-colors`. Supply ordered `layer-leds` explicitly or inherit grid traversal order. Supply one color or one per target LED. `brightness` controls intensity. `display-time-ms = <0>` keeps the overlay visible until the layer changes. |
+| Independent group         | Give it an `independent-id`, an ordered `independent-leds` list, and at least one nested profile. A factory-defined group cannot repeat LEDs, share them with another independent group, or claim LEDs already mapped in the grid.                                   |
+| Independent local profile | Put a child with its own `profile-id` inside the group. Set colors, renderer, brightness and period on that child. Local IDs within a group and independent group IDs must be unique and consecutive from zero.                                                      |
+
+With the editor disabled, initialization requires at least one main profile, independent group, layer color or status zone. With the editor enabled, a compatible client can populate an empty catalog.
+
+### Renderers and styles
+
+Set `effect-style` to a zero-based style number. Where the renderer supports direction, set `effect-direction` to `"forward"` or `"reverse"`. Defaults are style zero and forward. Studio offers the animations available on the selected side.
+
+| ID  | Renderer                                | Styles in numeric order                                                                               | Layout                                                |
+| --- | --------------------------------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| 0–3 | `solid`, `breathe`, `spectrum`, `swirl` | Steady color, breathing, global hue cycle, hue cycle along ordered LEDs                               | Main or independent profile                           |
+| 4–6 | `keypress`, `ripple`, `rain`            | Held key and afterglow, wavefront from the latest key, falling column trails                          | Local grid                                            |
+| 7   | `starlight`                             | Sparkles with an additional meteor when a grid is present                                             | Main profile                                          |
+| 8   | `gradient`                              | Horizontal, vertical, stepped horizontal, stepped vertical                                            | Grid, reversible                                      |
+| 9   | `wave`                                  | Horizontal, vertical, chevron, traveling ocean wave, brightness bands                                 | Grid, reversible                                      |
+| 10  | `radial`                                | Single center, two centers, edge fountain                                                             | Grid. Reverse the fountain to swap its starting edge. |
+| 11  | `rotary`                                | Pinwheel, color spiral, brightness spiral, dual beacon, color beacon                                  | Grid, reversible rotation                             |
+| 12  | `particles`                             | Single-color speckles, colored raindrops, clusters of blooms                                          | Grid                                                  |
+| 13  | `chase`                                 | A leading pixel with up to three trailing levels along the ordered members                            | Main or independent profile, reversible               |
+| 14  | `reactive`                              | Wide, cross, square wavefront, piano column, solid splash, color splash, ripple over a lit background | Grid, up to eight recent keystrokes                   |
+| 15  | `heatmap`                               | A press adds 40 heat to its cell and 12 to each orthogonal neighbor. Heat peaks at 100 and decays.    | Grid                                                  |
+
+For example, apply these settings to a main profile for reverse dual-center rings:
+
+```dts
+renderer = "radial";
+effect-style = <1>;
+effect-direction = "reverse";
+colors = <LM_PALETTE>;
+period-ms = <1400>;
+```
+
+The effective period controls animation speed, decay and reaction timing. A fixed-color static gradient refreshes on initial display and settings changes. A rainbow gradient continues to evolve. Hue-cycling effects start from the selected hue, use the brightness of gray or white as a color seed, and leave black off.
+
+For `keypress`, `keypress-afterglow-ms` sets the hold time after release and `keypress-fadeout-ms` sets the following fade time. Zero fade switches off as soon as afterglow ends. `keypress-range` is measured in local grid cells. Zero lights only the pressed key.
+
+### Matching familiar lighting menus
+
+The examples below use the K2 HE ANSI RGB and Air60 HE demo menus. The NuPhy entries describe visual approximations, particularly bloom, tide, piano and the always-lit ripple. They have not been matched frame by frame on hardware. Numbers refer to `effect-style`. [Keychron device definition](https://launcher.keychron.com/static/device/875826720/json/v3.json) · [NuPhy demo](https://drive.nuphyio.com/?selectDevice=2/#/pressKey)
+
+| Keychron                                | NuPhy effect (English description) | LED Matrix setting                               |
+| --------------------------------------- | ---------------------------------- | ------------------------------------------------ |
+| None                                    | Backlight off                      | `LM_OFF`                                         |
+| Solid Color, Per Key RGB                | Custom                             | `solid` with one color or per-LED colors         |
+| Breathing, Cycle All                    | Breathing, spectrum                | `breathe`, `spectrum` respectively               |
+| —                                       | Steps                              | `gradient` 2 or 3                                |
+| Cycle Left Right, Cycle Up Down         | Horizontal or vertical wave        | `wave` 0 or 1                                    |
+| Rainbow Moving Chevron                  | —                                  | `wave` 2                                         |
+| —                                       | Ocean wave, bands                  | `wave` 3 or 4                                    |
+| Cycle Out In, Cycle Out In Dual         | Tide                               | `radial` 0 or 1, reverse for inward motion       |
+| —                                       | Fountain                           | `radial` 2                                       |
+| Cycle Pinwheel, Cycle Spiral            | Rotation                           | `rotary` 0 or 1                                  |
+| Band Spiral Val                         | —                                  | `rotary` 2                                       |
+| Dual Beacon, Rainbow Beacon             | —                                  | `rotary` 3 or 4                                  |
+| Pixel Rain, Jellybean Raindrops         | Galaxy                             | `particles` 0 or 1                               |
+| —                                       | Bloom, chase                       | `particles` 2, `chase` respectively              |
+| Digital Rain                            | Rain                               | `rain`                                           |
+| Reactive Simple                         | Single key                         | `keypress` with `keypress-range = <0>`           |
+| Reactive Multiwide, Reactive Multinexus | —                                  | `reactive` 0 or 1                                |
+| —                                       | Grid, piano                        | `reactive` 2 or 3                                |
+| Solid Splash, Splash                    | Ripple                             | `reactive` 4 or 5, or `ripple` for one wavefront |
+| —                                       | Always-lit ripple                  | `reactive` 6                                     |
+| Typing Heatmap                          | —                                  | `heatmap`                                        |
+
+For the Air60 HE bar, breathing, chase, neon and static correspond to independent profiles using `breathe`, `chase`, `spectrum` and `solid`. Keychron Mix RGB combines zones on a timeline.
+
+## Status indicators and timing
+
+All status lists contain logical LED indices. A color can be fixed RGB, a named color, or a supported dynamic color. Define the zones that exist on each half.
+
+| Source  | Devicetree properties                                                                   | What the LEDs show                                                                                                    |
+| ------- | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Battery | `battery-leds`, `battery-color-on`, `battery-color-off`, `battery-level-colors`         | The order of LEDs controls the battery bar. Level colors divide the charge range into equal buckets from low to high. |
+| USB     | `usb-leds`, `usb-color-none`, `usb-color-powered`, `usb-color-hid`                      | Disconnected, powered, or active HID state.                                                                           |
+| BLE     | `ble-profile-leds`, `ble-color-open`, `ble-color-connected`, `ble-color-disconnected`   | The active profile and its connection state. LED list order identifies the profiles.                                  |
+| HID     | `hid-caps-leds`, `hid-num-leds`, `hid-scroll-leds`, `hid-compose-leds`, `hid-kana-leds` | Each indicator uses its matching `hid-…-color-on` and `hid-…-color-off` properties.                                   |
+
+If zones share an LED, the last applicable source in this order sets its color:
+
+```text
+Battery < USB < BLE < HID
+```
+
+For shared HID indicators the order is:
+
+```text
+Caps < Num < Scroll < Compose < Kana
+```
+
+`status-timeout-ms` defaults to 3000 ms. The individual `battery-timeout-ms`, `usb-timeout-ms`, `ble-timeout-ms`, and `hid-timeout-ms` inherit it unless explicitly set. A positive timeout displays that source temporarily after an event. Zero keeps its current state visible while runtime output permits it, including USB disconnected, BLE disconnected/open, inactive HID colors, and unlit battery segments. Battery changes refresh a visible persistent display. With `ble-pairing-hold = <1>` (the default), an open profile may trigger a pairing indication lasting five times the effective BLE timeout.
+
+### Idle, sleep, and refresh timing
+
+With idle auto-off enabled, unplugging USB while idle suspends base lighting immediately. Eligible status indications can still run until their timeout. Reconnecting USB lifts idle suspension, while manual off and sleep retain their own state. USB policy uses a snapshot initialized at boot and updated by USB events.
+
+The idle status wake window starts at `ZMK_ACTIVITY_IDLE`. After it expires, automatic BLE, USB, battery, HID and endpoint events update the cached state without lighting or refreshing LEDs. This window also applies when USB keeps base lighting active. Key activity, explicit power/brightness commands and manual `LM_STA` remain available.
+
+| Runtime mode                | Output                                                              |
+| --------------------------- | ------------------------------------------------------------------- |
+| `OFF`                       | User lighting is off. State subscriptions remain active.            |
+| `ACTIVE`                    | Base lighting and applicable overlays can render.                   |
+| `FORCE_SHOW_ONLY`           | A status request can temporarily display its LEDs.                  |
+| `AUTO_SUSPENDED`            | Idle policy suspended base lighting.                                |
+| `AUTO_SUSPENDED_FORCE_SHOW` | A temporary indication is visible during idle suspension.           |
+| `SLEEP_SUSPENDED`           | Sleep suspends the controller and finishes outstanding output work. |
+
+The 50 ms refresh timer stops on entry to off, idle suspension or sleep. Output synchronization clears LEDs and turns off managed power. It skips a redundant clear when an output is already disabled or an ungated output last accepted an all-black frame. Pairing flashes and other visible animations can restart the timer. The final visible color or effect determines demand. An unused rainbow color, an absent zone, and a fully obscured animation do not keep the timer running.
+
+With the user switch still on, a stable all-black frame can shut down managed power without changing the selected profile or saved state. The next relevant event restores output. A breathing or blinking animation advances across its temporary black frames. Afterglow expiry handles uptime rollover, ripples stop refreshing at their end, and key releases are recorded while the lights are off. A rain animation returning after a long period of occlusion advances a bounded number of steps.
+
+### Output failures and hardware verification
+
+An IS31 backend with `sdb-gpios` attempts hardware shutdown even if clearing, checking I²C readiness or issuing software shutdown fails. A successful SDB operation records chip shutdown; supply voltage may still be present. The IS31FL3737 driver reinitializes the chip and resets its register-page cache under a mutex when waking from shutdown or an unknown state. Failed initialization triggers another shutdown attempt.
+
+A failed frame or power transition stops periodic rendering. The output service retries up to three times, with delays of 100, 500 and 2000 ms. Each retry reads the current target state. A new request supersedes the previous one, success cancels the remaining attempts, and sleep cancels and waits for outstanding work. After the final failure the service waits for a new request. Direct RGB and scalar outputs continue processing healthy LEDs and return the first error.
+
+The generic external power driver tries all its control GPIOs. A partial failure leaves the state unknown, requiring a fresh hardware operation on the next request. Temporary switches use the runtime API and preserve the user's persistent external power setting.
+
+Board idle and sleep settings are separate from LED Matrix. Corne54 uses a 15 s idle timeout; check the built `zephyr/.config` for the selected half's sleep settings. The Numpad can blank its screen and backlight while keeping BLE connected. Display, radio and sampling activity also affect total current. For a hardware power test, record the firmware hash, battery capacity and voltage; disconnect the debugger and measure battery current, SDB (P0.06 on the applicable board), and I²C activity. After at least 100 idle/wake and USB attach/detach cycles and a 48-hour idle period, check that current returns to the measured shutdown baseline and that periodic writes stop. The power regression tests and measurement notes are in `app/tests/led-matrix/power-regression/`.
+
+## Runtime API and saved settings
+
+The public interface lives in `app/include/zmk/led_matrix.h`. Read a snapshot with `zmk_led_matrix_get_state()`. It reports the user switch, global brightness, selected profile and renderer, effective render source, active status mask and effective layer-color layer ID.
+
+```c
+enum zmk_led_matrix_render_source {
+    ZMK_LED_MATRIX_RENDER_SOURCE_OFF = 0,
+    ZMK_LED_MATRIX_RENDER_SOURCE_PROFILE,
+    ZMK_LED_MATRIX_RENDER_SOURCE_INDEPENDENT,
+    ZMK_LED_MATRIX_RENDER_SOURCE_LAYER_COLOR,
+    ZMK_LED_MATRIX_RENDER_SOURCE_STATUS_OVERLAY,
+};
+```
+
+```c
+struct zmk_led_matrix_state {
+    bool enabled;
+    uint8_t brightness;
+    enum zmk_led_matrix_render_source effective_source;
+    uint8_t selected_profile_id;
+    const char *selected_profile_name;
+    const char *selected_renderer_name;
+    uint8_t effective_status_sources_mask;
+    zmk_keymap_layer_id_t effective_layer_color_layer_id;
+};
+```
+
+The `calc` functions return a candidate value for a direction. The `set` functions apply it. Use the independent-profile functions with a group ID and use `zmk_led_matrix_show_status()` with a mask of `LM_STA_*` bits.
+
+```c
+int zmk_led_matrix_on(void);
+int zmk_led_matrix_off(void);
+int zmk_led_matrix_toggle(void);
+bool zmk_led_matrix_is_on(void);
+
+int zmk_led_matrix_set_brt(uint8_t brightness);
+uint8_t zmk_led_matrix_get_brt(void);
+uint8_t zmk_led_matrix_calc_brt(int direction);
+
+int zmk_led_matrix_set_spd(uint8_t speed);
+uint8_t zmk_led_matrix_get_spd(void);
+uint8_t zmk_led_matrix_calc_spd(int direction);
+
+int zmk_led_matrix_set_hue_index(uint8_t index);
+uint8_t zmk_led_matrix_get_hue_index(void);
+uint8_t zmk_led_matrix_calc_hue_index(int direction);
+
+int zmk_led_matrix_set_profile(uint8_t profile_id);
+uint8_t zmk_led_matrix_get_profile(void);
+uint8_t zmk_led_matrix_calc_profile(int direction);
+
+int zmk_led_matrix_set_independent_profile(uint8_t child_id, uint8_t profile_id);
+uint8_t zmk_led_matrix_get_independent_profile(uint8_t child_id);
+uint8_t zmk_led_matrix_calc_independent_profile(uint8_t child_id, int direction);
+
+int zmk_led_matrix_get_state(struct zmk_led_matrix_state *out);
+
+int zmk_led_matrix_show_status(uint8_t sources_mask);
+```
+
+The `led_matrix/state` settings record stores the switch, brightness, selected main profile ID, speed, manual hue and selected independent profile IDs. The loader supports records v1–v5. Saves use `CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE` on the shared low-priority queue so quick successive changes write the latest state. When a catalog has no main preset, the editor uses ID 255 to represent an empty selection.
+
+### Studio controls and editing
+
+Use the [companion Studio client](https://github.com/afayge/zmk-studio). Firmware with Studio RPC, LED Matrix and the `&lm` behavior advertises basic lighting controls. On an unlocked keyboard, **Lighting** changes power, brightness, main preset, speed, hue and each independent zone's selected preset. Use `display-name` for readable names. Hue changes affect colors configured as `LM_PALETTE`. Changes take effect immediately. Physical lighting keys and Studio use the same global behavior: connected split peripherals receive the absolute command, and Studio shows the central's state. The keymap editor's Save and Discard apply to the keymap. Lighting has its own persistence.
+
+Setting changes notify the unlocked client when `CONFIG_ZMK_LED_MATRIX_STUDIO_NOTIFICATIONS` is on. Layer and status-only display events stay local. Disabling notifications leaves reads and writes available.
+
+- **Effects and indicators** lists editable main presets, independent profiles, layer colors, indicators and timing options when settings and the editor are enabled. On a split, connect to the central and select the target under **Keyboard side**. Each side advertises its geometry and supported animations. Advanced edits require compatible split transport on the target.
+- **Edit group** accepts uniform or per-LED RGB colors, palette colors or rainbow. Empty battery buckets use the configured on color. A status timeout can inherit the default or explicitly use zero. **Live status** shows the target's current source; **Show on keyboard** triggers it manually.
+- **Edit LED positions** selects key LEDs or extra LEDs. Order the members to set battery fill or BLE profile order. Per-LED colors follow the LED number. Each supported HID lock can have its own membership.
+- **New independent group** can combine key LEDs and extra LEDs at runtime. Independent groups cannot claim the same LED. A status overlay may cover a group member. Deletion or membership edits preserve the IDs of other groups. Slot counts are per side.
+- **Main preset management** can create, copy, rename or delete a preset. Halves share its ID and name, and store their colors, animation and ordered members separately. **Apply preset change** checks each side and can resume after interruption. Deleting the active preset prefers a built-in fallback if available.
+- **Layer colors** uses stable layer IDs. **Add layer effect** sets the targets, color, brightness and duration. Zero duration lasts until the layer changes. Removing the overlay reveals the underlying effect. The central resends layer state after layer changes, profile changes and reconnection.
+- **Apply** validates and saves the whole group. **Restore firmware defaults** restores the selected group's Devicetree definition. Studio reads back the target side to confirm the result. A failed write or disconnect preserves the draft in the same browser tab; reread the device before retrying.
+
+The editor stores group differences under `lm_editor/<group key>`. Records carry a format version and a topology checksum. A topology mismatch causes the saved override to be ignored after a firmware update. Main presets and independent groups store style and direction in v4. A v3 main preset or v2 independent group loads with default style and forward direction and is written as v4 on its next edit. Layer records use v3 and indicators use v2. Legacy colors use factory LED membership; v1 color records migrate on first edit. An independent group's name, members and all local profiles are committed together.
+
+## Composite devices
+
+Use `zmk,led-composite` when one logical output spans multiple devices. A direct strip needs only the strip backend. A composite can join several channel controllers or include strips and single-color GPIO/PWM LEDs in the same space.
+
+```dts
+led_chain: led_composite {
+    compatible = "zmk,led-composite";
+
+    child0 { ... };
+    child1 { ... };
+};
+```
+
+Each child needs exactly one of `led-device` or `led-strip-device`, plus a `channel-offset` and a positive `channel-count`. Start at offset zero. Each following child's offset must equal the end of the preceding child's range. Gaps and overlaps fail validation. For strips that specify `ext-power-device`, all such children must name the same external supply. The controller's effective `output-channel-count` must agree with the composite total, and every `channel-indexes` entry must fit in that space.
+
+| Child interface         | Number of channels                            | Write behavior                                                                                                                                    |
+| ----------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Native `write_channels` | Native writable channel count                 | Forward writes in the affected child range.                                                                                                       |
+| Scalar brightness       | Three channels per physical LED               | Keep an RGB shadow for partial writes. Take `max(R, G, B)` and convert 0–255 to 0–100% for `led_set_brightness()`.                                |
+| Binary LED              | Three channels per physical LED               | Both `on` and `off` must exist. The maximum of the cached RGB triple selects on or off.                                                           |
+| LED strip               | A multiple of three, one RGB triple per pixel | Update the channel buffer and try `led_strip_update_channels()`. On `-ENOSYS`, pack it into `struct led_rgb[]` and call `led_strip_update_rgb()`. |
+
+The composite's public Zephyr LED driver operation is `write_channels`. A matrix child is probed in the order shown above. In `app/module/drivers/led/led_composite.c`, the child configuration holds the selected device, optional supply and SDB, channel bounds, LED/pixel counts and scalar or strip buffers. Runtime state tracks the chosen matrix API and which children have been soft-blanked or shut down. The device mutex protects the child states, total count, capabilities and shared supply state. The driver distinguishes generic, IS31FL3733, IS31FL3737 and corresponding mock matrix devices.
+
+### Capability and power API
+
+`app/include/drivers/led/led_composite.h` exposes three operations:
+
+```c
+int zmk_led_composite_get_channel_count(const struct device *dev, uint32_t *count);
+int zmk_led_composite_get_capabilities(const struct device *dev, uint32_t *caps);
+int zmk_led_composite_power(const struct device *dev, bool enable);
+```
+
+`ZMK_LED_COMPOSITE_CAP_MANAGED_POWER` indicates that at least one child supports managed power, such as IS31 soft blanking or a strip on a switched supply. `ZMK_LED_COMPOSITE_CAP_FULL_HARD_OFF` requires every child to support hardware shutdown. LED Matrix checks the channel count and these capability bits when selecting its output policy.
+
+`zmk_led_composite_power(dev, false)` clears or disables children and switches off the shared supply. Zero means all children completed the shutdown available to them. An ungated child must actually clear successfully. A confirmed hardware or software disable can satisfy shutdown after a failed clear on that child. One failure does not prevent attempts on other children or the shared supply. Retries skip successful children. Failed wake-up attempts roll back the children and shared supply. An SDB pin places the chip in shutdown independently of VCC.
+
+## Devicetree examples
+
+The first six examples come from the simulator fixtures named below. Mock device nodes exercise the mapping and rendering logic. For hardware, use the real driver, bus and pin configuration.
+
+### Minimal matrix backend
+
+Fixture: `app/tests/led-matrix/basic/native_sim.keymap`.
+
+```dts
+#include "../behavior_keymap.dtsi"
+
+/ {
+    chosen {
+        zmk,led-matrix = &led_matrix;
+    };
+
+    led_matrix_dev: led_matrix_dev {
+        compatible = "zmk,led-mock";
+        mode = "channels";
+        channel-count = <12>;
+
+        led_0 { index = <0>; color-mapping = <LED_COLOR_ID_RED>; };
+        led_1 { index = <1>; color-mapping = <LED_COLOR_ID_RED>; };
+        led_2 { index = <2>; color-mapping = <LED_COLOR_ID_RED>; };
+        led_3 { index = <3>; color-mapping = <LED_COLOR_ID_RED>; };
+    };
+
+    led_matrix: led_matrix {
+        compatible = "zmk,led-matrix";
+        led-driver = "matrix";
+        led-device = <&led_matrix_dev>;
+        led-count = <4>;
+        output-channel-count = <12>;
+        channel-indexes = <
+            3 4 5
+            0 1 2
+            6 7 8
+            9 10 11
+        >;
+        matrix-led-grid = <
+            0 1 LM_BREAK
+            2 3
+        >;
+
+        profile0 {
+            profile-id = <0>;
+            display-name = "Channel";
+            renderer = "solid";
+            colors = <0x010203 0x100020 0x0000FF 0xAB0000>;
+            brightness = <100>;
+            period-ms = <1000>;
+        };
+    };
+};
+```
+
+### Direct strip with external power
+
+Fixture: `app/tests/led-matrix/idle-auto-off-strip-ext-power-runtime-only/native_sim.keymap`.
+
+```dts
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/kscan_mock.h>
+#include <dt-bindings/zmk/led_matrix.h>
+#include <dt-bindings/led/led.h>
+#include <behaviors.dtsi>
+
+/ {
+    chosen {
+        zmk,kscan = &kscan;
+        zmk,led-matrix = &led_matrix;
+    };
+
+    strip_power_child: strip_power_child {
+        compatible = "zmk,led-strip-mock";
+        chain-length = <1>;
+    };
+
+    led_matrix: led_matrix {
+        compatible = "zmk,led-matrix";
+        led-driver = "strip";
+        led-strip-device = <&strip_power_child>;
+        led-count = <1>;
+
+        profile0 {
+            profile-id = <0>;
+            display-name = "Strip Base";
+            renderer = "solid";
+            colors = <0x102030>;
+            brightness = <100>;
+            period-ms = <1000>;
+        };
+    };
+};
+```
+
+### Main preset, host status and layer color
+
+Fixture: `app/tests/led-matrix/layer-color-status-priority/native_sim.keymap`.
+
+```dts
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/kscan_mock.h>
+#include <dt-bindings/zmk/led_matrix.h>
+#include <dt-bindings/zmk/led_matrix_colors.h>
+#include <dt-bindings/led/led.h>
+#include <behaviors.dtsi>
+
+/ {
+    chosen {
+        zmk,kscan = &kscan;
+        zmk,led-matrix = &led_matrix;
+    };
+
+    led_matrix_dev: led_matrix_dev {
+        compatible = "zmk,led-mock";
+        mode = "color";
+
+        led_0 { index = <0>; color-mapping = <LED_COLOR_ID_RED LED_COLOR_ID_GREEN LED_COLOR_ID_BLUE>; };
+    };
+
+    led_matrix: led_matrix {
+        compatible = "zmk,led-matrix";
+        led-driver = "matrix";
+        led-device = <&led_matrix_dev>;
+        led-count = <1>;
+        status-timeout-ms = <1000>;
+        usb-timeout-ms = <1000>;
+        hid-timeout-ms = <1000>;
+        usb-leds = <0>;
+        usb-color-hid = <0xFF0000>;
+        usb-color-powered = <LM_BLACK>;
+        usb-color-none = <LM_BLACK>;
+        hid-caps-leds = <0>;
+        hid-caps-color-on = <0x00FF00>;
+        hid-caps-color-off = <LM_BLACK>;
+
+        profile0 {
+            profile-id = <0>;
+            display-name = "Off";
+            renderer = "solid";
+            colors = <LM_BLACK>;
+            brightness = <100>;
+            period-ms = <1000>;
+        };
+
+        layer_color1 {
+            layer-id = <1>;
+            brightness = <100>;
+            display-time-ms = <0>;
+            layer-leds = <0>;
+            layer-colors = <0x0000FF>;
+        };
+    };
+};
+```
+
+### Independent group with local presets
+
+Fixture: `app/tests/led-matrix/independent-solid/native_sim.keymap`.
+
+```dts
+#include "../behavior_keymap.dtsi"
+
+/ {
+    chosen {
+        zmk,led-matrix = &led_matrix;
+    };
+
+    led_matrix_dev: led_matrix_dev {
+        compatible = "zmk,led-mock";
+        mode = "color";
+
+        led_0 { index = <0>; color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>; };
+        led_1 { index = <1>; color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>; };
+        led_2 { index = <2>; color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>; };
+        led_3 { index = <3>; color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>; };
+        led_4 { index = <4>; color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>; };
+    };
+
+    led_matrix: led_matrix {
+        compatible = "zmk,led-matrix";
+        led-driver = "matrix";
+        led-device = <&led_matrix_dev>;
+        led-count = <5>;
+        matrix-led-grid = <
+            0 1 LM_BREAK
+            2 3
+        >;
+
+        profile0 {
+            profile-id = <0>;
+            display-name = "Independent Solid";
+            renderer = "solid";
+            colors = <0x010203 0x100020 0x0000FF 0xAB0000 0x123456>;
+            brightness = <100>;
+            period-ms = <1000>;
+        };
+
+        independent0 {
+            independent-id = <0>;
+            independent-leds = <4>;
+
+            profile0 {
+                profile-id = <0>;
+                renderer = "solid";
+                colors = <0x123456>;
+                brightness = <100>;
+                period-ms = <1000>;
+            };
+        };
+    };
+};
+```
+
+### Contiguous ranges across two controllers
+
+Fixture: `app/tests/led-matrix/composite-split/native_sim.keymap`.
+
+```dts
+#include "../behavior_keymap.dtsi"
+
+/ {
+    chosen {
+        zmk,led-matrix = &led_matrix;
+    };
+
+    composite_split_child0: composite_split_child0 {
+        compatible = "zmk,led-mock";
+        mode = "channels";
+        channel-count = <5>;
+
+        led_0 {
+            index = <0>;
+            color-mapping = <LED_COLOR_ID_RED>;
+        };
+    };
+
+    composite_split_child1: composite_split_child1 {
+        compatible = "zmk,led-mock";
+        mode = "channels";
+        channel-count = <7>;
+
+        led_0 {
+            index = <0>;
+            color-mapping = <LED_COLOR_ID_RED>;
+        };
+    };
+
+    led_chain: led_composite {
+        compatible = "zmk,led-composite";
+
+        child0 {
+            led-device = <&composite_split_child0>;
+            channel-offset = <0>;
+            channel-count = <5>;
+        };
+
+        child1 {
+            led-device = <&composite_split_child1>;
+            channel-offset = <5>;
+            channel-count = <7>;
+        };
+    };
+
+    led_matrix: led_matrix {
+        compatible = "zmk,led-matrix";
+        led-driver = "matrix";
+        led-device = <&led_chain>;
+        led-count = <4>;
+        output-channel-count = <12>;
+        channel-indexes = <
+            0 1 2
+            3 4 5
+            6 7 8
+            9 10 11
+        >;
+
+        profile0 {
+            profile-id = <0>;
+            display-name = "Composite Split";
+            renderer = "solid";
+            colors = <0x010203 0x040506 0x070809 0x0A0B0C>;
+            brightness = <100>;
+            period-ms = <1000>;
+        };
+    };
+};
+```
+
+### Matrix and strip with shared power
+
+Fixture: `app/tests/led-matrix/composite-mixed-power/native_sim.keymap`.
+
+```dts
+#include <behaviors.dtsi>
+#include <dt-bindings/led/led.h>
+#include <dt-bindings/zmk/kscan_mock.h>
+#include <dt-bindings/zmk/led_matrix.h>
+
+/ {
+    chosen {
+        zmk,kscan = &kscan;
+        zmk,led-matrix = &led_matrix;
+    };
+
+    ext_power_mock: ext_power_mock {
+        compatible = "zmk,ext-power-mock";
+    };
+
+    matrix_power_child: matrix_power_child {
+        compatible = "zmk,led-mock";
+        mode = "channels";
+        channel-count = <6>;
+        managed-power-kind = "is31fl3737";
+        sdb-gpios = <&gpio0 0 GPIO_ACTIVE_HIGH>;
+
+        led_0 {
+            index = <0>;
+            color-mapping = <LED_COLOR_ID_RED>;
+        };
+    };
+
+    strip_power_child: strip_power_child {
+        compatible = "zmk,led-strip-mock";
+        chain-length = <2>;
+        support-update-channels;
+    };
+
+    led_chain: led_composite {
+        compatible = "zmk,led-composite";
+
+        child0 {
+            led-device = <&matrix_power_child>;
+            channel-offset = <0>;
+            channel-count = <6>;
+        };
+
+        child1 {
+            led-strip-device = <&strip_power_child>;
+            channel-offset = <6>;
+            channel-count = <6>;
+            ext-power-device = <&ext_power_mock>;
+        };
+    };
+
+    led_matrix: led_matrix {
+        compatible = "zmk,led-matrix";
+        led-driver = "matrix";
+        led-device = <&led_chain>;
+        led-count = <4>;
+        output-channel-count = <12>;
+        channel-indexes = <
+            0 1 2
+            3 4 5
+            6 7 8
+            9 10 11
+        >;
+
+        profile0 {
+            profile-id = <0>;
+            display-name = "Composite Mixed Power";
+            renderer = "solid";
+            colors = <0x010203 0x040506 0x070809 0x0A0B0C>;
+            brightness = <100>;
+            period-ms = <1000>;
+        };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+                &lm LM_OFF
+                &lm LM_ON
+            >;
+        };
+    };
+};
+```
+
+### Standalone trackball PWM LEDs
+
+The four physical PWM LEDs are white, green, red and blue. The independent group provides off, white at 30%, and green plus red at 70%. Select the entire combination with `&lm LM_CFS(0, 2)`. Define additional local profiles for different group brightness levels. `LM_BRT` adjusts brightness globally. The local profile selection is saved when settings are enabled.
+
+```dts
+#include <zephyr/dt-bindings/pwm/pwm.h>
+#include <dt-bindings/zmk/led_matrix.h>
+
+/ {
+    chosen { zmk,led-matrix = &led_matrix; };
+
+    trackball_leds: pwm_leds {
+        compatible = "pwm-leds";
+        wht { pwms = <&pwm0 0 PWM_MSEC(1) PWM_POLARITY_NORMAL>; };
+        grn { pwms = <&pwm0 1 PWM_MSEC(1) PWM_POLARITY_NORMAL>; };
+        red { pwms = <&pwm1 0 PWM_MSEC(1) PWM_POLARITY_NORMAL>; };
+        blu { pwms = <&pwm1 1 PWM_MSEC(1) PWM_POLARITY_NORMAL>; };
+    };
+
+    led_matrix: led_matrix {
+        compatible = "zmk,led-matrix";
+        led-driver = "matrix";
+        led-device = <&trackball_leds>;
+        led-count = <4>;
+        led-indexes = <0 1 2 3>;
+
+        independent0 {
+            independent-id = <0>;
+            independent-leds = <0 1 2 3>;
+
+            profile0 {
+                profile-id = <0>;
+                renderer = "solid";
+                colors = <0x000000 0x000000 0x000000 0x000000>;
+                brightness = <100>;
+                period-ms = <1000>;
+            };
+            profile1 {
+                profile-id = <1>;
+                renderer = "solid";
+                colors = <0xFFFFFF 0x000000 0x000000 0x000000>;
+                brightness = <30>;
+                period-ms = <1000>;
+            };
+            profile2 {
+                profile-id = <2>;
+                renderer = "solid";
+                colors = <0x000000 0x00FF00 0xFF0000 0x000000>;
+                brightness = <70>;
+                period-ms = <1000>;
+            };
+        };
+    };
+};
+```
+
+### Trackball PWM LEDs beside a keyboard matrix
+
+The keyboard controller occupies channels 0–5. Four PWM LEDs occupy the next twelve channels, starting at offset 6.
+
+```dts
+/ {
+    led_chain: led_composite {
+        compatible = "zmk,led-composite";
+
+        keyboard {
+            led-device = <&keyboard_led_driver>;
+            channel-offset = <0>;
+            channel-count = <6>;
+        };
+
+        trackball {
+            led-device = <&trackball_leds>;
+            channel-offset = <6>;
+            channel-count = <12>;
+        };
+    };
+
+    led_matrix: led_matrix {
+        compatible = "zmk,led-matrix";
+        led-driver = "matrix";
+        led-device = <&led_chain>;
+        led-count = <6>;
+        output-channel-count = <18>;
+        channel-indexes = <
+            0 1 2  3 4 5
+            6 7 8  9 10 11  12 13 14  15 16 17
+        >;
+
+        /* Keyboard profiles and an independent group for LEDs 2..5 go here. */
+    };
+};
+```
+
+## Validation and source index
+
+The [configuration guide's troubleshooting table](development/hardware-integration/lighting/led-matrix.mdx#troubleshooting) covers missing nodes, incompatible backends, grid dimensions, group membership and invalid channel ranges. For an initialization failure, start with the first LED Matrix or composite diagnostic. Verify that the built `zephyr/zephyr.dts` contains the intended chosen node, driver, map and profiles, then check the resolved Kconfig in `zephyr/.config`.
+
+| Implementation                                                                                    | Responsibility                                                                                                                                        |
+| ------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `app/src/led_matrix.c`                                                                            | Select and validate the chosen controller, assemble the implementation and check backend readiness.                                                   |
+| `app/src/led_matrix/core.c` and `internal.h`                                                      | Construct the Devicetree configuration, profile and group lookups, color tables, mappings, mode definitions and runtime state.                        |
+| `render.c`, `effects.c`, `effect_shapes.h`, `render_demand.c` under `app/src/led_matrix/`         | Render layers, profiles, independent groups and status in priority order, determine whether output needs another frame, and submit it to the backend. |
+| `status.c` and `power.c` in the same directory                                                    | Maintain state snapshots, timed overlays, activity policy, power transitions, retries and sleep handling.                                             |
+| `api.c`, `editor.c`, `studio.c`, `studio_notification.c`                                          | Implement the runtime API, saved settings, preset editing, Studio RPC and lighting notifications.                                                     |
+| `app/include/zmk/events/led_matrix_state_changed.h`, `app/src/events/led_matrix_state_changed.c`  | Define and publish lighting state changes.                                                                                                            |
+| `app/src/behaviors/behavior_led_matrix.c`, `app/dts/behaviors/led_matrix.dtsi`                    | Implement the global key behavior and its split commands. Command macros and colors are in `app/include/dt-bindings/zmk/`.                            |
+| `app/dts/bindings/zmk,led-matrix.yaml`, `app/dts/bindings/behaviors/zmk,behavior-led-matrix.yaml` | Define the controller and behavior properties.                                                                                                        |
+| `app/module/drivers/led/led_composite.c`, `app/module/dts/bindings/led/zmk,led-composite.yaml`    | Implement the composite driver and define its child devices.                                                                                          |

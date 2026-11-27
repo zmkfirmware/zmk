@@ -1,0 +1,51 @@
+#include "../behavior_keymap.dtsi"
+
+/ {
+    chosen { zmk,led-matrix = &led_matrix; };
+
+    channel_child: channel_child {
+        compatible = "zmk,led-mock";
+        mode = "channels";
+        channel-count = <3>;
+        led_0 { index = <0>; color-mapping = <LED_COLOR_ID_RED>; };
+    };
+
+    scalar_child: scalar_child {
+        compatible = "zmk,led-mock";
+        mode = "brightness";
+        led_0 { index = <0>; color-mapping = <LED_COLOR_ID_WHITE>; };
+    };
+
+    led_chain: led_composite {
+        compatible = "zmk,led-composite";
+        channels {
+            led-device = <&channel_child>;
+            channel-offset = <0>;
+            channel-count = <3>;
+        };
+        scalar {
+            led-device = <&scalar_child>;
+            channel-offset = <3>;
+            channel-count = <3>;
+        };
+    };
+
+    led_matrix: led_matrix {
+        compatible = "zmk,led-matrix";
+        led-driver = "matrix";
+        led-device = <&led_chain>;
+        led-count = <2>;
+        output-channel-count = <6>;
+        channel-indexes = <0 1 2 3 4 5>;
+
+        profile0 {
+            profile-id = <0>;
+            display-name = "Mixed Channel Scalar";
+            renderer = "solid";
+            colors = <0x010203 0x040506>;
+            brightness = <100>;
+            period-ms = <1000>;
+        };
+    };
+};
+

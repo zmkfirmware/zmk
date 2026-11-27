@@ -5,6 +5,10 @@ sidebar_label: Lighting
 
 See the [Lighting feature page](../features/lighting.md) for an overview of the available lighting systems in ZMK.
 
+## LED Matrix
+
+For Kconfig settings, Devicetree mapping, and key bindings, see the [LED Matrix configuration guide](../development/hardware-integration/lighting/led-matrix.mdx).
+
 ## RGB Underglow
 
 See the [RGB underglow section](../features/lighting.md#rgb-underglow) in the Lighting feature page for more details, and [hardware integration page](../hardware-integration/lighting/underglow.md) for adding underglow support to a board.

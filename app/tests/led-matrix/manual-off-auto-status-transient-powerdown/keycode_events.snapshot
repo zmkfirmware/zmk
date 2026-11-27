@@ -1,0 +1,25 @@
+Initialized LED matrix: leds=2 independent=0 backend=matrix sink=channels channels=3 output-channels=6 profiles=1 layer-colors=0 local-grid=0x0 cells=0
+LED mock channel[0]=16
+LED mock channel[1]=16
+LED mock channel[2]=16
+LED strip mock channel[0]=32
+LED strip mock channel[1]=32
+LED strip mock channel[2]=32
+LED mock channel[0]=0
+LED mock channel[1]=0
+LED mock channel[2]=0
+LED mock blank[matrix_power_child]=1
+LED strip mock channel[0]=0
+LED strip mock channel[1]=0
+LED strip mock channel[2]=0
+EXT power mock runtime[ext_power_mock]=0
+LED matrix USB state changed: 0 -> 2
+LED mock reinit[matrix_power_child]
+EXT power mock runtime[ext_power_mock]=1
+LED mock channel[1]=255
+LED strip mock channel[2]=255
+LED matrix transient timeout expired, restoring lower-priority output and power-off output
+LED mock channel[1]=0
+LED mock blank[matrix_power_child]=1
+LED strip mock channel[2]=0
+EXT power mock runtime[ext_power_mock]=0

@@ -1,0 +1,92 @@
+/* SPDX-License-Identifier: MIT */
+
+#include <dt-bindings/zmk/led_matrix_colors.h>
+
+&led_matrix {
+    profile8 {
+        profile-id = <8>;
+        display-name = "Stepped Gradient";
+        renderer = "gradient";
+        effect-style = <2>;
+        effect-direction = "forward";
+        colors = <LM_PALETTE>;
+        brightness = <100>;
+    };
+
+    profile9 {
+        profile-id = <9>;
+        display-name = "Horizontal Wave";
+        renderer = "wave";
+        effect-style = <0>;
+        effect-direction = "forward";
+        colors = <LM_PALETTE>;
+        brightness = <100>;
+        period-ms = <2200>;
+    };
+
+    profile10 {
+        profile-id = <10>;
+        display-name = "Twin Rings";
+        renderer = "radial";
+        effect-style = <1>;
+        effect-direction = "forward";
+        colors = <LM_PALETTE>;
+        brightness = <100>;
+        period-ms = <1800>;
+    };
+
+    profile11 {
+        profile-id = <11>;
+        display-name = "Color Spiral";
+        renderer = "rotary";
+        effect-style = <1>;
+        effect-direction = "forward";
+        colors = <LM_PALETTE>;
+        brightness = <100>;
+        period-ms = <2200>;
+    };
+
+    profile12 {
+        profile-id = <12>;
+        display-name = "Color Raindrops";
+        renderer = "particles";
+        effect-style = <1>;
+        effect-direction = "forward";
+        colors = <LM_PALETTE>;
+        brightness = <100>;
+        period-ms = <1600>;
+    };
+
+    profile13 {
+        profile-id = <13>;
+        display-name = "Chase";
+        renderer = "chase";
+        effect-style = <0>;
+        effect-direction = "forward";
+        colors = <LM_PALETTE>;
+        brightness = <100>;
+        period-ms = <1400>;
+    };
+
+    profile14 {
+        profile-id = <14>;
+        display-name = "Color Splash";
+        renderer = "reactive";
+        effect-style = <5>;
+        effect-direction = "forward";
+        colors = <LM_PALETTE>;
+        brightness = <100>;
+        period-ms = <1000>;
+    };
+
+    profile15 {
+        profile-id = <15>;
+        display-name = "Typing Heatmap";
+        renderer = "heatmap";
+        effect-style = <0>;
+        effect-direction = "forward";
+        colors = <LM_RED>;
+        brightness = <100>;
+        period-ms = <1500>;
+    };
+};

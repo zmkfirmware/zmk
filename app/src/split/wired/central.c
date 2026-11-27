@@ -175,8 +175,14 @@ static void stop_rx(void) {
 
 #endif // HAS_DETECT_GPIO
 
+static struct k_spinlock tx_packet_lock;
+
 static ssize_t get_payload_data_size(const struct zmk_split_transport_central_command *cmd) {
     switch (cmd->type) {
+#if IS_ENABLED(CONFIG_ZMK_LED_MATRIX_EDITOR)
+    case ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_LIGHTING:
+        return sizeof(cmd->data.lighting);
+#endif
     case ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_POLL_EVENTS:
         return 0;
     case ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_INVOKE_BEHAVIOR:
@@ -206,11 +212,6 @@ static int split_central_wired_send_command(uint8_t source,
     size_t payload_size =
         data_size + sizeof(source) + sizeof(enum zmk_split_transport_central_command_type);
 
-    if (ring_buf_space_get(&tx_buf) < MSG_EXTRA_SIZE + payload_size) {
-        LOG_WRN("No room to send command to the peripheral %d", source);
-        return -ENOSPC;
-    }
-
     struct command_envelope env = {.prefix =
                                        {
                                            .magic_prefix = ZMK_SPLIT_WIRED_ENVELOPE_MAGIC_PREFIX,
@@ -224,8 +225,14 @@ static int split_central_wired_send_command(uint8_t source,
     struct msg_postfix postfix = {.crc =
                                       crc32_ieee((void *)&env, sizeof(env.prefix) + payload_size)};
 
+    k_spinlock_key_t key = k_spin_lock(&tx_packet_lock);
+    if (ring_buf_space_get(&tx_buf) < MSG_EXTRA_SIZE + payload_size) {
+        k_spin_unlock(&tx_packet_lock, key);
+        return -ENOSPC;
+    }
     ring_buf_put(&tx_buf, (uint8_t *)&env, sizeof(env.prefix) + payload_size);
     ring_buf_put(&tx_buf, (uint8_t *)&postfix, sizeof(postfix));
+    k_spin_unlock(&tx_packet_lock, key);
 
     if (can_tx() >= 0) {
         begin_tx();
@@ -474,6 +481,13 @@ static void publish_events_work(struct k_work *work) {
             zmk_split_wired_get_item(&rx_buf, (uint8_t *)&env, sizeof(struct event_envelope));
         switch (item_err) {
         case 0:
+#if IS_ENABLED(CONFIG_ZMK_LED_MATRIX_EDITOR)
+            if (env.payload.event.type == ZMK_SPLIT_TRANSPORT_PERIPHERAL_EVENT_TYPE_LIGHTING &&
+                env.prefix.payload_size != offsetof(struct event_payload, event.data.lighting) +
+                                               sizeof(struct zmk_lighting_packet)) {
+                break;
+            }
+#endif
             zmk_split_transport_central_peripheral_event_handler(&wired_central, env.payload.source,
                                                                  env.payload.event);
             break;

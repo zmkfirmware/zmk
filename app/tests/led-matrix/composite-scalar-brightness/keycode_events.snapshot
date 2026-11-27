@@ -1,0 +1,8 @@
+Initialized LED matrix: leds=4 independent=1 backend=matrix sink=channels channels=3 output-channels=12 profiles=0 layer-colors=0 local-grid=0x0 cells=0
+LED mock brightness[0]=40
+LED mock brightness[2]=40
+LED mock brightness[0]=0
+LED mock brightness[1]=80
+LED mock brightness[2]=0
+LED mock brightness[3]=80
+

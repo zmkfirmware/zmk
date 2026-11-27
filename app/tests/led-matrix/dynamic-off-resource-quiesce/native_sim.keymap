@@ -1,0 +1,62 @@
+#include <dt-bindings/zmk/kscan_mock.h>
+#include <dt-bindings/zmk/led_matrix.h>
+#include <dt-bindings/zmk/led_matrix_colors.h>
+#include <dt-bindings/led/led.h>
+#include <behaviors.dtsi>
+
+/ {
+    chosen {
+        zmk,kscan = &kscan;
+        zmk,led-matrix = &led_matrix;
+    };
+
+    kscan: native_posix_64_kscan_mock {
+        compatible = "zmk,kscan-mock";
+        rows = <1>;
+        columns = <2>;
+        exit-after;
+        events = <
+            ZMK_MOCK_PRESS(0,0,125)
+            ZMK_MOCK_RELEASE(0,0,10)
+            ZMK_MOCK_PRESS(0,1,100)
+            ZMK_MOCK_RELEASE(0,1,100)
+        >;
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+                &lm LM_OFF
+                &lm LM_OFF
+            >;
+        };
+    };
+
+    EXT_POWER {
+        compatible = "zmk,ext-power-generic";
+        control-gpios = <&gpio0 0 GPIO_ACTIVE_HIGH>;
+    };
+
+    strip_power_child: strip_power_child {
+        compatible = "zmk,led-strip-mock";
+        chain-length = <1>;
+    };
+
+    led_matrix: led_matrix {
+        compatible = "zmk,led-matrix";
+        led-driver = "strip";
+        led-strip-device = <&strip_power_child>;
+        led-count = <1>;
+
+        profile0 {
+            profile-id = <0>;
+            display-name = "Dynamic Off Resource Quiesce";
+            renderer = "solid";
+            colors = <LM_RAINBOW>;
+            brightness = <100>;
+            period-ms = <1000>;
+        };
+    };
+};

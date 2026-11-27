@@ -1,0 +1,13 @@
+file_format: "1"
+id: numpadv2
+name: numpadv2
+type: board
+arch: arm
+features:
+  - keys
+  - underglow
+  - studio
+outputs:
+  - usb
+  - ble
+url: https://bmk-io.com

@@ -40,6 +40,8 @@ struct behavior_parameter_value_metadata {
         BEHAVIOR_PARAMETER_VALUE_TYPE_RANGE = 2,
         BEHAVIOR_PARAMETER_VALUE_TYPE_HID_USAGE = 3,
         BEHAVIOR_PARAMETER_VALUE_TYPE_LAYER_ID = 4,
+        BEHAVIOR_PARAMETER_VALUE_TYPE_SIGNED_AXES,
+        BEHAVIOR_PARAMETER_VALUE_TYPE_HSB,
     } type;
 };
 
@@ -93,6 +95,13 @@ __subsystem struct behavior_driver_api {
     const struct behavior_parameter_metadata *parameter_metadata;
 #endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
 };
+static inline bool zmk_behavior_accepts_key(const struct device *dev) {
+    if (!dev)
+        return false;
+    const struct behavior_driver_api *api = dev->api;
+    return api->binding_pressed || api->binding_released;
+}
+
 /**
  * @endcond
  */
@@ -100,6 +109,8 @@ __subsystem struct behavior_driver_api {
 struct zmk_behavior_metadata {
 #if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
     const char *display_name;
+    const char *compatible;
+    const char *binding_label;
 #endif // IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
 };
 
@@ -121,8 +132,11 @@ struct zmk_behavior_local_id_map {
 
 #if IS_ENABLED(CONFIG_ZMK_BEHAVIOR_METADATA)
 
+#define ZMK_BEHAVIOR_LABEL(label) STRINGIFY(label) " "
 #define ZMK_BEHAVIOR_METADATA_INITIALIZER(node_id)                                                 \
     {                                                                                              \
+        .compatible = STRINGIFY(DT_DRV_COMPAT),                                                    \
+        .binding_label = DT_FOREACH_NODELABEL(node_id, ZMK_BEHAVIOR_LABEL) "",                     \
         .display_name = DT_PROP_OR(node_id, display_name, DEVICE_DT_NAME(node_id)),                \
     }
 

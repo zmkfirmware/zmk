@@ -1,0 +1,2 @@
+LED composite "led_composite" child 0 "composite_no_channels_child" lacks write_channels/set_brightness/on-off
+LED matrix output device "led_composite" is not ready

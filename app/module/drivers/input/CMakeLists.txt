@@ -3,4 +3,6 @@
 
 zephyr_library_amend()
 
+zephyr_library_sources_ifdef(CONFIG_INPUT_SPARKFUN_BLACKBERRY_TRACKBALLER
+                             input_blackberry_trackballer.c)
 zephyr_library_sources_ifdef(CONFIG_ZMK_INPUT_MOCK input_mock.c)

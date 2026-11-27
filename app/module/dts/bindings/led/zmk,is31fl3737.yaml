@@ -1,0 +1,23 @@
+# Copyright (c) 2026 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: ZMK-managed IS31FL3737 LED Matrix Driver
+
+compatible: "zmk,is31fl3737"
+
+include: "i2c-device.yaml"
+
+properties:
+  sdb-gpios:
+    type: phandle-array
+    description: |
+      Hardware shutdown pin. If routed on the board, this property must be
+      present. Set to a logical 1 at boot to exit the device from hardware
+      shutdown.
+
+  current-limit:
+    type: int
+    default: 0xFF
+    description: |
+      Global current limit written to the device global current control
+      register. Defaults to the maximum value of 0xFF.

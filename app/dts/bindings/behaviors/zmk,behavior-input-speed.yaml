@@ -1,0 +1,14 @@
+# Copyright (c) 2026 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+description: Behavior for selecting a runtime input speed profile
+
+compatible: "zmk,behavior-input-speed"
+
+include: two_param.yaml
+
+properties:
+  processor:
+    type: phandle
+    required: true
+    description: zmk,input-processor-speed-profile device controlled by this behavior.

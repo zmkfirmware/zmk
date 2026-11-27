@@ -1,0 +1,19 @@
+# Copyright (c) 2026 The ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+if BOARD_N52TEST
+
+config ZMK_KEYBOARD_NAME
+    default "n52test"
+
+if USB_DEVICE_STACK
+
+config USB_NRFX
+    default y
+
+endif # USB_DEVICE_STACK
+
+config BT_CTLR
+    default BT
+
+endif # BOARD_N52TEST

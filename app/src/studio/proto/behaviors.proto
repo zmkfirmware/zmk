@@ -1,0 +1,69 @@
+syntax = "proto3";
+
+package zmk.behaviors;
+
+message Request {
+    oneof request_type {
+        bool list_all_behaviors = 1;
+        GetBehaviorDetailsRequest get_behavior_details = 2;
+    }
+}
+
+message GetBehaviorDetailsRequest {
+    uint32 behavior_id = 1;
+}
+
+message Response {
+    oneof response_type {
+        ListAllBehaviorsResponse list_all_behaviors = 1;
+        GetBehaviorDetailsResponse get_behavior_details = 2;
+    }
+}
+
+message ListAllBehaviorsResponse {
+    repeated uint32 behaviors = 1;
+}
+
+message GetBehaviorDetailsResponse {
+    uint32 id = 1;
+    string display_name = 2;
+    repeated BehaviorBindingParametersSet metadata = 3;
+    optional BindingType binding_type = 4;
+}
+
+message BindingType {
+    string compatible = 1;
+    string binding_label = 2;
+    bool sensor_only = 3;
+}
+
+message BehaviorBindingParametersSet {
+    repeated BehaviorParameterValueDescription param1 = 1;
+    repeated BehaviorParameterValueDescription param2 = 2;
+}
+
+message BehaviorParameterValueDescriptionRange {
+    int32 min = 1;
+    int32 max = 2;
+}
+
+message BehaviorParameterNil {}
+message BehaviorParameterLayerId {}
+message BehaviorParameterHidUsage {
+	uint32 keyboard_max = 1;
+	uint32 consumer_max = 2;
+}
+
+message BehaviorParameterValueDescription {
+    string name = 1;
+
+    oneof value_type {
+        BehaviorParameterNil nil = 2;
+        uint32 constant = 3;
+        BehaviorParameterValueDescriptionRange range = 4;
+        BehaviorParameterHidUsage hid_usage = 5;
+        BehaviorParameterLayerId layer_id = 6;
+        BehaviorParameterNil signed_axes = 7;
+        BehaviorParameterNil hsb = 8;
+    }
+}

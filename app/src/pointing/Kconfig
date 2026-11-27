@@ -57,6 +57,11 @@ config ZMK_INPUT_PROCESSOR_SCALER
     default y
     depends on DT_HAS_ZMK_INPUT_PROCESSOR_SCALER_ENABLED
 
+config ZMK_INPUT_PROCESSOR_SPEED_PROFILE
+    bool "Runtime Speed Profile Input Processor"
+    default y
+    depends on DT_HAS_ZMK_INPUT_PROCESSOR_SPEED_PROFILE_ENABLED
+
 config ZMK_INPUT_PROCESSOR_CODE_MAPPER
     bool "Code Mapper Input Processor"
     default y

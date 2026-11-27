@@ -1,0 +1,4 @@
+/ {
+    chosen { zmk,studio-rpc-uart = &studio_test_uart; };
+    studio_test_uart: studio-test-uart {};
+};

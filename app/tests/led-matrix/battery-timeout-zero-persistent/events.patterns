@@ -1,0 +1,3 @@
+/^Initialized LED matrix:/p
+/refreshed visible battery status after battery state change/p
+/^LED mock color/p

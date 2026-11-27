@@ -93,35 +93,18 @@ static const struct behavior_parameter_metadata_set no_args_set = {
     .param1_values_len = ARRAY_SIZE(no_arg_values),
 };
 
-/*
-static const struct behavior_parameter_value_metadata hsv_p1_value_metadata_values[] = {
-    {
-        .display_name = "Set Color",
-        .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE,
-        .value = RGB_COLOR_HSB_CMD,
-    },
-};
-
-static const struct behavior_parameter_value_metadata hsv_p2_value_metadata_values[] = {
-    {
-        .display_name = "Color",
-        .type = BEHAVIOR_PARAMETER_VALUE_TYPE_STANDARD,
-        .standard = BEHAVIOR_PARAMETER_STANDARD_DOMAIN_HSV,
-    },
-};
-
-static const struct behavior_parameter_metadata_set hsv_value_metadata_set = {
-    .param1_values = hsv_p1_value_metadata_values,
-    .param1_values_len = ARRAY_SIZE(hsv_p1_value_metadata_values),
-    .param_values = hsv_p2_value_metadata_values,
-    .param_values_len = ARRAY_SIZE(hsv_p2_value_metadata_values),
-};
-
-*/
-
+static const struct behavior_parameter_value_metadata set_color = {
+    .display_name = "Set color",
+    .type = BEHAVIOR_PARAMETER_VALUE_TYPE_VALUE,
+    .value = RGB_COLOR_HSB_CMD};
+static const struct behavior_parameter_value_metadata color = {
+    .display_name = "Color", .type = BEHAVIOR_PARAMETER_VALUE_TYPE_HSB};
 static const struct behavior_parameter_metadata_set sets[] = {
     no_args_set,
-    // hsv_value_metadata_set,
+    {.param1_values = &set_color,
+     .param1_values_len = 1,
+     .param2_values = &color,
+     .param2_values_len = 1},
 };
 
 static const struct behavior_parameter_metadata metadata = {

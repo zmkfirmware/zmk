@@ -279,8 +279,14 @@ static void begin_tx(void) {
 #endif
 }
 
+static struct k_spinlock tx_packet_lock;
+
 static ssize_t get_payload_data_size(const struct zmk_split_transport_peripheral_event *evt) {
     switch (evt->type) {
+#if IS_ENABLED(CONFIG_ZMK_LED_MATRIX_EDITOR)
+    case ZMK_SPLIT_TRANSPORT_PERIPHERAL_EVENT_TYPE_LIGHTING:
+        return sizeof(evt->data.lighting);
+#endif
     case ZMK_SPLIT_TRANSPORT_PERIPHERAL_EVENT_TYPE_INPUT_EVENT:
         return sizeof(evt->data.input_event);
     case ZMK_SPLIT_TRANSPORT_PERIPHERAL_EVENT_TYPE_KEY_POSITION_EVENT:
@@ -306,12 +312,6 @@ split_peripheral_wired_report_event(const struct zmk_split_transport_peripheral_
     size_t payload_size =
         data_size + sizeof(peripheral_id) + sizeof(enum zmk_split_transport_peripheral_event_type);
 
-    if (ring_buf_space_get(&chosen_tx_buf) < MSG_EXTRA_SIZE + payload_size) {
-        LOG_WRN("No room to send peripheral to the central (have %d but only space for %d)",
-                MSG_EXTRA_SIZE + payload_size, ring_buf_space_get(&chosen_tx_buf));
-        return -ENOSPC;
-    }
-
     struct event_envelope env = {.prefix =
                                      {
                                          .magic_prefix = ZMK_SPLIT_WIRED_ENVELOPE_MAGIC_PREFIX,
@@ -327,15 +327,14 @@ split_peripheral_wired_report_event(const struct zmk_split_transport_peripheral_
 
     LOG_HEXDUMP_DBG(&env, sizeof(env.prefix) + payload_size, "Payload");
 
-    size_t put = ring_buf_put(&chosen_tx_buf, (uint8_t *)&env, sizeof(env.prefix) + payload_size);
-    if (put != sizeof(env.prefix) + payload_size) {
-        LOG_WRN("Failed to put the whole message (%d vs %d)", put,
-                sizeof(env.prefix) + payload_size);
+    k_spinlock_key_t key = k_spin_lock(&tx_packet_lock);
+    if (ring_buf_space_get(&chosen_tx_buf) < MSG_EXTRA_SIZE + payload_size) {
+        k_spin_unlock(&tx_packet_lock, key);
+        return -ENOSPC;
     }
-    put = ring_buf_put(&chosen_tx_buf, (uint8_t *)&postfix, sizeof(postfix));
-    if (put != sizeof(postfix)) {
-        LOG_WRN("Failed to put the whole message (%d vs %d)", put, sizeof(postfix));
-    }
+    ring_buf_put(&chosen_tx_buf, (uint8_t *)&env, sizeof(env.prefix) + payload_size);
+    ring_buf_put(&chosen_tx_buf, (uint8_t *)&postfix, sizeof(postfix));
+    k_spin_unlock(&tx_packet_lock, key);
 
 #if !IS_HALF_DUPLEX_MODE
     begin_tx();
@@ -427,6 +426,13 @@ static void process_tx_cb(void) {
                                                 sizeof(struct command_envelope));
         switch (item_err) {
         case 0:
+#if IS_ENABLED(CONFIG_ZMK_LED_MATRIX_EDITOR)
+            if (env.payload.cmd.type == ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_LIGHTING &&
+                env.prefix.payload_size != offsetof(struct command_payload, cmd.data.lighting) +
+                                               sizeof(struct zmk_lighting_packet)) {
+                break;
+            }
+#endif
             if (env.payload.cmd.type == ZMK_SPLIT_TRANSPORT_CENTRAL_CMD_TYPE_POLL_EVENTS) {
                 begin_tx();
             } else {

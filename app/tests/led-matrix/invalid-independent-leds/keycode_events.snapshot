@@ -1,0 +1,2 @@
+Top-level independent-leds is deprecated; define independent child containers instead
+Invalid zmk,led-matrix DTS configuration (-22)

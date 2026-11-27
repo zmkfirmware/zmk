@@ -1,0 +1,602 @@
+---
+title: LED Matrix
+sidebar_label: LED Matrix
+description: Bilingual reference for ZMK LED Matrix and led_composite configuration.
+---
+
+See the [Lighting feature page](../../../features/lighting.md) for the classic lighting overview and the [Lighting configuration page](../../../config/lighting.md) for related settings.
+
+## 概览 / Overview
+
+`LED Matrix` 是一个位于 ZMK 渲染层之上的 RGB 控制器。它不是对单一硬件类型的命名，而是一个把多种输入源统一渲染到逻辑 LED 空间的子系统：基础 profile、layer color、independent LED container、Battery/USB/BLE/HID 状态叠加都由它统一仲裁。
+
+`LED Matrix` is an RGB controller that sits above the hardware backend. It is not tied to a single LED family; instead, it renders multiple sources into one logical LED space: base profiles, layer colors, independent LED containers, and Battery/USB/BLE/HID status overlays.
+
+- `RGB underglow` 面向可寻址灯带，直接使用 `led_strip` 驱动。
+- `Backlight` 面向单色并联背光，主要控制亮度。
+- `LED Matrix` 面向“逻辑 RGB 矩阵”，可以使用 Zephyr `led` API backend，也可以直接使用 `led_strip` backend。
+
+- `RGB underglow` targets addressable strips and talks directly to `led_strip` drivers.
+- `Backlight` targets single-color parallel LEDs and mainly controls brightness.
+- `LED Matrix` targets a logical RGB matrix and can use either a Zephyr `led` backend or a direct `led_strip` backend.
+
+`led-driver = "matrix"` 表示 LED Matrix 通过 Zephyr `led` API 输出，典型目标可以是矩阵驱动芯片，也可以是 `led_composite` 这样的聚合器。`led-driver = "strip"` 表示 LED Matrix 直接输出到 Zephyr `led_strip` API。
+
+`led-driver = "matrix"` means LED Matrix writes through the Zephyr `led` API. The target can be a matrix driver chip or an aggregator such as `led_composite`. `led-driver = "strip"` means LED Matrix writes directly to the Zephyr `led_strip` API.
+
+`led_composite` 本身不是渲染器，而是一个“扁平 RGB channel 空间”的 backend 适配层。它可以把多个 `led-device` 和 `led-strip-device` 子设备拼成一个连续的通道空间，再由 `zmk,led-matrix` 通过 `channel-indexes` 做逻辑映射。
+
+`led_composite` is not a renderer. It is a backend adapter that exposes a single flattened RGB channel space built from multiple `led-device` and `led-strip-device` children, which `zmk,led-matrix` can then map with `channel-indexes`.
+
+## 相关文件 / Relevant Files
+
+| 分类 / Category                   | 文件 / Files                                                                                                                                                                                                                                                                           | 用途 / Purpose                                                                                                    |
+| --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| 核心实现 / Core implementation    | `app/src/led_matrix.c`, `app/src/led_matrix/{api,core,power,render,status}.c`, `app/include/zmk/led_matrix.h`, `app/include/zmk/events/led_matrix_state_changed.h`                                                                                                                     | LED Matrix 渲染、状态机、运行时 API、事件定义 / Rendering, state machine, runtime API, event definitions          |
+| Kconfig                           | `app/Kconfig`, `app/Kconfig.defaults`, `app/module/drivers/led/Kconfig`                                                                                                                                                                                                                | 主开关、默认值、`led_composite` 驱动选项 / Main switches, defaults, `led_composite` driver option                 |
+| Devicetree bindings               | `app/dts/bindings/zmk,led-matrix.yaml`, `app/dts/bindings/behaviors/zmk,behavior-led-matrix.yaml`, `app/module/dts/bindings/led/zmk,led-composite.yaml`                                                                                                                                | `zmk,led-matrix`、`&lm` 行为、`led_composite` 绑定 / Bindings for `zmk,led-matrix`, `&lm`, and `led_composite`    |
+| 宏 / Macros                       | `app/include/dt-bindings/zmk/led_matrix.h`, `app/include/dt-bindings/zmk/led_matrix_colors.h`                                                                                                                                                                                          | `LM_*` 指令、状态位、颜色与语义别名 / `LM_*` commands, status bits, color and semantic aliases                    |
+| 行为节点 / Behavior node          | `app/dts/behaviors/led_matrix.dtsi`, `app/src/behaviors/behavior_led_matrix.c`                                                                                                                                                                                                         | `&lm` 节点声明与参数解析 / `&lm` node declaration and parameter handling                                          |
+| Composite 驱动 / Composite driver | `app/include/drivers/led/led_composite.h`, `app/module/drivers/led/led_composite.h`, `app/module/drivers/led/led_composite.c`                                                                                                                                                          | public API、内部配置结构、child 校验和 power 管理 / Public API, internal config, child validation, power handling |
+| 示例来源 / Example sources        | `app/tests/led-matrix/basic/native_sim.keymap`, `independent-solid/native_sim.keymap`, `layer-color-status-priority/native_sim.keymap`, `idle-auto-off-strip-ext-power-runtime-only/native_sim.keymap`, `composite-split/native_sim.keymap`, `composite-mixed-power/native_sim.keymap` | 文档中的 DTS 片段均按这些测试模式提炼 / DTS snippets in this page are derived from these tests                    |
+
+## Kconfig / Kconfig
+
+### LED Matrix 选项 / LED Matrix options
+
+| 选项 / Option                                    | 类型 / Type | 默认值 / Default                                              | 依赖 / Depends on                                                                                                         | 说明 / Description                                                                                                                                                        |
+| ------------------------------------------------ | ----------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `CONFIG_ZMK_LED_MATRIX`                          | `bool`      | `n`                                                           | backend 由 `/chosen/zmk,led-matrix` 的 `led-driver` 自动推导 / backend derived from `/chosen/zmk,led-matrix` `led-driver` | 启用 LED Matrix 子系统，并自动选择 `LED` 或 `LED_STRIP` / Enables LED Matrix and auto-selects `LED` or `LED_STRIP`                                                        |
+| `CONFIG_ZMK_LED_MATRIX_EXT_POWER`                | `bool`      | `n`                                                           | `CONFIG_ZMK_EXT_POWER`, `DT_HAS_ZMK_EXT_POWER_GENERIC_ENABLED`, strip backend                                             | 仅对 `led-driver = "strip"` 生效，LED Matrix 运行时同步控制外部电源 / For `led-driver = "strip"` only; synchronizes external power with runtime rendering                 |
+| `CONFIG_ZMK_LED_MATRIX_AUTO_OFF_IDLE`            | `bool`      | `n`                                                           | `CONFIG_ZMK_LED_MATRIX`                                                                                                   | 电池供电且进入 idle 时自动熄灭 / Auto-suspends on battery when idle                                                                                                       |
+| `CONFIG_ZMK_LED_MATRIX_IDLE_STATUS_WAKE_TIMEOUT` | `int`       | `1800000`                                                     | `CONFIG_ZMK_LED_MATRIX`                                                                                                   | activity idle 后自动状态事件仍可临时显示 LED Matrix 状态的窗口；`0` 表示立即禁止 / Activity-idle window for automatic status-event display; `0` disables them immediately |
+| `CONFIG_ZMK_LED_MATRIX_BRT_STEP`                 | `int`       | `10`                                                          | `CONFIG_ZMK_LED_MATRIX`                                                                                                   | 亮度步进百分比 / Brightness step percentage                                                                                                                               |
+| `CONFIG_ZMK_LED_MATRIX_BRT_START`                | `int`       | `60`                                                          | `CONFIG_ZMK_LED_MATRIX`                                                                                                   | 默认亮度百分比 / Default brightness percentage                                                                                                                            |
+| `CONFIG_ZMK_LED_MATRIX_PROFILE_START`            | `int`       | `0`                                                           | `CONFIG_ZMK_LED_MATRIX`                                                                                                   | 启动时默认 profile ID / Initial profile ID                                                                                                                                |
+| `CONFIG_ZMK_LED_MATRIX_SPD_LEVELS`               | `int`       | `7`                                                           | `CONFIG_ZMK_LED_MATRIX`                                                                                                   | 效果速度档位数量 / Number of effect speed levels                                                                                                                          |
+| `CONFIG_ZMK_LED_MATRIX_SPD_START`                | `int`       | `4` if levels `>= 4`, else `CONFIG_ZMK_LED_MATRIX_SPD_LEVELS` | `CONFIG_ZMK_LED_MATRIX`                                                                                                   | 启动时默认速度档位 / Initial effect speed                                                                                                                                 |
+| `CONFIG_ZMK_LED_MATRIX_ON_START`                 | `bool`      | `y`                                                           | `CONFIG_ZMK_LED_MATRIX`                                                                                                   | 启动时默认开关状态 / Default on/off state at boot                                                                                                                         |
+
+### `led_composite` 选项 / `led_composite` options
+
+| 选项 / Option              | 类型 / Type | 默认值 / Default | 依赖 / Depends on                         | 说明 / Description                                                                                                                            |
+| -------------------------- | ----------- | ---------------- | ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `CONFIG_ZMK_LED_COMPOSITE` | `bool`      | `y`              | `LED`, `DT_HAS_ZMK_LED_COMPOSITE_ENABLED` | 启用 `zmk,led-composite` 驱动，并选择 `LED_STRIP` 以支持 strip child / Enables `zmk,led-composite` and selects `LED_STRIP` for strip children |
+
+### 后端选择说明 / Backend selection notes
+
+- `CONFIG_ZMK_LED_MATRIX_USES_LED_API` 与 `CONFIG_ZMK_LED_MATRIX_USES_LED_STRIP_API` 是隐藏选项，由 `/chosen { zmk,led-matrix = ...; }` 指向节点的 `led-driver` 自动计算。
+- 如果 `led-driver = "matrix"`，`CONFIG_ZMK_LED_MATRIX` 会 `select LED`。
+- 如果 `led-driver = "strip"`，`CONFIG_ZMK_LED_MATRIX` 会 `select LED_STRIP`。
+
+- `CONFIG_ZMK_LED_MATRIX_USES_LED_API` and `CONFIG_ZMK_LED_MATRIX_USES_LED_STRIP_API` are hidden helper options derived from the chosen `zmk,led-matrix` node.
+- With `led-driver = "matrix"`, `CONFIG_ZMK_LED_MATRIX` selects `LED`.
+- With `led-driver = "strip"`, `CONFIG_ZMK_LED_MATRIX` selects `LED_STRIP`.
+
+## 宏与行为 / Macros and Behavior
+
+### 行为宏 / Behavior macros
+
+`app/include/dt-bindings/zmk/led_matrix.h` 定义了 `&lm` 行为使用的命令宏。最常用的一组如下：
+
+`app/include/dt-bindings/zmk/led_matrix.h` defines the command macros used by the `&lm` behavior. The most common set is:
+
+| 宏 / Macro                         | 作用 / Meaning                                                                           |
+| ---------------------------------- | ---------------------------------------------------------------------------------------- |
+| `LM_ON`, `LM_OFF`, `LM_TOG`        | 打开、关闭、切换 LED Matrix / Turn on, turn off, toggle                                  |
+| `LM_BRI`, `LM_BRD`                 | 亮度增减一步 / Brightness step up or down                                                |
+| `LM_EFF`, `LM_EFR`                 | 切换到下一个或上一个 display profile / Next or previous display profile                  |
+| `LM_EFS <profile>`                 | 直接设置 display profile / Set display profile directly                                  |
+| `LM_BRT <0..100>`                  | 直接设置亮度 / Set brightness directly                                                   |
+| `LM_SPI`, `LM_SPD`                 | 速度增减一步 / Speed step up or down                                                     |
+| `LM_SPS <level>`                   | 直接设置速度档位 / Set speed directly                                                    |
+| `LM_HUI`, `LM_HUD`                 | 手动调节 palette hue / Adjust palette hue                                                |
+| `LM_HUS <index>`                   | 直接设置 palette hue index / Set palette hue index                                       |
+| `LM_STA <mask>`                    | 手动显示状态源 / Force-show status sources                                               |
+| `LM_CFF <child>`, `LM_CFR <child>` | independent child profile 前进/后退 / Step an independent child profile forward/backward |
+| `LM_CFS(child, profile)`           | 直接设置某个 independent child 的 profile / Set a child profile directly                 |
+
+### 状态与网格宏 / Status and grid macros
+
+| 宏 / Macro                                                 | 作用 / Meaning                                                      |
+| ---------------------------------------------------------- | ------------------------------------------------------------------- |
+| `LM_STA_BATTERY`, `LM_STA_USB`, `LM_STA_BLE`, `LM_STA_HID` | `LM_STA` 的状态位 / Status bits for `LM_STA`                        |
+| `LM_STA_ALL`                                               | 同时显示全部状态源 / Show all status sources                        |
+| `LM_BREAK`                                                 | `matrix-led-grid` 中的行分隔符 / Row separator in `matrix-led-grid` |
+| `LM_NOLED`                                                 | 该 RC 单元有按键但没有 LED / RC cell has a key position but no LED  |
+| `LM_PH`                                                    | 占位单元，无 key position / Placeholder cell with no key position   |
+
+### 颜色宏 / Color macros
+
+`app/include/dt-bindings/zmk/led_matrix_colors.h` 定义颜色和值别名。文档里最常用的一组如下：
+
+`app/include/dt-bindings/zmk/led_matrix_colors.h` defines color values and semantic aliases. The most useful subset is:
+
+| 宏 / Macro                                               | 作用 / Meaning                                        |
+| -------------------------------------------------------- | ----------------------------------------------------- |
+| `LM_RGB(r, g, b)`                                        | 以 `0xRRGGBB` 形式构造颜色 / Build a `0xRRGGBB` color |
+| `LM_RAINBOW`, `LM_PALETTE`                               | 动态颜色 / Dynamic colors                             |
+| `LM_BLACK`, `LM_WHITE`, `LM_RED`, `LM_GREEN`, `LM_BLUE`  | 基础颜色 / Basic colors                               |
+| `LM_USB_HID`, `LM_USB_POWERED`, `LM_USB_NONE`            | USB 语义颜色 / USB semantic colors                    |
+| `LM_BLE_OPEN`, `LM_BLE_CONNECTED`, `LM_BLE_DISCONNECTED` | BLE 语义颜色 / BLE semantic colors                    |
+| `LM_BATTERY_LOW`, `LM_BATTERY_MID`, `LM_BATTERY_HIGH`    | 电量语义颜色 / Battery semantic colors                |
+
+### `&lm` 键位示例 / `&lm` keymap example
+
+```dts
+#include <dt-bindings/zmk/led_matrix.h>
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+                &lm LM_TOG
+                &lm LM_BRI
+                &lm LM_EFS 1
+                &lm LM_STA LM_STA_BLE
+                &lm LM_CFS(0, 1)
+            >;
+        };
+    };
+};
+```
+
+## DTS 结构 / DTS Structure
+
+### 顶层 `zmk,led-matrix` 属性 / Top-level `zmk,led-matrix` properties
+
+| 属性 / Property                                                                                                     | 必填 / Required                   | 说明 / Meaning                                                                                                                                                                                                        |
+| ------------------------------------------------------------------------------------------------------------------- | --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `led-driver`                                                                                                        | 是 / Yes                          | `"matrix"` 或 `"strip"`；决定 backend API / `"matrix"` or `"strip"`; selects backend API                                                                                                                              |
+| `led-device`                                                                                                        | 条件必填 / Conditionally required | 当 `led-driver = "matrix"` 时必须提供 / Required when `led-driver = "matrix"`                                                                                                                                         |
+| `led-strip-device`                                                                                                  | 条件必填 / Conditionally required | 当 `led-driver = "strip"` 时必须提供 / Required when `led-driver = "strip"`                                                                                                                                           |
+| `led-count`                                                                                                         | 是 / Yes                          | 逻辑 LED 数量 / Number of logical LEDs                                                                                                                                                                                |
+| `output-channel-count`                                                                                              | 否 / No                           | 物理输出通道总数；省略时默认为 `led-count * 3` / Total physical output channels; defaults to `led-count * 3`                                                                                                          |
+| `channel-indexes`                                                                                                   | 否 / No                           | write-channels backend 的逻辑 RGB 通道到物理通道映射，长度必须是 `led-count * 3` / Logical RGB to physical channel map for write-channels backends; length must be `led-count * 3`                                    |
+| `led-indexes`                                                                                                       | 否 / No                           | 非 write-channels backend 的逻辑 LED 到物理 LED 映射 / Logical LED to physical LED mapping for non-write-channels backends                                                                                            |
+| `matrix-led-grid`                                                                                                   | 否 / No                           | position-driven renderer 的本地 RC 网格；`keypress`、`ripple`、`rain`，以及未显式指定 `layer-leds` 的 layer color 依赖它 / Local RC grid for position-driven renderers and layer colors without explicit `layer-leds` |
+| `battery-leds`, `ble-profile-leds`, `usb-leds`, `hid-*-leds`                                                        | 否 / No                           | 状态覆盖使用的逻辑 LED 集合 / Logical LEDs used by status overlays                                                                                                                                                    |
+| `battery-color-*`, `ble-color-*`, `usb-color-*`, `hid-*-color-*`                                                    | 否 / No                           | 对应状态源的颜色 / Colors for each status source                                                                                                                                                                      |
+| `status-timeout-ms`, `usb-timeout-ms`, `ble-timeout-ms`, `hid-timeout-ms`, `battery-timeout-ms`, `ble-pairing-hold` | 否 / No                           | 自动状态显示持续时间与 BLE open 保持策略 / Automatic status duration and BLE open hold policy                                                                                                                         |
+
+### 子节点模型 / Child node models
+
+| 子节点类型 / Child kind   | 识别属性 / Key property                 | 常用属性 / Common properties                                                                  |
+| ------------------------- | --------------------------------------- | --------------------------------------------------------------------------------------------- |
+| display profile           | `profile-id`                            | `display-name`, `renderer`, `colors`, `brightness`, `period-ms`, `keypress-*`                 |
+| layer color entry         | `layer-id`                              | `layer-colors`, `layer-leds`, `brightness`, `display-time-ms`                                 |
+| independent container     | `independent-id`                        | `independent-leds`，以及其内部 local profiles / `independent-leds` plus nested local profiles |
+| independent local profile | 内层 `profile-id` / nested `profile-id` | `renderer`, `colors`, `brightness`, `period-ms`                                               |
+
+约束也很重要：
+
+The constraints are just as important:
+
+- `layer-leds` 省略时，目标 LED 默认来自 `matrix-led-grid` 的遍历顺序。
+- `independent-leds` 不能重复，也不能和其他 independent container 重叠。
+- 当存在 `matrix-led-grid` 时，`independent-leds` 不应再出现在该 grid 中。
+
+- When `layer-leds` is omitted, the target LEDs default to the traversal order of `matrix-led-grid`.
+- `independent-leds` must be unique and must not overlap other independent containers.
+- When `matrix-led-grid` is present, `independent-leds` must not also appear in that grid.
+
+## LED Matrix DTS 示例 / LED Matrix DTS Examples
+
+### 1. 最小 matrix backend / Minimal matrix backend
+
+来源模式 / Derived from: `app/tests/led-matrix/basic/native_sim.keymap`
+
+```dts
+#include <dt-bindings/zmk/led_matrix.h>
+
+/ {
+    chosen {
+        zmk,led-matrix = &led_matrix;
+    };
+
+    led_matrix_dev: led_matrix_dev {
+        compatible = "zmk,led-mock";
+        mode = "channels";
+        channel-count = <12>;
+    };
+
+    led_matrix: led_matrix {
+        compatible = "zmk,led-matrix";
+        led-driver = "matrix";
+        led-device = <&led_matrix_dev>;
+        led-count = <4>;
+        output-channel-count = <12>;
+        channel-indexes = <
+            3 4 5
+            0 1 2
+            6 7 8
+            9 10 11
+        >;
+        matrix-led-grid = <
+            0 1 LM_BREAK
+            2 3
+        >;
+
+        profile0 {
+            profile-id = <0>;
+            display-name = "Channel";
+            renderer = "solid";
+            colors = <0x010203 0x100020 0x0000FF 0xAB0000>;
+            brightness = <100>;
+            period-ms = <1000>;
+        };
+    };
+};
+```
+
+### 2. 最小 strip backend / Minimal strip backend
+
+来源模式 / Derived from: `app/tests/led-matrix/idle-auto-off-strip-ext-power-runtime-only/native_sim.keymap`
+
+```dts
+/ {
+    chosen {
+        zmk,led-matrix = &led_matrix;
+    };
+
+    strip_power_child: strip_power_child {
+        compatible = "zmk,led-strip-mock";
+        chain-length = <1>;
+    };
+
+    led_matrix: led_matrix {
+        compatible = "zmk,led-matrix";
+        led-driver = "strip";
+        led-strip-device = <&strip_power_child>;
+        led-count = <1>;
+
+        profile0 {
+            profile-id = <0>;
+            display-name = "Strip Base";
+            renderer = "solid";
+            colors = <0x102030>;
+            brightness = <100>;
+            period-ms = <1000>;
+        };
+    };
+};
+```
+
+### 3. profile + status + layer color / profile + status + layer color
+
+来源模式 / Derived from: `app/tests/led-matrix/layer-color-status-priority/native_sim.keymap`
+
+```dts
+#include <dt-bindings/zmk/led_matrix_colors.h>
+
+/ {
+    chosen {
+        zmk,led-matrix = &led_matrix;
+    };
+
+    led_matrix_dev: led_matrix_dev {
+        compatible = "zmk,led-mock";
+        mode = "color";
+    };
+
+    led_matrix: led_matrix {
+        compatible = "zmk,led-matrix";
+        led-driver = "matrix";
+        led-device = <&led_matrix_dev>;
+        led-count = <1>;
+        status-timeout-ms = <1000>;
+        usb-timeout-ms = <1000>;
+        hid-timeout-ms = <1000>;
+        usb-leds = <0>;
+        usb-color-hid = <0xFF0000>;
+        usb-color-powered = <LM_BLACK>;
+        usb-color-none = <LM_BLACK>;
+        hid-caps-leds = <0>;
+        hid-caps-color-on = <0x00FF00>;
+        hid-caps-color-off = <LM_BLACK>;
+
+        profile0 {
+            profile-id = <0>;
+            display-name = "Off";
+            renderer = "solid";
+            colors = <LM_BLACK>;
+            brightness = <100>;
+            period-ms = <1000>;
+        };
+
+        layer_color1 {
+            layer-id = <1>;
+            brightness = <100>;
+            display-time-ms = <0>;
+            layer-leds = <0>;
+            layer-colors = <0x0000FF>;
+        };
+    };
+};
+```
+
+### 4. independent LED container / independent LED container
+
+来源模式 / Derived from: `app/tests/led-matrix/independent-solid/native_sim.keymap`
+
+```dts
+#include <dt-bindings/zmk/led_matrix.h>
+
+/ {
+    chosen {
+        zmk,led-matrix = &led_matrix;
+    };
+
+    led_matrix_dev: led_matrix_dev {
+        compatible = "zmk,led-mock";
+        mode = "color";
+    };
+
+    led_matrix: led_matrix {
+        compatible = "zmk,led-matrix";
+        led-driver = "matrix";
+        led-device = <&led_matrix_dev>;
+        led-count = <5>;
+        matrix-led-grid = <
+            0 1 LM_BREAK
+            2 3
+        >;
+
+        profile0 {
+            profile-id = <0>;
+            display-name = "Independent Solid";
+            renderer = "solid";
+            colors = <0x010203 0x100020 0x0000FF 0xAB0000 0x123456>;
+            brightness = <100>;
+            period-ms = <1000>;
+        };
+
+        independent0 {
+            independent-id = <0>;
+            independent-leds = <4>;
+
+            profile0 {
+                profile-id = <0>;
+                renderer = "solid";
+                colors = <0x123456>;
+                brightness = <100>;
+                period-ms = <1000>;
+            };
+        };
+    };
+};
+```
+
+## `led_composite`
+
+### 核心概念 / Core concept
+
+`zmk,led-composite` 使用 child node 把多个 backend 拼成一个连续的 RGB channel 空间。每个 child 都声明自己在这个扁平空间中的起始位置和长度。
+
+`zmk,led-composite` uses child nodes to flatten multiple backends into one continuous RGB channel space. Each child declares its offset and length inside that flattened space.
+
+| 属性 / Property    | 必填 / Required     | 说明 / Meaning                                                                                                                 |
+| ------------------ | ------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `led-device`       | 二选一 / one of two | 使用 Zephyr `led` API 的 child backend / Child backend that exposes the Zephyr `led` API                                       |
+| `led-strip-device` | 二选一 / one of two | 使用 Zephyr `led_strip` API 的 child backend / Child backend that exposes the Zephyr `led_strip` API                           |
+| `channel-offset`   | 是 / Yes            | child 在扁平通道空间中的起始位置 / Start offset in the flattened channel space                                                 |
+| `channel-count`    | 是 / Yes            | child 暴露的可写 RGB 通道数；strip child 必须是 3 的倍数 / Writable RGB channel count; strip children must use a multiple of 3 |
+| `ext-power-device` | 否 / No             | strip child 可选共享电源控制器 / Optional shared power controller for strip children                                           |
+
+约束如下：
+
+The constraints are:
+
+- 每个 child 必须定义且只定义 `led-device` 或 `led-strip-device` 之一。
+- 所有 child range 必须从 `0` 开始，按升序连续排列，不能重叠也不能留空洞。
+- 多个 strip child 如果使用 `ext-power-device`，必须共享同一个设备。
+
+- Each child must define exactly one of `led-device` or `led-strip-device`.
+- Child ranges must start at `0`, be declared in ascending order, and remain contiguous with no overlaps or holes.
+- When multiple strip children use `ext-power-device`, they must share the same device.
+
+### public API 与 capability 宏 / public API and capability macros
+
+`app/include/drivers/led/led_composite.h` 暴露以下接口：
+
+`app/include/drivers/led/led_composite.h` exposes the following interface:
+
+- `ZMK_LED_COMPOSITE_CAP_MANAGED_POWER`: child backend 支持受控电源管理 / Child backend supports managed power.
+- `ZMK_LED_COMPOSITE_CAP_FULL_HARD_OFF`: child backend 支持完整硬关断 / Child backend supports full hard-off.
+- `zmk_led_composite_get_channel_count(const struct device *dev, uint32_t *count)`: 查询 composite 总通道数 / Query total channel count.
+- `zmk_led_composite_get_capabilities(const struct device *dev, uint32_t *caps)`: 查询 capability 位图 / Query capability bitmap.
+- `zmk_led_composite_power(const struct device *dev, bool enable)`: 启用或关闭 composite 电源状态 / Enable or disable composite power state.
+
+### 5. contiguous range 映射示例 / contiguous range mapping example
+
+来源模式 / Derived from: `app/tests/led-matrix/composite-split/native_sim.keymap`
+
+```dts
+/ {
+    chosen {
+        zmk,led-matrix = &led_matrix;
+    };
+
+    composite_split_child0: composite_split_child0 {
+        compatible = "zmk,led-mock";
+        mode = "channels";
+        channel-count = <5>;
+    };
+
+    composite_split_child1: composite_split_child1 {
+        compatible = "zmk,led-mock";
+        mode = "channels";
+        channel-count = <7>;
+    };
+
+    led_chain: led_composite {
+        compatible = "zmk,led-composite";
+
+        child0 {
+            led-device = <&composite_split_child0>;
+            channel-offset = <0>;
+            channel-count = <5>;
+        };
+
+        child1 {
+            led-device = <&composite_split_child1>;
+            channel-offset = <5>;
+            channel-count = <7>;
+        };
+    };
+
+    led_matrix: led_matrix {
+        compatible = "zmk,led-matrix";
+        led-driver = "matrix";
+        led-device = <&led_chain>;
+        led-count = <4>;
+        output-channel-count = <12>;
+        channel-indexes = <
+            0 1 2
+            3 4 5
+            6 7 8
+            9 10 11
+        >;
+
+        profile0 {
+            profile-id = <0>;
+            display-name = "Composite Split";
+            renderer = "solid";
+            colors = <0x010203 0x040506 0x070809 0x0A0B0C>;
+            brightness = <100>;
+            period-ms = <1000>;
+        };
+    };
+};
+```
+
+### 6. mixed matrix + strip + ext-power / mixed matrix + strip + ext-power
+
+来源模式 / Derived from: `app/tests/led-matrix/composite-mixed-power/native_sim.keymap`
+
+```dts
+/ {
+    chosen {
+        zmk,led-matrix = &led_matrix;
+    };
+
+    ext_power_mock: ext_power_mock {
+        compatible = "zmk,ext-power-mock";
+    };
+
+    matrix_power_child: matrix_power_child {
+        compatible = "zmk,led-mock";
+        mode = "channels";
+        channel-count = <6>;
+        managed-power-kind = "is31fl3737";
+        sdb-gpios = <&gpio0 0 GPIO_ACTIVE_HIGH>;
+    };
+
+    strip_power_child: strip_power_child {
+        compatible = "zmk,led-strip-mock";
+        chain-length = <2>;
+        support-update-channels;
+    };
+
+    led_chain: led_composite {
+        compatible = "zmk,led-composite";
+
+        child0 {
+            led-device = <&matrix_power_child>;
+            channel-offset = <0>;
+            channel-count = <6>;
+        };
+
+        child1 {
+            led-strip-device = <&strip_power_child>;
+            channel-offset = <6>;
+            channel-count = <6>;
+            ext-power-device = <&ext_power_mock>;
+        };
+    };
+
+    led_matrix: led_matrix {
+        compatible = "zmk,led-matrix";
+        led-driver = "matrix";
+        led-device = <&led_chain>;
+        led-count = <4>;
+        output-channel-count = <12>;
+        channel-indexes = <
+            0 1 2
+            3 4 5
+            6 7 8
+            9 10 11
+        >;
+
+        profile0 {
+            profile-id = <0>;
+            display-name = "Composite Mixed Power";
+            renderer = "solid";
+            colors = <0x010203 0x040506 0x070809 0x0A0B0C>;
+            brightness = <100>;
+            period-ms = <1000>;
+        };
+    };
+};
+```
+
+## 常见错误 / Common Errors
+
+以下问题都能在源码校验或现有测试中找到对应案例：
+
+These errors are all enforced either by runtime validation in the source or by existing tests:
+
+- `CONFIG_ZMK_LED_MATRIX=y` 但没有 `/chosen { zmk,led-matrix = ...; }`
+  原因 / Why: 子系统找不到主控制节点。
+  修正 / Fix: 在根节点 `chosen` 中设置 `zmk,led-matrix = &led_matrix;`
+
+- `led-driver = "matrix"` 但缺少 `led-device`，或 `led-driver = "strip"` 但缺少 `led-strip-device`
+  原因 / Why: backend 设备与所选驱动类型不匹配。
+  修正 / Fix: 按 driver 类型提供正确的 phandle。
+
+- `zmk,led-matrix` 既没有 profile，也没有 independent child、layer color、status zone
+  原因 / Why: 没有任何可渲染来源。
+  修正 / Fix: 至少提供一种 renderable source。
+
+- `channel-indexes` 长度不是 `led-count * 3`
+  原因 / Why: 逻辑 RGB 通道映射表不完整。
+  修正 / Fix: 保证每个逻辑 LED 都提供 3 个通道索引。
+
+- 在不支持 `write_channels` 的 backend 上使用 `channel-indexes` 或 `output-channel-count`
+  原因 / Why: 这些属性只适用于 write-channels backend。
+  修正 / Fix: 改用支持 `write_channels` 的 backend，或者使用 `led-indexes`。
+
+- `keypress`、`ripple`、`rain` renderer 缺少 `matrix-led-grid`
+  原因 / Why: 位置驱动效果需要 RC 网格。
+  修正 / Fix: 提供与当前 kscan 行列一致的 `matrix-led-grid`。
+
+- layer color 未设置 `layer-leds`，但同时缺少 `matrix-led-grid`
+  原因 / Why: 默认目标 LED 集合无法推导。
+  修正 / Fix: 补 `matrix-led-grid`，或为该 layer color 显式设置 `layer-leds`。
+
+- independent child 的 `independent-id` 重复或出现空洞
+  原因 / Why: runtime 会按连续编号管理独立容器。
+  修正 / Fix: 使用从 `0` 开始、连续且唯一的 `independent-id`。
+
+- `led_composite` child 同时定义了 `led-device` 和 `led-strip-device`，或者两者都没定义
+  原因 / Why: child 类型无法唯一确定。
+  修正 / Fix: 每个 child 严格二选一。
+
+- `led_composite` child range 重叠、未从 `0` 开始、或中间有 gap
+  原因 / Why: composite 要求一个连续的扁平通道空间。
+  修正 / Fix: 让 `channel-offset`/`channel-count` 从 `0` 开始连续拼接。
+
+- strip child 的 `channel-count` 不是 3 的倍数，或多个 strip child 使用了不同的 `ext-power-device`
+  原因 / Why: strip backend 以 RGB 像素为单位，电源策略也要求共享。
+  修正 / Fix: 保持 `channel-count % 3 == 0`，并统一 `ext-power-device`。
+
+## 参考 / References
+
+- `zmk,led-matrix`: `app/dts/bindings/zmk,led-matrix.yaml`
+- `zmk,behavior-led-matrix`: `app/dts/bindings/behaviors/zmk,behavior-led-matrix.yaml`
+- `led_composite`: `app/module/dts/bindings/led/zmk,led-composite.yaml`
+- 行为宏 / behavior macros: `app/include/dt-bindings/zmk/led_matrix.h`
+- 颜色宏 / color macros: `app/include/dt-bindings/zmk/led_matrix_colors.h`
+- public API: `app/include/zmk/led_matrix.h`, `app/include/drivers/led/led_composite.h`

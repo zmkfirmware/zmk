@@ -1,0 +1,16 @@
+&led_matrix {
+    /delete-node/ profile0;
+    /delete-node/ profile1;
+    /delete-node/ profile2;
+    /delete-node/ profile3;
+    /delete-node/ profile4;
+    /delete-node/ profile5;
+    /delete-node/ profile6;
+    /delete-node/ profile7;
+    layer0 {
+        layer-id = <0>;
+        layer-leds = <4 5>;
+        layer-colors = <0x123456>;
+        display-time-ms = <1000>;
+    };
+};

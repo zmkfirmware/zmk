@@ -1,0 +1,7 @@
+boards:
+  - name: n52test
+    vendor: bmk
+    socs:
+      - name: nrf52840
+        variants:
+          - name: zmk

@@ -1,0 +1,4 @@
+/^Initialized LED matrix:/p
+/LED matrix entered BLE pairing transient/p
+/LED matrix BLE pairing transient expired/p
+/^LED mock color/p

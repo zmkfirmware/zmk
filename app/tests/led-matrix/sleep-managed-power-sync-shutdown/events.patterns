@@ -1,0 +1,7 @@
+/^Initialized LED matrix:/p
+/LED matrix sleep suspend -> sleep-suspended/p
+/^LED mock channel/p
+/^LED strip mock channel/p
+/^LED mock blank/p
+/^LED mock reinit/p
+/^EXT power mock/p

@@ -1,0 +1,8 @@
+/^Initialized LED matrix:/p
+/LED matrix USB state changed:/p
+/LED matrix transient timeout expired, restoring lower-priority output and power-off output/p
+/^LED mock channel/p
+/^LED strip mock channel/p
+/^LED mock blank/p
+/^LED mock reinit/p
+/^EXT power mock/p

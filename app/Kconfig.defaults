@@ -105,6 +105,33 @@ config ZMK_BACKLIGHT_ON_START
 
 endif # ZMK_BACKLIGHT
 
+# LED matrix
+if ZMK_LED_MATRIX
+
+config ZMK_LED_MATRIX_BRT_STEP
+    default 10
+
+config ZMK_LED_MATRIX_BRT_START
+    default 60
+
+config ZMK_LED_MATRIX_PROFILE_START
+    default 0
+
+config ZMK_LED_MATRIX_SPD_LEVELS
+    default 7
+
+config ZMK_LED_MATRIX_SPD_START
+    default 4 if ZMK_LED_MATRIX_SPD_LEVELS >= 4
+    default ZMK_LED_MATRIX_SPD_LEVELS
+
+config ZMK_LED_MATRIX_ON_START
+    default y
+
+config ZMK_LED_MATRIX_IDLE_STATUS_WAKE_TIMEOUT
+    default 1800000
+
+endif # ZMK_LED_MATRIX
+
 # Ext_power
 config ZMK_EXT_POWER
     default y

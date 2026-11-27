@@ -1,0 +1,9 @@
+Initialized LED matrix: leds=1 independent=0 backend=matrix sink=rgb-set-color channels=3 output-channels=3 profiles=0 layer-colors=0 local-grid=0x0 cells=0
+LED matrix topology: grid=absent
+LED mock color[0]=1,2,3
+LED matrix profile command ignored: no profiles configured
+LED matrix profile command ignored: no profiles configured
+LED matrix profile command ignored: no profiles configured
+LED matrix child profile command ignored: no independent children configured
+LED matrix child profile command ignored: no independent children configured
+LED matrix child profile command ignored: no independent children configured
