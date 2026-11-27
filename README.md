@@ -6,17 +6,17 @@
 
 [ZMK Firmware](https://zmk.dev/) is an open source ([MIT](LICENSE)) keyboard firmware built on the [Zephyr™ Project](https://www.zephyrproject.org/) Real Time Operating System (RTOS). ZMK's goal is to provide a modern, wireless, and powerful firmware free of licensing issues.
 
-## 本分支相比官方 ZMK 增加了什么
+## What this fork adds to ZMK
 
-本分支在 ZMK 上扩展了逐键灯光、Studio 固件接口和 BMK 板级功能。下表以本分支合入的[官方基线 bb2d711d1](https://github.com/zmkfirmware/zmk/tree/bb2d711d192f3cca83dff69fe1fc5119418a0102)为参照。
+This fork adds per-key lighting, Studio controls, and support for BMK keyboards. The comparison uses [upstream ZMK at bb2d711d1](https://github.com/zmkfirmware/zmk/tree/bb2d711d192f3cca83dff69fe1fc5119418a0102), the upstream revision merged into this branch.
 
-| 功能 | 使用场景与入口 |
+| Feature | What you can do |
 | --- | --- |
-| LED Matrix | 将按键位置映射到 LED，使用 16 种主灯效渲染器，可按层改色、给独立灯区选预设，并显示电量、USB、蓝牙和 HID 锁定状态。[从 Corne54 开始配置](docs/docs/development/hardware-integration/lighting/led-matrix.mdx) |
-| 多种灯光硬件 | 可直接驱动 RGB 灯带或 Zephyr LED 设备，也可用 `led_composite` 把多块驱动芯片、单色 LED 和灯带编成同一组逻辑灯号。[后端、通道映射与供电参考](docs/docs/led-matrix-led-composite-reference.mdx) |
-| Studio 在线编辑 | 兼容本分支协议的客户端可读取灯效目录、调整预设和灯区，也可为带旋钮的键盘逐层设置顺、逆时针绑定。灯效持久化编辑需启用 LED Matrix 编辑器和 settings，旋钮编辑需启用 Studio 并在键盘上定义传感器。[Studio 配置](docs/docs/config/studio.md) · [配套客户端](https://github.com/afayge/zmk-studio) |
-| 轨迹球与指针速度 | BlackBerry 轨迹球支持按滚动速度加速、切换速度档位、配置按压动作和四颗 PWM 灯。[接线及调校示例](docs/docs/hardware-integration/blackberry-trackball.mdx) |
-| BMK 键盘与显示 | 包含 Corne54 系列和 Numpad 等板型。支持的状态屏可显示 Num、Caps 和 Scroll Lock；BMK Numpad 还可在板上计算并将结果输入当前 USB 或蓝牙主机。[BMK 板型](app/boards/bmk) · [Numpad 计算器键位](app/boards/bmk/numpad/calculator/README.md) |
+| LED Matrix | Map keys to LEDs, choose from 16 main effect renderers, set layer colors, and give individual lighting zones their own presets. Use selected LEDs to show battery level, USB or Bluetooth state, and host lock indicators. [Corne54 configuration guide (Chinese and English)](docs/docs/development/hardware-integration/lighting/led-matrix.mdx) |
+| Mixed lighting hardware | Drive an addressable RGB strip or a Zephyr LED device directly. Use `led_composite` to map multiple LED controllers, single-color LEDs, and strips into one logical LED space. [Channel mapping and power reference (Chinese)](docs/docs/led-matrix-led-composite-reference.mdx) |
+| Studio lighting and encoder controls | A compatible client can list lighting presets, edit zones, and assign clockwise and counterclockwise encoder actions per layer. Persistent lighting edits require settings and the LED Matrix editor. Encoder editing requires Studio and sensors defined in the keymap. [Firmware settings](docs/docs/config/studio.md) · [Companion Studio client](https://github.com/afayge/zmk-studio) |
+| Trackball and pointer speed | Connect a BlackBerry trackball, tune acceleration, switch speed profiles, and configure its push button and four PWM LEDs. [Wiring and tuning guide (Chinese)](docs/docs/hardware-integration/blackberry-trackball.mdx) |
+| BMK boards and displays | Build firmware for the Corne54 family and BMK Numpad. Supported status screens show Num Lock, Caps Lock, and Scroll Lock. The Numpad can also evaluate an expression and type its result into the active USB or Bluetooth host. [Board definitions](app/boards/bmk) · [Calculator key bindings (Chinese)](app/boards/bmk/numpad/calculator/README.md) |
 
 ## Upstream ZMK resources
 
